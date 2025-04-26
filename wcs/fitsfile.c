@@ -1,8 +1,8 @@
 /*** File libwcs/fitsfile.c
- *** June 24, 2016
+ *** September 23, 2019
  *** By Jessica Mink, jmink@cfa.harvard.edu
  *** Harvard-Smithsonian Center for Astrophysics
- *** Copyright (C) 1996-2016
+ *** Copyright (C) 1996-2019
  *** Smithsonian Astrophysical Observatory, Cambridge, MA, USA
 
     This library is free software; you can redistribute it and/or
@@ -74,6 +74,8 @@
  *  		Return size of FITS header in bytes
  */
 
+#include "conf.h"
+
 #include <stdlib.h>
 #ifndef VMS
 #include <unistd.h>
@@ -84,6 +86,10 @@
 #include <errno.h>
 #include <string.h>
 #include "fitsfile.h"
+
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
 
 static int verbose=0;		/* Print diagnostics */
 static char fitserrmsg[80];
@@ -200,7 +206,7 @@ int	*nbhead;	/* Number of bytes before start of data (returned) */
     nbytes = FITSBLOCK;
     *nbhead = 0;
     headend = NULL;
-    nbh = FITSBLOCK * 20 + 4;
+    nbh = FITSBLOCK * 100 + 4;
     header = (char *) calloc ((unsigned int) nbh, 1);
     (void) hlength (header, nbh);
     headnext = header;
@@ -290,7 +296,7 @@ int	*nbhead;	/* Number of bytes before start of data (returned) */
 	*(headnext+nbr+1) = 0;
 	ibhead = ibhead + 2880;
 	if (verbose)
-	    fprintf (stderr,"FITSRHEAD: %ld bytes in header\n",ibhead);
+	    fprintf (stderr,"FITSRHEAD: %d bytes in header\n",ibhead);
 
 	/* Check to see if this is the final record in this header */
 	headend = ksearch (fitsbuf,"END");
@@ -2325,4 +2331,6 @@ char *from, *last, *to;
  *
  * Jun  9 2016	Fix isnum() tests for added coloned times and dashed dates
  * Jun 24 2016	Add 1 to allocation of pheader for trailing null, fix by Ole Streicher
+ *
+ * Sep 23 2019	Increase header length default to 288000 = 100 blocks
  */

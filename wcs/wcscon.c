@@ -73,6 +73,10 @@
 #include <string.h>
 #include "wcs.h"
 
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+
 void fk524(), fk524e(), fk524m(), fk524pv();
 void fk425(), fk425e(), fk425m(), fk425pv();
 void fk42gal(), fk52gal(), gal2fk4(), gal2fk5();

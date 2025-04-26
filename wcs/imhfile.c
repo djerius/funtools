@@ -76,6 +76,9 @@
  *              express or implied warranty.
  */
 
+/* unistd.h: ftruncate */
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdio.h>		/* define stderr, FD, and NULL */
 #include <stdlib.h>
 #include <unistd.h>
@@ -1075,7 +1078,7 @@ char	*hdrname;	/* IRAF image header file pathname */
 
 	/* add name */
 	newpixname[len] = '\0';
-	(void)strncat (newpixname, pixname, SZ_IM2PIXFILE - 1);
+	(void)strncat (newpixname, pixname, SZ_IM2PIXFILE-1);
 	}
 
     /* Pixel file has same name as header file, but with .pix extension */
