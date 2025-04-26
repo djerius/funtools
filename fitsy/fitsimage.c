@@ -44,7 +44,7 @@ int _filesize(file)
 int ft_munmap(head)
 	FITSHead	head;
 {
-	return munmap((caddr_t) head->mmap_here, head->mmap_size);
+	return munmap( (void *) head->mmap_here, head->mmap_size);
 }
 #endif
 
@@ -52,7 +52,7 @@ int ft_munmap(head)
 int ft_shmdt(head)
 	FITSHead	head;
 {
-	return shmdt((caddr_t) head->mmap_here);
+	return shmdt((void *) head->mmap_here);
 }
 #endif
 
