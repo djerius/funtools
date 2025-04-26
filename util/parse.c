@@ -672,7 +672,8 @@ Parse ParseNew(delims, comchars, eot, mode)
       }
       if( tlen >= SZ_LINE )
 	gerror(stderr, "EOT specification is too long (%d)\n", tlen);
-      tbuf[tlen++] = c;
+      else
+        tbuf[tlen++] = c;
       /* handle end of one line */
       if( c == '\n' ){
 	tbuf[tlen] = '\0';
