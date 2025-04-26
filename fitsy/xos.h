@@ -45,10 +45,6 @@ void *memset();
 #ifndef memmove
 #define memmove(d, s, n) bcopy ((s), (d), (n))
 #endif
-#else
-#ifndef bcopy
-#define bcopy(s, d, n) memcpy( (d), (s), (n))
-#endif
 #endif
 
 #ifdef HAVE_MALLOC_H
