@@ -365,8 +365,8 @@ char *Access (name, mode)
     int m = amparse(mode);
 
     /* distinguish between directories and files */
-    if (  (m & D_OK) && !(info.st_mode & S_IFDIR) ) return NULL;
-    if ( !(m & D_OK) &&  (info.st_mode & S_IFDIR) ) return NULL;
+    if (  (m & D_OK) && !S_ISDIR(info.st_mode) ) return NULL;
+    if ( !(m & D_OK) && S_ISDIR(info.st_mode) ) return NULL;
 
     if ( getuid() == info.st_uid ) {
 	if ( m & R_OK && !(info.st_mode & S_IRUSR) ) return NULL;
