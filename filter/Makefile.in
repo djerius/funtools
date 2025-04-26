@@ -260,12 +260,12 @@ headers:	regions_h.h xalloc_c.h swap_c.h \
 # remake the parser
 LEX =		flex -i
 parser:		filt.l
-		@($(LEX) -Pfilt filt.l; \
+		@($(LEX) filt.l; \
 		sed "s/yytext_ptr/filttext_ptr/g" < lex.filt.c > nlex.filt.c; \
 		mv nlex.filt.c lex.filt.c)
 
 iparser:	idx.l
-		@($(LEX) -Pidx idx.l; \
+		@($(LEX) idx.l; \
 		sed "s/yytext_ptr/idxtext_ptr/g" < lex.idx.c > nlex.idx.c; \
 		mv nlex.idx.c lex.idx.c)
 

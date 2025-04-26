@@ -582,7 +582,7 @@ tabcalc_c.h:	tabcalc.c
 		./inc.sed TABCALC_C < tabcalc.c > tabcalc_c.h
 
 # remake the parser
-LEX =		flex -Pcalc
+LEX =		flex
 
 parser:		calc.l
 		@($(LEX) calc.l; \

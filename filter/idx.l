@@ -1,5 +1,6 @@
 %option caseless
-%array
+%option array
+%option prefix="idx"
 
 %top {
 /* math.h: M_PI */

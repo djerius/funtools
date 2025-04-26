@@ -1,5 +1,6 @@
-option caseless
-%array
+%option caseless
+%option array
+%option prefix="filt"
 
 %top {
 /* stdio.h: fileno */

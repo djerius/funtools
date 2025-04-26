@@ -1,5 +1,6 @@
 %option caseless
-%array
+%option array
+%option prefix="calc"
 
 %top{
 /* stdio.h: fileno */
