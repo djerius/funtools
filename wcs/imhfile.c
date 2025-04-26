@@ -1075,7 +1075,7 @@ char	*hdrname;	/* IRAF image header file pathname */
 
 	/* add name */
 	newpixname[len] = '\0';
-	(void)strncat (newpixname, pixname, SZ_IM2PIXFILE);
+	(void)strncat (newpixname, pixname, SZ_IM2PIXFILE - 1);
 	}
 
     /* Pixel file has same name as header file, but with .pix extension */
