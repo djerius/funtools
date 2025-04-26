@@ -610,7 +610,7 @@ configure:	configure.ac
 
 Configure:	FORCE
 		@for dir in $(SUBDIRS); do \
-		   if [ -x $$dir/configure ]; then \
+		   if [ -f $$dir/configure.ac ]; then \
 		     echo " "; \
 		     echo Autoconf in $$dir ...; \
 		     (cd $$dir; autoconf) ; \
