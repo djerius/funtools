@@ -11,9 +11,16 @@
 #ifndef	__funtoolsP_h
 #define	__funtoolsP_h
 
+
 #if HAVE_CONFIG_H
 #include "conf.h"
 #endif
+
+/* stdio.h: fileno */
+#define _POSIX_C_SOURCE 200112L
+
+/* stdlib.h: putenv */
+#define _XOPEN_SOURCE  500
 
 #include <stdio.h>
 #if HAVE_UNISTD_H

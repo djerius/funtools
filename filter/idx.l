@@ -1,11 +1,16 @@
 %option caseless
 %array
 
+%top {
+/* math.h: M_PI */
+#define _XOPEN_SOURCE 1
+}
+
 %{
 #include <math.h>
 #include <filter.h>
-#include <idx.h>
-#include <idx.tab.h>
+#include "idx.h"
+#include "idx.tab.h"
 
 extern int idx_debug;
 

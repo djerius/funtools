@@ -1,9 +1,14 @@
 %option caseless
 %array
 
+%top{
+/* stdio.h: fileno */
+#define _POSIX_C_SOURCE 200112L
+}
+
 %{
 #include <ctype.h>
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 #include <macro.h>
 #include <calc.h>
 #include <tabcalc_c.h>

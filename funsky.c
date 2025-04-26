@@ -2,8 +2,8 @@
  *	Copyright (c) 2005 Smithsonian Astrophysical Observatory
  */
 
+#include "funtoolsP.h"
 #include <math.h>
-#include <funtoolsP.h>
 #include <strtod.h>
 
 extern char *optarg;

@@ -2,7 +2,7 @@
  *	Copyright (c) 1999-2005 Smithsonian Astrophysical Observatory
  */
 
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 
 /*
  *

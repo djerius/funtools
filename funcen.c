@@ -11,13 +11,14 @@
  *   -lfuntools -lsocket -lnsl -ldl -lm
  */
 
+#include "funtoolsP.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <funtools.h>
 #include <filter.h>
 #include <swap.h>
 #include <word.h>

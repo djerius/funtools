@@ -6,7 +6,7 @@
    -ldl -lnsl -lsocket -lm
  */
 
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 #include <strtod.h>
 
 extern char *optarg;

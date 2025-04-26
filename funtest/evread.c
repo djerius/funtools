@@ -4,7 +4,7 @@
  *
  */
 
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 
 #define MAXROW 10000
 

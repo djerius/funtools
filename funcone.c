@@ -5,9 +5,10 @@
 /* code shamelessly ripped off from John Roll's search program in starbase
    (http://cfa-www.harvard.edu/~john/starbase/starbase.html) */
 
-#include <math.h>
 /* some experimental black magic in this code requires ... */
-#include <funtoolsP.h>
+#include "funtoolsP.h"
+
+#include <math.h>
 #include <filter.h>
 #include <swap.h>
 #include <word.h>

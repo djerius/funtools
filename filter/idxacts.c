@@ -8,6 +8,10 @@
  *
  */
 
+/* stdio.h: fdopen */
+/* stdio.h: fileno */
+#define _POSIX_C_SOURCE 200112L
+
 #include <filter.h>
 #include <idx.h>
 #include <idx.tab.h>

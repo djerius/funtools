@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 
 static char macrobuf[SZ_LINE];
 

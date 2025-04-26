@@ -2,7 +2,7 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 
 static int doprim=0;
 static int doraw=0;

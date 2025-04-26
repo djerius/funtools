@@ -6,8 +6,8 @@
  *     funjoin -j key t1.fits t2.fits t3.fits foo.fits
  */
 
+#include "funtoolsP.h"
 #include <math.h>
-#include <funtoolsP.h>
 #include <word.h>
 
 /* #define JOIN_DEBUG 1 */

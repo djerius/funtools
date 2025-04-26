@@ -11,6 +11,9 @@
 #ifndef	__xlaunch_h
 #define	__xlaunch_h
 
+/* needed for struct sigaction in signal.h */
+#define _POSIX_C_SOURCE 200112L
+
 #if HAVE_CONFIG_H
 #include "conf.h"
 #endif
@@ -23,6 +26,9 @@
 #include <sys/stat.h>
 #if HAVE_STRING_H
 #include <string.h>
+#endif
+#if HAVE_STRINGS_H
+#include <strings.h>
 #endif
 #if HAVE_MALLOC_H
 #include <malloc.h>

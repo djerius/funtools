@@ -13,6 +13,7 @@
 #if HAVE_CONFIG_H
 #include "conf.h"
 #endif
+
 #include "prsetup.h"
 #include <stdio.h>
 #include <ctype.h>
@@ -21,6 +22,9 @@
 #endif
 #ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
 #endif
 #include "fitsy.h"
 #include "gio.h"

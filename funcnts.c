@@ -2,8 +2,9 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
+#include "funtoolsP.h"
+
 #include <math.h>
-#include <funtools.h>
 #include <NaN.h>
 #include <filter.h>
 #include <swap.h>

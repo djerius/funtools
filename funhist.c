@@ -2,8 +2,8 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
+#include "funtoolsP.h"
 #include <math.h>
-#include <funtoolsP.h>
 #include <filter.h>
 #include <word.h>
 

@@ -3,7 +3,7 @@
  */
 
 #include <ctype.h>
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 
 /*
  *

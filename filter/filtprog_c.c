@@ -8,6 +8,9 @@
  *
  */
 
+/* stdio.h: fdopen */
+#define _POSIX_C_SOURCE 200112L
+
 #include <filter.h>
 #include <swap.h>
 #include <regions_h.h>
