@@ -1,5 +1,7 @@
+/* stdio.h: fileno */
+#define _POSIX_C_SOURCE 200112L
 
-#line 3 "lex.calc.c"
+#line 5 "lex.calc.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -7,11 +9,17 @@
 
 #define yy_create_buffer calc_create_buffer
 #define yy_delete_buffer calc_delete_buffer
-#define yy_flex_debug calc_flex_debug
+#define yy_scan_buffer calc_scan_buffer
+#define yy_scan_string calc_scan_string
+#define yy_scan_bytes calc_scan_bytes
 #define yy_init_buffer calc_init_buffer
 #define yy_flush_buffer calc_flush_buffer
 #define yy_load_buffer_state calc_load_buffer_state
 #define yy_switch_to_buffer calc_switch_to_buffer
+#define yypush_buffer_state calcpush_buffer_state
+#define yypop_buffer_state calcpop_buffer_state
+#define yyensure_buffer_stack calcensure_buffer_stack
+#define yy_flex_debug calc_flex_debug
 #define yyin calcin
 #define yyleng calcleng
 #define yylex calclex
@@ -26,10 +34,244 @@
 
 #define FLEX_SCANNER
 #define YY_FLEX_MAJOR_VERSION 2
-#define YY_FLEX_MINOR_VERSION 5
-#define YY_FLEX_SUBMINOR_VERSION 35
+#define YY_FLEX_MINOR_VERSION 6
+#define YY_FLEX_SUBMINOR_VERSION 4
 #if YY_FLEX_SUBMINOR_VERSION > 0
 #define FLEX_BETA
+#endif
+
+#ifdef yy_create_buffer
+#define calc_create_buffer_ALREADY_DEFINED
+#else
+#define yy_create_buffer calc_create_buffer
+#endif
+
+#ifdef yy_delete_buffer
+#define calc_delete_buffer_ALREADY_DEFINED
+#else
+#define yy_delete_buffer calc_delete_buffer
+#endif
+
+#ifdef yy_scan_buffer
+#define calc_scan_buffer_ALREADY_DEFINED
+#else
+#define yy_scan_buffer calc_scan_buffer
+#endif
+
+#ifdef yy_scan_string
+#define calc_scan_string_ALREADY_DEFINED
+#else
+#define yy_scan_string calc_scan_string
+#endif
+
+#ifdef yy_scan_bytes
+#define calc_scan_bytes_ALREADY_DEFINED
+#else
+#define yy_scan_bytes calc_scan_bytes
+#endif
+
+#ifdef yy_init_buffer
+#define calc_init_buffer_ALREADY_DEFINED
+#else
+#define yy_init_buffer calc_init_buffer
+#endif
+
+#ifdef yy_flush_buffer
+#define calc_flush_buffer_ALREADY_DEFINED
+#else
+#define yy_flush_buffer calc_flush_buffer
+#endif
+
+#ifdef yy_load_buffer_state
+#define calc_load_buffer_state_ALREADY_DEFINED
+#else
+#define yy_load_buffer_state calc_load_buffer_state
+#endif
+
+#ifdef yy_switch_to_buffer
+#define calc_switch_to_buffer_ALREADY_DEFINED
+#else
+#define yy_switch_to_buffer calc_switch_to_buffer
+#endif
+
+#ifdef yypush_buffer_state
+#define calcpush_buffer_state_ALREADY_DEFINED
+#else
+#define yypush_buffer_state calcpush_buffer_state
+#endif
+
+#ifdef yypop_buffer_state
+#define calcpop_buffer_state_ALREADY_DEFINED
+#else
+#define yypop_buffer_state calcpop_buffer_state
+#endif
+
+#ifdef yyensure_buffer_stack
+#define calcensure_buffer_stack_ALREADY_DEFINED
+#else
+#define yyensure_buffer_stack calcensure_buffer_stack
+#endif
+
+#ifdef yylex
+#define calclex_ALREADY_DEFINED
+#else
+#define yylex calclex
+#endif
+
+#ifdef yyrestart
+#define calcrestart_ALREADY_DEFINED
+#else
+#define yyrestart calcrestart
+#endif
+
+#ifdef yylex_init
+#define calclex_init_ALREADY_DEFINED
+#else
+#define yylex_init calclex_init
+#endif
+
+#ifdef yylex_init_extra
+#define calclex_init_extra_ALREADY_DEFINED
+#else
+#define yylex_init_extra calclex_init_extra
+#endif
+
+#ifdef yylex_destroy
+#define calclex_destroy_ALREADY_DEFINED
+#else
+#define yylex_destroy calclex_destroy
+#endif
+
+#ifdef yyget_debug
+#define calcget_debug_ALREADY_DEFINED
+#else
+#define yyget_debug calcget_debug
+#endif
+
+#ifdef yyset_debug
+#define calcset_debug_ALREADY_DEFINED
+#else
+#define yyset_debug calcset_debug
+#endif
+
+#ifdef yyget_extra
+#define calcget_extra_ALREADY_DEFINED
+#else
+#define yyget_extra calcget_extra
+#endif
+
+#ifdef yyset_extra
+#define calcset_extra_ALREADY_DEFINED
+#else
+#define yyset_extra calcset_extra
+#endif
+
+#ifdef yyget_in
+#define calcget_in_ALREADY_DEFINED
+#else
+#define yyget_in calcget_in
+#endif
+
+#ifdef yyset_in
+#define calcset_in_ALREADY_DEFINED
+#else
+#define yyset_in calcset_in
+#endif
+
+#ifdef yyget_out
+#define calcget_out_ALREADY_DEFINED
+#else
+#define yyget_out calcget_out
+#endif
+
+#ifdef yyset_out
+#define calcset_out_ALREADY_DEFINED
+#else
+#define yyset_out calcset_out
+#endif
+
+#ifdef yyget_leng
+#define calcget_leng_ALREADY_DEFINED
+#else
+#define yyget_leng calcget_leng
+#endif
+
+#ifdef yyget_text
+#define calcget_text_ALREADY_DEFINED
+#else
+#define yyget_text calcget_text
+#endif
+
+#ifdef yyget_lineno
+#define calcget_lineno_ALREADY_DEFINED
+#else
+#define yyget_lineno calcget_lineno
+#endif
+
+#ifdef yyset_lineno
+#define calcset_lineno_ALREADY_DEFINED
+#else
+#define yyset_lineno calcset_lineno
+#endif
+
+#ifdef yywrap
+#define calcwrap_ALREADY_DEFINED
+#else
+#define yywrap calcwrap
+#endif
+
+#ifdef yyalloc
+#define calcalloc_ALREADY_DEFINED
+#else
+#define yyalloc calcalloc
+#endif
+
+#ifdef yyrealloc
+#define calcrealloc_ALREADY_DEFINED
+#else
+#define yyrealloc calcrealloc
+#endif
+
+#ifdef yyfree
+#define calcfree_ALREADY_DEFINED
+#else
+#define yyfree calcfree
+#endif
+
+#ifdef yytext
+#define calctext_ALREADY_DEFINED
+#else
+#define yytext calctext
+#endif
+
+#ifdef yyleng
+#define calcleng_ALREADY_DEFINED
+#else
+#define yyleng calcleng
+#endif
+
+#ifdef yyin
+#define calcin_ALREADY_DEFINED
+#else
+#define yyin calcin
+#endif
+
+#ifdef yyout
+#define calcout_ALREADY_DEFINED
+#else
+#define yyout calcout
+#endif
+
+#ifdef yy_flex_debug
+#define calc_flex_debug_ALREADY_DEFINED
+#else
+#define yy_flex_debug calc_flex_debug
+#endif
+
+#ifdef yylineno
+#define calclineno_ALREADY_DEFINED
+#else
+#define yylineno calclineno
 #endif
 
 /* First, we deal with  platform-specific or compiler-specific issues. */
@@ -65,7 +307,6 @@ typedef int16_t flex_int16_t;
 typedef uint16_t flex_uint16_t;
 typedef int32_t flex_int32_t;
 typedef uint32_t flex_uint32_t;
-typedef uint64_t flex_uint64_t;
 #else
 typedef signed char flex_int8_t;
 typedef short int flex_int16_t;
@@ -73,7 +314,6 @@ typedef int flex_int32_t;
 typedef unsigned char flex_uint8_t; 
 typedef unsigned short int flex_uint16_t;
 typedef unsigned int flex_uint32_t;
-#endif /* ! C99 */
 
 /* Limits of integral types. */
 #ifndef INT8_MIN
@@ -104,63 +344,61 @@ typedef unsigned int flex_uint32_t;
 #define UINT32_MAX             (4294967295U)
 #endif
 
+#ifndef SIZE_MAX
+#define SIZE_MAX               (~(size_t)0)
+#endif
+
+#endif /* ! C99 */
+
 #endif /* ! FLEXINT_H */
 
-#ifdef __cplusplus
+/* begin standard C++ headers. */
 
-/* The "const" storage-class-modifier is valid. */
-#define YY_USE_CONST
-
-#else	/* ! __cplusplus */
-
-/* C99 requires __STDC__ to be defined as 1. */
-#if defined (__STDC__)
-
-#define YY_USE_CONST
-
-#endif	/* defined (__STDC__) */
-#endif	/* ! __cplusplus */
-
-#ifdef YY_USE_CONST
+/* TODO: this is always defined, so inline it */
 #define yyconst const
+
+#if defined(__GNUC__) && __GNUC__ >= 3
+#define yynoreturn __attribute__((__noreturn__))
 #else
-#define yyconst
+#define yynoreturn
 #endif
 
 /* Returned upon end-of-file. */
 #define YY_NULL 0
 
-/* Promotes a possibly negative, possibly signed char to an unsigned
- * integer for use as an array index.  If the signed char is negative,
- * we want to instead treat it as an 8-bit unsigned char, hence the
- * double cast.
+/* Promotes a possibly negative, possibly signed char to an
+ *   integer in range [0..255] for use as an array index.
  */
-#define YY_SC_TO_UI(c) ((unsigned int) (unsigned char) c)
+#define YY_SC_TO_UI(c) ((YY_CHAR) (c))
 
 /* Enter a start condition.  This macro really ought to take a parameter,
  * but we do it the disgusting crufty way forced on us by the ()-less
  * definition of BEGIN.
  */
 #define BEGIN (yy_start) = 1 + 2 *
-
 /* Translate the current start state into a value that can be later handed
  * to BEGIN to return to the state.  The YYSTATE alias is for lex
  * compatibility.
  */
 #define YY_START (((yy_start) - 1) / 2)
 #define YYSTATE YY_START
-
 /* Action number for EOF rule of a given start state. */
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
-
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE calcrestart(calcin  )
-
+#define YY_NEW_FILE yyrestart( yyin  )
 #define YY_END_OF_BUFFER_CHAR 0
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -177,30 +415,30 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 typedef size_t yy_size_t;
 #endif
 
-extern yy_size_t calcleng;
+extern int yyleng;
 
-extern FILE *calcin, *calcout;
+extern FILE *yyin, *yyout;
 
 #define EOB_ACT_CONTINUE_SCAN 0
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
-
+    
     #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up calctext. */ \
+		/* Undo effects of setting up yytext. */ \
         int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
 		*yy_cp = (yy_hold_char); \
 		YY_RESTORE_YY_MORE_OFFSET \
 		(yy_c_buf_p) = yy_cp = yy_bp + yyless_macro_arg - YY_MORE_ADJ; \
-		YY_DO_BEFORE_ACTION; /* set up calctext again */ \
+		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
 		} \
 	while ( 0 )
-
 #define unput(c) yyunput( c, (calctext_ptr)  )
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
@@ -215,12 +453,12 @@ struct yy_buffer_state
 	/* Size of input buffer in bytes, not including room for EOB
 	 * characters.
 	 */
-	yy_size_t yy_buf_size;
+	int yy_buf_size;
 
 	/* Number of characters read into yy_ch_buf, not including EOB
 	 * characters.
 	 */
-	yy_size_t yy_n_chars;
+	int yy_n_chars;
 
 	/* Whether we "own" the buffer - i.e., we know we created it,
 	 * and can realloc() it to grow it, and should free() it to
@@ -243,7 +481,7 @@ struct yy_buffer_state
 
     int yy_bs_lineno; /**< The line count. */
     int yy_bs_column; /**< The column count. */
-    
+
 	/* Whether to try to fill the input buffer when we reach the
 	 * end of it.
 	 */
@@ -260,8 +498,8 @@ struct yy_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via calcrestart()), so that the user can continue scanning by
-	 * just pointing calcin at a new input file.
+	 * (via yyrestart()), so that the user can continue scanning by
+	 * just pointing yyin at a new input file.
 	 */
 #define YY_BUFFER_EOF_PENDING 2
 
@@ -271,7 +509,7 @@ struct yy_buffer_state
 /* Stack of input buffers. */
 static size_t yy_buffer_stack_top = 0; /**< index of top of stack. */
 static size_t yy_buffer_stack_max = 0; /**< capacity of stack. */
-static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
+static YY_BUFFER_STATE * yy_buffer_stack = NULL; /**< Stack as an array. */
 
 /* We provide macros for accessing buffer states in case in the
  * future we want to put the buffer states in a more general
@@ -282,105 +520,97 @@ static YY_BUFFER_STATE * yy_buffer_stack = 0; /**< Stack as an array. */
 #define YY_CURRENT_BUFFER ( (yy_buffer_stack) \
                           ? (yy_buffer_stack)[(yy_buffer_stack_top)] \
                           : NULL)
-
 /* Same as previous macro, but useful when we know that the buffer stack is not
  * NULL or when we need an lvalue. For internal use only.
  */
 #define YY_CURRENT_BUFFER_LVALUE (yy_buffer_stack)[(yy_buffer_stack_top)]
 
-/* yy_hold_char holds the character lost when calctext is formed. */
+/* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
-static yy_size_t yy_n_chars;		/* number of characters read into yy_ch_buf */
-yy_size_t calcleng;
+static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+int yyleng;
 
 /* Points to current character in buffer. */
-static char *yy_c_buf_p = (char *) 0;
+static char *yy_c_buf_p = NULL;
 static int yy_init = 0;		/* whether we need to initialize */
 static int yy_start = 0;	/* start state number */
 
-/* Flag which is used to allow calcwrap()'s to do buffer switches
- * instead of setting up a fresh calcin.  A bit of a hack ...
+/* Flag which is used to allow yywrap()'s to do buffer switches
+ * instead of setting up a fresh yyin.  A bit of a hack ...
  */
 static int yy_did_buffer_switch_on_eof;
 
-void calcrestart (FILE *input_file  );
-void calc_switch_to_buffer (YY_BUFFER_STATE new_buffer  );
-YY_BUFFER_STATE calc_create_buffer (FILE *file,int size  );
-void calc_delete_buffer (YY_BUFFER_STATE b  );
-void calc_flush_buffer (YY_BUFFER_STATE b  );
-void calcpush_buffer_state (YY_BUFFER_STATE new_buffer  );
-void calcpop_buffer_state (void );
+void yyrestart ( FILE *input_file  );
+void yy_switch_to_buffer ( YY_BUFFER_STATE new_buffer  );
+YY_BUFFER_STATE yy_create_buffer ( FILE *file, int size  );
+void yy_delete_buffer ( YY_BUFFER_STATE b  );
+void yy_flush_buffer ( YY_BUFFER_STATE b  );
+void yypush_buffer_state ( YY_BUFFER_STATE new_buffer  );
+void yypop_buffer_state ( void );
 
-static void calcensure_buffer_stack (void );
-static void calc_load_buffer_state (void );
-static void calc_init_buffer (YY_BUFFER_STATE b,FILE *file  );
+static void yyensure_buffer_stack ( void );
+static void yy_load_buffer_state ( void );
+static void yy_init_buffer ( YY_BUFFER_STATE b, FILE *file  );
+#define YY_FLUSH_BUFFER yy_flush_buffer( YY_CURRENT_BUFFER )
 
-#define YY_FLUSH_BUFFER calc_flush_buffer(YY_CURRENT_BUFFER )
+YY_BUFFER_STATE yy_scan_buffer ( char *base, yy_size_t size  );
+YY_BUFFER_STATE yy_scan_string ( const char *yy_str  );
+YY_BUFFER_STATE yy_scan_bytes ( const char *bytes, int len  );
 
-YY_BUFFER_STATE calc_scan_buffer (char *base,yy_size_t size  );
-YY_BUFFER_STATE calc_scan_string (yyconst char *yy_str  );
-YY_BUFFER_STATE calc_scan_bytes (yyconst char *bytes,yy_size_t len  );
+void *yyalloc ( yy_size_t  );
+void *yyrealloc ( void *, yy_size_t  );
+void yyfree ( void *  );
 
-void *calcalloc (yy_size_t  );
-void *calcrealloc (void *,yy_size_t  );
-void calcfree (void *  );
-
-#define yy_new_buffer calc_create_buffer
-
+#define yy_new_buffer yy_create_buffer
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
-        calcensure_buffer_stack (); \
+        yyensure_buffer_stack (); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            calc_create_buffer(calcin,YY_BUF_SIZE ); \
+            yy_create_buffer( yyin, YY_BUF_SIZE ); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
-
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
-        calcensure_buffer_stack (); \
+        yyensure_buffer_stack (); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            calc_create_buffer(calcin,YY_BUF_SIZE ); \
+            yy_create_buffer( yyin, YY_BUF_SIZE ); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
-
 #define YY_AT_BOL() (YY_CURRENT_BUFFER_LVALUE->yy_at_bol)
 
 /* Begin user sect3 */
+typedef flex_uint8_t YY_CHAR;
 
-typedef unsigned char YY_CHAR;
-
-FILE *calcin = (FILE *) 0, *calcout = (FILE *) 0;
+FILE *yyin = NULL, *yyout = NULL;
 
 typedef int yy_state_type;
 
-extern int calclineno;
+extern int yylineno;
+int yylineno = 1;
 
-int calclineno = 1;
+extern char yytext[];
 
-extern char calctext[];
-
-static yy_state_type yy_get_previous_state (void );
-static yy_state_type yy_try_NUL_trans (yy_state_type current_state  );
-static int yy_get_next_buffer (void );
-static void yy_fatal_error (yyconst char msg[]  );
+static yy_state_type yy_get_previous_state ( void );
+static yy_state_type yy_try_NUL_trans ( yy_state_type current_state  );
+static int yy_get_next_buffer ( void );
+static void yynoreturn yy_fatal_error ( const char* msg  );
 
 /* Done after the current pattern has been matched and before the
- * corresponding action - sets up calctext.
+ * corresponding action - sets up yytext.
  */
 #define YY_DO_BEFORE_ACTION \
 	(calctext_ptr) = yy_bp; \
-	calcleng = (yy_size_t) (yy_cp - yy_bp); \
+	yyleng = (int) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
-	if ( calcleng >= YYLMAX ) \
+	if ( yyleng >= YYLMAX ) \
 		YY_FATAL_ERROR( "token too large, exceeds YYLMAX" ); \
-	yy_flex_strncpy( calctext, (calctext_ptr), calcleng + 1 ); \
+	yy_flex_strncpy( yytext, (calctext_ptr), yyleng + 1 ); \
 	(yy_c_buf_p) = yy_cp;
-
 #define YY_NUM_RULES 28
 #define YY_END_OF_BUFFER 29
 /* This struct is not used in this scanner,
@@ -390,7 +620,7 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static yyconst flex_int16_t yy_accept[234] =
+static const flex_int16_t yy_accept[234] =
     {   0,
        26,   26,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,   29,   27,   26,   25,   13,   27,    6,   27,
@@ -420,7 +650,7 @@ static yyconst flex_int16_t yy_accept[234] =
        20,   20,    0
     } ;
 
-static yyconst flex_int32_t yy_ec[256] =
+static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -452,7 +682,7 @@ static yyconst flex_int32_t yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static yyconst flex_int32_t yy_meta[61] =
+static const YY_CHAR yy_meta[61] =
     {   0,
         1,    1,    2,    1,    1,    1,    3,    1,    4,    4,
         5,    6,    6,    7,    1,    1,    1,    1,    8,    8,
@@ -462,7 +692,7 @@ static yyconst flex_int32_t yy_meta[61] =
         9,    9,    9,    9,    9,    9,    9,    9,    9,    9
     } ;
 
-static yyconst flex_int16_t yy_base[256] =
+static const flex_int16_t yy_base[256] =
     {   0,
         0,   59,    0,    0,   59,   60,   62,   63,  488,  485,
        75,  115,  480, 1005,  154, 1005, 1005,  466,  426,   47,
@@ -494,7 +724,7 @@ static yyconst flex_int16_t yy_base[256] =
       977,  983,  989,  993,  996
     } ;
 
-static yyconst flex_int16_t yy_def[256] =
+static const flex_int16_t yy_def[256] =
     {   0,
       233,    1,  234,  234,  235,  235,  236,  236,  237,  237,
       238,  238,  233,  233,  233,  233,  233,  233,  239,  233,
@@ -526,7 +756,7 @@ static yyconst flex_int16_t yy_def[256] =
       233,  233,  233,  233,  233
     } ;
 
-static yyconst flex_int16_t yy_nxt[1066] =
+static const flex_int16_t yy_nxt[1066] =
     {   0,
        14,   15,   16,   14,   17,   14,   14,   14,   14,   14,
        18,   14,   14,   14,   14,   14,   14,   19,   20,   21,
@@ -647,7 +877,7 @@ static yyconst flex_int16_t yy_nxt[1066] =
       233,  233,  233,  233,  233
     } ;
 
-static yyconst flex_int16_t yy_chk[1066] =
+static const flex_int16_t yy_chk[1066] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -771,8 +1001,8 @@ static yyconst flex_int16_t yy_chk[1066] =
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
 
-extern int calc_flex_debug;
-int calc_flex_debug = 0;
+extern int yy_flex_debug;
+int yy_flex_debug = 0;
 
 /* The intent behind this definition is that it'll catch
  * any uses of REJECT which flex missed.
@@ -785,12 +1015,13 @@ int calc_flex_debug = 0;
 #define YYLMAX 8192
 #endif
 
-char calctext[YYLMAX];
+char yytext[YYLMAX];
 char *calctext_ptr;
 #line 1 "calc.l"
-#line 5 "calc.l"
+
+#line 11 "calc.l"
 #include <ctype.h>
-#include <funtoolsP.h>
+#include "funtoolsP.h"
 #include <macro.h>
 #include <calc.h>
 #include <tabcalc_c.h>
@@ -862,12 +1093,9 @@ static CalcCols _CalcColNew _PRx((Fun fun,
 static CalcCols _CalcColLookup _PRx((char *cname));
 
 int _calcerror _PRx((char *msg));
+#line 1097 "lex.calc.c"
 
-
-
-
-
-#line 871 "lex.calc.c"
+#line 1099 "lex.calc.c"
 
 #define INITIAL 0
 #define INCLUDE 1
@@ -888,36 +1116,36 @@ int _calcerror _PRx((char *msg));
 #define YY_EXTRA_TYPE void *
 #endif
 
-static int yy_init_globals (void );
+static int yy_init_globals ( void );
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int calclex_destroy (void );
+int yylex_destroy ( void );
 
-int calcget_debug (void );
+int yyget_debug ( void );
 
-void calcset_debug (int debug_flag  );
+void yyset_debug ( int debug_flag  );
 
-YY_EXTRA_TYPE calcget_extra (void );
+YY_EXTRA_TYPE yyget_extra ( void );
 
-void calcset_extra (YY_EXTRA_TYPE user_defined  );
+void yyset_extra ( YY_EXTRA_TYPE user_defined  );
 
-FILE *calcget_in (void );
+FILE *yyget_in ( void );
 
-void calcset_in  (FILE * in_str  );
+void yyset_in  ( FILE * _in_str  );
 
-FILE *calcget_out (void );
+FILE *yyget_out ( void );
 
-void calcset_out  (FILE * out_str  );
+void yyset_out  ( FILE * _out_str  );
 
-yy_size_t calcget_leng (void );
+			int yyget_leng ( void );
 
-char *calcget_text (void );
+char *yyget_text ( void );
 
-int calcget_lineno (void );
+int yyget_lineno ( void );
 
-void calcset_lineno (int line_number  );
+void yyset_lineno ( int _line_number  );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -925,35 +1153,43 @@ void calcset_lineno (int line_number  );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int calcwrap (void );
+extern "C" int yywrap ( void );
 #else
-extern int calcwrap (void );
+extern int yywrap ( void );
 #endif
 #endif
 
-    static void yyunput (int c,char *buf_ptr  );
+#ifndef YY_NO_UNPUT
     
+    static void yyunput ( int c, char *buf_ptr  );
+    
+#endif
+
 #ifndef calctext_ptr
-static void yy_flex_strncpy (char *,yyconst char *,int );
+static void yy_flex_strncpy ( char *, const char *, int );
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * );
+static int yy_flex_strlen ( const char * );
 #endif
 
 #ifndef YY_NO_INPUT
-
 #ifdef __cplusplus
-static int yyinput (void );
+static int yyinput ( void );
 #else
-static int input (void );
+static int input ( void );
 #endif
 
 #endif
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -961,7 +1197,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( calctext, calcleng, 1, calcout )
+#define ECHO do { if (fwrite( yytext, (size_t) yyleng, 1, yyout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -972,20 +1208,20 @@ static int input (void );
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_is_interactive ) \
 		{ \
 		int c = '*'; \
-		yy_size_t n; \
+		int n; \
 		for ( n = 0; n < max_size && \
-			     (c = getc( calcin )) != EOF && c != '\n'; ++n ) \
+			     (c = getc( yyin )) != EOF && c != '\n'; ++n ) \
 			buf[n] = (char) c; \
 		if ( c == '\n' ) \
 			buf[n++] = (char) c; \
-		if ( c == EOF && ferror( calcin ) ) \
+		if ( c == EOF && ferror( yyin ) ) \
 			YY_FATAL_ERROR( "input in flex scanner failed" ); \
 		result = n; \
 		} \
 	else \
 		{ \
 		errno=0; \
-		while ( (result = fread(buf, 1, max_size, calcin))==0 && ferror(calcin)) \
+		while ( (result = (int) fread(buf, 1, (yy_size_t) max_size, yyin)) == 0 && ferror(yyin)) \
 			{ \
 			if( errno != EINTR) \
 				{ \
@@ -993,7 +1229,7 @@ static int input (void );
 				break; \
 				} \
 			errno=0; \
-			clearerr(calcin); \
+			clearerr(yyin); \
 			} \
 		}\
 \
@@ -1026,12 +1262,12 @@ static int input (void );
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int calclex (void);
+extern int yylex (void);
 
-#define YY_DECL int calclex (void)
+#define YY_DECL int yylex (void)
 #endif /* !YY_DECL */
 
-/* Code executed at the beginning of each rule, after calctext and calcleng
+/* Code executed at the beginning of each rule, after yytext and yyleng
  * have been set up.
  */
 #ifndef YY_USER_ACTION
@@ -1040,28 +1276,23 @@ extern int calclex (void);
 
 /* Code executed at the end of each rule. */
 #ifndef YY_BREAK
-#define YY_BREAK break;
+#define YY_BREAK /*LINTED*/break;
 #endif
 
 #define YY_RULE_SETUP \
-	if ( calcleng > 0 ) \
+	if ( yyleng > 0 ) \
 		YY_CURRENT_BUFFER_LVALUE->yy_at_bol = \
-				(calctext[calcleng - 1] == '\n'); \
+				(yytext[yyleng - 1] == '\n'); \
 	YY_USER_ACTION
 
 /** The main scanner function which does all the work.
  */
 YY_DECL
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
-	register int yy_act;
+	yy_state_type yy_current_state;
+	char *yy_cp, *yy_bp;
+	int yy_act;
     
-#line 109 "calc.l"
-
-
-#line 1064 "lex.calc.c"
-
 	if ( !(yy_init) )
 		{
 		(yy_init) = 1;
@@ -1073,26 +1304,32 @@ YY_DECL
 		if ( ! (yy_start) )
 			(yy_start) = 1;	/* first start state */
 
-		if ( ! calcin )
-			calcin = stdin;
+		if ( ! yyin )
+			yyin = stdin;
 
-		if ( ! calcout )
-			calcout = stdout;
+		if ( ! yyout )
+			yyout = stdout;
 
 		if ( ! YY_CURRENT_BUFFER ) {
-			calcensure_buffer_stack ();
+			yyensure_buffer_stack ();
 			YY_CURRENT_BUFFER_LVALUE =
-				calc_create_buffer(calcin,YY_BUF_SIZE );
+				yy_create_buffer( yyin, YY_BUF_SIZE );
 		}
 
-		calc_load_buffer_state( );
+		yy_load_buffer_state(  );
 		}
 
-	while ( 1 )		/* loops until end-of-file is reached */
+	{
+#line 115 "calc.l"
+
+
+#line 1327 "lex.calc.c"
+
+	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
 		yy_cp = (yy_c_buf_p);
 
-		/* Support of calctext. */
+		/* Support of yytext. */
 		*yy_cp = (yy_hold_char);
 
 		/* yy_bp points to the position in yy_ch_buf of the start of
@@ -1105,7 +1342,7 @@ YY_DECL
 yy_match:
 		do
 			{
-			register YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)];
+			YY_CHAR yy_c = yy_ec[YY_SC_TO_UI(*yy_cp)] ;
 			if ( yy_accept[yy_current_state] )
 				{
 				(yy_last_accepting_state) = yy_current_state;
@@ -1115,9 +1352,9 @@ yy_match:
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
 				if ( yy_current_state >= 234 )
-					yy_c = yy_meta[(unsigned int) yy_c];
+					yy_c = yy_meta[yy_c];
 				}
-			yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
 		while ( yy_base[yy_current_state] != 1005 );
@@ -1146,163 +1383,163 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 111 "calc.l"
+#line 117 "calc.l"
 { setn(0);  var = 0; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 112 "calc.l"
+#line 118 "calc.l"
 { setn(1);  var = 0; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 113 "calc.l"
+#line 119 "calc.l"
 { setn(2);  var = 0; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 114 "calc.l"
+#line 120 "calc.l"
 { setn(3);  var = 0; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 115 "calc.l"
+#line 121 "calc.l"
 { setn(-1); var = 0; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 117 "calc.l"
+#line 123 "calc.l"
 {
 		char *s;
 		if ( include_stack_ptr >= MAX_INCLUDE_DEPTH )
 		  _calcerror("include files are nested too deeply");
-		if( !(s = (char *)FileContents(calctext+1, 0, NULL)) )
+		if( !(s = (char *)FileContents(yytext+1, 0, NULL)) )
 		  _calcerror("can't access include file");
 		else {
 		  include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
-		  BEGIN INITIAL; calc_scan_string(s); BEGIN INITIAL;
+		  BEGIN INITIAL; yy_scan_string(s); BEGIN INITIAL;
 		  if( s ) xfree(s);
 		}
 }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 130 "calc.l"
+#line 136 "calc.l"
 { 
 		if( var ){ BEGIN VAR; setn(1); }
-		_CalcCat(calctext, strptr, lenptr);
+		_CalcCat(yytext, strptr, lenptr);
 }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 134 "calc.l"
+#line 140 "calc.l"
 {
-		_CalcCat(calctext, strptr, lenptr);
+		_CalcCat(yytext, strptr, lenptr);
 		_CalcCat("\n", strptr, lenptr);
 		if( var ){ BEGIN INITIAL; setn(-1); }
 }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 139 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); }
+#line 145 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 141 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); }
+#line 147 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 143 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); }
+#line 149 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 145 "calc.l"
+#line 151 "calc.l"
 { laststart = YY_START; xnl=0; BEGIN XCOM; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 146 "calc.l"
+#line 152 "calc.l"
 { laststart = YY_START; xnl=1; BEGIN XCOM; }
 	YY_BREAK
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 147 "calc.l"
+#line 153 "calc.l"
 { BEGIN laststart; if( xnl ) unput('\n'); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 148 "calc.l"
+#line 154 "calc.l"
 { /* ignore comments up to eol */ ; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 150 "calc.l"
+#line 156 "calc.l"
 {
-	         _CalcCat(calctext, strptr, lenptr);
+	         _CalcCat(yytext, strptr, lenptr);
 		 laststart = YY_START; BEGIN COM;
 }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 154 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); BEGIN laststart; }
+#line 160 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); BEGIN laststart; }
 	YY_BREAK
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 155 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); }
+#line 161 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 156 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); }
+#line 162 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 158 "calc.l"
-{ _CalcColProc(calctext, 0); var=0;}
+#line 164 "calc.l"
+{ _CalcColProc(yytext, 0); var=0;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 160 "calc.l"
+#line 166 "calc.l"
 {  laststart = YY_START; BEGIN ECOL; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 161 "calc.l"
-{ _CalcColProc(calctext, 1); var=0; }
+#line 167 "calc.l"
+{ _CalcColProc(yytext, 1); var=0; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 162 "calc.l"
+#line 168 "calc.l"
 { ; }
 	YY_BREAK
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 163 "calc.l"
+#line 169 "calc.l"
 { BEGIN laststart; }
 	YY_BREAK
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 165 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr);}
+#line 171 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr);}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 167 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr);}
+#line 173 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr);}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 169 "calc.l"
-{ _CalcCat(calctext, strptr, lenptr); var=0;}
+#line 175 "calc.l"
+{ _CalcCat(yytext, strptr, lenptr); var=0;}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(INCLUDE):
@@ -1310,24 +1547,24 @@ case YY_STATE_EOF(VAR):
 case YY_STATE_EOF(COM):
 case YY_STATE_EOF(XCOM):
 case YY_STATE_EOF(ECOL):
-#line 171 "calc.l"
+#line 177 "calc.l"
 {
 		if ( --include_stack_ptr < 0 ){
 		  prog = _CalcMake();
-		  calc_delete_buffer(YY_CURRENT_BUFFER );
+		  yy_delete_buffer( YY_CURRENT_BUFFER );
                   yyterminate();
 		} else {
-		  calc_delete_buffer(YY_CURRENT_BUFFER );
-		  calc_switch_to_buffer(include_stack[include_stack_ptr] );
+		  yy_delete_buffer( YY_CURRENT_BUFFER );
+		  yy_switch_to_buffer(include_stack[include_stack_ptr] );
 		}
 }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 182 "calc.l"
+#line 188 "calc.l"
 ECHO;
 	YY_BREAK
-#line 1331 "lex.calc.c"
+#line 1568 "lex.calc.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1342,15 +1579,15 @@ ECHO;
 			{
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
-			 * just pointed calcin at a new source and called
-			 * calclex().  If so, then we have to assure
+			 * just pointed yyin at a new source and called
+			 * yylex().  If so, then we have to assure
 			 * consistency between YY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
 			 * back-up) that will match for the new input source.
 			 */
 			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
-			YY_CURRENT_BUFFER_LVALUE->yy_input_file = calcin;
+			YY_CURRENT_BUFFER_LVALUE->yy_input_file = yyin;
 			YY_CURRENT_BUFFER_LVALUE->yy_buffer_status = YY_BUFFER_NORMAL;
 			}
 
@@ -1403,11 +1640,11 @@ ECHO;
 				{
 				(yy_did_buffer_switch_on_eof) = 0;
 
-				if ( calcwrap( ) )
+				if ( yywrap(  ) )
 					{
 					/* Note: because we've taken care in
 					 * yy_get_next_buffer() to have set up
-					 * calctext, we can now set up
+					 * yytext, we can now set up
 					 * yy_c_buf_p so that if some total
 					 * hoser (like flex itself) wants to
 					 * call the scanner after we return the
@@ -1456,7 +1693,8 @@ ECHO;
 			"fatal flex scanner internal error--no action found" );
 	} /* end of action switch */
 		} /* end of scanning one token */
-} /* end of calclex */
+	} /* end of user's declarations */
+} /* end of yylex */
 
 /* yy_get_next_buffer - try to read in a new buffer
  *
@@ -1467,9 +1705,9 @@ ECHO;
  */
 static int yy_get_next_buffer (void)
 {
-    	register char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-	register char *source = (calctext_ptr);
-	register int number_to_move, i;
+    	char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
+	char *source = (calctext_ptr);
+	int number_to_move, i;
 	int ret_val;
 
 	if ( (yy_c_buf_p) > &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1] )
@@ -1498,7 +1736,7 @@ static int yy_get_next_buffer (void)
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) ((yy_c_buf_p) - (calctext_ptr)) - 1;
+	number_to_move = (int) ((yy_c_buf_p) - (calctext_ptr) - 1);
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
@@ -1511,21 +1749,21 @@ static int yy_get_next_buffer (void)
 
 	else
 		{
-			yy_size_t num_to_read =
+			int num_to_read =
 			YY_CURRENT_BUFFER_LVALUE->yy_buf_size - number_to_move - 1;
 
 		while ( num_to_read <= 0 )
 			{ /* Not enough room in the buffer - grow it. */
 
 			/* just a shorter name for the current buffer */
-			YY_BUFFER_STATE b = YY_CURRENT_BUFFER;
+			YY_BUFFER_STATE b = YY_CURRENT_BUFFER_LVALUE;
 
 			int yy_c_buf_p_offset =
 				(int) ((yy_c_buf_p) - b->yy_ch_buf);
 
 			if ( b->yy_is_our_buffer )
 				{
-				yy_size_t new_size = b->yy_buf_size * 2;
+				int new_size = b->yy_buf_size * 2;
 
 				if ( new_size <= 0 )
 					b->yy_buf_size += b->yy_buf_size / 8;
@@ -1534,11 +1772,12 @@ static int yy_get_next_buffer (void)
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					calcrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2  );
+					yyrealloc( (void *) b->yy_ch_buf,
+							 (yy_size_t) (b->yy_buf_size + 2)  );
 				}
 			else
 				/* Can't grow it, we don't own it. */
-				b->yy_ch_buf = 0;
+				b->yy_ch_buf = NULL;
 
 			if ( ! b->yy_ch_buf )
 				YY_FATAL_ERROR(
@@ -1566,7 +1805,7 @@ static int yy_get_next_buffer (void)
 		if ( number_to_move == YY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			calcrestart(calcin  );
+			yyrestart( yyin  );
 			}
 
 		else
@@ -1580,12 +1819,15 @@ static int yy_get_next_buffer (void)
 	else
 		ret_val = EOB_ACT_CONTINUE_SCAN;
 
-	if ((yy_size_t) ((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+	if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
-		yy_size_t new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) calcrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size  );
+		int new_size = (yy_n_chars) + number_to_move + ((yy_n_chars) >> 1);
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc(
+			(void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf, (yy_size_t) new_size  );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
+		/* "- 2" to take care of EOB's */
+		YY_CURRENT_BUFFER_LVALUE->yy_buf_size = (int) (new_size - 2);
 	}
 
 	(yy_n_chars) += number_to_move;
@@ -1601,15 +1843,15 @@ static int yy_get_next_buffer (void)
 
     static yy_state_type yy_get_previous_state (void)
 {
-	register yy_state_type yy_current_state;
-	register char *yy_cp;
+	yy_state_type yy_current_state;
+	char *yy_cp;
     
 	yy_current_state = (yy_start);
 	yy_current_state += YY_AT_BOL();
 
 	for ( yy_cp = (calctext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
-		register YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
+		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
 		if ( yy_accept[yy_current_state] )
 			{
 			(yy_last_accepting_state) = yy_current_state;
@@ -1619,9 +1861,9 @@ static int yy_get_next_buffer (void)
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
 			if ( yy_current_state >= 234 )
-				yy_c = yy_meta[(unsigned int) yy_c];
+				yy_c = yy_meta[yy_c];
 			}
-		yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 		}
 
 	return yy_current_state;
@@ -1634,10 +1876,10 @@ static int yy_get_next_buffer (void)
  */
     static yy_state_type yy_try_NUL_trans  (yy_state_type yy_current_state )
 {
-	register int yy_is_jam;
-    	register char *yy_cp = (yy_c_buf_p);
+	int yy_is_jam;
+    	char *yy_cp = (yy_c_buf_p);
 
-	register YY_CHAR yy_c = 1;
+	YY_CHAR yy_c = 1;
 	if ( yy_accept[yy_current_state] )
 		{
 		(yy_last_accepting_state) = yy_current_state;
@@ -1647,30 +1889,32 @@ static int yy_get_next_buffer (void)
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
 		if ( yy_current_state >= 234 )
-			yy_c = yy_meta[(unsigned int) yy_c];
+			yy_c = yy_meta[yy_c];
 		}
-	yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int) yy_c];
+	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 	yy_is_jam = (yy_current_state == 233);
 
-	return yy_is_jam ? 0 : yy_current_state;
+		return yy_is_jam ? 0 : yy_current_state;
 }
 
-    static void yyunput (int c, register char * yy_bp )
+#ifndef YY_NO_UNPUT
+
+    static void yyunput (int c, char * yy_bp )
 {
-	register char *yy_cp;
+	char *yy_cp;
     
     yy_cp = (yy_c_buf_p);
 
-	/* undo effects of setting up calctext */
+	/* undo effects of setting up yytext */
 	*yy_cp = (yy_hold_char);
 
 	if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 		{ /* need to shift things up to make room */
 		/* +2 for EOB chars. */
-		register yy_size_t number_to_move = (yy_n_chars) + 2;
-		register char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
+		int number_to_move = (yy_n_chars) + 2;
+		char *dest = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[
 					YY_CURRENT_BUFFER_LVALUE->yy_buf_size + 2];
-		register char *source =
+		char *source =
 				&YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[number_to_move];
 
 		while ( source > YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
@@ -1679,7 +1923,7 @@ static int yy_get_next_buffer (void)
 		yy_cp += (int) (dest - source);
 		yy_bp += (int) (dest - source);
 		YY_CURRENT_BUFFER_LVALUE->yy_n_chars =
-			(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
+			(yy_n_chars) = (int) YY_CURRENT_BUFFER_LVALUE->yy_buf_size;
 
 		if ( yy_cp < YY_CURRENT_BUFFER_LVALUE->yy_ch_buf + 2 )
 			YY_FATAL_ERROR( "flex scanner push-back overflow" );
@@ -1691,6 +1935,8 @@ static int yy_get_next_buffer (void)
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
 }
+
+#endif
 
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus
@@ -1716,7 +1962,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			yy_size_t offset = (yy_c_buf_p) - (calctext_ptr);
+			int offset = (int) ((yy_c_buf_p) - (calctext_ptr));
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1733,13 +1979,13 @@ static int yy_get_next_buffer (void)
 					 */
 
 					/* Reset buffer status. */
-					calcrestart(calcin );
+					yyrestart( yyin );
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( calcwrap( ) )
+					if ( yywrap(  ) )
 						return 0;
 
 					if ( ! (yy_did_buffer_switch_on_eof) )
@@ -1759,7 +2005,7 @@ static int yy_get_next_buffer (void)
 		}
 
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
-	*(yy_c_buf_p) = '\0';	/* preserve calctext */
+	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
 
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = (c == '\n');
@@ -1773,32 +2019,32 @@ static int yy_get_next_buffer (void)
  * 
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void calcrestart  (FILE * input_file )
+    void yyrestart  (FILE * input_file )
 {
     
 	if ( ! YY_CURRENT_BUFFER ){
-        calcensure_buffer_stack ();
+        yyensure_buffer_stack ();
 		YY_CURRENT_BUFFER_LVALUE =
-            calc_create_buffer(calcin,YY_BUF_SIZE );
+            yy_create_buffer( yyin, YY_BUF_SIZE );
 	}
 
-	calc_init_buffer(YY_CURRENT_BUFFER,input_file );
-	calc_load_buffer_state( );
+	yy_init_buffer( YY_CURRENT_BUFFER, input_file );
+	yy_load_buffer_state(  );
 }
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
  * 
  */
-    void calc_switch_to_buffer  (YY_BUFFER_STATE  new_buffer )
+    void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer )
 {
     
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		calcpop_buffer_state();
-	 *		calcpush_buffer_state(new_buffer);
+	 *		yypop_buffer_state();
+	 *		yypush_buffer_state(new_buffer);
      */
-	calcensure_buffer_stack ();
+	yyensure_buffer_stack ();
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
@@ -1811,21 +2057,21 @@ static int yy_get_next_buffer (void)
 		}
 
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
-	calc_load_buffer_state( );
+	yy_load_buffer_state(  );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (calcwrap()) processing, but the only time this flag
-	 * is looked at is after calcwrap() is called, so it's safe
+	 * EOF (yywrap()) processing, but the only time this flag
+	 * is looked at is after yywrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
 	(yy_did_buffer_switch_on_eof) = 1;
 }
 
-static void calc_load_buffer_state  (void)
+static void yy_load_buffer_state  (void)
 {
     	(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
 	(calctext_ptr) = (yy_c_buf_p) = YY_CURRENT_BUFFER_LVALUE->yy_buf_pos;
-	calcin = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
+	yyin = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
 	(yy_hold_char) = *(yy_c_buf_p);
 }
 
@@ -1835,35 +2081,35 @@ static void calc_load_buffer_state  (void)
  * 
  * @return the allocated buffer state.
  */
-    YY_BUFFER_STATE calc_create_buffer  (FILE * file, int  size )
+    YY_BUFFER_STATE yy_create_buffer  (FILE * file, int  size )
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) calcalloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state )  );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in calc_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_buf_size = size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) calcalloc(b->yy_buf_size + 2  );
+	b->yy_ch_buf = (char *) yyalloc( (yy_size_t) (b->yy_buf_size + 2)  );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in calc_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
-	calc_init_buffer(b,file );
+	yy_init_buffer( b, file );
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with calc_create_buffer()
+ * @param b a buffer created with yy_create_buffer()
  * 
  */
-    void calc_delete_buffer (YY_BUFFER_STATE  b )
+    void yy_delete_buffer (YY_BUFFER_STATE  b )
 {
     
 	if ( ! b )
@@ -1873,31 +2119,27 @@ static void calc_load_buffer_state  (void)
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		calcfree((void *) b->yy_ch_buf  );
+		yyfree( (void *) b->yy_ch_buf  );
 
-	calcfree((void *) b  );
+	yyfree( (void *) b  );
 }
 
-#ifndef __cplusplus
-extern int isatty (int );
-#endif /* __cplusplus */
-    
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a calcrestart() or at EOF.
+ * such as during a yyrestart() or at EOF.
  */
-    static void calc_init_buffer  (YY_BUFFER_STATE  b, FILE * file )
+    static void yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file )
 
 {
 	int oerrno = errno;
     
-	calc_flush_buffer(b );
+	yy_flush_buffer( b );
 
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then calc_init_buffer was _probably_
-     * called from calcrestart() or through yy_get_next_buffer.
+    /* If b is the current buffer, then yy_init_buffer was _probably_
+     * called from yyrestart() or through yy_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != YY_CURRENT_BUFFER){
@@ -1914,7 +2156,7 @@ extern int isatty (int );
  * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
  * 
  */
-    void calc_flush_buffer (YY_BUFFER_STATE  b )
+    void yy_flush_buffer (YY_BUFFER_STATE  b )
 {
     	if ( ! b )
 		return;
@@ -1934,7 +2176,7 @@ extern int isatty (int );
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
 	if ( b == YY_CURRENT_BUFFER )
-		calc_load_buffer_state( );
+		yy_load_buffer_state(  );
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -1943,14 +2185,14 @@ extern int isatty (int );
  *  @param new_buffer The new state.
  *  
  */
-void calcpush_buffer_state (YY_BUFFER_STATE new_buffer )
+void yypush_buffer_state (YY_BUFFER_STATE new_buffer )
 {
     	if (new_buffer == NULL)
 		return;
 
-	calcensure_buffer_stack();
+	yyensure_buffer_stack();
 
-	/* This block is copied from calc_switch_to_buffer. */
+	/* This block is copied from yy_switch_to_buffer. */
 	if ( YY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
@@ -1964,8 +2206,8 @@ void calcpush_buffer_state (YY_BUFFER_STATE new_buffer )
 		(yy_buffer_stack_top)++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from calc_switch_to_buffer. */
-	calc_load_buffer_state( );
+	/* copied from yy_switch_to_buffer. */
+	yy_load_buffer_state(  );
 	(yy_did_buffer_switch_on_eof) = 1;
 }
 
@@ -1973,18 +2215,18 @@ void calcpush_buffer_state (YY_BUFFER_STATE new_buffer )
  *  The next element becomes the new top.
  *  
  */
-void calcpop_buffer_state (void)
+void yypop_buffer_state (void)
 {
     	if (!YY_CURRENT_BUFFER)
 		return;
 
-	calc_delete_buffer(YY_CURRENT_BUFFER );
+	yy_delete_buffer(YY_CURRENT_BUFFER );
 	YY_CURRENT_BUFFER_LVALUE = NULL;
 	if ((yy_buffer_stack_top) > 0)
 		--(yy_buffer_stack_top);
 
 	if (YY_CURRENT_BUFFER) {
-		calc_load_buffer_state( );
+		yy_load_buffer_state(  );
 		(yy_did_buffer_switch_on_eof) = 1;
 	}
 }
@@ -1992,7 +2234,7 @@ void calcpop_buffer_state (void)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-static void calcensure_buffer_stack (void)
+static void yyensure_buffer_stack (void)
 {
 	yy_size_t num_to_alloc;
     
@@ -2002,15 +2244,15 @@ static void calcensure_buffer_stack (void)
 		 * scanner will even need a stack. We use 2 instead of 1 to avoid an
 		 * immediate realloc on the next call.
          */
-		num_to_alloc = 1;
-		(yy_buffer_stack) = (struct yy_buffer_state**)calcalloc
+      num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
-			YY_FATAL_ERROR( "out of dynamic memory in calcensure_buffer_stack()" );
-								  
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
+
 		memset((yy_buffer_stack), 0, num_to_alloc * sizeof(struct yy_buffer_state*));
-				
+
 		(yy_buffer_stack_max) = num_to_alloc;
 		(yy_buffer_stack_top) = 0;
 		return;
@@ -2019,15 +2261,15 @@ static void calcensure_buffer_stack (void)
 	if ((yy_buffer_stack_top) >= ((yy_buffer_stack_max)) - 1){
 
 		/* Increase the buffer to prepare for a possible push. */
-		int grow_size = 8 /* arbitrary grow size */;
+		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = (yy_buffer_stack_max) + grow_size;
-		(yy_buffer_stack) = (struct yy_buffer_state**)calcrealloc
+		(yy_buffer_stack) = (struct yy_buffer_state**)yyrealloc
 								((yy_buffer_stack),
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								);
 		if ( ! (yy_buffer_stack) )
-			YY_FATAL_ERROR( "out of dynamic memory in calcensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset((yy_buffer_stack) + (yy_buffer_stack_max), 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -2039,9 +2281,9 @@ static void calcensure_buffer_stack (void)
  * @param base the character buffer
  * @param size the size in bytes of the character buffer
  * 
- * @return the newly allocated buffer state object. 
+ * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE calc_scan_buffer  (char * base, yy_size_t  size )
+YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size )
 {
 	YY_BUFFER_STATE b;
     
@@ -2049,68 +2291,69 @@ YY_BUFFER_STATE calc_scan_buffer  (char * base, yy_size_t  size )
 	     base[size-2] != YY_END_OF_BUFFER_CHAR ||
 	     base[size-1] != YY_END_OF_BUFFER_CHAR )
 		/* They forgot to leave room for the EOB's. */
-		return 0;
+		return NULL;
 
-	b = (YY_BUFFER_STATE) calcalloc(sizeof( struct yy_buffer_state )  );
+	b = (YY_BUFFER_STATE) yyalloc( sizeof( struct yy_buffer_state )  );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in calc_scan_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
-	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
+	b->yy_buf_size = (int) (size - 2);	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
 	b->yy_is_our_buffer = 0;
-	b->yy_input_file = 0;
+	b->yy_input_file = NULL;
 	b->yy_n_chars = b->yy_buf_size;
 	b->yy_is_interactive = 0;
 	b->yy_at_bol = 1;
 	b->yy_fill_buffer = 0;
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
-	calc_switch_to_buffer(b  );
+	yy_switch_to_buffer( b  );
 
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to calclex() will
+/** Setup the input buffer state to scan a string. The next call to yylex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
  * 
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       calc_scan_bytes() instead.
+ *       yy_scan_bytes() instead.
  */
-YY_BUFFER_STATE calc_scan_string (yyconst char * yystr )
+YY_BUFFER_STATE yy_scan_string (const char * yystr )
 {
     
-	return calc_scan_bytes(yystr,strlen(yystr) );
+	return yy_scan_bytes( yystr, (int) strlen(yystr) );
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to calclex() will
+/** Setup the input buffer state to scan the given bytes. The next call to yylex() will
  * scan from a @e copy of @a bytes.
- * @param bytes the byte buffer to scan
- * @param len the number of bytes in the buffer pointed to by @a bytes.
+ * @param yybytes the byte buffer to scan
+ * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE calc_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len )
+YY_BUFFER_STATE yy_scan_bytes  (const char * yybytes, int  _yybytes_len )
 {
 	YY_BUFFER_STATE b;
 	char *buf;
-	yy_size_t n, i;
+	yy_size_t n;
+	int i;
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
-	n = _yybytes_len + 2;
-	buf = (char *) calcalloc(n  );
+	n = (yy_size_t) (_yybytes_len + 2);
+	buf = (char *) yyalloc( n  );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in calc_scan_bytes()" );
+		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
 
 	for ( i = 0; i < _yybytes_len; ++i )
 		buf[i] = yybytes[i];
 
 	buf[_yybytes_len] = buf[_yybytes_len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = calc_scan_buffer(buf,n );
+	b = yy_scan_buffer( buf, n );
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in calc_scan_bytes()" );
+		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -2124,9 +2367,9 @@ YY_BUFFER_STATE calc_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_le
 #define YY_EXIT_FAILURE 2
 #endif
 
-static void yy_fatal_error (yyconst char* msg )
+static void yynoreturn yy_fatal_error (const char* msg )
 {
-    	(void) fprintf( stderr, "%s\n", msg );
+			fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
 }
 
@@ -2136,14 +2379,14 @@ static void yy_fatal_error (yyconst char* msg )
 #define yyless(n) \
 	do \
 		{ \
-		/* Undo effects of setting up calctext. */ \
+		/* Undo effects of setting up yytext. */ \
         int yyless_macro_arg = (n); \
         YY_LESS_LINENO(yyless_macro_arg);\
-		calctext[calcleng] = (yy_hold_char); \
-		(yy_c_buf_p) = calctext + yyless_macro_arg; \
+		yytext[yyleng] = (yy_hold_char); \
+		(yy_c_buf_p) = yytext + yyless_macro_arg; \
 		(yy_hold_char) = *(yy_c_buf_p); \
 		*(yy_c_buf_p) = '\0'; \
-		calcleng = yyless_macro_arg; \
+		yyleng = yyless_macro_arg; \
 		} \
 	while ( 0 )
 
@@ -2152,126 +2395,126 @@ static void yy_fatal_error (yyconst char* msg )
 /** Get the current line number.
  * 
  */
-int calcget_lineno  (void)
+int yyget_lineno  (void)
 {
-        
-    return calclineno;
+    
+    return yylineno;
 }
 
 /** Get the input stream.
  * 
  */
-FILE *calcget_in  (void)
+FILE *yyget_in  (void)
 {
-        return calcin;
+        return yyin;
 }
 
 /** Get the output stream.
  * 
  */
-FILE *calcget_out  (void)
+FILE *yyget_out  (void)
 {
-        return calcout;
+        return yyout;
 }
 
 /** Get the length of the current token.
  * 
  */
-yy_size_t calcget_leng  (void)
+int yyget_leng  (void)
 {
-        return calcleng;
+        return yyleng;
 }
 
 /** Get the current token.
  * 
  */
 
-char *calcget_text  (void)
+char *yyget_text  (void)
 {
-        return calctext;
+        return yytext;
 }
 
 /** Set the current line number.
- * @param line_number
+ * @param _line_number line number
  * 
  */
-void calcset_lineno (int  line_number )
+void yyset_lineno (int  _line_number )
 {
     
-    calclineno = line_number;
+    yylineno = _line_number;
 }
 
 /** Set the input stream. This does not discard the current
  * input buffer.
- * @param in_str A readable stream.
+ * @param _in_str A readable stream.
  * 
- * @see calc_switch_to_buffer
+ * @see yy_switch_to_buffer
  */
-void calcset_in (FILE *  in_str )
+void yyset_in (FILE *  _in_str )
 {
-        calcin = in_str ;
+        yyin = _in_str ;
 }
 
-void calcset_out (FILE *  out_str )
+void yyset_out (FILE *  _out_str )
 {
-        calcout = out_str ;
+        yyout = _out_str ;
 }
 
-int calcget_debug  (void)
+int yyget_debug  (void)
 {
-        return calc_flex_debug;
+        return yy_flex_debug;
 }
 
-void calcset_debug (int  bdebug )
+void yyset_debug (int  _bdebug )
 {
-        calc_flex_debug = bdebug ;
+        yy_flex_debug = _bdebug ;
 }
 
 static int yy_init_globals (void)
 {
         /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from calclex_destroy(), so don't allocate here.
+     * This function is called from yylex_destroy(), so don't allocate here.
      */
 
-    (yy_buffer_stack) = 0;
+    (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
-    (yy_c_buf_p) = (char *) 0;
+    (yy_c_buf_p) = NULL;
     (yy_init) = 0;
     (yy_start) = 0;
 
 /* Defined in main.c */
 #ifdef YY_STDINIT
-    calcin = stdin;
-    calcout = stdout;
+    yyin = stdin;
+    yyout = stdout;
 #else
-    calcin = (FILE *) 0;
-    calcout = (FILE *) 0;
+    yyin = NULL;
+    yyout = NULL;
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * calclex_init()
+     * yylex_init()
      */
     return 0;
 }
 
-/* calclex_destroy is for both reentrant and non-reentrant scanners. */
-int calclex_destroy  (void)
+/* yylex_destroy is for both reentrant and non-reentrant scanners. */
+int yylex_destroy  (void)
 {
     
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
-		calc_delete_buffer(YY_CURRENT_BUFFER  );
+		yy_delete_buffer( YY_CURRENT_BUFFER  );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
-		calcpop_buffer_state();
+		yypop_buffer_state();
 	}
 
 	/* Destroy the stack itself. */
-	calcfree((yy_buffer_stack) );
+	yyfree((yy_buffer_stack) );
 	(yy_buffer_stack) = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * calclex() is called, initialization will occur. */
+     * yylex() is called, initialization will occur. */
     yy_init_globals( );
 
     return 0;
@@ -2282,18 +2525,19 @@ int calclex_destroy  (void)
  */
 
 #ifndef calctext_ptr
-static void yy_flex_strncpy (char* s1, yyconst char * s2, int n )
+static void yy_flex_strncpy (char* s1, const char * s2, int n )
 {
-	register int i;
+		
+	int i;
 	for ( i = 0; i < n; ++i )
 		s1[i] = s2[i];
 }
 #endif
 
 #ifdef YY_NEED_STRLEN
-static int yy_flex_strlen (yyconst char * s )
+static int yy_flex_strlen (const char * s )
 {
-	register int n;
+	int n;
 	for ( n = 0; s[n]; ++n )
 		;
 
@@ -2301,13 +2545,14 @@ static int yy_flex_strlen (yyconst char * s )
 }
 #endif
 
-void *calcalloc (yy_size_t  size )
+void *yyalloc (yy_size_t  size )
 {
-	return (void *) malloc( size );
+			return malloc(size);
 }
 
-void *calcrealloc  (void * ptr, yy_size_t  size )
+void *yyrealloc  (void * ptr, yy_size_t  size )
 {
+		
 	/* The cast to (char *) in the following accommodates both
 	 * implementations that use char* generic pointers, and those
 	 * that use void* generic pointers.  It works with the latter
@@ -2315,18 +2560,17 @@ void *calcrealloc  (void * ptr, yy_size_t  size )
 	 * any pointer type to void*, and deal with argument conversions
 	 * as though doing an assignment.
 	 */
-	return (void *) realloc( (char *) ptr, size );
+	return realloc(ptr, size);
 }
 
-void calcfree (void * ptr )
+void yyfree (void * ptr )
 {
-	free( (char *) ptr );	/* see calcrealloc() for (char *) cast */
+			free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 182 "calc.l"
-
+#line 188 "calc.l"
 
 
 /*
@@ -2896,8 +3140,8 @@ char *FunCalcParse(iname, oname, cmd, ex, autod, narg)
 	   iname);
 
   /* parse expression */
-  calc_scan_string(ex);
-  calclex();
+  yy_scan_string(ex);
+  yylex();
 
   /* done with input FITS file */
   FunClose(ifun);
@@ -2931,9 +3175,9 @@ int _calcerror(msg)
      char *msg;
 #endif
 {
-  if( *calctext )
+  if( *yytext )
     gerror(stderr,  "%s while processing '%s'\n",
-           msg ? msg : "filterr", calctext);
+           msg ? msg : "filterr", yytext);
   else
     gerror(stderr,  "%s\n", msg ? msg : "filterr");
   YY_FLUSH_BUFFER;
@@ -2941,9 +3185,9 @@ int _calcerror(msg)
 }
 
 #ifdef YY_USE_PROTOS
-int calcwrap(void)
+int yywrap(void)
 #else
-int calcwrap()
+int yywrap()
 #endif
 {
   return 1;
