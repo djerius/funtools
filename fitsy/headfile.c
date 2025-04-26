@@ -121,7 +121,7 @@ void *ft_fileparse(ifile, callback, cdata)
 /* Seek back to the header part of a FITS HDU.  The file handle must be the same
    one from which the FITS header was read and must be seekable.
  */
-off_t ft_headseek(file, fits)
+long ft_headseek(file, fits)
 	File		file;
 	FITSHead	fits;
 {

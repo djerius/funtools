@@ -226,8 +226,8 @@ typedef struct _FITSHead {
 	char		*filename;
 	File		 file;
 
-	off_t		 seek;
-	off_t		 data;
+	long		 seek;
+	long		 data;
 	int		 step;
 
 	void		*cache;
@@ -307,8 +307,8 @@ FITSHead ft_headread0 PROTOTYPE((File file, char *card1, size_t n));
 FITSHead ft_headread PROTOTYPE((File file));
 int ft_headwrite PROTOTYPE((File file, FITSHead fits));
 void *ft_fileparse PROTOTYPE((File ifile, int (*callback)(File ifile, FITSHead fits, void *data, void *cdata1), void *cdata));
-off_t ft_dataskip PROTOTYPE((File ifile, FITSHead fits, File *ofile, int nofile));
-off_t ft_dataseek PROTOTYPE((File file, FITSHead fits));
+long ft_dataskip PROTOTYPE((File ifile, FITSHead fits, File *ofile, int nofile));
+long ft_dataseek PROTOTYPE((File file, FITSHead fits));
 void *ft_dataread PROTOTYPE((File file, FITSHead fits, void *dataptr, int pixtype));
 int ft_simpleimageread PROTOTYPE((char *filename, FITSHead *headptr, void **dataptr, void ***data2dptr, int pixtype));
 int ft_simpleimagemmap PROTOTYPE((char *filename, FITSHead *headptr, void **dataptr, void ***data2dptr, int prot, int share));

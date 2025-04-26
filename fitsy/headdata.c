@@ -15,7 +15,7 @@
 
 #define NBLOCK	500
 
-off_t ft_dataskip(ifile, fits, ofiles, nofile)
+long ft_dataskip(ifile, fits, ofiles, nofile)
 	File		ifile;	/* File pointer to read FITS data from.	*/
 	FITSHead	fits;	/* FITS header associated with data.	*/
 	File*		ofiles;	/* File pointers to write data to.	*/
@@ -24,7 +24,7 @@ off_t ft_dataskip(ifile, fits, ofiles, nofile)
                 int     i;
 		int	blocks;
 		char	block[FT_BLOCK * NBLOCK];
-  		off_t   pos=0;
+  		long   pos=0;
 
         if ( ifile == NULL ) 	return pos;
         if ( fits  == NULL ) 	return pos;
@@ -54,7 +54,7 @@ off_t ft_dataskip(ifile, fits, ofiles, nofile)
 
 /* Seek to the data portion of prevoiusly read fits header data unit.
  */
-off_t ft_dataseek(sfile, fits)
+long ft_dataseek(sfile, fits)
 	File		sfile;	/* File pointer to seek.	*/
 	FITSHead	fits;
 {
