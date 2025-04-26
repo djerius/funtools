@@ -89,26 +89,14 @@ off_t lseek ();
 /* Don't use bcopy!  Use memmove if source and destination may overlap,
    memcpy otherwise.  */
 
-#ifdef HAVE_STRING_H
-# if !STDC_HEADERS && HAVE_MEMORY_H
-#  include <memory.h>
-# endif
-# include <string.h>
-#else
-# include <strings.h>
-char *memchr ();
-#endif
+#include <string.h>
 
 #include <errno.h>
 #ifndef errno
 extern int errno;
 #endif
 
-#ifdef STDC_HEADERS
 #include <stdlib.h>
-#else
-char *getenv ();
-#endif
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -158,18 +146,19 @@ char *getenv ();
 
 #include <ctype.h>
 
-#if defined (STDC_HEADERS) || (!defined (isascii) && !defined (HAVE_ISASCII))
-#define ISASCII(c) 1
-#else
+#if _XOPEN_SOURCE || _DEFAULT_SOURCE ||  _SVID_SOURCE
 #define ISASCII(c) isascii(c)
+#else
+#define ISASCII(c) 1
 #endif
 
-#ifdef isblank
+#if _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
 #define ISBLANK(c) (ISASCII (c) && isblank (c))
 #else
 #define ISBLANK(c) ((c) == ' ' || (c) == '\t')
 #endif
-#ifdef isgraph
+
+#if _XOPEN_SOURCE >= 700
 #define ISGRAPH(c) (ISASCII (c) && isgraph (c))
 #else
 #define ISGRAPH(c) (ISASCII (c) && isprint (c) && !isspace (c))

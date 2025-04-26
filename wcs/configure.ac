@@ -1,7 +1,7 @@
 #	This file is an input file used by the GNU "autoconf" program to
 #	generate the file "configure", which is run during XPA installation
 #	to configure the system for the local environment.
-AC_INIT(wcs, 3.8.7, dmink@cfa.harvard.edu, wcs)
+AC_INIT([wcs],[3.8.7],[dmink@cfa.harvard.edu],[wcs])
 
 AC_CONFIG_HEADERS([conf.h])
 AC_CONFIG_SRCDIR(./wcs.h)
@@ -19,7 +19,11 @@ fi
 
 AC_PROG_RANLIB
 
-AC_HEADER_STDC
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(getopt.h)
 AC_CHECK_HEADERS(values.h)

@@ -621,7 +621,7 @@ Confiles:	FORCE
 		@(for dir in $(SUBDIRS); do \
 		   echo " "; \
 		   echo Copying configure files to $$dir ...; \
-		   cp -p aclocal.m4 tcl.m4 gcc33.m4 \
+		   cp -p aclocal.m4 tcl.m4 \
 			conf.h.in config.sub config.guess install-sh $$dir; \
 		done)
 

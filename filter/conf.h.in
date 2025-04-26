@@ -10,6 +10,9 @@
 /* Define as 1 if you have malloc.h  */
 #undef HAVE_MALLOC_H
 
+/* Define as 1 if you have limits.h  */
+#undef HAVE_LIMITS_H
+
 /* Define as 1 if you have unistd.h  */
 #undef HAVE_UNISTD_H
 
@@ -58,5 +61,3 @@
 /* Define as 1 if you are running MinGW. */
 #undef HAVE_MINGW32
 
-/* Define if you have inline */
-#undef inline

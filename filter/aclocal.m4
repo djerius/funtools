@@ -1,1 +1,1 @@
-builtin(include,ac_c_long_long.m4)
+builtin(include,ax_c_long_long.m4)

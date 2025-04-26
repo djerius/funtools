@@ -10,6 +10,9 @@
 /* Define as 1 if you have malloc.h  */
 #undef HAVE_MALLOC_H
 
+/* Define as 1 if you have limits.h  */
+#undef HAVE_LIMITS_H
+
 /* Define as 1 if you have unistd.h  */
 #undef HAVE_UNISTD_H
 
@@ -34,9 +37,6 @@
 /* Define as 1 if you have sys/ipc.h  */
 #undef HAVE_SYS_IPC_H
 
-/* Define as 1 if you have setjmp.h  */
-#undef HAVE_SETJMP_H
-
 /* Define as 1 if you have socklen_t */
 #undef HAVE_SOCKLEN_T
 
@@ -49,24 +49,6 @@
 /* Define as 1 if you have snprintf  */
 #undef HAVE_SNPRINTF
 
-/* Define as 1 if you have ftello  */
-#undef HAVE_FTELLO
-
-/* Define as 1 if you have fseeko  */
-#undef HAVE_FSEEKO
-
-/* Define as 1 if you have setenv  */
-#undef HAVE_SETENV
-
-/* Define as 1 if you have posix_spawn  */
-#undef HAVE_POSIX_SPAWN
-
-/* Define as 1 if you have crt_externs.h  */
-#undef HAVE_CRT_EXTERNS_H
-
-/* Define as 1 if you have NSGetEvniron  */
-#undef HAVE__NSGETENVIRON
-
 /* Define as 1 if you have Tcl  */
 #undef HAVE_TCL
 
@@ -78,3 +60,4 @@
 
 /* Define as 1 if you are running MinGW. */
 #undef HAVE_MINGW32
+
