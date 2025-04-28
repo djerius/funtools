@@ -51,8 +51,7 @@
 #endif
 
 #define MAX_LVAL 2000
-
-static char *isearch();
+static char *isearch(const char *hstring, const char *keyword);
 static char val[30];
 
 /* Extract long value for variable from IRAF multiline keyword value */

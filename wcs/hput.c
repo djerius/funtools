@@ -58,7 +58,7 @@
 
 static int verbose=0;	/* Set to 1 to print error messages and other info */
 
-static void fixnegzero();
+static void fixnegzero(char *string);
 
 
 /*  HPUTI4 - Set int keyword = ival in FITS header string */

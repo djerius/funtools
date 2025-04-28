@@ -235,6 +235,16 @@ float ftgetr4(		/* Extract column for keyword from FITS table line
 	int nbhead,	/* Length of IRAF header */
 	int *nbiraf);	/* Length of returned IRAF header */
 
+    int head_version(char *irafheader);
+    int pix_version(char *irafheader);
+    int irafncmp(char *irafheader, char *teststring, int nc);
+    int irafgeti4(char *irafheader, int offset);
+    float irafgetr4(char *irafheader, int offset);
+    char *irafgetc2(char *irafheader, int offset, int nc);
+    char *irafgetc(char *irafheader, int offset, int nc);
+    char *iraf2str(char *irafstring, int nchar);
+    int isiraf(char *filename);
+
 /* Image pixel access subroutines in imio.c */
     double getpix(	/* Read one pixel from any data type 2-D array (0,0)*/
 	char *image,	/* Image array as 1-D vector */

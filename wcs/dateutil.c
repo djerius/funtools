@@ -323,11 +323,11 @@
 #include "wcs.h"
 #include "fitsfile.h"
 
-static double suntl();
-static void fixdate();
-static int caldays();
-static double dint();
-static double dmod();
+static double suntl(double dj, double ra, double dec, int sys);
+static void fixdate(int *iyr, int *imon, int *iday, int *ihr, int *imn, double *sec, int ndsec);
+static int caldays(int year, int month);
+static double dint(double dnum);
+static double dmod(double dnum, double dm);
 
 static double longitude = 0.0;	/* longitude of observatory in degrees (+=west) */
 void

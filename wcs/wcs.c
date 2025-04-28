@@ -89,8 +89,7 @@
 
 static char wcserrmsg[80];
 static char wcsfile[256]={""};
-static void wcslibrot();
-void wcsrotset();
+static void wcslibrot(struct WorldCoor *);
 static int wcsproj0 = 0;
 static int izpix = 0;
 static double zpix = 0.0;
@@ -2129,7 +2128,6 @@ double	*xpos,*ypos;	/* RA and Dec in degrees (returned) */
 {
     double	xpi, ypi, xp, yp;
     double	eqin, eqout;
-    int wcspos();
 
     if (nowcs (wcs))
 	return;
@@ -2252,7 +2250,6 @@ int	*offscl;	/* 0 if within bounds, else off scale */
     double xp, yp, xpi, ypi;
     double eqin, eqout;
     int sysin;
-    int wcspix();
 
     if (nowcs (wcs))
 	return;
@@ -2357,7 +2354,6 @@ double  *ypos;           /* y (dec) coordinate (deg) */
 {
     int offscl;
     int i;
-    int wcsrev();
     double wcscrd[4], imgcrd[4], pixcrd[4];
     double phi, theta;
     
@@ -2398,7 +2394,6 @@ double  *ypix;          /* y pixel number  (dec or lat without rotation) */
 
 {
     int offscl;
-    int wcsfwd();
     double wcscrd[4], imgcrd[4], pixcrd[4];
     double phi, theta;
 

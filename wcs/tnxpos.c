@@ -47,10 +47,13 @@
 
 #define	max_niter	500
 #define	SZ_ATSTRING	2000
-static void wf_gsclose();
-static void wf_gsb1pol();
-static void wf_gsb1leg();
-static void wf_gsb1cheb();
+static int wf_gscoeff(struct IRAFsurface *sf, double *coeff);
+static struct IRAFsurface *wf_gspset(int xorder, int yorder, int xterms, double *coeff);
+static struct IRAFsurface *wf_gsrestore(double *fit);
+static void wf_gsb1cheb(double x, int order, double k1, double k2, double *basis);
+static void wf_gsb1leg(double x, int order, double k1, double k2, double *basis);
+static void wf_gsb1pol(double x, int order, double *basis);
+
 
 /* tnxinit -- initialize the gnomonic forward or inverse transform.
  * initialization for this transformation consists of, determining which
@@ -75,9 +78,7 @@ tnxinit (header, wcs)
 const char *header;	/* FITS header */
 struct WorldCoor *wcs;	/* pointer to WCS structure */
 {
-    struct IRAFsurface *wf_gsopen();
     char *str1, *str2, *lngstr, *latstr;
-    extern void wcsrotset();
 
     /* allocate space for the attribute strings */
     str1 = malloc (SZ_ATSTRING);
@@ -166,7 +167,6 @@ double	*xpos, *ypos;	/*o world coordinates (ra, dec) */
     double x, y, r, phi, theta, costhe, sinthe, dphi, cosphi, sinphi, dlng, z;
     double colatp, coslatp, sinlatp, longp;
     double xs, ys, ra, dec, xp, yp;
-    double wf_gseval();
 
     /* Convert from pixels to image coordinates */
     xpix = xpix - wcs->crpix[0];
@@ -317,7 +317,6 @@ double	*xpix, *ypix;	/*o physical coordinates (x, y) */
     double s, r, dphi, z, dpi, dhalfpi, twopi, tx;
     double xm, ym, f, fx, fy, g, gx, gy, denom, dx, dy;
     double colatp, coslatp, sinlatp, longp, sphtol;
-    double wf_gseval(), wf_gsder();
 
     /* get the axis numbers */
     if (wcs->coorflip) {
@@ -562,7 +561,6 @@ char    *astr;		/* the input mwcs attribute string */
     int npar, szcoeff;
     double *coeff;
     struct IRAFsurface *gs;
-    struct IRAFsurface *wf_gsrestore();
 
     if (astr[1] == 0)
 	return (NULL);
@@ -602,7 +600,7 @@ char    *astr;		/* the input mwcs attribute string */
 
 /* wf_gsclose -- procedure to free the surface descriptor */
 
-static void
+void
 wf_gsclose (sf)
 
 struct IRAFsurface *sf;	/* the surface descriptor */
@@ -699,7 +697,7 @@ double  y;		/* y value */
  * (sf->xorder + sf->yorder - 1).
  */
 
-int
+static int
 wf_gscoeff (sf, coeff)
 
 struct IRAFsurface *sf;	/* pointer to the surface fitting descriptor */
@@ -737,7 +735,6 @@ int	nxd, nyd;	/* order of the derivatives in x and y */
     struct IRAFsurface *sf2 = 0;
     double *ptr1, *ptr2;
     double zfit, norm;
-    double wf_gseval();
 
     if (sf1 == NULL)
 	return (0.0);
@@ -934,7 +931,7 @@ int	nxd, nyd;	/* order of the derivatives in x and y */
    of the double array fit, followed by the wf->ncoeff surface coefficients.
  */
 
-struct IRAFsurface *
+static struct IRAFsurface *
 wf_gsrestore (fit)
 
 double	*fit;			/* array containing the surface parameters
@@ -1121,8 +1118,6 @@ double	*coeff;		/* Plate fit coefficients */
 
 {
     double *ycoeff;
-    struct IRAFsurface *wf_gspset ();
-
     wcs->prjcode = WCS_TNX;
 
     wcs->lngcor = wf_gspset (xorder, yorder, xterms, coeff);
@@ -1139,7 +1134,7 @@ double	*coeff;		/* Plate fit coefficients */
    of polynomial terms in y), xterms, and the surface coefficients.
  */
 
-struct IRAFsurface *
+static struct IRAFsurface *
 wf_gspset (xorder, yorder, xterms, coeff)
 
 int	xorder;

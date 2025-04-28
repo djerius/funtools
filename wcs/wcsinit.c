@@ -47,11 +47,10 @@
 #include <stdlib.h>
 #endif
 
-static void wcseq();
-static void wcseqm();
-static void wcsioset();
-void wcsrotset();
-char wcschar();
+static void wcseq(char	*, struct WorldCoor *);
+static void wcseqm(char	*, struct WorldCoor *, char	*);
+static void wcsioset(struct WorldCoor *wcs);
+void invert_wcs(struct WorldCoor *wcs);
 
 /* set up a WCS structure from a FITS image header lhstring bytes long 
  * for a specified WCS name */
@@ -242,11 +241,6 @@ char *wchar;		/* Suffix character for one of multiple WCS */
     double ut;
     int nax;
     int twod;
-    extern int tnxinit();
-    extern int zpxinit();
-    extern int platepos();
-    extern int dsspos();
-    void invert_wcs();
 
     wcs = (struct WorldCoor *) calloc (1, sizeof(struct WorldCoor));
 

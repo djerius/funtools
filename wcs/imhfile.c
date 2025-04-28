@@ -151,27 +151,22 @@
 #define LEN_FITSHDR	11520
 
 int check_immagic();
-int irafgeti4();
-float irafgetr4();
-char *irafgetc2();
-char *irafgetc();
-char *iraf2str();
-static char *same_path();
-static void irafputr4();
-static void irafputi4();
-static void irafputc2();
-static void irafputc();
-static void str2iraf();
+
+static char *same_path(char *pixname, char *hdrname);
+static int irafsize(FILE *diskfile);
+static int machswap(void);
+static void irafputc(char *string, char *irafheader, int offset, int nc);
+static void irafputc2(char *string, char *irafheader, int offset, int nc);
+static void irafputi4(char *irafheader, int offset, int inum);
+static void irafputr4(char *irafheader, int offset, double rnum);
+static void irafswap(int bitpix, char *string, int nbytes);
+static void irafswap2(char *string, int nbytes);
+static void irafswap4(char *string, int nbytes);
+static void irafswap8(char *string, int nbytes);
+static void str2iraf(char *string, char *irafstring, int nchar);
+
 static int headswap=-1;	/* =1 to swap data bytes of foreign IRAF file */
-static void irafswap();
-static void irafswap2();
-static void irafswap4();
-static void irafswap8();
-int head_version ();
-int pix_version ();
-int irafncmp ();
-static int machswap();
-static int irafsize();
+
 
 #define SECONDS_1970_TO_1980    315532800L
 

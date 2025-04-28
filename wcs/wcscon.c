@@ -77,11 +77,6 @@
 #include <strings.h>
 #endif
 
-void fk524(), fk524e(), fk524m(), fk524pv();
-void fk425(), fk425e(), fk425m(), fk425pv();
-void fk42gal(), fk52gal(), gal2fk4(), gal2fk5();
-void fk42ecl(), fk52ecl(), ecl2fk4(), ecl2fk5();
-
 /* Convert from coordinate system sys1 to coordinate system sys2, converting
    proper motions, too, and adding them if an epoch is specified */
 
@@ -104,8 +99,6 @@ double	*pphi;	/* Latitude or declination proper motion in Dec degrees/year
 		   Input in sys1, returned in sys2 */
 
 {
-    void fk5prec(), fk4prec();
-
     /* Set equinoxes if 0.0 */
     if (eq1 == 0.0) {
 	if (sys1 == WCS_B1950)
@@ -310,8 +303,6 @@ double	*px;	/* Parallax in arcseconds */
 double	*rv;	/* Radial velocity in km/sec */
 
 {
-    void fk5prec(), fk4prec();
-
     /* Set equinoxes if 0.0 */
     if (eq1 == 0.0) {
 	if (sys1 == WCS_B1950)
@@ -514,8 +505,6 @@ double	*dphi;	/* Latitude or declination in degrees
 double	epoch;	/* Besselian epoch in years */
 
 {
-    void fk5prec(), fk4prec();
-
     /* Set equinoxes if 0.0 */
     if (eq1 == 0.0) {
 	if (sys1 == WCS_B1950)
@@ -1445,9 +1434,8 @@ double *dphi;	/* B1950.0 FK4 declination in degrees
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
 {
     double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
-    void v2s3(),s2v3();
     int i;
-    char *eqcoor, *eqstrn();
+    char *eqcoor;
 
     dra = *dtheta;
     ddec = *dphi;
@@ -1503,8 +1491,7 @@ double *dphi;	/* Galactic latitude (b2) in degrees
 
 {
     double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
-    void v2s3(),s2v3();
-    char *eqcoor, *eqstrn();
+    char *eqcoor;
     int i;
 
     /*  spherical to cartesian */
@@ -1578,8 +1565,7 @@ double *dphi;	/* J2000 declination in degrees
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
 {
     double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
-    void v2s3(),s2v3();
-    char *eqcoor, *eqstrn();
+    char *eqcoor;
     int i;
 
     /*  Spherical to cartesian */
@@ -1631,9 +1617,8 @@ double *dphi;	/* Galactic latitude (b2) in degrees
 
 {
     double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
-    void v2s3(),s2v3();
     int i;
-    char *eqcoor, *eqstrn();
+    char *eqcoor;
 
     /*  Spherical to Cartesian */
     dl = *dtheta;
@@ -1731,8 +1716,6 @@ double *dphi;	/* B1950 declination in degrees
 double	epoch;	/* Besselian epoch in years */
 
 {
-    void fk425e(), fk52ecl();
-
     /* Convert from B1950 to J2000 coordinates */
     fk425e (dtheta, dphi, epoch);
 
@@ -1758,8 +1741,6 @@ double	epoch;	/* Besselian epoch in years */
     double t, eps0, rphi, rtheta;
     double v1[3], v2[3], r;
     double rmat[9], *rmati;	/* Rotation matrix  */
-
-    void rotmat(), v2s3(), s2v3(), fk5prec();
 
     /* Precess coordinates from J2000 to epoch */
     if (epoch != 2000.0)
@@ -1814,8 +1795,6 @@ double *dphi;	/* Galactic latitude (b2) in degrees
 double	epoch;	/* Besselian epoch in years */
 
 {
-    void ecl2fk5(), fk524e();
-
     /* Convert from ecliptic to J2000 coordinates */
     ecl2fk5 (dtheta, dphi, epoch);
 
@@ -1843,7 +1822,6 @@ double	epoch;	/* Besselian epoch in years */
     double rtheta, rphi, v1[3], v2[3];
     double t, eps0, r;
     double rmat[9];	/* Rotation matrix */
-    void v2s3(),s2v3(), fk5prec(), rotmat();
 
     rtheta = degrad (*dtheta);
     rphi = degrad (*dphi);
@@ -1906,7 +1884,6 @@ double *dec;	/* Dec in degrees mean equator & equinox of epoch ep0
 {
     int i, j;
     double pm[9], *pmi, v1[3], v2[3], rra, rdec, r;
-    void v2s3(),s2v3(), mprecfk4();
 
     rra = degrad (*ra);
     rdec = degrad (*dec);
@@ -1954,7 +1931,6 @@ double *dec;	/* Dec in degrees mean equator & equinox of epoch ep0
 {
     int i, j;
     double pm[9], *pmi, v1[3], v2[3], rra, rdec, r;
-    void v2s3(),s2v3(), mprecfk5();
 
     rra = degrad (*ra);
     rdec = degrad (*dec);
@@ -2007,7 +1983,6 @@ double rmatp[9];	/* 3x3 Precession matrix (returned) */
 */
 {
     double bigt, t, tas2r, w, zeta, z, theta;
-    void rotmat();
  
     /* Interval between basic epoch B1850.0 and beginning epoch in TC */
     bigt  = ( bep0 - 1850.0 ) / 100.0;
@@ -2051,7 +2026,6 @@ double rmatp[9];	/* 3x3 Precession matrix (returned) */
 */
 {
     double t0, t, tas2r, w, zeta, z, theta;
-    void rotmat();
  
     /* Interval between basic epoch J2000.0 and beginning epoch (JC) */
     t0 = ( ep0 - 2000.0 ) / 100.0;

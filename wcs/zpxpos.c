@@ -50,7 +50,6 @@
 
 #define	max_niter	500
 #define	SZ_ATSTRING	2000
-static void wf_gsclose();
 
 /* zpxinit -- initialize the zenithal/azimuthal polynomial forward or
  * inverse transform. initialization for this transformation consists of,
@@ -81,10 +80,8 @@ const char *header;	/* FITS header */
 struct WorldCoor *wcs;	/* pointer to WCS structure */
 {
     int i, j;
-    struct IRAFsurface *wf_gsopen();
     char key[8], *str1, *str2, *lngstr, *latstr, *header1;
     double zd1, d1, zd2,d2, zd, d, r;
-    extern void wcsrotset();
 
     /* allocate space for the attribute strings */
     str1 = malloc (SZ_ATSTRING);
@@ -252,7 +249,6 @@ double	*xpos, *ypos;	/*o world coordinates (ra, dec) */
     double colatp, coslatp, sinlatp, longp;
     double xs, ys, ra, dec, xp, yp;
     double a, b, c, d, zd, zd1, zd2, r1, r2, rt, lambda;
-    double wf_gseval();
 
     /* Convert from pixels to image coordinates */
     xpix = xpix - wcs->crpix[0];
@@ -520,7 +516,6 @@ double	*xpix, *ypix;	/*o physical coordinates (x, y) */
     double s, r, dphi, z, dpi, dhalfpi, twopi, tx;
     double xm, ym, f, fx, fy, g, gx, gy, denom, dx, dy;
     double colatp, coslatp, sinlatp, longp, sphtol;
-    double wf_gseval(), wf_gsder();
 
     /* get the axis numbers */
     if (wcs->coorflip) {
@@ -704,27 +699,6 @@ struct WorldCoor *wcs;		/* pointer to the WCS descriptor */
 	wf_gsclose (wcs->lngcor);
     if (wcs->latcor != NULL)
 	wf_gsclose (wcs->latcor);
-    return;
-}
-
-
-/* wf_gsclose -- procedure to free the surface descriptor */
-
-static void
-wf_gsclose (sf)
-
-struct IRAFsurface *sf;	/* the surface descriptor */
-
-{
-    if (sf != NULL) {
-	if (sf->xbasis != NULL)
-	    free (sf->xbasis);
-	if (sf->ybasis != NULL)
-	    free (sf->ybasis);
-	if (sf->coeff != NULL)
-	    free (sf->coeff);
-	free (sf);
-	}
     return;
 }
 
