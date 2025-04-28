@@ -37,23 +37,25 @@
 
 #include "fitsy.h"
 
-int ft_compare(a, b)
-	char	**a;
-	char	**b;
+int ft_compare(const void *void_a, const void *void_b) {
+	int	ax, bx;
+                
+        const FITSCard fc_a = (const FITSCard) void_a;
+        const FITSCard fc_b = (const FITSCard) void_b;
 
-{
-		int	ax, bx;
+        const char* a = (const char *) &(fc_a->c);
+        const char* b = (const char *) &(fc_b->c);
 
-	if ( !strncmp(*a, *b, 5) 
-	  && ((*a)[5] != ' ') && ((*b)[5] != ' ')
-	  && (ax = atoi(&(*a)[5])) 
-	  && (bx = atoi(&(*b)[5])) ) {
+	if ( !strncmp(a, b, 5) 
+	  && (a[5] != ' ') && (b[5] != ' ')
+	  && (ax = atoi(&a[5])) 
+	  && (bx = atoi(&b[5])) ) {
 		if ( ax <  bx ) return -1;
 		if ( ax == bx ) return  0;
 		if ( ax >  bx ) return  1;
 	}
 
-	return strncmp(*a, *b, 8);
+	return strncmp(a, b, 8);
 }
 
 /* Find a FITS card in the header.

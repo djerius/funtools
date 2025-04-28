@@ -139,26 +139,32 @@ int ft_datawrite(file, fits, data, pixtype)
 }
 
 
-void swap2(to, from, nbytes)
-	char *to;
-	char *from;
+void* swap2(void_to, void_from, nbytes)
+	void *void_to;
+	const void *void_from;
 	size_t nbytes;
 {
     char c;
+    char *to = (char*) void_to;
+    char *from = (char*) void_from;
     size_t i;
     for ( i=0; i < nbytes; i += 2, (to += 2), (from += 2) ) {
 	c = *from;
 	*(to) = *(from+1);
 	*(to+1) = c;
     }
+
+    return to;
 }
 
-void  swap4(to, from, nbytes)
-	char *to;
-	char *from;
+void*  swap4(void_to, void_from, nbytes)
+        void *void_to;
+	const void *void_from;
 	size_t nbytes;
 {
     char c;
+    char *to = (char*) void_to;
+    char *from = (char*) void_from;
     size_t i;
     for ( i=0; i < nbytes; i += 4, (to += 4), (from += 4) ) {
 	c = *from;
@@ -168,14 +174,17 @@ void  swap4(to, from, nbytes)
 	*(to+1) = *(from+2);
 	*(to+2) = c;
     }
+    return to;
 }
 
-void swap8(to, from, nbytes)
-	char *to;
-	char *from;
+void* swap8(void_to, void_from, nbytes)
+	void *void_to;
+	const void *void_from;
 	size_t nbytes;
 {
     char c;
+    char *to = (char*) void_to;
+    char *from = (char*) void_from;
     size_t i;
     for ( i=0; i < nbytes; i += 8, (to += 8), (from += 8) ) {
 	c   	= *(from+0);
@@ -191,6 +200,7 @@ void swap8(to, from, nbytes)
 	*(to+3) = *(from+4);
 	*(to+4) = c;
     }
+    return to;
 }
 
 /* Swap n bytes of data if necessary.

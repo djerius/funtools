@@ -83,7 +83,7 @@ typedef long long longlong;
 typedef long longlong;
 #endif
 
-static void usage ();
+static void usage (int status);
 
 #ifdef SAOMOD_TABLE
         int table = 0;

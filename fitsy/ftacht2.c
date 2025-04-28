@@ -12,7 +12,8 @@
 #include "longlong.h"
 #include "generic.h"
 
-typedef void (*vector)();
+typedef void* (*copy)( void *, const void*, size_t );
+typedef void (*vector)( void *, void *, int, copy, int );
 
 #ifdef __STDC__
 #define cht2xx(ch1, type1, ch2, type2)					\
@@ -21,7 +22,7 @@ void cht2##ch1##ch2(v1, v2, npix, rtn, direction)			\
 			void	*v1;					\
 			void	*v2;					\
 			int	npix;					\
-			vector  rtn;					\
+			copy    rtn;					\
 			int	direction;				\
 {									\
   type1 tval1;								\
@@ -48,7 +49,7 @@ void cht2/**/ch1/**/ch2(v1, v2, npix, rtn, direction)			\
 			void    *v1;					\
 			void	*v2;					\
 			int	npix;					\
-			vector  rtn;					\
+			copy    rtn;					\
 			int	direction;				\
 {									\
   type1 tval1;								\
@@ -101,8 +102,8 @@ void ft_acht2(type1, v1, type2, v2, npix, swap, direction)
 			int     swap;
 			int	direction;
 {
-		vector rtn=NULL;
-		int offset1, offset2, type;
+    copy rtn = NULL;
+    int offset1, offset2, type;
 
 static vector matrix[10][10] = {
       { cht2cc,cht2cs,cht2ci,cht2cl,cht2cr,cht2cd,cht2ct,cht2cu,cht2cv }
@@ -127,7 +128,7 @@ static vector matrix[10][10] = {
 	type = type1;
       switch(ft_sizeof(type)){
       case 1:
-	rtn = (vector)memcpy;
+	rtn = memcpy;
 	break;
       case 2:
 	rtn = swap2;
@@ -139,12 +140,12 @@ static vector matrix[10][10] = {
 	rtn = swap8;
 	break;
       default:
-	rtn = (vector)memcpy;
+	rtn = memcpy;
 	break;
       }
     }
     else{
-      rtn = (vector)memcpy;
+      rtn = memcpy;
     }
 
     (*matrix[offset1][offset2])(v1, v2, npix, rtn, direction);

@@ -380,9 +380,9 @@ File ft_fitsheadopenfd PROTOTYPE((char *filename, FITSHead *head, char *tail, in
 int ft_inverse PROTOTYPE((double f[3][2], double r[3][2]));
 
 /* dataimage.c */
-void swap2 PROTOTYPE((char *to, char *from, size_t nbytes));
-void swap4 PROTOTYPE((char *to, char *from, size_t nbytes));
-void swap8 PROTOTYPE((char *to, char *from, size_t nbytes));
+void* swap2 PROTOTYPE((void *to, const void *from, size_t nbytes));
+void* swap4 PROTOTYPE((void *to, const void *from, size_t nbytes));
+void* swap8 PROTOTYPE((void *to, const void *from, size_t nbytes));
 
 /* headwcs.c */
 int ft_trxlcs PROTOTYPE((FITSLinWCS lcs, double x0, double y0, 

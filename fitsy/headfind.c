@@ -4,7 +4,7 @@
 #include "xos.h"
 #include "fitsy.h"
 
-extern int ft_compare();
+extern int ft_compare(const void *, const void *);
 
 /* Find a FITS card in the header.
 

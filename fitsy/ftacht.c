@@ -89,7 +89,7 @@ void ft_acht(type1, v1, type2, v2, npix, direction, hasscale, bscale, bzero)
 			double	bscale;
 			double	bzero;
 {
-		typedef void (*vector)();
+    typedef void (*vector)( void *, void *, int, int, int, double, double);
 
 static vector matrix[10][10] = {
       { achtcc,achtcs,achtci,achtcl,achtcr,achtcd,achtct,achtcu,achtcv }

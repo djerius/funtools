@@ -102,7 +102,7 @@ int ft_headwrite(file, fits)
 
 void *ft_fileparse(ifile, callback, cdata)
 	File	ifile;
-	int	(*callback)();
+	int	(*callback)(File, FITSHead, void *, void *);
 	void	*cdata;
 {
 		FITSHead	 fits;
