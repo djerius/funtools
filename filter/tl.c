@@ -22,14 +22,10 @@
  */
 static double fitscenval = 0.5;
 static int ceninited = 0;
-#ifdef ANSI_FUNC
 static double
-getfitsfloatcenter( void )
-#else
-static double
-getfitsfloatcenter(  )
-#endif
-{
+getfitsfloatcenter(
+    void
+ ) {
     char *s = NULL;
     if ( !ceninited ) {
 	if ( ( s = getenv( "FILTER_CFITSIO" ) ) && istrue( s ) ) {
@@ -40,18 +36,13 @@ getfitsfloatcenter(  )
     return fitscenval;
 }
 
-#ifdef ANSI_FUNC
 double
-tlp2i( double dp, double tlmin, double binsiz, int type )
-#else
-double
-tlp2i( dp, tlmin, binsiz, type )
-     double dp;
-     double tlmin;
-     double binsiz;
-     int type;
-#endif
-{
+tlp2i(
+    double dp,
+    double tlmin,
+    double binsiz,
+    int type
+ ) {
     double dval = getfitsfloatcenter(  );
     if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
 	switch ( type ) {
@@ -85,18 +76,13 @@ tlp2i( dp, tlmin, binsiz, type )
     }
 }
 
-#ifdef ANSI_FUNC
 int
-itlp2i( double dp, double tlmin, double binsiz, int UNUSED( type ) )
-#else
-int
-itlp2i( dp, tlmin, binsiz, type )
-     double dp;
-     double tlmin;
-     double binsiz;
-     int type;
-#endif
-{
+itlp2i(
+    double dp,
+    double tlmin,
+    double binsiz,
+    int UNUSED( type )
+ ) {
     if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
 	return ( int ) ( ( dp - tlmin ) + 1.0 );
     }
@@ -105,18 +91,13 @@ itlp2i( dp, tlmin, binsiz, type )
     }
 }
 
-#ifdef ANSI_FUNC
 double
-tli2p( double di, double tlmin, double binsiz, int type )
-#else
-double
-tli2p( di, tlmin, binsiz, type )
-     double di;
-     double tlmin;
-     double binsiz;
-     int type;
-#endif
-{
+tli2p(
+    double di,
+    double tlmin,
+    double binsiz,
+    int type
+ ) {
     double dval = getfitsfloatcenter(  );
     if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
 	switch ( type ) {
@@ -150,18 +131,13 @@ tli2p( di, tlmin, binsiz, type )
     }
 }
 
-#ifdef ANSI_FUNC
 double
-tldim( double tlmin, double tlmax, double binsiz, int type )
-#else
-double
-tldim( tlmin, tlmax, binsiz, type )
-     double tlmin;
-     double tlmax;
-     double binsiz;
-     int type;
-#endif
-{
+tldim(
+    double tlmin,
+    double tlmax,
+    double binsiz,
+    int type
+ ) {
     if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
 	switch ( type ) {
 	    case 'B':

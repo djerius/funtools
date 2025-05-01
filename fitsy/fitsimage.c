@@ -20,19 +20,24 @@
 
 /* int close PROTOTYPE((int)); */
 
-int ft_indxmemdata PROTOTYPE( ( char *data,     /* Pointer to FITS                      */
-                                int size, int type,     /* Type of memory                       */
-                                char *extn, int indx, FITSHead * headptr,       /* Returned pointer to FITS header      */
-                                void **dataptr, /* Returned pointer to FITS data.       */
-                                void ***data2dptr
-                                /* Returned edge vector to data.        */
-                                 ) );
+int ft_indxmemdata PROTOTYPE(
+        ( char *data,           /* Pointer to FITS                      */
+          int size,
+          int type,             /* Type of memory                       */
+          char *extn,
+          int indx,
+          FITSHead * headptr,   /* Returned pointer to FITS header      */
+          void **dataptr,       /* Returned pointer to FITS data.       */
+          void ***data2dptr
+          /* Returned edge vector to data.        */
+     )
+ );
 
 /* changed name to add _ to avoid conflict with param lib egm 4/25/00 */
 int
-_filesize( file )
-     int file;
-{
+_filesize(
+    int file
+ ) {
     struct stat info;
 
     if ( fstat( file, &info ) < 0 ) return 0;
@@ -41,18 +46,18 @@ _filesize( file )
 
 #ifdef HAVE_SYS_MMAN_H
 int
-ft_munmap( head )
-     FITSHead head;
-{
+ft_munmap(
+    FITSHead head
+ ) {
     return munmap( ( void * ) head->mmap_here, head->mmap_size );
 }
 #endif
 
 #ifdef HAVE_SYS_SHM_H
 int
-ft_shmdt( head )
-     FITSHead head;
-{
+ft_shmdt(
+    FITSHead head
+ ) {
     return shmdt( ( void * ) head->mmap_here );
 }
 #endif
@@ -62,14 +67,14 @@ ft_shmdt( head )
  */
 
 int
-ft_simpleimageshm( filename, headptr, dataptr, data2dptr, size, flags )
-     char *filename;
-     FITSHead *headptr;         /* Returned pointer to FITS header      */
-     void **dataptr;            /* Returned pointer to FITS data.       */
-     void ***data2dptr;         /* Returned edge vector to data.        */
-     int size;
-     int flags;
-{
+ft_simpleimageshm(
+    char *filename,
+    FITSHead * headptr,         /* Returned pointer to FITS header      */
+    void **dataptr,             /* Returned pointer to FITS data.       */
+    void ***data2dptr,          /* Returned edge vector to data.        */
+    int size,
+    int flags
+ ) {
     char name[FT_FILENAME];
     char extn[FT_FILENAME];
     int indx = 0;
@@ -84,16 +89,14 @@ ft_simpleimageshm( filename, headptr, dataptr, data2dptr, size, flags )
 
     ft_parsefilename( filename, name, extn, max, &indx, tail, max );
 
-    if ( size == 0
-         && ( isize = strstr( tail, "size=" ) ) ) size = atoi( isize + 5 );
+    if ( size == 0 && ( isize = strstr( tail, "size=" ) ) ) size = atoi( isize + 5 );
 
     /* Attach the memory segment
      */
     shkey = shmget( atoi( name ), size, flags );
     data = ( void * ) shmat( shkey, 0, 0 );
 
-    return ft_indxmemdata( data, size, FT_SHMAT, extn, indx, headptr, dataptr,
-                           data2dptr );
+    return ft_indxmemdata( data, size, FT_SHMAT, extn, indx, headptr, dataptr, data2dptr );
 }
 #endif
 
@@ -101,14 +104,14 @@ ft_simpleimageshm( filename, headptr, dataptr, data2dptr, size, flags )
 /* MMap a FITS image from the named file.
  */
 int
-ft_simpleimagemmap( filename, headptr, dataptr, data2dptr, prot, share )
-     char *filename;            /* FITS image file name.                */
-     FITSHead *headptr;         /* Returned pointer to FITS header      */
-     void **dataptr;            /* Returned pointer to FITS data.       */
-     void ***data2dptr;         /* Returned edge vector to data.        */
-     int prot;                  /* Mapped data protections              */
-     int share;                 /* Mapped data attributes               */
-{
+ft_simpleimagemmap(
+    char *filename,             /* FITS image file name.                */
+    FITSHead * headptr,         /* Returned pointer to FITS header      */
+    void **dataptr,             /* Returned pointer to FITS data.       */
+    void ***data2dptr,          /* Returned edge vector to data.        */
+    int prot,                   /* Mapped data protections              */
+    int share                   /* Mapped data attributes               */
+ ) {
     int file;
 
     char name[FT_FILENAME];
@@ -146,23 +149,22 @@ ft_simpleimagemmap( filename, headptr, dataptr, data2dptr, prot, share )
 
     if ( data == ( char * ) -1 ) return 0;
 
-    return ft_indxmemdata( data, size, FT_MMAP, extn, indx, headptr, dataptr,
-                           data2dptr );
+    return ft_indxmemdata( data, size, FT_MMAP, extn, indx, headptr, dataptr, data2dptr );
 }
 #endif
 
 #if defined(HAVE_SYS_SHM_H) || defined(HAVE_SYS_MMAN_H)
 int
-ft_indxmemdata( data, size, type, extn, indx, headptr, dataptr, data2dptr )
-     char *data;                /* Pointer to FITS                      */
-     int size;
-     int type;                  /* Type of memory                       */
-     char *extn;
-     int indx;
-     FITSHead *headptr;         /* Returned pointer to FITS header      */
-     void **dataptr;            /* Returned pointer to FITS data.       */
-     void ***data2dptr;         /* Returned edge vector to data.        */
-{
+ft_indxmemdata(
+    char *data,                 /* Pointer to FITS                      */
+    int size,
+    int type,                   /* Type of memory                       */
+    char *extn,
+    int indx,
+    FITSHead * headptr,         /* Returned pointer to FITS header      */
+    void **dataptr,             /* Returned pointer to FITS data.       */
+    void ***data2dptr           /* Returned edge vector to data.        */
+ ) {
     FITSHead head = NULL;
 
     char *here = ( char * ) data;
@@ -228,8 +230,7 @@ ft_indxmemdata( data, size, type, extn, indx, headptr, dataptr, data2dptr )
     if ( data2dptr != NULL ) {
 	*data2dptr =
 	    ( void ** ) ft_make2d( ( void * ) data,
-	                           Abs( ft_bitpix( head ) ) / 8, 0, 0,
-	                           ft_naxis( head, 1 )
+	                           Abs( ft_bitpix( head ) ) / 8, 0, 0, ft_naxis( head, 1 )
 	                           , ft_naxis( head, 2 ) );
     }
     if ( headptr != NULL ) {
@@ -246,13 +247,13 @@ ft_indxmemdata( data, size, type, extn, indx, headptr, dataptr, data2dptr )
 /* Read a FITS image from the named file.
  */
 int
-ft_simpleimageread( filename, headptr, dataptr, data2dptr, pixtype )
-     char *filename;            /* FITS image file name.                */
-     FITSHead *headptr;         /* Returned pointer to FITS header      */
-     void **dataptr;            /* Returned pointer to FITS data.       */
-     void ***data2dptr;         /* Returned edge vector to data.        */
-     int pixtype;               /* pixtype to convert data to.          */
-{
+ft_simpleimageread(
+    char *filename,             /* FITS image file name.                */
+    FITSHead * headptr,         /* Returned pointer to FITS header      */
+    void **dataptr,             /* Returned pointer to FITS data.       */
+    void ***data2dptr,          /* Returned edge vector to data.        */
+    int pixtype                 /* pixtype to convert data to.          */
+ ) {
     FITSHead head = NULL;
     File file;
     int ret = 1;
@@ -314,12 +315,12 @@ ft_simpleimageread( filename, headptr, dataptr, data2dptr, pixtype )
 /* Write a FITS image to a named file.
  */
 int
-ft_simpleimagewrite( filename, fits, data, pixtype )
-     char *filename;
-     FITSHead fits;             /* FITS header to write.                */
-     void *data;                /* Data to write into FITS file.        */
-     int pixtype;
-{
+ft_simpleimagewrite(
+    char *filename,
+    FITSHead fits,              /* FITS header to write.                */
+    void *data,                 /* Data to write into FITS file.        */
+    int pixtype
+ ) {
     File file;
     FITSHead prim;
 
@@ -343,13 +344,13 @@ ft_simpleimagewrite( filename, fits, data, pixtype )
 /* Read a FITS image from a file pointer.
  */
 int
-ft_imageread( file, headptr, dataptr, data2dptr, pixtype )
-     File file;                 /* File pointer to read header and data from. */
-     FITSHead *headptr;
-     void **dataptr;
-     void ***data2dptr;
-     int pixtype;
-{
+ft_imageread(
+    File file,                  /* File pointer to read header and data from. */
+    FITSHead * headptr,
+    void **dataptr,
+    void ***data2dptr,
+    int pixtype
+ ) {
     FITSHead fits;
     float *data = NULL;
 
@@ -379,8 +380,7 @@ ft_imageread( file, headptr, dataptr, data2dptr, pixtype )
 
     if ( data2dptr != NULL ) {
 	*data2dptr =
-	    ( void ** ) ft_make2d( ( void * ) data, Abs( pixtype ) / 8, 0, 0,
-	                           ft_naxis( fits, 1 )
+	    ( void ** ) ft_make2d( ( void * ) data, Abs( pixtype ) / 8, 0, 0, ft_naxis( fits, 1 )
 	                           , ft_naxis( fits, 2 ) );
     }
 
@@ -391,12 +391,12 @@ ft_imageread( file, headptr, dataptr, data2dptr, pixtype )
 /* Write a FITS image to a file.
  */
 int
-ft_imagewrite( file, fits, data, pixtype )
-     File file;
-     FITSHead fits;
-     void *data;
-     int pixtype;
-{
+ft_imagewrite(
+    File file,
+    FITSHead fits,
+    void *data,
+    int pixtype
+ ) {
     if ( file == NULL ) return 0;
 
     ft_syncdata( fits );

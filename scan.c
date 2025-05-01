@@ -13,19 +13,21 @@ typedef struct hcstruct {
     char *expr;
     char mbuf[SZ_LINE];
     char tbuf[SZ_LINE];
-}  *HC, HCRec;
+}  *HC,
+    HCRec;
 
 static char *
-_HeadColumnCB( char *name, void *client_data ) {
+_HeadColumnCB(
+    char *name,
+    void *client_data
+ ) {
     HC  hc = ( HC ) client_data;
 
     /* macro replacement */
     if ( !strcmp( name, "name" ) || !strcmp( name, "col" ) ) {
 	if ( strchr( hc->mbuf, 'n' ) ) {
 	    hc->eflag = 1;
-	    gerror( stderr,
-	            "$%s can only be specified once in headcol format\n",
-	            name );
+	    gerror( stderr, "$%s can only be specified once in headcol format\n", name );
 	    return NULL;
 	}
 	strncpy( macrobuf, "%s", SZ_LINE );
@@ -36,9 +38,7 @@ _HeadColumnCB( char *name, void *client_data ) {
     else if ( !strcmp( name, "format" ) || !strcmp( name, "fmt" ) ) {
 	if ( strchr( hc->mbuf, 'f' ) ) {
 	    hc->eflag = 1;
-	    gerror( stderr,
-	            "$%s can only be specified once in headcol format\n",
-	            name );
+	    gerror( stderr, "$%s can only be specified once in headcol format\n", name );
 	    return NULL;
 	}
 	strncpy( macrobuf, "%[a-zA-Z0-9.]", SZ_LINE );
@@ -64,7 +64,9 @@ _HeadColumnCB( char *name, void *client_data ) {
 }
 
 void
-HeadColumnFree( HC hc ) {
+HeadColumnFree(
+    HC hc
+ ) {
     /* sanity check */
     if ( !hc ) return;
     if ( hc->fmt ) xfree( hc->fmt );
@@ -72,7 +74,9 @@ HeadColumnFree( HC hc ) {
 }
 
 HC
-HeadColumnNew( char *s ) {
+HeadColumnNew(
+    char *s
+ ) {
     HC  hc = NULL;
 
     /* sanity check */
@@ -80,18 +84,19 @@ HeadColumnNew( char *s ) {
     /* allocate record */
     if ( !( hc = xcalloc( 1, sizeof( HCRec ) ) ) ) return NULL;
     /* expand format specification to make a scanf format */
-    if ( !( hc->fmt = ExpandMacro( s, NULL, NULL, 0, _HeadColumnCB, hc ) ) ||
-         hc->eflag ) {
+    if ( !( hc->fmt = ExpandMacro( s, NULL, NULL, 0, _HeadColumnCB, hc ) ) || hc->eflag ) {
 	HeadColumnFree( hc );
 	return NULL;
     }
-    fprintf( stderr, "format: %s mbuf=%s args=%d\n", hc->fmt, hc->mbuf,
-             hc->args );
+    fprintf( stderr, "format: %s mbuf=%s args=%d\n", hc->fmt, hc->mbuf, hc->args );
     return hc;
 }
 
 char *
-HeadColumnProcess( HC hc, char *s ) {
+HeadColumnProcess(
+    HC hc,
+    char *s
+ ) {
     int got;
     int len;
     char tbuf[SZ_LINE];
@@ -115,8 +120,7 @@ HeadColumnProcess( HC hc, char *s ) {
 	strncpy( tbuf, tbuf1, SZ_LINE );
     }
     else if ( !strcmp( hc->mbuf, "nf" ) ) {
-	if ( ( got =
-	       sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
+	if ( ( got = sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
 	switch ( *tbuf2 ) {
 	    case 'I':
 		snprintf( tbuf, SZ_LINE, "%s:J", tbuf1 );
@@ -133,8 +137,7 @@ HeadColumnProcess( HC hc, char *s ) {
 	}
     }
     else if ( !strcmp( hc->mbuf, "fn" ) ) {
-	if ( ( got =
-	       sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
+	if ( ( got = sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
 	switch ( *tbuf2 ) {
 	    case 'I':
 		snprintf( tbuf, SZ_LINE, "%s:J", tbuf2 );
@@ -175,7 +178,9 @@ HeadColumnProcess( HC hc, char *s ) {
 }
 
 char *
-HeadColumnExpr( HC hc ) {
+HeadColumnExpr(
+    HC hc
+ ) {
     /* sanity check */
     if ( !hc ) return NULL;
     /* return current expression */
@@ -183,7 +188,10 @@ HeadColumnExpr( HC hc ) {
 }
 
 int
-main( int argc, char **argv ) {
+main(
+    int argc,
+    char **argv
+ ) {
     int i;
     char *fptr = NULL;
     char *expr = NULL;

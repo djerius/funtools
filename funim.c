@@ -17,17 +17,12 @@
  * _FunTableBin -- bin a blocked section of data from a table
  *
 */
-#ifdef ANSI_FUNC
 static void *
-_FunTableBin( Fun fun, void *buf, char *plist )
-#else
-static void *
-_FunTableBin( fun, buf, plist )
-     Fun fun;
-     void *buf;
-     char *plist;
-#endif
-{
+_FunTableBin(
+    Fun fun,
+    void *buf,
+    char *plist
+ ) {
     int skip;                   /* temp for skipping data to end of ext */
     int offset[2];              /* offset into event record for x, y */
     int size[2];                /* size of x, y value in bytes */
@@ -91,8 +86,7 @@ _FunTableBin( fun, buf, plist )
     if ( ( fun->odim1 <= 0 ) || ( ( fun->dims > 1 ) && ( fun->odim2 <= 0 ) ) ) {
 	gerror( stderr,
 	        "invalid or zero image dimension(s) for table (%s;%d,%d)\n",
-	        fun->bincols ? fun->bincols : "invalid bincols?", fun->odim1,
-	        fun->odim2 );
+	        fun->bincols ? fun->bincols : "invalid bincols?", fun->odim1, fun->odim2 );
 	return NULL;
     }
 
@@ -190,13 +184,9 @@ _FunTableBin( fun, buf, plist )
     }
 
     /* allocate space for a pile of event records */
-    for ( esize = MIN( MAXEV, ( fun->left > 0 ? fun->left : MAXEV ) );
-          esize > 0; esize /= 2 ) {
-	if ( ( ( ebuf =
-	         ( unsigned char * ) malloc( fun->rawsize * esize ) ) !=
-	       NULL )
-	     && ( ( rbuf = ( int * ) malloc( sizeof( int ) * esize ) ) !=
-	          NULL ) )
+    for ( esize = MIN( MAXEV, ( fun->left > 0 ? fun->left : MAXEV ) ); esize > 0; esize /= 2 ) {
+	if ( ( ( ebuf = ( unsigned char * ) malloc( fun->rawsize * esize ) ) != NULL )
+	     && ( ( rbuf = ( int * ) malloc( sizeof( int ) * esize ) ) != NULL ) )
 	    break;
     }
 
@@ -262,62 +252,41 @@ _FunTableBin( fun, buf, plist )
 		switch ( fun->header->table->col[fun->bin[j]].type ) {
 			/* unsigned 8-bit int */
 		    case 'B':
-			val[j] =
-			    itlp2i( ( double ) eptr[offset[j]], minval[j],
-			            binsiz[j], 'B' );
+			val[j] = itlp2i( ( double ) eptr[offset[j]], minval[j], binsiz[j], 'B' );
 			break;
 			/* 16-bit short */
 		    case 'I':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &sval );
-			val[j] =
-			    itlp2i( ( double ) sval, minval[j], binsiz[j],
-			            'I' );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &sval );
+			val[j] = itlp2i( ( double ) sval, minval[j], binsiz[j], 'I' );
 			break;
 			/* unsigned 16-bit int */
 		    case 'U':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &usval );
-			val[j] =
-			    itlp2i( ( double ) usval, minval[j], binsiz[j],
-			            'U' );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &usval );
+			val[j] = itlp2i( ( double ) usval, minval[j], binsiz[j], 'U' );
 			break;
 			/* 32-bit int */
 		    case 'J':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &ival );
-			val[j] =
-			    itlp2i( ( double ) ival, minval[j], binsiz[j],
-			            'J' );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &ival );
+			val[j] = itlp2i( ( double ) ival, minval[j], binsiz[j], 'J' );
 			break;
 			/* unsigned 32-bit int */
 		    case 'K':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &lval );
-			val[j] =
-			    itlp2i( ( double ) ival, minval[j], binsiz[j],
-			            'K' );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &lval );
+			val[j] = itlp2i( ( double ) ival, minval[j], binsiz[j], 'K' );
 			break;
 			/* unsigned 32-bit int */
 		    case 'V':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &uival );
-			val[j] =
-			    itlp2i( ( double ) uival, minval[j], binsiz[j],
-			            'V' );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &uival );
+			val[j] = itlp2i( ( double ) uival, minval[j], binsiz[j], 'V' );
 			break;
 			/* 32-bit float */
 		    case 'E':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &fval );
-			val[j] =
-			    itlp2i( ( double ) fval, minval[j], binsiz[j],
-			            'E' );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &fval );
+			val[j] = itlp2i( ( double ) fval, minval[j], binsiz[j], 'E' );
 			break;
 			/* 64-bit float */
 		    case 'D':
-			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j],
-			            1, convert, &dval );
+			ColumnLoad( ( void * ) ( eptr + offset[j] ), size[j], 1, convert, &dval );
 			val[j] = itlp2i( dval, minval[j], binsiz[j], 'D' );
 			break;
 		    case 'X':
@@ -355,13 +324,11 @@ _FunTableBin( fun, buf, plist )
 	    if ( dovcol ) {
 		/* if vcol is not double, we must do full type convert */
 		if ( vtype != 'D' ) {
-		    ft_acht2( 'D', &vval, vtype, eptr + voffset, 1, convert,
-		              0 );
+		    ft_acht2( 'D', &vval, vtype, eptr + voffset, 1, convert, 0 );
 		}
 		/* for same types, we might have to swap the bytes of the double */
 		else if ( convert ) {
-		    swap8( ( char * ) &vval, ( char * ) ( eptr + voffset ),
-		           8 );
+		    swap8( ( char * ) &vval, ( char * ) ( eptr + voffset ), 8 );
 		}
 		/* otherwise its an easy copy */
 		else {
@@ -394,27 +361,22 @@ _FunTableBin( fun, buf, plist )
 		case TY_CHAR:
 		    if ( !dovcol ) {
 			if ( ( ( unsigned char * ) obuf )[index] >
-			     ( ( ( unsigned char * ) obuf )[index] +
-			       ( unsigned char ) vval ) ) {
+			     ( ( ( unsigned char * ) obuf )[index] + ( unsigned char ) vval ) ) {
 			    fun->overflow++;
 			}
 			else {
-			    ( ( unsigned char * ) obuf )[index] +=
-			        ( unsigned char ) vval;
+			    ( ( unsigned char * ) obuf )[index] += ( unsigned char ) vval;
 			}
 		    }
 		    else {
-			if ( fun->doblank
-			     && ( ( ( unsigned char * ) obuf )[index] ==
-			          fun->blank ) ) {
+			if ( fun->doblank && ( ( ( unsigned char * ) obuf )[index] == fun->blank ) ) {
 			    ;
 			}
 			else if ( itsnan ) {
 			    ( ( unsigned char * ) obuf )[index] = fun->blank;
 			}
 			else {
-			    ( ( unsigned char * ) obuf )[index] +=
-			        ( unsigned char ) vval;
+			    ( ( unsigned char * ) obuf )[index] += ( unsigned char ) vval;
 			}
 		    }
 		    break;
@@ -422,27 +384,23 @@ _FunTableBin( fun, buf, plist )
 		case TY_USHORT:
 		    if ( !dovcol ) {
 			if ( ( ( unsigned short * ) obuf )[index] >
-			     ( ( ( unsigned short * ) obuf )[index] +
-			       ( unsigned short ) vval ) ) {
+			     ( ( ( unsigned short * ) obuf )[index] + ( unsigned short ) vval ) ) {
 			    fun->overflow++;
 			}
 			else {
-			    ( ( unsigned short * ) obuf )[index] +=
-			        ( unsigned short ) vval;
+			    ( ( unsigned short * ) obuf )[index] += ( unsigned short ) vval;
 			}
 		    }
 		    else {
 			if ( fun->doblank
-			     && ( ( ( unsigned short * ) obuf )[index] ==
-			          fun->blank ) ) {
+			     && ( ( ( unsigned short * ) obuf )[index] == fun->blank ) ) {
 			    ;
 			}
 			else if ( itsnan ) {
 			    ( ( unsigned short * ) buf )[index] = fun->blank;
 			}
 			else {
-			    ( ( unsigned short * ) buf )[index] +=
-			        ( unsigned short ) vval;
+			    ( ( unsigned short * ) buf )[index] += ( unsigned short ) vval;
 			}
 		    }
 		    break;
@@ -450,8 +408,7 @@ _FunTableBin( fun, buf, plist )
 		case TY_SHORT:
 		    if ( !dovcol ) {
 			if ( ( ( short * ) obuf )[index] >
-			     ( ( ( short * ) obuf )[index] +
-			       ( short ) vval ) ) {
+			     ( ( ( short * ) obuf )[index] + ( short ) vval ) ) {
 			    fun->overflow++;
 			}
 			else {
@@ -459,9 +416,7 @@ _FunTableBin( fun, buf, plist )
 			}
 		    }
 		    else {
-			if ( fun->doblank
-			     && ( ( ( short * ) obuf )[index] ==
-			          fun->blank ) ) {
+			if ( fun->doblank && ( ( ( short * ) obuf )[index] == fun->blank ) ) {
 			    ;
 			}
 			else if ( itsnan ) {
@@ -484,9 +439,7 @@ _FunTableBin( fun, buf, plist )
 			}
 		    }
 		    else {
-			if ( fun->doblank
-			     && ( ( ( int * ) obuf )[index] ==
-			          fun->blank ) ) {
+			if ( fun->doblank && ( ( ( int * ) obuf )[index] == fun->blank ) ) {
 			    ;
 			}
 			else if ( itsnan ) {
@@ -500,32 +453,26 @@ _FunTableBin( fun, buf, plist )
 		    /* 64-bit int */
 		case TY_LONG:
 #if HAVE_LONG_LONG == 0
-		    gerror( stderr,
-		            "64-bit data support not built (long long not available)\n" );
+		    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		    if ( !dovcol ) {
 			if ( ( ( longlong * ) obuf )[index] >
-			     ( ( ( longlong * ) obuf )[index] +
-			       ( longlong ) vval ) ) {
+			     ( ( ( longlong * ) obuf )[index] + ( longlong ) vval ) ) {
 			    fun->overflow++;
 			}
 			else {
-			    ( ( longlong * ) obuf )[index] +=
-			        ( longlong ) vval;
+			    ( ( longlong * ) obuf )[index] += ( longlong ) vval;
 			}
 		    }
 		    else {
-			if ( fun->doblank
-			     && ( ( ( longlong * ) obuf )[index] ==
-			          fun->blank ) ) {
+			if ( fun->doblank && ( ( ( longlong * ) obuf )[index] == fun->blank ) ) {
 			    ;
 			}
 			else if ( itsnan ) {
 			    ( ( longlong * ) obuf )[index] = fun->blank;
 			}
 			else {
-			    ( ( longlong * ) obuf )[index] +=
-			        ( longlong ) vval;
+			    ( ( longlong * ) obuf )[index] += ( longlong ) vval;
 			}
 		    }
 		    break;
@@ -587,8 +534,7 @@ _FunTableBin( fun, buf, plist )
 		    break;
 		case TY_LONG:
 #if HAVE_LONG_LONG == 0
-		    gerror( stderr,
-		            "64-bit data support not built (long long not available)\n" );
+		    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		    ( ( longlong * ) obuf )[i] /= block2;
 		    break;
@@ -641,19 +587,14 @@ _FunTableBin( fun, buf, plist )
  * _FunImageExtract -- grab a blocked section of data from an array
  *
 */
-#ifdef ANSI_FUNC
 static void *
-_FunImageExtract( Fun fun, void *buf, int rstart, int rstop, char *plist )
-#else
-static void *
-_FunImageExtract( fun, buf, rstart, rstop, plist )
-     Fun fun;
-     void *buf;
-     int rstart;
-     int rstop;
-     char *plist;
-#endif
-{
+_FunImageExtract(
+    Fun fun,
+    void *buf,
+    int rstart,
+    int rstop,
+    char *plist
+ ) {
     int i, j, k;
     int ox, oy;
     int convert;
@@ -692,13 +633,11 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 
     /* make sure we have valid dimensions */
     if ( fun->odim1 <= 0 ) {
-	gerror( stderr, "invalid dim1 (%d) from x0,x1=%d,%d\n",
-	        fun->odim1, fun->x0, fun->x1 );
+	gerror( stderr, "invalid dim1 (%d) from x0,x1=%d,%d\n", fun->odim1, fun->x0, fun->x1 );
 	return NULL;
     }
     if ( ( fun->dims > 1 ) && ( fun->odim2 <= 0 ) ) {
-	gerror( stderr, "invalid dim2 (%d) from y0,y1=%d,%d\n",
-	        fun->odim2, fun->y0, fun->y1 );
+	gerror( stderr, "invalid dim2 (%d) from y0,y1=%d,%d\n", fun->odim2, fun->y0, fun->y1 );
 	return NULL;
     }
 
@@ -749,9 +688,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
     if ( buf )
 	obuf = buf;
     else {
-	obuf =
-	    ( char * ) xcalloc( fun->odim1 * ( rstop - rstart + 1 ),
-	                        ABS( fun->odtype ) );
+	obuf = ( char * ) xcalloc( fun->odim1 * ( rstop - rstart + 1 ), ABS( fun->odtype ) );
 	if ( !obuf ) {
 	    gerror( stderr, "can't allocate image buffer (%dx%dx%d)\n",
 	            fun->odim1, ( rstop - rstart + 1 ), ABS( fun->odtype ) );
@@ -762,9 +699,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
     /* allocate some row buffers: number of bufs is equal to the block factor */
     bufs = ( char ** ) xmalloc( fun->block * sizeof( char * ) );
     for ( i = 0; i < fun->block; i++ ) {
-	bufs[i] =
-	    ( char * ) xmalloc( ( fun->x1 - fun->x0 + 1 ) *
-	                        ABS( fun->dtype ) );
+	bufs[i] = ( char * ) xmalloc( ( fun->x1 - fun->x0 + 1 ) * ABS( fun->dtype ) );
     }
 
     /* for all rows in the output image (or image section) ... */
@@ -775,8 +710,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 	    /* calculate specific y line we are processing */
 	    i = ( fun->y0 - 1 ) + ( ( oy - 1 ) * fun->block ) + j;
 	    /* calculate the new position into the data */
-	    newpos =
-	        ( ( i * fun->dim1 ) + ( fun->x0 - 1 ) ) * ABS( fun->dtype );
+	    newpos = ( ( i * fun->dim1 ) + ( fun->x0 - 1 ) ) * ABS( fun->dtype );
 	    /* skip to new position */
 	    if ( gskip( fun->gio, newpos - fun->curpos ) < 0 ) {
 		gerror( stderr,
@@ -786,8 +720,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 		return ( NULL );
 	    }
 	    /* read the row */
-	    _gread( fun->gio, bufs[j], ABS( fun->dtype ),
-	            ( fun->x1 - fun->x0 + 1 ), &got );
+	    _gread( fun->gio, bufs[j], ABS( fun->dtype ), ( fun->x1 - fun->x0 + 1 ), &got );
 	    /* check for EOF */
 	    if ( got != ( size_t ) ( fun->x1 - fun->x0 + 1 ) ) {
 		gerror( stderr, "unexpected EOF reading data\n" );
@@ -816,9 +749,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 			    if ( fun->doblank && ( cval == fun->blank ) )
 				goto blank;
 			    if ( doscale )
-				val +=
-			            ( ( double ) cval * fun->bscale ) +
-			            fun->bzero;
+				val += ( ( double ) cval * fun->bscale ) + fun->bzero;
 			    else
 				val += ( double ) cval;
 			    break;
@@ -827,9 +758,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 			    if ( fun->doblank && ( usval == fun->blank ) )
 				goto blank;
 			    if ( doscale )
-				val +=
-			            ( ( double ) usval * fun->bscale ) +
-			            fun->bzero;
+				val += ( ( double ) usval * fun->bscale ) + fun->bzero;
 			    else
 				val += ( double ) usval;
 			    break;
@@ -838,9 +767,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 			    if ( fun->doblank && ( sval == fun->blank ) )
 				goto blank;
 			    if ( doscale )
-				val +=
-			            ( ( double ) sval * fun->bscale ) +
-			            fun->bzero;
+				val += ( ( double ) sval * fun->bscale ) + fun->bzero;
 			    else
 				val += ( double ) sval;
 			    break;
@@ -849,9 +776,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 			    if ( fun->doblank && ( ival == fun->blank ) )
 				goto blank;
 			    if ( doscale )
-				val +=
-			            ( ( double ) ival * fun->bscale ) +
-			            fun->bzero;
+				val += ( ( double ) ival * fun->bscale ) + fun->bzero;
 			    else
 				val += ( double ) ival;
 			    break;
@@ -866,9 +791,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 				goto blank;
 			    /* probably going to lose precision here */
 			    if ( doscale )
-				vall +=
-			            ( ( double ) lval * fun->bscale ) +
-			            fun->bzero;
+				vall += ( ( double ) lval * fun->bscale ) + fun->bzero;
 			    else
 				vall += lval;
 			    break;
@@ -901,12 +824,10 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 	    if ( fun->dtype == TY_LONG ) {
 		switch ( fun->odtype ) {
 		    case TY_CHAR:
-			( ( unsigned char * ) obuf )[yoff + ox] =
-			    ( unsigned char ) vall;
+			( ( unsigned char * ) obuf )[yoff + ox] = ( unsigned char ) vall;
 			break;
 		    case TY_USHORT:
-			( ( unsigned short * ) obuf )[yoff + ox] =
-			    ( unsigned short ) vall;
+			( ( unsigned short * ) obuf )[yoff + ox] = ( unsigned short ) vall;
 			break;
 		    case TY_SHORT:
 			( ( short * ) obuf )[yoff + ox] = ( short ) vall;
@@ -919,8 +840,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 			gerror( stderr,
 			        "64-bit data support not built (long long not available)\n" );
 #endif
-			( ( longlong * ) obuf )[yoff + ox] =
-			    ( longlong ) vall;
+			( ( longlong * ) obuf )[yoff + ox] = ( longlong ) vall;
 			break;
 		    case TY_FLOAT:
 			( ( float * ) obuf )[yoff + ox] = ( float ) vall;
@@ -935,12 +855,10 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 	    else {
 		switch ( fun->odtype ) {
 		    case TY_CHAR:
-			( ( unsigned char * ) obuf )[yoff + ox] =
-			    ( unsigned char ) val;
+			( ( unsigned char * ) obuf )[yoff + ox] = ( unsigned char ) val;
 			break;
 		    case TY_USHORT:
-			( ( unsigned short * ) obuf )[yoff + ox] =
-			    ( unsigned short ) val;
+			( ( unsigned short * ) obuf )[yoff + ox] = ( unsigned short ) val;
 			break;
 		    case TY_SHORT:
 			( ( short * ) obuf )[yoff + ox] = ( short ) val;
@@ -986,8 +904,7 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
 		    break;
 		case TY_LONG:
 #if HAVE_LONG_LONG == 0
-		    gerror( stderr,
-		            "64-bit data support not built (long long not available)\n" );
+		    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		    ( ( longlong * ) obuf )[yoff + ox] = fun->blank;
 		    break;
@@ -1031,22 +948,16 @@ _FunImageExtract( fun, buf, rstart, rstop, plist )
  */
 
 
-#ifdef ANSI_FUNC
 void *
-_FunImageMask( Fun fun, void *buf, int rstart, int rstop,
-               FilterMask masks, int nmask, char *plist )
-#else
-void *
-_FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
-     Fun fun;
-     void *buf;
-     int rstart;
-     int rstop;
-     FilterMask masks;
-     int nmask;
-     char *plist;
-#endif
-{
+_FunImageMask(
+    Fun fun,
+    void *buf,
+    int rstart,
+    int rstop,
+    FilterMask masks,
+    int nmask,
+    char *plist
+ ) {
     int len;
     int i, n;
     int pixsize;
@@ -1097,9 +1008,7 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
     if ( buf )
 	obuf = buf;
     else {
-	obuf =
-	    ( char * ) xcalloc( fun->odim1 * ( rstop - rstart + 1 ),
-	                        ABS( dtype ) );
+	obuf = ( char * ) xcalloc( fun->odim1 * ( rstop - rstart + 1 ), ABS( dtype ) );
 	if ( !obuf ) {
 	    gerror( stderr, "can't allocate image buffer (%dx%dx%d)\n",
 	            fun->odim1, ( rstop - rstart + 1 ), ABS( fun->odtype ) );
@@ -1134,17 +1043,13 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
 	x = 1;
 	while ( 1 ) {
 	    /* clear columns before the start of this segment */
-	    optr =
-	        ( char * ) obuf + ( ( y - rstart ) * rowsize ) +
-	        ( ( x - 1 ) * pixsize );
+	    optr = ( char * ) obuf + ( ( y - rstart ) * rowsize ) + ( ( x - 1 ) * pixsize );
 	    if ( ( len = ( masks[n].xstart - x ) * pixsize ) > 0 )
 		memset( optr, 0, len );
 	    x = masks[n].xstart;
 	    /* if flag is set, we set the pixel values to be the region id */
 	    if ( flag ) {
-		optr =
-		    ( char * ) obuf + ( ( y - rstart ) * rowsize ) +
-		    ( ( x - 1 ) * pixsize );
+		optr = ( char * ) obuf + ( ( y - rstart ) * rowsize ) + ( ( x - 1 ) * pixsize );
 		for ( x = masks[n].xstart; x <= masks[n].xstop; x++ ) {
 		    switch ( dtype ) {
 			case TY_CHAR:
@@ -1152,8 +1057,7 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
 			    optr += pixsize;
 			    break;
 			case TY_USHORT:
-			    *( ( unsigned short * ) optr ) =
-			        ( unsigned short ) masks[n].region;
+			    *( ( unsigned short * ) optr ) = ( unsigned short ) masks[n].region;
 			    optr += pixsize;
 			    break;
 			case TY_SHORT:
@@ -1169,8 +1073,7 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
 			    gerror( stderr,
 			            "64-bit data support not built (long long not available)\n" );
 #endif
-			    *( ( longlong * ) optr ) =
-			        ( longlong ) masks[n].region;
+			    *( ( longlong * ) optr ) = ( longlong ) masks[n].region;
 			    optr += pixsize;
 			    break;
 			case TY_FLOAT:
@@ -1178,8 +1081,7 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
 			    optr += pixsize;
 			    break;
 			case TY_DOUBLE:
-			    *( ( double * ) optr ) =
-			        ( double ) masks[n].region;
+			    *( ( double * ) optr ) = ( double ) masks[n].region;
 			    optr += pixsize;
 			    break;
 			default:
@@ -1197,9 +1099,7 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
 		break;
 	}
 	/* clear the rest of the columns for this y row */
-	optr =
-	    ( char * ) obuf + ( ( y - rstart ) * rowsize ) +
-	    ( ( x - 1 ) * pixsize );
+	optr = ( char * ) obuf + ( ( y - rstart ) * rowsize ) + ( ( x - 1 ) * pixsize );
 	if ( ( len = ( fun->odim1 - x + 1 ) * pixsize ) > 0 )
 	    memset( optr, 0, len );
 	/* bump to next y row */
@@ -1207,8 +1107,7 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
     }
 
     /* clear y rows after last row containing a mask segment */
-    for ( y = ( nmask ? MAX( rstart, masks[nmask - 1].y + 1 ) : rstart );
-          y <= rstop; y++ ) {
+    for ( y = ( nmask ? MAX( rstart, masks[nmask - 1].y + 1 ) : rstart ); y <= rstop; y++ ) {
 	optr = ( char * ) obuf + ( ( y - rstart ) * rowsize );
 	memset( optr, 0, rowsize );
     }
@@ -1224,16 +1123,13 @@ _FunImageMask( fun, buf, rstart, rstop, masks, nmask, plist )
  * used by FunImagePut and sometimes FunFlush (if no Put was done)
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunImagePutHeader( Fun fun, int dim1, int dim2, int bitpix )
-#else
-int
-_FunImagePutHeader( fun, dim1, dim2, bitpix )
-     Fun fun;
-     int dim1, dim2, bitpix;
-#endif
-{
+_FunImagePutHeader(
+    Fun fun,
+    int dim1,
+    int dim2,
+    int bitpix
+ ) {
     int i;
     int extver = 1;
     int domerge = 0;
@@ -1252,26 +1148,20 @@ _FunImagePutHeader( fun, dim1, dim2, bitpix )
 		/* note that we may not have a header yet -- make one here */
 		if ( !fun->header ) {
 		    fun->header = ft_headinit( NULL, 0 );
-		    ft_headsetl( fun->header, "SIMPLE", 0, 1, "FITS STANDARD",
-		                 1 );
+		    ft_headsetl( fun->header, "SIMPLE", 0, 1, "FITS STANDARD", 1 );
 		}
 		/* add the passed dim and bitpix values */
-		ft_headseti( fun->header, "BITPIX", 0, bitpix, "Bits/pixel",
-		             1 );
+		ft_headseti( fun->header, "BITPIX", 0, bitpix, "Bits/pixel", 1 );
 		if ( dim2 ) {
 		    ft_headseti( fun->header, "NAXIS", 0, 2, "2-D image", 1 );
-		    ft_headseti( fun->header, "NAXIS", 1, dim1,
-		                 "Axis 1 dimension", 1 );
-		    ft_headseti( fun->header, "NAXIS", 2, dim2,
-		                 "Axis 2 dimension", 1 );
+		    ft_headseti( fun->header, "NAXIS", 1, dim1, "Axis 1 dimension", 1 );
+		    ft_headseti( fun->header, "NAXIS", 2, dim2, "Axis 2 dimension", 1 );
 		}
 		else {
 		    ft_headseti( fun->header, "NAXIS", 0, 1, "1-D image", 1 );
-		    ft_headseti( fun->header, "NAXIS", 1, dim1,
-		                 "Axis 1 dimension", 1 );
+		    ft_headseti( fun->header, "NAXIS", 1, dim1, "Axis 1 dimension", 1 );
 		}
-		ft_headsetl( fun->header, "EXTEND", 0, 1,
-		             "Standard extensions might follow", 1 );
+		ft_headsetl( fun->header, "EXTEND", 0, 1, "Standard extensions might follow", 1 );
 		/* synchronize the header and the cards after any changes */
 		ft_syncdata( fun->header );
 		/* fill in values */
@@ -1297,19 +1187,15 @@ _FunImagePutHeader( fun, dim1, dim2, bitpix )
 	/* if something is already written, this is an image extension */
 	if ( fun->primio || gtell( fun->gio ) > 0 ) {
 	    /* required after naxis */
-	    ft_headseti( fun->header, "PCOUNT", 0, 0,
-	                 "Random parameter count", 1 );
+	    ft_headseti( fun->header, "PCOUNT", 0, 0, "Random parameter count", 1 );
 	    ft_headseti( fun->header, "GCOUNT", 0, 1, "Group count", 1 );
 	    /* convert first card to a FITS image extension */
 	    ft_cardfmt( ( FITSCard ) fun->header->cards,
-	                "XTENSION", 0, FT_STRING, "IMAGE", 0,
-	                "FITS Image Extension" );
+	                "XTENSION", 0, FT_STRING, "IMAGE", 0, "FITS Image Extension" );
 	    if ( !ft_headfind( fun->header, "EXTNAME", 0, 0 ) )
-		ft_headsets( fun->header, "EXTNAME", 0, extname, "Ext. name",
-	                     1 );
+		ft_headsets( fun->header, "EXTNAME", 0, extname, "Ext. name", 1 );
 	    if ( !ft_headfind( fun->header, "EXTVER", 0, 0 ) )
-		ft_headseti( fun->header, "EXTVER", 0, extver, "Ext. version",
-	                     1 );
+		ft_headseti( fun->header, "EXTVER", 0, extver, "Ext. version", 1 );
 	    /* delete EXTEND keyword, which is for primary only */
 	    if ( ft_headfind( fun->header, "EXTEND", 0, 0 ) )
 		ft_headdel( fun->header, "EXTEND", 0 );
@@ -1372,17 +1258,12 @@ _FunImagePutHeader( fun, dim1, dim2, bitpix )
  *
  */
 
-#ifdef ANSI_FUNC
 void *
-FunImageGet( Fun fun, void *buf, char *plist )
-#else
-void *
-FunImageGet( fun, buf, plist )
-     Fun fun;
-     void *buf;
-     char *plist;
-#endif
-{
+FunImageGet(
+    Fun fun,
+    void *buf,
+    char *plist
+ ) {
     int domask;
     int doimage;
     int imagetable;
@@ -1440,8 +1321,7 @@ FunImageGet( fun, buf, plist )
     /* pick the appropriate routine for tables and/or images */
     if ( doimage ) {
 	if ( fun->header->image ) {
-	    obuf =
-	        _FunImageExtract( fun, buf, 1, MAX( fun->odim2, 1 ), plist );
+	    obuf = _FunImageExtract( fun, buf, 1, MAX( fun->odim2, 1 ), plist );
 	}
 	else if ( fun->header->table ) {
 	    obuf = _FunTableBin( fun, buf, plist );
@@ -1488,8 +1368,7 @@ FunImageGet( fun, buf, plist )
 		if ( fun->filt && ( fun->filt != NOFILTER ) ) {
 		    fun->nmask = FilterImage( fun->filt,
 		                              fun->x0, fun->x1, fun->y0,
-		                              fun->y1, fun->block,
-		                              &( fun->masks ), NULL );
+		                              fun->y1, fun->block, &( fun->masks ), NULL );
 		}
 	    }
 	    /* perform the filter, if necessary */
@@ -1517,19 +1396,14 @@ FunImageGet( fun, buf, plist )
     return obuf;
 }
 
-#ifdef ANSI_FUNC
 void *
-FunImageRowGet( Fun fun, void *buf, int rstart, int rstop, char *plist )
-#else
-void *
-FunImageRowGet( fun, buf, rstart, rstop, plist )
-     Fun fun;
-     void *buf;
-     int rstart;
-     int rstop;
-     char *plist;
-#endif
-{
+FunImageRowGet(
+    Fun fun,
+    void *buf,
+    int rstart,
+    int rstop,
+    char *plist
+ ) {
     int domask;
     int doimage;
     char *pbuf;
@@ -1623,14 +1497,12 @@ FunImageRowGet( fun, buf, rstart, rstop, plist )
 		if ( fun->filt && ( fun->filt != NOFILTER ) ) {
 		    fun->nmask = FilterImage( fun->filt,
 		                              fun->x0, fun->x1, fun->y0,
-		                              fun->y1, fun->block,
-		                              &( fun->masks ), NULL );
+		                              fun->y1, fun->block, &( fun->masks ), NULL );
 		}
 	    }
 	    /* perform the filter, if necessary */
 	    if ( fun->filt && ( fun->filt != NOFILTER ) ) {
-		obuf = _FunImageMask( fun, obuf, rstart, rstop,
-		                      fun->masks, fun->nmask, plist );
+		obuf = _FunImageMask( fun, obuf, rstart, rstop, fun->masks, fun->nmask, plist );
 	    }
 	}
     }
@@ -1642,23 +1514,17 @@ FunImageRowGet( fun, buf, rstart, rstop, plist )
     return obuf;
 }
 
-#ifdef ANSI_FUNC
 static int
-_FunImagePut( Fun fun, void *buf, int rstart, int rstop,
-              int dim1, int dim2, int bitpix, char *plist )
-#else
-static int
-_FunImagePut( fun, buf, rstart, rstop, dim1, dim2, bitpix, plist )
-     Fun fun;
-     void *buf;
-     int rstart;
-     int rstop;
-     int dim1;
-     int dim2;
-     int bitpix;
-     char *plist;
-#endif
-{
+_FunImagePut(
+    Fun fun,
+    void *buf,
+    int rstart,
+    int rstop,
+    int dim1,
+    int dim2,
+    int bitpix,
+    char *plist
+ ) {
     char tbuf[SZ_LINE];
     char *pbuf;
     char *zbuf;
@@ -1712,8 +1578,7 @@ _FunImagePut( fun, buf, rstart, rstop, dim1, dim2, bitpix, plist )
 	newpos = ( ( rstart - 1 ) * dim1 ) * ABS( fun->dtype );
 	if ( gskip( fun->gio, newpos - fun->curpos ) < 0 ) {
 	    gerror( stderr,
-	            "FunImagePut can't seek %d bytes into image data\n",
-	            newpos - fun->curpos );
+	            "FunImagePut can't seek %d bytes into image data\n", newpos - fun->curpos );
 	    return 0;
 	}
 	fun->curpos = newpos;
@@ -1747,39 +1612,28 @@ _FunImagePut( fun, buf, rstart, rstop, dim1, dim2, bitpix, plist )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 int
-FunImagePut( Fun fun, void *buf, int dim1, int dim2, int bitpix, char *plist )
-#else
-int
-FunImagePut( fun, buf, dim1, dim2, bitpix, plist )
-     Fun fun;
-     void *buf;
-     int dim1;
-     int dim2;
-     int bitpix;
-     char *plist;
-#endif
-{
+FunImagePut(
+    Fun fun,
+    void *buf,
+    int dim1,
+    int dim2,
+    int bitpix,
+    char *plist
+ ) {
     return _FunImagePut( fun, buf, 0, 0, dim1, dim2, bitpix, plist );
 }
 
-#ifdef ANSI_FUNC
 int
-FunImageRowPut( Fun fun, void *buf, int rstart, int rstop, int dim1, int dim2,
-                int bitpix, char *plist )
-#else
-int
-FunImageRowPut( fun, buf, rstart, rstop, dim1, dim2, bitpix, plist )
-     Fun fun;
-     void *buf;
-     int rstart;
-     int rstop;
-     int dim1;
-     int dim2;
-     int bitpix;
-     char *plist;
-#endif
-{
+FunImageRowPut(
+    Fun fun,
+    void *buf,
+    int rstart,
+    int rstop,
+    int dim1,
+    int dim2,
+    int bitpix,
+    char *plist
+ ) {
     return _FunImagePut( fun, buf, rstart, rstop, dim1, dim2, bitpix, plist );
 }

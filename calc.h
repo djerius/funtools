@@ -12,6 +12,11 @@
 
 #include <prsetup.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 #ifndef FUNCALC_CC
 #define FUNCALC_CC NULL
 #endif
@@ -27,10 +32,10 @@
 #define FUNCALC_SED            "funcalc.sed"
 
 /* library declarations */
-_PRbeg
+void _CalcCat (char *str, char **ostr, int *olen);
 
-void _CalcCat _PRx((char *str, char **ostr, int *olen));
-
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __funtools.h */

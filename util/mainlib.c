@@ -29,16 +29,11 @@ extern int optind;
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 static int
-Pipe2Buf( int fd, char **buf )
-#else
-static int
-Pipe2Buf( fd, buf )
-     int fd;
-     char **buf;
-#endif
-{
+Pipe2Buf(
+    int fd,
+    char **buf
+ ) {
     int got;
     int clen = 0;
     int blen = 0;
@@ -91,16 +86,11 @@ Pipe2Buf( fd, buf )
  *
  *---------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 static void
-MainLibListAdd( MainLib ml, MainLibEntry mle )
-#else
-static void
-MainLibListAdd( ml, mle )
-     MainLib ml;
-     MainLibEntry mle;
-#endif
-{
+MainLibListAdd(
+    MainLib ml,
+    MainLibEntry mle
+ ) {
     MainLibEntry cur;
 
     if ( ml->head == NULL ) {
@@ -123,16 +113,11 @@ MainLibListAdd( ml, mle )
  *
  *---------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 static void
-MainLibListDel( MainLib ml, MainLibEntry mle )
-#else
-static void
-MainLibListDel( ml, mle )
-     MainLib ml;
-     MainLibEntry mle;
-#endif
-{
+MainLibListDel(
+    MainLib ml,
+    MainLibEntry mle
+ ) {
     MainLibEntry cur;
 
     /* remove from list of mainlibs */
@@ -168,17 +153,12 @@ MainLibListDel( ml, mle )
  *
  *---------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 MainLibEntry
-MainLibLookup( MainLib ml, char *xclass, char *name )
-#else
-MainLibEntry
-MainLibLookup( ml, xclass, name )
-     MainLib ml;
-     char *xclass;
-     char *name;
-#endif
-{
+MainLibLookup(
+    MainLib ml,
+    char *xclass,
+    char *name
+ ) {
     MainLibEntry cur;
 
     if ( !ml || ( !xclass && !name ) ) return NULL;
@@ -209,14 +189,10 @@ MainLibLookup( ml, xclass, name )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 MainLib
-MainLibNew( void )
-#else
-MainLib
-MainLibNew(  )
-#endif
-{
+MainLibNew(
+    void
+ ) {
     MainLib ml;
 
     /* allocate struct */
@@ -237,19 +213,14 @@ MainLibNew(  )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 MainLibEntry
-MainLibAdd( MainLib ml, char *xclass, char *name, MainLibProc proc, int type )
-#else
-MainLibEntry
-MainLibAdd( ml, xclass, name, proc, type )
-     MainLib ml;
-     char *xclass;
-     char *name;
-     MainLibProc proc;
-     int type;
-#endif
-{
+MainLibAdd(
+    MainLib ml,
+    char *xclass,
+    char *name,
+    MainLibProc proc,
+    int type
+ ) {
     MainLibEntry mle;
 
     /* sanity check */
@@ -257,7 +228,7 @@ MainLibAdd( ml, xclass, name, proc, type )
 
     /* allocate struct */
     if ( !( mle = ( MainLibEntry ) xcalloc( 1, sizeof( MainLibEntryRec ) ) ) )
-            return NULL;
+	return NULL;
     /* fill in the blanks */
     mle->xclass = xstrdup( xclass );
     mle->name = xstrdup( name );
@@ -279,18 +250,13 @@ MainLibAdd( ml, xclass, name, proc, type )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibProcess( MainLib ml, char *cmd, char **buf, char *mode )
-#else
-int
-MainLibProcess( ml, cmd, buf, mode )
-     MainLib ml;
-     char *cmd;
-     char **buf;
-     char *mode;
-#endif
-{
+MainLibProcess(
+    MainLib ml,
+    char *cmd,
+    char **buf,
+    char *mode
+ ) {
     int i, j;
     int got;
     int ncmd = 0;
@@ -367,8 +333,7 @@ MainLibProcess( ml, cmd, buf, mode )
 	if ( keyword( t, "stdout", tbuf, SZ_LINE ) ) ofd = atoi( tbuf );
 	if ( keyword( t, "stderr", tbuf, SZ_LINE ) ) efd = atoi( tbuf );
 	if ( keyword( t, "undef", tbuf, SZ_LINE ) ) undef = xstrdup( tbuf );
-	if ( keyword( t, "fillbuf", tbuf, SZ_LINE ) ) fillbuf =
-	        istrue( tbuf );
+	if ( keyword( t, "fillbuf", tbuf, SZ_LINE ) ) fillbuf = istrue( tbuf );
 	if ( keyword( t, "debug", tbuf, SZ_LINE ) ) debug = istrue( tbuf );
 #if HAVE_TCL
 	if ( keyword( t, "tcl", tbuf, SZ_LINE ) ) {
@@ -410,27 +375,19 @@ MainLibProcess( ml, cmd, buf, mode )
 			break;
 		    }
 #if HAVE_TCL
-		    else if ( use_tcl && ml->tcllookup
-		              && ml->tcllookup( tcl, ibuf2 ) ) {
-			mles[i] =
-			    MainLibAdd( ml, cmds[i], ibuf2, NULL,
-			                MAINLIB_TCL );
+		    else if ( use_tcl && ml->tcllookup && ml->tcllookup( tcl, ibuf2 ) ) {
+			mles[i] = MainLibAdd( ml, cmds[i], ibuf2, NULL, MAINLIB_TCL );
 			break;
 		    }
 #endif
-		    else if ( ( s =
-		                Find( ibuf2, "x", NULL,
-		                      mainlib_path ) ) != NULL ) {
-			mles[i] =
-			    MainLibAdd( ml, s, ibuf2, NULL, MAINLIB_EXTN );
+		    else if ( ( s = Find( ibuf2, "x", NULL, mainlib_path ) ) != NULL ) {
+			mles[i] = MainLibAdd( ml, s, ibuf2, NULL, MAINLIB_EXTN );
 			xfree( s );
 			break;
 		    }
 		}
 		if ( !mles[i] ) {
-		    gerror( stderr,
-		            "can't locate procedure '%s' for mainlib\n",
-		            ibuf );
+		    gerror( stderr, "can't locate procedure '%s' for mainlib\n", ibuf );
 		    got = -1;
 		    goto done;
 		}
@@ -438,28 +395,19 @@ MainLibProcess( ml, cmd, buf, mode )
 #ifdef OLD
 	    switch ( mainlibundef ) {
 		case MAINLIB_ERROR:
-		    gerror( stderr,
-		            "can't locate procedure '%s' for mainlib\n",
-		            ibuf );
+		    gerror( stderr, "can't locate procedure '%s' for mainlib\n", ibuf );
 		    got = -1;
 		    goto done;
 		case MAINLIB_EXTN:
-		    if ( ( s =
-		           Find( ibuf2, "x", NULL,
-		                 mainlib_path ) ) != NULL ) {
-			mles[i] =
-			    MainLibAdd( ml, s, ibuf2, NULL, MAINLIB_EXTN );
+		    if ( ( s = Find( ibuf2, "x", NULL, mainlib_path ) ) != NULL ) {
+			mles[i] = MainLibAdd( ml, s, ibuf2, NULL, MAINLIB_EXTN );
 			xfree( s );
 		    }
 		    else
-			gerror( stderr,
-		                "can't locate procedure '%s' for mainlib\n",
-		                ibuf );
+			gerror( stderr, "can't locate procedure '%s' for mainlib\n", ibuf );
 		    break;
 		default:
-		    gerror( stderr,
-		            "can't locate procedure '%s' for mainlib\n",
-		            ibuf );
+		    gerror( stderr, "can't locate procedure '%s' for mainlib\n", ibuf );
 		    got = -1;
 		    goto done;
 	    }
@@ -474,8 +422,7 @@ MainLibProcess( ml, cmd, buf, mode )
 	    nowhite( ibuf, ibuf2 );
 	    if ( *ibuf2 ) {
 		if ( nargs[i] >= ( MAINLIB_ARGS - 1 ) ) {
-		    gerror( stderr, "max args exceeded (%d) for mainlib\n",
-		            nargs[i] );
+		    gerror( stderr, "max args exceeded (%d) for mainlib\n", nargs[i] );
 		    got = -1;
 		    goto done;
 		}
@@ -562,26 +509,21 @@ MainLibProcess( ml, cmd, buf, mode )
 	    switch ( mles[i]->type ) {
 		case MAINLIB_ARGV:
 		    if ( debug )
-			fprintf( stderr, "Executing MainLib: %s\n",
-		                 args[i * MAINLIB_ARGS] );
+			fprintf( stderr, "Executing MainLib: %s\n", args[i * MAINLIB_ARGS] );
 		    mles[i]->proc( nargs[i], &args[i * MAINLIB_ARGS] );
 		    break;
 		case MAINLIB_EXTN:
 		    if ( debug )
-			fprintf( stderr, "Executing external program: %s\n",
-		                 mles[i]->xclass );
+			fprintf( stderr, "Executing external program: %s\n", mles[i]->xclass );
 		    if ( mles[i]->xclass )
-			execvp( mles[i]->xclass,
-		                ( void * ) &args[i * MAINLIB_ARGS] );
+			execvp( mles[i]->xclass, ( void * ) &args[i * MAINLIB_ARGS] );
 		    else
-			execvp( mles[i]->name,
-		                ( void * ) &args[i * MAINLIB_ARGS] );
+			execvp( mles[i]->name, ( void * ) &args[i * MAINLIB_ARGS] );
 		    break;
 #if HAVE_TCL
 		case MAINLIB_TCL:
 		    if ( debug )
-			fprintf( stderr, "Executing Tcl proc: %s\n",
-		                 mles[i]->xclass );
+			fprintf( stderr, "Executing Tcl proc: %s\n", mles[i]->xclass );
 		    if ( use_tcl && ml->tcleval ) {
 			ml->tcleval( tcl, mles[i]->xclass );
 		    }
@@ -627,7 +569,7 @@ MainLibProcess( ml, cmd, buf, mode )
     for ( i = 1; i <= ncmd; i++ ) {
 	for ( j = 0; j < nargs[i]; j++ ) {
 	    if ( args[i * MAINLIB_ARGS + j] )
-	            xfree( args[i * MAINLIB_ARGS + j] );
+		xfree( args[i * MAINLIB_ARGS + j] );
 	}
 	if ( cmds[i] ) xfree( cmds[i] );
     }
@@ -648,15 +590,10 @@ MainLibProcess( ml, cmd, buf, mode )
  *
  *---------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibProcessCleanup( MainLib ml )
-#else
-int
-MainLibProcessCleanup( ml )
-     MainLib ml;
-#endif
-{
+MainLibProcessCleanup(
+    MainLib ml
+ ) {
     int i;
     int status;
 
@@ -684,16 +621,11 @@ MainLibProcessCleanup( ml )
  *
  *---------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibDel( MainLib ml, MainLibEntry mle )
-#else
-int
-MainLibDel( ml, mle )
-     MainLib ml;
-     MainLibEntry mle;
-#endif
-{
+MainLibDel(
+    MainLib ml,
+    MainLibEntry mle
+ ) {
 
     /* make sure we have something to do */
     if ( !ml || !mle ) return -1;
@@ -722,15 +654,10 @@ MainLibDel( ml, mle )
  *
  *---------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibFree( MainLib ml )
-#else
-int
-MainLibFree( ml )
-     MainLib ml;
-#endif
-{
+MainLibFree(
+    MainLib ml
+ ) {
     MainLibEntry mle, tmle;
 
     /* sanity check */
@@ -764,18 +691,13 @@ MainLibFree( ml )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibLoad( char *name, char *shlib, void **ml, char **ermsg )
-#else
-int
-MainLibLoad( name, shlib, ml, ermsg )
-     char *name;
-     char *shlib;
-     void **ml;
-     char **ermsg;
-#endif
-{
+MainLibLoad(
+    char *name,
+    char *shlib,
+    void **ml,
+    char **ermsg
+ ) {
 #if HAVE_DLFCN_H
     char tbuf[SZ_LINE];
     MainLibInitCall irtn = NULL;
@@ -814,8 +736,7 @@ MainLibLoad( name, shlib, ml, ermsg )
     tml->dl = tdl;
 
     /* look up and return MainLibProcess funtion, if it exists */
-    tml->mainlibprocess =
-        ( MainLibProcessCall ) dlsym( tml->dl, "MainLibProcess" );
+    tml->mainlibprocess = ( MainLibProcessCall ) dlsym( tml->dl, "MainLibProcess" );
 
     /* store MainLib record */
     *ml = tml;

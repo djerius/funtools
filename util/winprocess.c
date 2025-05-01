@@ -40,7 +40,9 @@ static WPROC wprtable[MAXPROCS];
 
 /* WPR_FINDPROCESS -- Search the process table for a process */
 static WPROC *
-wpr_findprocess( HANDLE process ) {
+wpr_findprocess(
+    HANDLE process
+ ) {
     register int wpr;
     for ( wpr = 0; wpr < MAXPROCS; wpr++ ) {
 	if ( wprtable[wpr].hProcess == process ) {
@@ -52,7 +54,11 @@ wpr_findprocess( HANDLE process ) {
 
 /* WPR_ENTER -- Make a new entry in the process table. */
 static int
-wpr_enter( HANDLE process, HANDLE ichan, HANDLE ochan ) {
+wpr_enter(
+    HANDLE process,
+    HANDLE ichan,
+    HANDLE ochan
+ ) {
     register int wpr;
 
     for ( wpr = 0; wpr < MAXPROCS; wpr++ ) {
@@ -68,7 +74,11 @@ wpr_enter( HANDLE process, HANDLE ichan, HANDLE ochan ) {
 
 /* WPR_GETCHAN -- Get the codes for the IPC channels assigned to a process */
 static HANDLE
-wpr_getchan( HANDLE process, HANDLE * ichan, HANDLE * ochan ) {
+wpr_getchan(
+    HANDLE process,
+    HANDLE * ichan,
+    HANDLE * ochan
+ ) {
     register WPROC *wpr;
 
     /* Lookup process in table.  Return an error if there is no entry */
@@ -85,7 +95,9 @@ wpr_getchan( HANDLE process, HANDLE * ichan, HANDLE * ochan ) {
 /* WPR_RELEASE -- Release the table entry for the process.  Used when a process
  * is killed and we do not wish to wait for process termination */
 static void
-wpr_release( HANDLE process ) {
+wpr_release(
+    HANDLE process
+ ) {
     register WPROC *wpr;
 
     if ( ( wpr = wpr_findprocess( process ) ) != NULL ) {
@@ -103,7 +115,12 @@ wpr_release( HANDLE process ) {
  */
 
 int
-WinProcessOpen( char *cmd, HANDLE * ichan, HANDLE * ochan, HANDLE * process ) {
+WinProcessOpen(
+    char *cmd,
+    HANDLE * ichan,
+    HANDLE * ochan,
+    HANDLE * process
+ ) {
     HANDLE g_hChildStd_IN_Rd = NULL;
     HANDLE g_hChildStd_IN_Wr = NULL;
     HANDLE g_hChildStd_OUT_Rd = NULL;
@@ -161,8 +178,7 @@ WinProcessOpen( char *cmd, HANDLE * ichan, HANDLE * ochan, HANDLE * process ) {
     // check for errors and configure return values
     if ( bSuccess ) {
 	/* save process info for later */
-	wpr_enter( piProcInfo.hProcess, g_hChildStd_OUT_Rd,
-	           g_hChildStd_OUT_Rd );
+	wpr_enter( piProcInfo.hProcess, g_hChildStd_OUT_Rd, g_hChildStd_OUT_Rd );
 	// Close handles to the child process and its primary thread.
 	// Some applications might keep these handles to monitor the status
 	// of the child process, for example. 
@@ -193,7 +209,10 @@ WinProcessOpen( char *cmd, HANDLE * ichan, HANDLE * ochan, HANDLE * process ) {
  *
  */
 int
-WinProcessClose( void *vprocess, int *exit_status ) {
+WinProcessClose(
+    void *vprocess,
+    int *exit_status
+ ) {
     HANDLE ichan, ochan;
     HANDLE process = ( HANDLE ) vprocess;
 
@@ -222,7 +241,12 @@ WinProcessClose( void *vprocess, int *exit_status ) {
   *
 */
 void *
-WinProcessRead( void *vfd, void *buf, int maxbytes, int *got ) {
+WinProcessRead(
+    void *vfd,
+    void *buf,
+    int maxbytes,
+    int *got
+ ) {
     register char *op;
     register int nbytes;
     char *obuf;
@@ -297,7 +321,11 @@ WinProcessRead( void *vfd, void *buf, int maxbytes, int *got ) {
  *
 */
 int
-WinProcessWrite( void *vfd, void *buf, int nbytes ) {
+WinProcessWrite(
+    void *vfd,
+    void *buf,
+    int nbytes
+ ) {
     DWORD tgot;
     BOOL got;
     HANDLE fd = ( HANDLE ) vfd;

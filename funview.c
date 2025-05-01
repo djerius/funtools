@@ -40,7 +40,8 @@ typedef struct _rowstruct {
     char fmt[SZ_VIEW];
     char cols[SZ_VIEW];
     char filt[SZ_VIEW];
-}  *Row, RowRec;
+}  *Row,
+    RowRec;
 
 typedef struct _viewstruct {
     char *vname;
@@ -55,18 +56,14 @@ typedef struct _viewstruct {
     Row *rows;
     Row file, filt, cols, fmt;
     Row trow;
-}  *View, ViewRec;
+}  *View,
+    ViewRec;
 
-#ifdef ANSI_FUNC
 static int
-pathcmp( char *s1, char *s2 )
-#else
-static int
-pathcmp( s1, s2 )
-     char *s1;
-     char *s2;
-#endif
-{
+pathcmp(
+    char *s1,
+    char *s2
+ ) {
     char tbuf1[SZ_LINE];
     char tbuf2[SZ_LINE];
     char tbuf1a[SZ_LINE];
@@ -82,15 +79,10 @@ pathcmp( s1, s2 )
     return strcmp( tbuf1a, tbuf2a );
 }
 
-#ifdef ANSI_FUNC
 static int
-ViewFree( View view )
-#else
-static int
-ViewFree( view )
-     View view;
-#endif
-{
+ViewFree(
+    View view
+ ) {
     int i;
 
     /* sanity check */
@@ -117,21 +109,15 @@ ViewFree( view )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static View
-ViewNew( Fun fun, char *vname, char *vptr, char *vlist, char *dbname,
-         int dbmax )
-#else
-static View
-ViewNew( fun, vname, vptr, vlist, dbname, dbmax )
-     Fun fun;
-     char *vname;
-     char *vptr;
-     char *vlist;
-     char *dbname;
-     int dbmax;
-#endif
-{
+ViewNew(
+    Fun fun,
+    char *vname,
+    char *vptr,
+    char *vlist,
+    char *dbname,
+    int dbmax
+ ) {
     int ip = 0;
     char *s, *t;
     char *rmode = "r";
@@ -143,7 +129,7 @@ ViewNew( fun, vname, vptr, vlist, dbname, dbmax )
 
     /* look for view file in the usual places */
     if ( ( s = ( char * ) getenv( "FUN_VIEWFILE" ) )
-	 && ( t = Access( s, rmode ) ) ) {
+         && ( t = Access( s, rmode ) ) ) {
 	xfree( t );
 	goto gotv;
     }
@@ -216,12 +202,9 @@ ViewNew( fun, vname, vptr, vlist, dbname, dbmax )
 		view->maxlist += SZ_VIEW;
 		if ( view->vlist )
 		    view->vlist = ( char ** ) xrealloc( view->vlist,
-		                                        view->maxlist *
-		                                        sizeof( char ** ) );
+		                                        view->maxlist * sizeof( char ** ) );
 		else
-		    view->vlist =
-		        ( char ** ) xmalloc( view->maxlist *
-		                             sizeof( char ** ) );
+		    view->vlist = ( char ** ) xmalloc( view->maxlist * sizeof( char ** ) );
 	    }
 	    /* add this record to the array of matches */
 	    view->vlist[view->nlist++] = xstrdup( tbuf );
@@ -245,16 +228,11 @@ ViewNew( fun, vname, vptr, vlist, dbname, dbmax )
     return view;
 }
 
-#ifdef ANSI_FUNC
 static int
-ViewMatchRow( View view, Row row )
-#else
-static int
-ViewMatchRow( view, row )
-     View view;
-     Row row;
-#endif
-{
+ViewMatchRow(
+    View view,
+    Row row
+ ) {
     char *root = NULL;
 
     /* sanity check */
@@ -284,23 +262,16 @@ ViewMatchRow( view, row )
     return row->type;
 }
 
-#ifdef ANSI_FUNC
 static int
-ViewSaveRow( View view, Row row )
-#else
-static int
-ViewSaveRow( view, row )
-     View view;
-     Row row;
-#endif
-{
+ViewSaveRow(
+    View view,
+    Row row
+ ) {
     /* make sure we have enough space */
     if ( view->nrow >= view->maxrow ) {
 	view->maxrow += SZ_VIEW;
 	if ( view->rows )
-	    view->rows =
-	        ( Row * ) xrealloc( view->rows,
-	                            view->maxrow * sizeof( Row ) );
+	    view->rows = ( Row * ) xrealloc( view->rows, view->maxrow * sizeof( Row ) );
 	else
 	    view->rows = ( Row * ) xmalloc( view->maxrow * sizeof( Row ) );
     }
@@ -309,17 +280,12 @@ ViewSaveRow( view, row )
     return view->nrow;
 }
 
-#ifdef ANSI_FUNC
 static int
-ViewMatchList( View view, Row row, int dorow )
-#else
-static int
-ViewMatchList( view, row, dorow )
-     View view;
-     Row row;
-     int dorow;
-#endif
-{
+ViewMatchList(
+    View view,
+    Row row,
+    int dorow
+ ) {
     int i;
 
     /* sanity check */
@@ -341,17 +307,12 @@ ViewMatchList( view, row, dorow )
     return row->type;
 }
 
-#ifdef ANSI_FUNC
 static int
-ViewProcessMatches( View view, char *fname, int fmax )
-#else
-static int
-ViewProcessMatches( view, fname, fmax )
-     View view;
-     char *fname;
-     int fmax;
-#endif
-{
+ViewProcessMatches(
+    View view,
+    char *fname,
+    int fmax
+ ) {
     int i;
     int nv = 0;
     int nf = 0;
@@ -483,8 +444,7 @@ ViewProcessMatches( view, fname, fmax )
 	             strstr( s, "qtp" ) ||
 	             strstr( s, "pol" ) ||
 	             strstr( s, "fie" ) ||
-	             strstr( s, "bpa" ) ||
-	             strstr( s, "cpa" ) || strstr( s, "epa" ) ||
+	             strstr( s, "bpa" ) || strstr( s, "cpa" ) || strstr( s, "epa" ) ||
 		     /* guess at some sort of filter operation */
 		     strpbrk( s, "!&|~=<>+-/%^" ) ) {
 		    snprintf( fname, fmax, "%s%s", view->file->file, s );
@@ -492,8 +452,7 @@ ViewProcessMatches( view, fname, fmax )
 		/* otherwise add original + new filter, if we have one */
 		else {
 		    if ( view->filt && *view->filt->filt ) {
-			snprintf( fname, fmax, "%s%s[%s]",
-			          view->file->file, s, view->filt->filt );
+			snprintf( fname, fmax, "%s%s[%s]", view->file->file, s, view->filt->filt );
 		    }
 		    /* just add original */
 		    else {
@@ -505,8 +464,7 @@ ViewProcessMatches( view, fname, fmax )
 	    else {
 		/* otherwise new filter, if we have one */
 		if ( view->filt && *view->filt->filt ) {
-		    snprintf( fname, fmax, "%s[%s]", view->file->file,
-		              view->filt->filt );
+		    snprintf( fname, fmax, "%s[%s]", view->file->file, view->filt->filt );
 		}
 		/* just the file name */
 		else {
@@ -539,19 +497,14 @@ ViewProcessMatches( view, fname, fmax )
  * FunView -- translate view into a filename + view params
  *
  */
-#ifdef ANSI_FUNC
 int
-FunView( Fun fun, char *vname, char *vmode, char *fname, int fmax )
-#else
-int
-FunView( fun, vname, vmode, fname, fmax )
-     Fun fun;
-     char *vname;
-     char *vmode;
-     char *fname;
-     int fmax;
-#endif
-{
+FunView(
+    Fun fun,
+    char *vname,
+    char *vmode,
+    char *fname,
+    int fmax
+ ) {
     int nev = 0;
     int got = 0;
     int dorow = FUN_VIEW_DOROW_DEFAULT;

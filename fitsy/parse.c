@@ -1,11 +1,16 @@
 
 #include <stdio.h>
 
-char *strchr(  );
-char *strchr(  );
+char *strchr(
+ );
+char *strchr(
+ );
 
 
-main(  ) {
+int
+main(
+    void
+ ) {
     char filename[1024];
 
     char xsect[1024];
@@ -81,8 +86,7 @@ main(  ) {
 
 	    /* IMIO Image Section ?
 	     */
-	    if ( sscanf( k, "[%[-+0-9:*],%[-+0-9:*]]%n", xsect, ysect, &n ) ==
-	         2 && n == length ) {
+	    if ( sscanf( k, "[%[-+0-9:*],%[-+0-9:*]]%n", xsect, ysect, &n ) == 2 && n == length ) {
 		if ( !strcmp( xsect, "*" ) ) xsection = 1;
 		else if ( !strcmp( xsect, "-*" ) ) xsection = -1;
 		else if ( sscanf( xsect, "%d:%d", &x0, &x1 ) == 2 )

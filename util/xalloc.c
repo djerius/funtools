@@ -22,28 +22,19 @@
 
 static jmp_buf *xalloc_envptr = NULL;
 
-#ifdef ANSI_FUNC
 void
-xalloc_savejmp( jmp_buf * env )
-#else
-void
-xalloc_savejmp( env )
-     jmp_buf *env;
-#endif
-{
+xalloc_savejmp(
+    jmp_buf * env
+ ) {
     xalloc_envptr = env;
 }
 #endif
 
 
-#ifdef ANSI_FUNC
 static void
-_xalloc_error( void )
-#else
-static void
-_xalloc_error(  )
-#endif
-{
+_xalloc_error(
+    void
+ ) {
     write( 1, XALLOC_ERROR, strlen( XALLOC_ERROR ) );
 #if XALLOC_SETJMP
     if ( xalloc_envptr )
@@ -53,15 +44,10 @@ _xalloc_error(  )
 	exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 void *
-xmalloc( size_t n )
-#else
-void *
-xmalloc( n )
-     size_t n;
-#endif
-{
+xmalloc(
+    size_t n
+ ) {
     void *p;
 
     if ( !( p = ( void * ) malloc( n ) ) )
@@ -69,15 +55,11 @@ xmalloc( n )
     return p;
 }
 
-#ifdef ANSI_FUNC
 void *
-xcalloc( size_t n, size_t s )
-#else
-void *
-xcalloc( n, s )
-     size_t n, s;
-#endif
-{
+xcalloc(
+    size_t n,
+    size_t s
+ ) {
     void *p;
 
     if ( !( p = ( void * ) calloc( n, s ) ) )
@@ -85,16 +67,11 @@ xcalloc( n, s )
     return p;
 }
 
-#ifdef ANSI_FUNC
 void *
-xrealloc( void *p, size_t n )
-#else
-void *
-xrealloc( p, n )
-     void *p;
-     size_t n;
-#endif
-{
+xrealloc(
+    void *p,
+    size_t n
+ ) {
     if ( !p )
 	return xmalloc( n );
     if ( !( p = ( void * ) realloc( p, n ) ) )
@@ -102,32 +79,21 @@ xrealloc( p, n )
     return p;
 }
 
-#ifdef ANSI_FUNC
 void
-xfree( void *p )
-#else
-void
-xfree( p )
-     void *p;
-#endif
-{
+xfree(
+    void *p
+ ) {
     if ( p )
 	free( p );
 }
 
-#ifdef ANSI_FUNC
 char *
-xstrdup( char *s )
-#else
-char *
-xstrdup( s )
-     char *s;
-#endif
-{
+xstrdup(
+    char *s
+ ) {
     if ( s )
-	return ( ( char * )
-                 strcpy( ( char * ) xmalloc( ( size_t ) strlen( s ) + 1 ),
-                         s ) );
+        return ( ( char * )
+	         strcpy( ( char * ) xmalloc( ( size_t ) strlen( s ) + 1 ), s ) );
     else
 	return NULL;
 }

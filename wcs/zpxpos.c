@@ -74,10 +74,10 @@
  */
 
 int
-zpxinit( header, wcs )
-     const char *header;        /* FITS header */
-     struct WorldCoor *wcs;     /* pointer to WCS structure */
-{
+zpxinit(
+    const char *header,         /* FITS header */
+    struct WorldCoor *wcs       /* pointer to WCS structure */
+ ) {
     int i, j;
     char key[8], *str1, *str2, *lngstr, *latstr, *header1;
     double zd1, d1, zd2, d2, zd, d, r;
@@ -238,11 +238,13 @@ zpxinit( header, wcs )
 /* zpxpos -- forward transform (physical to world) gnomonic projection. */
 
 int
-zpxpos( xpix, ypix, wcs, xpos, ypos )
-     double xpix, ypix;         /*i physical coordinates (x, y) */
-     struct WorldCoor *wcs;     /*i pointer to WCS descriptor */
-     double *xpos, *ypos;       /*o world coordinates (ra, dec) */
-{
+zpxpos(
+    double xpix,
+    double ypix,                /*i physical coordinates (x, y) */
+    struct WorldCoor *wcs,      /*i pointer to WCS descriptor */
+    double *xpos,
+    double *ypos                /*o world coordinates (ra, dec) */
+ ) {
     int i, j, k, ira, idec;
     double x, y, r, phi, theta, costhe, sinthe, dphi, cosphi, sinphi, dlng, z;
     double colatp, coslatp, sinlatp, longp;
@@ -504,11 +506,13 @@ zpxpos( xpix, ypix, wcs, xpos, ypos )
  */
 
 int
-zpxpix( xpos, ypos, wcs, xpix, ypix )
-     double xpos, ypos;         /*i world coordinates (ra, dec) */
-     struct WorldCoor *wcs;     /*i pointer to WCS descriptor */
-     double *xpix, *ypix;       /*o physical coordinates (x, y) */
-{
+zpxpix(
+    double xpos,
+    double ypos,                /*i world coordinates (ra, dec) */
+    struct WorldCoor *wcs,      /*i pointer to WCS descriptor */
+    double *xpix,
+    double *ypix                /*o physical coordinates (x, y) */
+ ) {
     int i, ira, idec, niter;
     double ra, dec, cosdec, sindec, cosra, sinra, x, y, phi, theta;
     double s, r, dphi, z, dpi, dhalfpi, twopi, tx;
@@ -638,9 +642,7 @@ zpxpix( xpos, ypos, wcs, xpix, ypix )
 	    dy = ( -g * fx + f * gx ) / denom;
 	    x = x + dx;
 	    y = y + dy;
-	    if ( MAX
-	         ( MAX( fabs( dx ), fabs( dy ) ),
-	           MAX( fabs( f ), fabs( g ) ) ) < 2.80e-8 )
+	    if ( MAX( MAX( fabs( dx ), fabs( dy ) ), MAX( fabs( f ), fabs( g ) ) ) < 2.80e-8 )
 		break;
 
 	    niter = niter + 1;
@@ -692,10 +694,9 @@ zpxpix( xpos, ypos, wcs, xpix, ypix )
 /* ZPXCLOSE -- free up the distortion surface pointers */
 
 void
-zpxclose( wcs )
-     struct WorldCoor *wcs;     /* pointer to the WCS descriptor */
-
-{
+zpxclose(
+    struct WorldCoor *wcs       /* pointer to the WCS descriptor */
+ ) {
     if ( wcs->lngcor != NULL )
 	wf_gsclose( wcs->lngcor );
     if ( wcs->latcor != NULL )

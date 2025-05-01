@@ -73,7 +73,10 @@
  *
  */
 FITSHead
-ft_tableheader( char *eventdef, int nev ) {
+ft_tableheader(
+    char *eventdef,
+    int nev
+ ) {
     FITSHead header;
     char type[SZ_LINE];
     char name[SZ_LINE];
@@ -196,20 +199,16 @@ ft_tableheader( char *eventdef, int nev ) {
     ft_headseti( header, "NAXIS", 2, nev, "Number of entries in table", 1 );
     ft_headseti( header, "PCOUNT", 0, 0, "Random parameter count", 1 );
     ft_headseti( header, "GCOUNT", 0, 1, "Group count", 1 );
-    ft_headseti( header, "TFIELDS", 0, got, "Number of fields in each row",
-                 1 );
+    ft_headseti( header, "TFIELDS", 0, got, "Number of fields in each row", 1 );
     ft_headsets( header, "EXTNAME", 0, extname, "Table name", 1 );
     ft_headseti( header, "EXTVER", 0, extver, "Version number of table", 1 );
     /* info for each column */
     for ( i = 0; i < got; i++ ) {
-	ft_headsets( header, "TFORM", i + 1, types[i], "Data type for field",
-	             1 );
+	ft_headsets( header, "TFORM", i + 1, types[i], "Data type for field", 1 );
 	ft_headsets( header, "TTYPE", i + 1, names[i], "Label for field", 1 );
 	if ( dims[i] != NULL ) {
-	    ft_headseti( header, "TLMIN", i + 1, lodims[i], "Min. axis value",
-	                 1 );
-	    ft_headseti( header, "TLMAX", i + 1, hidims[i], "Max. axis value",
-	                 1 );
+	    ft_headseti( header, "TLMIN", i + 1, lodims[i], "Min. axis value", 1 );
+	    ft_headseti( header, "TLMAX", i + 1, hidims[i], "Max. axis value", 1 );
 	}
     }
 

@@ -23,14 +23,10 @@
 
 /* from Harbison&Steele by way of GNU cinfigure ...
    returns 1 for bigendian, 0 for littleendian */
-#ifdef ANSI_FUNC
 int
-is_bigendian( void )
-#else
-int
-is_bigendian(  )
-#endif
-{
+is_bigendian(
+    void
+ ) {
     union {
 	long l;
 	char c[sizeof( long )];
@@ -39,16 +35,11 @@ is_bigendian(  )
     return ( u.c[sizeof( long ) - 1] == 1 );
 }
 
-#ifdef ANSI_FUNC
 void
-swap_short( short *buf, int n )
-#else
-void
-swap_short( buf, n )
-     short *buf;
-     int n;
-#endif
-{
+swap_short(
+    short *buf,
+    int n
+ ) {
     int i;
     register short *ptr;
     short val;
@@ -61,16 +52,11 @@ swap_short( buf, n )
     }
 }
 
-#ifdef ANSI_FUNC
 void
-swap_ushort( unsigned short *buf, int n )
-#else
-void
-swap_ushort( buf, n )
-     unsigned short *buf;
-     int n;
-#endif
-{
+swap_ushort(
+    unsigned short *buf,
+    int n
+ ) {
     int i;
     register unsigned short *ptr;
     unsigned short val;
@@ -83,16 +69,11 @@ swap_ushort( buf, n )
     }
 }
 
-#ifdef ANSI_FUNC
 void
-swap_int( int *buf, int n )
-#else
-void
-swap_int( buf, n )
-     int *buf;
-     int n;
-#endif
-{
+swap_int(
+    int *buf,
+    int n
+ ) {
     int i;
     register int *ptr;
     int val;
@@ -107,16 +88,11 @@ swap_int( buf, n )
     }
 }
 
-#ifdef ANSI_FUNC
 void
-swap_uint( unsigned int *buf, int n )
-#else
-void
-swap_uint( buf, n )
-     unsigned int *buf;
-     int n;
-#endif
-{
+swap_uint(
+    unsigned int *buf,
+    int n
+ ) {
     int i;
     register unsigned int *ptr;
     unsigned int val;
@@ -131,16 +107,11 @@ swap_uint( buf, n )
     }
 }
 
-#ifdef ANSI_FUNC
 void
-swap_float( float *buf, int n )
-#else
-void
-swap_float( buf, n )
-     float *buf;
-     int n;
-#endif
-{
+swap_float(
+    float *buf,
+    int n
+ ) {
     int i;
     register float *ptr;
     float val;
@@ -155,16 +126,11 @@ swap_float( buf, n )
     }
 }
 
-#ifdef ANSI_FUNC
 void
-swap_double( double *buf, int n )
-#else
-void
-swap_double( buf, n )
-     double *buf;
-     int n;
-#endif
-{
+swap_double(
+    double *buf,
+    int n
+ ) {
     int i;
     register double *ptr;
     double val;
@@ -188,17 +154,12 @@ swap_double( buf, n )
 
  *
  */
-#ifdef ANSI_FUNC
 void
-swap_data( void *buf, int len, int dtype )
-#else
-void
-swap_data( buf, len, dtype )
-     void *buf;
-     int len;
-     int dtype;
-#endif
-{
+swap_data(
+    void *buf,
+    int len,
+    int dtype
+ ) {
     /* set up input data pointer */
     switch ( dtype ) {
 	case TY_CHAR:

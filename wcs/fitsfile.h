@@ -139,7 +139,7 @@ extern "C" {
 	char *filename0); /* Name of input FITS image file */
     int isfits(		/* Return 1 if file is a FITS file */
 	char *filename); /* Name of file to check */
-    void fitserr();	/* Print FITS error message to stderr */
+    void fitserr(void);	/* Print FITS error message to stderr */
     void setfitsinherit( /* Set flag to append primary data header */
 	int inh);	/* 1 to inherit primary data header, else 0 */
     int fitsheadsize(	/* Return size of fitsheader in bytes */

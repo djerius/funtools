@@ -32,12 +32,12 @@
    Returns #card;
  */
 FITSCard
-ft_cardins( fits, card, here )
-     FITSHead fits;             /* FITS header.                 */
-     FITSCard card;             /* FITS card to insert, append or
+ft_cardins(
+    FITSHead fits,              /* FITS header.                 */
+    FITSCard card,              /* FITS card to insert, append or
                                    delete.                      */
-     FITSCard here;             /* Insert #card after #here     */
-{
+    FITSCard here               /* Insert #card after #here     */
+ ) {
 
     if ( fits == NULL ) return NULL;
     if ( fits->cards == NULL ) return NULL;
@@ -65,8 +65,7 @@ ft_cardins( fits, card, here )
 
     if ( here == NULL ) here = &fits->cards[fits->ncard - 2];
 
-    memmove( here + 2, here + 1,
-             ( &fits->cards[fits->ncard - 1] - here ) * sizeof( FITSBuff ) );
+    memmove( here + 2, here + 1, ( &fits->cards[fits->ncard - 1] - here ) * sizeof( FITSBuff ) );
     memmove( here + 1, card, sizeof( FITSBuff ) );
 
     fits->ncard++;
@@ -79,10 +78,10 @@ ft_cardins( fits, card, here )
    Retuns #card.
  */
 FITSCard
-ft_cardapp( fits, card )
-     FITSHead fits;
-     FITSCard card;
-{
+ft_cardapp(
+    FITSHead fits,
+    FITSCard card
+ ) {
     return ft_cardins( fits, card, NULL );
 }
 
@@ -92,16 +91,15 @@ ft_cardapp( fits, card )
    the one deleted
  */
 FITSCard
-ft_carddel( fits, card )
-     FITSHead fits;
-     FITSCard card;
-{
+ft_carddel(
+    FITSHead fits,
+    FITSCard card
+ ) {
     if ( fits == NULL ) return NULL;
     if ( card == NULL ) return NULL;
 
     ( void ) Free( fits->index );
-    memmove( card, card + 1,
-             ( ft_last( fits ) - card ) * sizeof( FITSBuff ) );
+    memmove( card, card + 1, ( ft_last( fits ) - card ) * sizeof( FITSBuff ) );
     ft_cardclr( ft_last( fits ), 1 );
 
     fits->ncard--;

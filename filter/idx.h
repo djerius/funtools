@@ -114,57 +114,62 @@ typedef struct _idxvalrec{
   double rlo[2], rhi[2];
 } idxvalrec;
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-idxrowrec *idxall _PRx((idxrowrec *row));
-idxrowrec *idxor  _PRx((idxrowrec *row1, idxrowrec *row2));
-idxrowrec *idxand _PRx((idxrowrec *row1, idxrowrec *row2));
-idxrowrec *idxnot _PRx((idxrowrec *row));
 
-idxrowrec *idxrowreg _PRx((idxvalrec *val));
-idxrowrec *idxrowfun _PRx((idxvalrec *val));
-idxrowrec *idxroweq  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxrowrec *idxrowne  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxrowrec *idxrowlt  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxrowrec *idxrowle  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxrowrec *idxrowgt  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxrowrec *idxrowge  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxrowrec *idxrownot _PRx((idxvalrec *val));
+idxrowrec *idxall (idxrowrec *row);
+idxrowrec *idxor  (idxrowrec *row1, idxrowrec *row2);
+idxrowrec *idxand (idxrowrec *row1, idxrowrec *row2);
+idxrowrec *idxnot (idxrowrec *row);
 
-idxvalrec *idxvaladd _PRx((idxvalrec *val1, idxvalrec *val2));
+idxrowrec *idxrowreg (idxvalrec *val);
+idxrowrec *idxrowfun (idxvalrec *val);
+idxrowrec *idxroweq  (idxvalrec *val1, idxvalrec *val2);
+idxrowrec *idxrowne  (idxvalrec *val1, idxvalrec *val2);
+idxrowrec *idxrowlt  (idxvalrec *val1, idxvalrec *val2);
+idxrowrec *idxrowle  (idxvalrec *val1, idxvalrec *val2);
+idxrowrec *idxrowgt  (idxvalrec *val1, idxvalrec *val2);
+idxrowrec *idxrowge  (idxvalrec *val1, idxvalrec *val2);
+idxrowrec *idxrownot (idxvalrec *val);
 
-idxvalrec *idxvalsub _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvalmul _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvaldiv _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvalmod _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvaland _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvalor  _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvalxor _PRx((idxvalrec *val1, idxvalrec *val2));
-idxvalrec *idxvalnot _PRx((idxvalrec *val));
-idxvalrec *idxvalcom _PRx((idxvalrec *val));
-idxvalrec *idxvalmin _PRx((idxvalrec *val));
+idxvalrec *idxvaladd (idxvalrec *val1, idxvalrec *val2);
 
-char *idxinfo _PRx((int which));
-int idxdebug _PRx((int debug));
-idxvalrec *idxvalnew _PRx((char *s));
-int idxvalfree _PRx((idxvalrec *v));
-idxrowrec *idxrownew _PRx((void));
-int idxrowfree _PRx((idxrowrec *r));
-int idxinitfilenames _PRx((char *s, int *flag));
-char *idxindexfilename _PRx((char *s, int *size));
-idxvalrec *idxlookupfilename _PRx((char *iname));
-void idxfreefilenames _PRx((void));
-void idxfreeglobals _PRx((void));
-int idxinitparser _PRx((char *s));
-void idxendparser _PRx((void));
-void *idxread _PRx((idxrowrec *row, GIO gio, FITSHead fits,
+idxvalrec *idxvalsub (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvalmul (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvaldiv (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvalmod (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvaland (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvalor  (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvalxor (idxvalrec *val1, idxvalrec *val2);
+idxvalrec *idxvalnot (idxvalrec *val);
+idxvalrec *idxvalcom (idxvalrec *val);
+idxvalrec *idxvalmin (idxvalrec *val);
+
+char *idxinfo (int which);
+int idxdebug (int debug);
+idxvalrec *idxvalnew (char *s);
+int idxvalfree (idxvalrec *v);
+idxrowrec *idxrownew (void);
+int idxrowfree (idxrowrec *r);
+int idxinitfilenames (char *s, int *flag);
+char *idxindexfilename (char *s, int *size);
+idxvalrec *idxlookupfilename (char *iname);
+void idxfreefilenames (void);
+void idxfreeglobals (void);
+int idxinitparser (char *s);
+void idxendparser (void);
+void *idxread (idxrowrec *row, GIO gio, FITSHead fits,
 		    void *buf, size_t size, size_t get, size_t *got,
-		    int *dofilt));
-void idxstring _PRx((char *s));
-int idxerror _PRx((char *mmsg));
-int idxlex   _PRx((void));
-int idxparse _PRx((void));
+		    int *dofilt);
+void idxstring (char *s);
+int idxerror (char *mmsg);
+int idxlex   (void);
+int idxparse (void);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __idx.h */

@@ -15,8 +15,14 @@
 
 extern int SAOdtype;
 
-_PRbeg
-double SAOstrtod _PRx((char *s, char **t));
-_PRend
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+double SAOstrtod (char *s, char **t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

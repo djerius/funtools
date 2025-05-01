@@ -12,17 +12,12 @@ static int maxrow = MAXROW;
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 static int
-_FunHeadEdit( char *iname, char *oname, char *ename )
-#else
-static int
-_FunHeadEdit( iname, oname, ename )
-     char *iname;
-     char *oname;
-     char *ename;
-#endif
-{
+_FunHeadEdit(
+    char *iname,
+    char *oname,
+    char *ename
+ ) {
     int i;
     int type;
     int dim2;
@@ -61,8 +56,7 @@ _FunHeadEdit( iname, oname, ename )
 	gerror( stderr, "can't open edit file: %s\n", ename );
     }
     if ( !( ifun = FunOpen( iname, "rC", NULL ) ) ) {
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-	        iname );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
     }
     if ( !( ofun = FunOpen( oname, "w", ifun ) ) ) {
 	gerror( stderr, "can't FunOpen output file: %s\n", oname );
@@ -159,13 +153,9 @@ _FunHeadEdit( iname, oname, ename )
 	case FUN_TABLE:
 	case FUN_EVENTS:
 	    /* copy the events from input to output */
-	    while ( ( ev =
-	              FunTableRowGet( ifun, NULL, maxrow, NULL, &got ) ) ) {
-		if ( ( put =
-		       FunTableRowPut( ofun, ev, got, 0, NULL ) ) != got ) {
-		    gerror( stderr,
-		            "expected to write %d rows; only wrote %d\n", got,
-		            put );
+	    while ( ( ev = FunTableRowGet( ifun, NULL, maxrow, NULL, &got ) ) ) {
+		if ( ( put = FunTableRowPut( ofun, ev, got, 0, NULL ) ) != got ) {
+		    gerror( stderr, "expected to write %d rows; only wrote %d\n", got, put );
 		}
 		if ( ev ) xfree( ev );
 	    }
@@ -178,39 +168,25 @@ _FunHeadEdit( iname, oname, ename )
     return 0;
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
-    fprintf( stderr,
-             "usage: %s [-a] [-s] [-t] [-L] iname[ext] [oname ename]\n",
-             fname );
+usage(
+    char *fname
+ ) {
+    fprintf( stderr, "usage: %s [-a] [-s] [-t] [-L] iname[ext] [oname ename]\n", fname );
     fprintf( stderr, "optional switches:\n" );
     fprintf( stderr, "  -a  # display all extension headers\n" );
-    fprintf( stderr,
-             "  -s  # display 79 chars instead of 80 before the new-line \n" );
-    fprintf( stderr,
-             "  -t  # prepend data type char to each line of output\n" );
+    fprintf( stderr, "  -s  # display 79 chars instead of 80 before the new-line \n" );
+    fprintf( stderr, "  -t  # prepend data type char to each line of output\n" );
     fprintf( stderr, "  -L  # output in rdb/starbase list format\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i;
     int args;
@@ -283,7 +259,7 @@ main( argc, argv )
 
     /* if we are doing all extensions, remove bracket specifcation from base */
     if ( doall ) {
-	if ( ( ind = strchr( iname, '[' ) )
+        if ( ( ind = strchr( iname, '[' ) )
 	     || ( ind = strchr( iname, ',' ) ) ) {
 	    *ind = '\0';
 	}
@@ -312,14 +288,10 @@ main( argc, argv )
 	if ( !strchr( iname, '[' ) && !strchr( iname, ',' ) ) {
 	    snprintf( cname, clen, "%s[0]", iname );
 	    if ( !( fun = FunOpen( cname, "r", NULL ) ) )
-		gerror( stderr,
-	                "can't FunOpen input file (or find extension): %s\n",
-	                iname );
+		gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
 	}
 	else {
-	    gerror( stderr,
-	            "can't FunOpen input file (or find extension): %s\n",
-	            iname );
+	    gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
 	}
     }
 
@@ -346,8 +318,7 @@ main( argc, argv )
 	    if ( dolist ) {
 		if ( strncmp( s, "        ", 8 ) ) {
 		    /* John did this -- its not my fault */
-		    fprintf( stdout, "%8.8s\t%s\n", s,
-		             ( char * ) ft_cardget( ( FITSCard ) s ) );
+		    fprintf( stdout, "%8.8s\t%s\n", s, ( char * ) ft_cardget( ( FITSCard ) s ) );
 		}
 	    }
 	    else {

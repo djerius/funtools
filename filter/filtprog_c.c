@@ -27,15 +27,10 @@
  *
  */
 
-#ifdef ANSI_FUNC
 static char *
-GetType( int t )
-#else
-static char *
-GetType( t )
-     int t;
-#endif
-{
+GetType(
+    int t
+ ) {
     switch ( t ) {
 	case 'A':
 	    return ( "char" );
@@ -64,15 +59,10 @@ GetType( t )
     }
 }
 
-#ifdef ANSI_FUNC
 static double
-GetTloff( int t )
-#else
-static double
-GetTloff( t )
-     int t;
-#endif
-{
+GetTloff(
+    int t
+ ) {
     switch ( t ) {
 	case 'B':
 	case 'I':
@@ -90,15 +80,10 @@ GetTloff( t )
     }
 }
 
-#ifdef ANSI_FUNC
 static char *
-_FilterInitString( char *filtstr )
-#else
-static char *
-_FilterInitString( filtstr )
-     char *filtstr;
-#endif
-{
+_FilterInitString(
+    char *filtstr
+ ) {
     char *ibuf, *iptr, *fptr;
     char *s, *t;
     int paren = 0;
@@ -175,15 +160,10 @@ _FilterInitString( filtstr )
  * FilterProgOpen_C -- return filter program as a file for writing
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgOpen_C( Filter filter )
-#else
-static int
-FilterProgOpen_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgOpen_C(
+    Filter filter
+ ) {
     int fd;
     char *ccstr = NULL;
     char prefix[SZ_LINE];
@@ -273,8 +253,7 @@ FilterProgOpen_C( filter )
 
     /* get prefix for filter source and program */
     if ( !( tmpdir = ( char * ) getenv( "FILTER_TMPDIR" ) ) &&
-         !( tmpdir = ( char * ) getenv( "TMPDIR" ) ) &&
-         !( tmpdir = ( char * ) getenv( "TMP" ) ) )
+         !( tmpdir = ( char * ) getenv( "TMPDIR" ) ) && !( tmpdir = ( char * ) getenv( "TMP" ) ) )
 	tmpdir = DEFAULT_FILTER_TMPDIR;
     if ( !*tmpdir )
 	tmpdir = ".";
@@ -285,8 +264,7 @@ FilterProgOpen_C( filter )
 #endif
 
     /* make up the routine name when we dynamically load */
-    snprintf( tbuf, SZ_LINE, "Filter%d%d", ( int ) getpid(  ),
-              FilterNum(  ) );
+    snprintf( tbuf, SZ_LINE, "Filter%d%d", ( int ) getpid(  ), FilterNum(  ) );
     filter->pname = xstrdup( tbuf );
 
     /* make up name of C source file we will generate */
@@ -296,14 +274,12 @@ FilterProgOpen_C( filter )
     }
     else {
 	if ( ( fd = mkrtemp( prefix, ".c", tbuf, SZ_LINE, 1 ) ) < 0 ) {
-	    gerror( stderr, "could not generate C filter source name: %s\n",
-	            prefix );
+	    gerror( stderr, "could not generate C filter source name: %s\n", prefix );
 	    return ( 0 );
 	}
 	filter->code = xstrdup( tbuf );
 	if ( !( filter->fp = fdopen( fd, "w+b" ) ) ) {
-	    gerror( stderr, "could not open C filter source file: %s\n",
-	            tbuf );
+	    gerror( stderr, "could not open C filter source file: %s\n", tbuf );
 	    return ( 0 );
 	}
     }
@@ -312,8 +288,7 @@ FilterProgOpen_C( filter )
        we make this different from the .c file name to make interception
        by an intruder harder */
     if ( mkrtemp( prefix, NULL, tbuf, SZ_LINE, 0 ) < 0 ) {
-	gerror( stderr, "could not generate C filter program name: %s\n",
-	        prefix );
+	gerror( stderr, "could not generate C filter program name: %s\n", prefix );
 	return ( 0 );
     }
 #if HAVE_MINGW32
@@ -328,15 +303,10 @@ FilterProgOpen_C( filter )
  * FilterProgPrepend_C -- prepend the filter code
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgPrepend_C( Filter filter )
-#else
-static int
-FilterProgPrepend_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgPrepend_C(
+    Filter filter
+ ) {
     char *s = NULL;
     char *contents = NULL;
     FILE *fd;
@@ -411,12 +381,10 @@ FilterProgPrepend_C( filter )
 
     /* add some math support */
     if ( is_bigendian(  ) ) {
-	fprintf( fd,
-	         "static unsigned char _nan[8]={0x7F,0xF0,1,1,1,1,1,1};\n" );
+	fprintf( fd, "static unsigned char _nan[8]={0x7F,0xF0,1,1,1,1,1,1};\n" );
     }
     else {
-	fprintf( fd,
-	         "static unsigned char _nan[8]={1,1,1,1,1,1,0xF0,0x7F};\n" );
+	fprintf( fd, "static unsigned char _nan[8]={1,1,1,1,1,1,0xF0,0x7F};\n" );
     }
     fprintf( fd, "#define NaN *((double *)_nan)\n" );
     fprintf( fd, "#define div(a,b) (feq(b,0)?(NaN):(a/b))\n" );
@@ -429,15 +397,10 @@ FilterProgPrepend_C( filter )
  * FilterProgWrite_C -- write the symbols for filtering
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgWrite_C( Filter filter )
-#else
-static int
-FilterProgWrite_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgWrite_C(
+    Filter filter
+ ) {
     int i;
     int offset;
     int pad;
@@ -475,7 +438,7 @@ FilterProgWrite_C( filter )
 
     /* get the filter string */
     if ( !( filtstr = ( char * ) _FilterString(  ) )
-	 || !strcmp( filtstr, "()" ) ) {
+         || !strcmp( filtstr, "()" ) ) {
 	return ( 0 );
     }
 
@@ -533,8 +496,7 @@ FilterProgWrite_C( filter )
 
     /* output counts of shapes */
     fprintf( fd, "#define NSHAPE %d\n", FilterShapeCount(  ) );
-    fprintf( fd, "#define NREGION %d\n",
-             FilterRegionCount( TOK_IREG | TOK_EREG | TOK_NREG ) );
+    fprintf( fd, "#define NREGION %d\n", FilterRegionCount( TOK_IREG | TOK_EREG | TOK_NREG ) );
     /* output the filter itself */
     fprintf( fd, "#define FILTER %s\n", filtstr );
     if ( filter->debug < 2 ) {
@@ -594,15 +556,11 @@ FilterProgWrite_C( filter )
 				    dsize = 4;
 				    break;
 				default:
-				    dsize =
-				        ft_sizeof( filter->fhd->table->
-				                   col[sp->idx].type );
+				    dsize = ft_sizeof( filter->fhd->table->col[sp->idx].type );
 			    }
 			}
 			else {
-			    dsize =
-			        ft_sizeof( filter->fhd->table->col[sp->idx].
-			                   type );
+			    dsize = ft_sizeof( filter->fhd->table->col[sp->idx].type );
 			}
 			if ( dsize > 0 ) {
 			    pad = dsize - ( offset % dsize );
@@ -626,8 +584,7 @@ FilterProgWrite_C( filter )
 			    fprintf( fd,
 			             "#define %s %s*((%s *)(SW%d(eptr+%d,%d,_swf,%d)))%s\n",
 			             sp->name, s,
-			             GetType( ( int ) fhd->table->
-			                      col[sp->idx].type ), dsize,
+			             GetType( ( int ) fhd->table->col[sp->idx].type ), dsize,
 			             offset, dsize, offset, t );
 			}
 			else {
@@ -636,15 +593,13 @@ FilterProgWrite_C( filter )
 				    case 8:
 					fprintf( fd,
 					         "#define %s %s*((%s *)(eptr+%d))%s\n",
-					         sp->name, s, "unsigned char",
-					         offset, t );
+					         sp->name, s, "unsigned char", offset, t );
 					break;
 				    case 16:
 					fprintf( fd,
 					         "#define %s %s*((%s *)(SW2(eptr+%d,%d,_swf,%d)))%s\n",
 					         sp->name, s,
-					         "unsigned short", offset, 2,
-					         offset, t );
+					         "unsigned short", offset, 2, offset, t );
 					break;
 				    case 32:
 					fprintf( fd,
@@ -656,23 +611,19 @@ FilterProgWrite_C( filter )
 					fprintf( fd,
 					         "#define %s %s((%s *)(SW%d(eptr+%d,%d,_swf,%d)))%s\n",
 					         sp->name, s,
-					         GetType( ( int ) fhd->table->
-					                  col[sp->idx].type ),
-					         dsize, offset, dsize, offset,
-					         t );
+					         GetType( ( int ) fhd->table->col[sp->idx].type ),
+					         dsize, offset, dsize, offset, t );
 				}
 			    }
 			    else if ( fhd->table->col[sp->idx].type == 'A' ) {
 				fprintf( fd, "#define %s acopy(eptr+%d,%d)\n",
-				         sp->name,
-				         offset, fhd->table->col[sp->idx].n );
+				         sp->name, offset, fhd->table->col[sp->idx].n );
 			    }
 			    else {
 				fprintf( fd,
 				         "#define %s %s((%s *)(SW%d(eptr+%d,%d,_swf,%d)))%s\n",
 				         sp->name, s,
-				         GetType( ( int ) fhd->table->
-				                  col[sp->idx].type ), dsize,
+				         GetType( ( int ) fhd->table->col[sp->idx].type ), dsize,
 				         offset, dsize, offset, t );
 			    }
 			}
@@ -696,12 +647,8 @@ FilterProgWrite_C( filter )
 			            fhd->table->col[sp->idx].n ) + 7 ) / 8;
 			}
 			else {
-			    offset +=
-			        fhd->table->col[sp->idx].size *
-			        fhd->table->col[sp->idx].n;
-			    evsize +=
-			        fhd->table->col[sp->idx].size *
-			        fhd->table->col[sp->idx].n;
+			    offset += fhd->table->col[sp->idx].size * fhd->table->col[sp->idx].n;
+			    evsize += fhd->table->col[sp->idx].size * fhd->table->col[sp->idx].n;
 			}
 			break;
 		    case SYM_PAR:
@@ -716,11 +663,9 @@ FilterProgWrite_C( filter )
 			    /* see if its a pure number */
 			    ( void ) strtod( vbuf, &v );
 			    if ( ( v == NULL ) || ( *v == '\0' ) )
-				fprintf( fd, "#define %s %s\n", sp->name,
-			                 vbuf );
+				fprintf( fd, "#define %s %s\n", sp->name, vbuf );
 			    else
-				fprintf( fd, "#define %s \"%s\"\n", sp->name,
-			                 vbuf );
+				fprintf( fd, "#define %s \"%s\"\n", sp->name, vbuf );
 			}
 			break;
 		}
@@ -742,8 +687,7 @@ FilterProgWrite_C( filter )
     }
 
     /* write out the mask structure */
-    if ( filter->nmask && filter->masks &&
-         ( filter->type == TYPE_EVENTS ) && filter->evsect ) {
+    if ( filter->nmask && filter->masks && ( filter->type == TYPE_EVENTS ) && filter->evsect ) {
 	fprintf( fd, "#define NMASK %d\n", filter->nmask );
 	fprintf( fd, "#define MASKDIM %d;\n", ft_naxis( filter->maskhd, 1 ) );
 	fprintf( fd, "static FilterMaskRec _masks[]={\n" );
@@ -751,8 +695,7 @@ FilterProgWrite_C( filter )
 	for ( i = 0; i < filter->nmask; i++ ) {
 	    fprintf( fd, "{%d,%d,%d,%d}",
 	             filter->masks[i].region,
-	             filter->masks[i].y,
-	             filter->masks[i].xstart, filter->masks[i].xstop );
+	             filter->masks[i].y, filter->masks[i].xstart, filter->masks[i].xstop );
 	    if ( i != ( filter->nmask - 1 ) )
 		fprintf( fd, "," );
 	    fprintf( fd, "\n" );
@@ -775,15 +718,10 @@ FilterProgWrite_C( filter )
  * FilterProgAppend_C -- append the filter program body
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgAppend_C( Filter filter )
-#else
-static int
-FilterProgAppend_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgAppend_C(
+    Filter filter
+ ) {
     char *contents = NULL;
 
     /* make sure we have something to work with */
@@ -819,15 +757,10 @@ FilterProgAppend_C( filter )
  * FilterProgClose_C -- close the filter program file
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgClose_C( Filter filter )
-#else
-static int
-FilterProgClose_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgClose_C(
+    Filter filter
+ ) {
     /* make sure we have something to work with */
     if ( !filter )
 	return ( 0 );
@@ -845,15 +778,10 @@ FilterProgClose_C( filter )
  * FilterProgCompile_C -- compile the filter program
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgCompile_C( Filter filter )
-#else
-static int
-FilterProgCompile_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgCompile_C(
+    Filter filter
+ ) {
     char *s;
     char *math;
     char tbuf[SZ_LINE];
@@ -911,8 +839,7 @@ FilterProgCompile_C( filter )
 	    /* make up the compile command */
 	    snprintf( tbuf, SZ_LINE, "%s %s -o %s %s %s %s %s",
 	              filter->cc, filter->cflags, filter->prog, filter->code,
-	              filter->objs ? filter->objs : " ",
-	              filter->extra, math );
+	              filter->objs ? filter->objs : " ", filter->extra, math );
 #ifndef USE_LAUNCH
 	    snprintf( tbuf2, SZ_LINE, " 1>%s 2>%s", devnull, log );
 	    strcat( tbuf, tbuf2 );
@@ -922,8 +849,7 @@ FilterProgCompile_C( filter )
 	case PTYPE_CONTAINED:
 	    /* make up the compile command */
 	    snprintf( tbuf, SZ_LINE, "%s %s -o %s %s %s %s",
-	              filter->cc, filter->cflags, filter->prog, filter->code,
-	              filter->extra, math );
+	              filter->cc, filter->cflags, filter->prog, filter->code, filter->extra, math );
 #ifndef USE_LAUNCH
 	    snprintf( tbuf2, SZ_LINE, " 1>%s 2>%s", devnull, log );
 	    strcat( tbuf, tbuf2 );
@@ -1004,15 +930,10 @@ FilterProgCompile_C( filter )
  * FilterProgEnd_C -- end the filtering process
  *
  */
-#ifdef ANSI_FUNC
 static int
-FilterProgEnd_C( Filter filter )
-#else
-int
-FilterProgEnd_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgEnd_C(
+    Filter filter
+ ) {
     char *s;
     int status = 0;
 
@@ -1039,15 +960,10 @@ FilterProgEnd_C( filter )
  * FilterProgLoad_C -- load the routines needed to support C filtering
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgLoad_C( Filter filter )
-#else
-int
-FilterProgLoad_C( filter )
-     Filter filter;
-#endif
-{
+FilterProgLoad_C(
+    Filter filter
+ ) {
     /* make sure we have something to work with */
     if ( !filter )
 	return ( 0 );

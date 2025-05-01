@@ -50,11 +50,16 @@
 #define lstat stat
 #endif
 
-_PRbeg
 
-int mkrtemp _PRx((char *prefix, char *suffix, char *path, int len,
-		 int doopen));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-_PRend
+int mkrtemp (char *prefix, char *suffix, char *path, int len,
+		 int doopen);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

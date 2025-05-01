@@ -51,22 +51,25 @@
 #endif
 
 #define MAX_LVAL 2000
-static char *isearch( const char *hstring, const char *keyword );
+static char *isearch(
+    const char *hstring,
+    const char *keyword
+ );
 static char val[30];
 
 /* Extract long value for variable from IRAF multiline keyword value */
 
 int
-mgeti4( hstring, mkey, keyword, ival )
-     const char *hstring;       /* Character string containing FITS or IRAF header information
+mgeti4(
+    const char *hstring,        /* Character string containing FITS or IRAF header information
                                    in the format <keyword>= <value> ... */
-     const char *mkey;          /* Character string containing the name of the multi-line
+    const char *mkey,           /* Character string containing the name of the multi-line
                                    keyword, the string value of which contains the desired
                                    keyword, the value of which is returned. */
-     const char *keyword;       /* Character string containing the name of the keyword
+    const char *keyword,        /* Character string containing the name of the keyword
                                    within the multiline IRAF keyword */
-     int *ival;                 /* Integer value returned */
-{
+    int *ival                   /* Integer value returned */
+ ) {
     char *mstring;
 
     mstring = malloc( MAX_LVAL );
@@ -90,16 +93,16 @@ mgeti4( hstring, mkey, keyword, ival )
 /* Extract double value for variable from IRAF multiline keyword value */
 
 int
-mgetr8( hstring, mkey, keyword, dval )
-     const char *hstring;       /* Character string containing FITS or IRAF header information
+mgetr8(
+    const char *hstring,        /* Character string containing FITS or IRAF header information
                                    in the format <keyword>= <value> ... */
-     const char *mkey;          /* Character string containing the name of the multi-line
+    const char *mkey,           /* Character string containing the name of the multi-line
                                    keyword, the string value of which contains the desired
                                    keyword, the value of which is returned. */
-     const char *keyword;       /* Character string containing the name of the keyword
+    const char *keyword,        /* Character string containing the name of the keyword
                                    within the multiline IRAF keyword */
-     double *dval;              /* Integer value returned */
-{
+    double *dval                /* Integer value returned */
+ ) {
     char *mstring;
     mstring = malloc( MAX_LVAL );
 
@@ -123,20 +126,20 @@ mgetr8( hstring, mkey, keyword, dval )
 /* Extract string value for variable from IRAF keyword value string */
 
 int
-mgetstr( hstring, mkey, keyword, lstr, str )
-     const char *hstring;       /* character string containing FITS header information
+mgetstr(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> {/ <comment>} */
-     const char *mkey;          /* Character string containing the name of the multi-line
+    const char *mkey,           /* Character string containing the name of the multi-line
                                    keyword, the string value of which contains the desired
                                    keyword, the value of which is returned. */
-     const char *keyword;       /* character string containing the name of the keyword
+    const char *keyword,        /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-     const int lstr;            /* Size of str in characters */
-     char *str;                 /* String (returned) */
-{
+    const int lstr,             /* Size of str in characters */
+    char *str                   /* String (returned) */
+ ) {
     char *mstring;
     mstring = malloc( MAX_LVAL );
 
@@ -160,16 +163,16 @@ mgetstr( hstring, mkey, keyword, lstr, str )
 /* Extract long value for variable from IRAF keyword value string */
 
 int
-igeti4( hstring, keyword, ival )
-     const char *hstring;       /* character string containing IRAF header information
+igeti4(
+    const char *hstring,        /* character string containing IRAF header information
                                    in the format <keyword>= <value> ... */
-     const char *keyword;       /* character string containing the name of the keyword
+    const char *keyword,        /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-     int *ival;                 /* Integer value returned */
-{
+    int *ival                   /* Integer value returned */
+ ) {
     char *value;
     double dval;
     int minint;
@@ -201,16 +204,16 @@ igeti4( hstring, keyword, ival )
 /* Extract integer*2 value for variable from IRAF keyword value string */
 
 int
-igeti2( hstring, keyword, ival )
-     const char *hstring;       /* character string containing FITS header information
+igeti2(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> {/ <comment>} */
-     const char *keyword;       /* character string containing the name of the keyword
+    const char *keyword,        /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-     short *ival;
-{
+    short *ival
+ ) {
     char *value;
     double dval;
     int minshort;
@@ -241,16 +244,16 @@ igeti2( hstring, keyword, ival )
 /* Extract real value for variable from IRAF keyword value string */
 
 int
-igetr4( hstring, keyword, rval )
-     const char *hstring;       /* character string containing FITS header information
+igetr4(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> {/ <comment>} */
-     const char *keyword;       /* character string containing the name of the keyword
+    const char *keyword,        /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-     float *rval;
-{
+    float *rval
+ ) {
     char *value;
 
 /* Get value from header string */
@@ -271,16 +274,16 @@ igetr4( hstring, keyword, rval )
 /* Extract real*8 value for variable from IRAF keyword value string */
 
 int
-igetr8( hstring, keyword, dval )
-     const char *hstring;       /* character string containing FITS header information
+igetr8(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> {/ <comment>} */
-     const char *keyword;       /* character string containing the name of the keyword
+    const char *keyword,        /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-     double *dval;
-{
+    double *dval
+ ) {
     char *value, val[30];
 
 /* Get value from header string */
@@ -301,17 +304,17 @@ igetr8( hstring, keyword, dval )
 /* Extract string value for variable from IRAF keyword value string */
 
 int
-igets( hstring, keyword, lstr, str )
-     const char *hstring;       /* character string containing FITS header information
+igets(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> {/ <comment>} */
-     const char *keyword;       /* character string containing the name of the keyword
+    const char *keyword,        /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-     const int lstr;            /* Size of str in characters */
-     char *str;                 /* String (returned) */
-{
+    const int lstr,             /* Size of str in characters */
+    char *str                   /* String (returned) */
+ ) {
     char *value;
     int lval;
 
@@ -336,15 +339,15 @@ igets( hstring, keyword, lstr, str )
 /* Extract character value for variable from IRAF keyword value string */
 
 char *
-igetc( hstring, keyword0 )
-     const char *hstring;       /* character string containing IRAF keyword value string
+igetc(
+    const char *hstring,        /* character string containing IRAF keyword value string
                                    in the format <keyword>= <value> {/ <comment>} */
-     const char *keyword0;      /* character string containing the name of the keyword
+    const char *keyword0        /* character string containing the name of the keyword
                                    the value of which is returned.  iget searches for a
                                    line beginning with this string.  if "[n]" is present,
                                    the n'th token in the value is returned.
                                    (the first 8 characters must be unique) */
-{
+ ) {
     static char cval[MAX_LVAL];
     char *value;
     char cwhite[8];
@@ -387,8 +390,7 @@ igetc( hstring, keyword0 )
 
 /* Otherwise copy until next space or tab */
     else {
-	while ( *vpos != ' ' && *vpos != ( char ) 9 &&
-	        *vpos > 0 && i < MAX_LVAL )
+	while ( *vpos != ' ' && *vpos != ( char ) 9 && *vpos > 0 && i < MAX_LVAL )
 	    line[i++] = *vpos++;
     }
 
@@ -426,21 +428,20 @@ igetc( hstring, keyword0 )
 
 /* Find value for specified IRAF keyword */
 
-static char *
-isearch( hstring, keyword )
+static char *isearch(
 /* Find entry for keyword keyword in IRAF keyword value string hstring.
    NULL is returned if the keyword is not found */
-     const char *hstring;       /* character string containing fits-style header
+    const char *hstring,        /* character string containing fits-style header
                                    information in the format <keyword>= <value> {/ <comment>}
                                    the default is that each entry is 80 characters long;
                                    however, lines may be of arbitrary length terminated by
                                    nulls, carriage returns or linefeeds, if packed is true.  */
-     const char *keyword;       /* character string containing the name of the variable
+    const char *keyword         /* character string containing the name of the variable
                                    to be returned.  isearch searches for a line beginning
                                    with this string.  The string may be a character
                                    literal or a character variable terminated by a null
                                    or '$'.  it is truncated to 8 characters. */
-{
+ ) {
     char *loc, *headnext, *headlast, *pval;
     int lastchar, nextchar, lkey, nleft, lhstr;
 

@@ -41,21 +41,17 @@
 #include <stdio.h>
 #include "wcs.h"
 
-int
-dsspos( xpix, ypix, wcs, xpos, ypos )
+int dsspos(
 /* Routine to determine accurate position for pixel coordinates */
 /* returns 0 if successful otherwise 1 = angle too large for projection; */
 /* based on amdpos() from getimage */
 /* Input: */
-     double xpix;               /* x pixel number  (RA or long without rotation) */
-     double ypix;               /* y pixel number  (dec or lat without rotation) */
-     struct WorldCoor *wcs;     /* WCS parameter structure */
-
-/* Output: */
-     double *xpos;              /* Right ascension or longitude in degrees */
-     double *ypos;              /* Declination or latitude in degrees */
-
-{
+    double xpix,                /* x pixel number  (RA or long without rotation) */
+    double ypix,                /* y pixel number  (dec or lat without rotation) */
+    struct WorldCoor *wcs,      /* WCS parameter structure */
+    double *xpos,               /* Right ascension or longitude in degrees */
+    double *ypos                /* Declination or latitude in degrees */
+ ) {
     double x, y, xmm, ymm, xmm2, ymm2, xmm3, ymm3, x2y2;
     double xi, xir, eta, etar, raoff, ra, dec;
     double cond2r = 1.745329252e-2;
@@ -124,31 +120,24 @@ dsspos( xpix, ypix, wcs, xpos, ypos )
     if ( ra < 0.0 ) ra = ra + twopi;
     *xpos = ra / cond2r;
 
-    dec =
-        atan( cos( raoff ) *
-              ( ( etar + ctan ) / ( 1.0 - ( etar * ctan ) ) ) );
+    dec = atan( cos( raoff ) * ( ( etar + ctan ) / ( 1.0 - ( etar * ctan ) ) ) );
     *ypos = dec / cond2r;
     return 0;
 }
 
 
-int
-dsspix( xpos, ypos, wcs, xpix, ypix )
+int dsspix(
 /* Routine to determine pixel coordinates for sky position */
 /* returns 0 if successful otherwise 1 = angle too large for projection; */
 /* based on amdinv() from getimage */
 /* Input: */
-     double xpos;               /* Right ascension or longitude in degrees */
-     double ypos;               /* Declination or latitude in degrees */
-     struct WorldCoor *wcs;     /* WCS parameter structure */
-
-/* Output: */
-     double *xpix;              /* x pixel number  (RA or long without rotation) */
-     double *ypix;              /* y pixel number  (dec or lat without rotation) */
-
-{
-    double div, xi, eta, x, y, xy, x2, y2, x2y, y2x, x3, y3, x4, y4, x2y2,
-        cjunk, dx, dy;
+    double xpos,                /* Right ascension or longitude in degrees */
+    double ypos,                /* Declination or latitude in degrees */
+    struct WorldCoor *wcs,      /* WCS parameter structure */
+    double *xpix,               /* x pixel number  (RA or long without rotation) */
+    double *ypix                /* y pixel number  (dec or lat without rotation) */
+ ) {
+    double div, xi, eta, x, y, xy, x2, y2, x2y, y2x, x3, y3, x4, y4, x2y2, cjunk, dx, dy;
     double sypos, cypos, syplate, cyplate, sxdiff, cxdiff;
     double f, fx, fy, g, gx, gy, xmm, ymm;
     double conr2s = 206264.8062470964;
@@ -177,8 +166,7 @@ dsspix( xpos, ypos, wcs, xpix, ypix )
     if ( div == 0.0 )
 	return ( 1 );
     xi = cypos * sxdiff * conr2s / div;
-    eta =
-        ( ( sypos * cyplate ) - ( cypos * syplate * cxdiff ) ) * conr2s / div;
+    eta = ( ( sypos * cyplate ) - ( cypos * syplate * cxdiff ) ) * conr2s / div;
 
 /* Set initial value for x,y */
     if ( wcs->plate_scale == 0.0 )
@@ -206,8 +194,7 @@ dsspix( xpos, ypos, wcs, xpix, ypix )
 	    wcs->x_coeff[4] * xy + wcs->x_coeff[5] * y2 +
 	    wcs->x_coeff[6] * x2y2 + wcs->x_coeff[7] * x3 +
 	    wcs->x_coeff[8] * x2y + wcs->x_coeff[9] * y2x +
-	    wcs->x_coeff[10] * y3 + wcs->x_coeff[11] * xmm * x2y2 +
-	    wcs->x_coeff[12] * xmm * cjunk;
+	    wcs->x_coeff[10] * y3 + wcs->x_coeff[11] * xmm * x2y2 + wcs->x_coeff[12] * xmm * cjunk;
 	/* magnitude and color terms ignored
 	   + wcs->x_coeff[13]*mag +
 	   wcs->x_coeff[14]*mag*mag   + wcs->x_coeff[15]*mag*mag*mag +
@@ -243,8 +230,7 @@ dsspix( xpos, ypos, wcs, xpix, ypix )
 	    wcs->y_coeff[4] * xy + wcs->y_coeff[5] * x2 +
 	    wcs->y_coeff[6] * x2y2 + wcs->y_coeff[7] * y3 +
 	    wcs->y_coeff[8] * y2x + wcs->y_coeff[9] * x2y +
-	    wcs->y_coeff[10] * x3 + wcs->y_coeff[11] * ymm * x2y2 +
-	    wcs->y_coeff[12] * ymm * cjunk;
+	    wcs->y_coeff[10] * x3 + wcs->y_coeff[11] * ymm * x2y2 + wcs->y_coeff[12] * ymm * cjunk;
 	/* magnitude and color terms ignored
 	   wcs->y_coeff[13]*mag        + wcs->y_coeff[14]*mag*mag +
 	   wcs->y_coeff[15]*mag*mag*mag + wcs->y_coeff[16]*mag*ymm +

@@ -36,63 +36,43 @@ extern int optind;
 typedef struct evstruct {
     int region;
     double x, y;
-}  *Ev, EvRec;
+}  *Ev,
+    EvRec;
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
+usage(
+    char *fname
+ ) {
     fprintf( stderr, "usage: %s <switches> eventfile region(s)\n", fname );
     fprintf( stderr, "\n" );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -i\t\t# use image filtering (default: event filtering)\n" );
+    fprintf( stderr, "  -i\t\t# use image filtering (default: event filtering)\n" );
     fprintf( stderr, "  -n iter\t# max number of iterations (default: 0)\n" );
-    fprintf( stderr,
-             "  -t tol\t# pixel tolerance distance (default: 1.0)\n" );
-    fprintf( stderr,
-             "  -v [0,1,2,3]\t# output verbosity level (default: 0)\n" );
+    fprintf( stderr, "  -t tol\t# pixel tolerance distance (default: 1.0)\n" );
+    fprintf( stderr, "  -v [0,1,2,3]\t# output verbosity level (default: 0)\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "The default output consists of one line for each region containing:\n" );
-    fprintf( stderr,
-             "cnts x y [ra dec]. Use -v for prettier output and diagnostics.\n" );
-    fprintf( stderr,
-             "Filter extensions are permitted as part of the file specification.\n" );
-    fprintf( stderr,
-             "WCS info, if available, matches the coordinate system of the data file.\n" );
-    fprintf( stderr,
-             "Input regions can be in physical or wcs coordinates (with coordsys),\n" );
-    fprintf( stderr,
-             "Multiple regions and region files are supported but compound regions,\n" );
+    fprintf( stderr, "The default output consists of one line for each region containing:\n" );
+    fprintf( stderr, "cnts x y [ra dec]. Use -v for prettier output and diagnostics.\n" );
+    fprintf( stderr, "Filter extensions are permitted as part of the file specification.\n" );
+    fprintf( stderr, "WCS info, if available, matches the coordinate system of the data file.\n" );
+    fprintf( stderr, "Input regions can be in physical or wcs coordinates (with coordsys),\n" );
+    fprintf( stderr, "Multiple regions and region files are supported but compound regions,\n" );
     fprintf( stderr, "polygons, and points are not permitted.\n" );
     fprintf( stderr, "\n" );
     fprintf( stderr, "examples:\n" );
     fprintf( stderr,
-             "  %s -n 5 -t .1 snr.ev'[pha=1:3]' 'cir(512,512,10);cir 450 450 10'\n",
-             fname );
+             "  %s -n 5 -t .1 snr.ev'[pha=1:3]' 'cir(512,512,10);cir 450 450 10'\n", fname );
     fprintf( stderr,
-             "  %s -n 5 -t .1 snr.ev 'fk5;circle(345.292335 58.881625,78.458952\")'\n",
-             fname );
+             "  %s -n 5 -t .1 snr.ev 'fk5;circle(345.292335 58.881625,78.458952\")'\n", fname );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int iter;
     int i;
@@ -219,8 +199,7 @@ main( argc, argv )
 
     /* get prefix for filter region temp file */
     if ( !( tmpdir = ( char * ) getenv( "FILTER_TMPDIR" ) ) &&
-         !( tmpdir = ( char * ) getenv( "TMPDIR" ) ) &&
-         !( tmpdir = ( char * ) getenv( "TMP" ) ) )
+         !( tmpdir = ( char * ) getenv( "TMPDIR" ) ) && !( tmpdir = ( char * ) getenv( "TMP" ) ) )
 	tmpdir = DEFAULT_FILTER_TMPDIR;
     if ( !*tmpdir )
 	tmpdir = ".";
@@ -230,49 +209,40 @@ main( argc, argv )
     if ( domem ) {
 	/* open the data file once */
 	if ( !( fun = FunOpen( fname, "r", NULL ) ) ) {
-	    gerror( stderr, "can't FunOpen file (or find extension): %s\n",
-	            fname );
+	    gerror( stderr, "can't FunOpen file (or find extension): %s\n", fname );
 	}
 	/* make sure we have a table */
 	FunInfoGet( fun, FUN_TYPE, &type, 0 );
 	if ( type != FUN_TABLE ) {
-	    gerror( stderr,
-	            "please specify a table (image support not yet implemented)\n" );
+	    gerror( stderr, "please specify a table (image support not yet implemented)\n" );
 	}
 	/* for wcs output, get info to allow conversion of phyiscal to image */
 	FunInfoGet( fun, FUN_BINOFFS, bin, 0 );
 	for ( i = 0; i <= 1; i++ ) {
 	    if ( bin[i] >= 0 ) {
-		FunColumnLookup( fun, NULL, bin[i], NULL,
-		                 &( tltyp[i] ), NULL, NULL, NULL, NULL );
-		tlmin[i] =
-		    FunParamGetd( fun, "TLMIN", bin[i] + 1, 0.0, &got );
+		FunColumnLookup( fun, NULL, bin[i], NULL, &( tltyp[i] ), NULL, NULL, NULL, NULL );
+		tlmin[i] = FunParamGetd( fun, "TLMIN", bin[i] + 1, 0.0, &got );
 		//      tlmax[i] = FunParamGetd(fun, "TLMAX", bin[i]+1, 0.0, &got);
-		binsiz[i] =
-		    FunParamGetd( fun, "TDBIN", bin[i] + 1, 1.0, &got );
+		binsiz[i] = FunParamGetd( fun, "TDBIN", bin[i] + 1, 1.0, &got );
 	    }
 	}
 	/* get row number that we need to read */
 	maxrow = FunParamGeti( fun, "NAXIS", 2, -1, &got );
 	if ( ( maxrow < 0 ) || !got ) {
-	    gerror( stderr,
-	            "can't determine total number of events in table\n" );
+	    gerror( stderr, "can't determine total number of events in table\n" );
 	}
 	/* select binning columns */
 	got = FunColumnSelect( fun, sizeof( EvRec ), NULL,
 	                       "$x", "D", "r", FUN_OFFSET( Ev, x ),
 	                       "$y", "D", "r", FUN_OFFSET( Ev, y ),
-	                       "$region", "J", "r", FUN_OFFSET( Ev, region ),
-	                       NULL );
+	                       "$region", "J", "r", FUN_OFFSET( Ev, region ), NULL );
 	if ( !( ebuf = ( Ev ) xmalloc( maxrow * sizeof( EvRec ) ) ) ) {
-	    gerror( stderr,
-	            "can't allocate memory for all events in table\n" );
+	    gerror( stderr, "can't allocate memory for all events in table\n" );
 	}
 	ebuf = ( Ev ) FunTableRowGet( fun, ebuf, maxrow, NULL, &got );
 	if ( got != maxrow ) {
 	    gerror( stderr,
-	            "could not read all rows into memory (wanted %d, got %d)\n",
-	            maxrow, got );
+	            "could not read all rows into memory (wanted %d, got %d)\n", maxrow, got );
 	}
     }
 
@@ -321,12 +291,10 @@ main( argc, argv )
 	}
 	clen = statbuf.st_size + SZ_LINE;
 	if ( !( cregion = ( char * ) xcalloc( clen, sizeof( char ) ) ) ) {
-	    gerror( stderr, "can't allocate memory for region file: %s\n",
-	            iregion );
+	    gerror( stderr, "can't allocate memory for region file: %s\n", iregion );
 	}
 	if ( !( cname = ( char * ) xcalloc( clen, sizeof( char ) ) ) ) {
-	    gerror( stderr, "can't allocate memory for region file: %s\n",
-	            iregion );
+	    gerror( stderr, "can't allocate memory for region file: %s\n", iregion );
 	}
 	while ( fgets( tbuf, SZ_LINE, fd ) ) {
 	    if ( *tbuf == '#' || *tbuf == '\n' ) continue;
@@ -372,9 +340,7 @@ main( argc, argv )
 		    nregion++;
 		}
 		if ( !regions[nregion] ) {
-		    if ( !
-			 ( regions[nregion] =
-			   xcalloc( SZ_LINE, sizeof( char ) ) ) ) {
+		    if ( !( regions[nregion] = xcalloc( SZ_LINE, sizeof( char ) ) ) ) {
 			gerror( stderr, "can't allocate memory\n" );
 		    }
 		}
@@ -439,32 +405,24 @@ main( argc, argv )
 	    /* append current region to filename root */
 	    if ( !doimfilt ) {
 		/* if the region string is not long, we append it to the file name */
-		if ( ( strlen( fname2 ) + strlen( cregion ) +
-		       strlen( extn ) ) < ( SZ_LINE - 1 ) ) {
-		    snprintf( cname, clen - 1, "%s%s%s", fname2, cregion,
-		              extn );
+		if ( ( strlen( fname2 ) + strlen( cregion ) + strlen( extn ) ) < ( SZ_LINE - 1 ) ) {
+		    snprintf( cname, clen - 1, "%s%s%s", fname2, cregion, extn );
 		}
 		/* otherwise we have to use a temp file */
 		else {
 		    /* delete previous temp region file */
 		    if ( *cregionfile ) unlink( cregionfile );
 		    /* get new temp file name */
-		    if ( !
-		         ( cfd =
-		           mkrtemp( prefix, ".reg", cregionfile, SZ_LINE,
-		                    1 ) ) ) {
-			gerror( stderr, "can't open temp region file: %s\n",
-			        cregionfile );
+		    if ( !( cfd = mkrtemp( prefix, ".reg", cregionfile, SZ_LINE, 1 ) ) ) {
+			gerror( stderr, "can't open temp region file: %s\n", cregionfile );
 		    }
 		    else {
 			if ( !write( cfd, cregion, strlen( cregion ) ) ) {
-			    gerror( stderr, "can't write temp file: %s\n",
-			            cregionfile );
+			    gerror( stderr, "can't write temp file: %s\n", cregionfile );
 			}
 			close( cfd );
 		    }
-		    snprintf( cname, clen - 1, "%s@%s%s", fname2, cregionfile,
-		              extn );
+		    snprintf( cname, clen - 1, "%s@%s%s", fname2, cregionfile, extn );
 		}
 	    }
 	    /* but not for image-style filtering -- we filter the region manually */
@@ -483,15 +441,12 @@ main( argc, argv )
 	    }
 	    /* open the data file with the new region as part of the filter */
 	    if ( !( fun = FunOpen( cname, "r", NULL ) ) ) {
-		gerror( stderr,
-		        "can't FunOpen file (or find extension): %s\n",
-		        fname );
+		gerror( stderr, "can't FunOpen file (or find extension): %s\n", fname );
 	    }
 	    /* make sure we have a table */
 	    FunInfoGet( fun, FUN_TYPE, &type, 0 );
 	    if ( type != FUN_TABLE ) {
-		gerror( stderr,
-		        "please specify a table (image support not yet implemented)\n" );
+		gerror( stderr, "please specify a table (image support not yet implemented)\n" );
 	    }
 	    /* for wcs output, get info to allow conversion of phyiscal to image */
 	    FunInfoGet( fun, FUN_BINOFFS, bin, 0 );
@@ -499,19 +454,15 @@ main( argc, argv )
 		if ( bin[i] >= 0 ) {
 		    FunColumnLookup( fun, NULL, bin[i], NULL,
 		                     &( tltyp[i] ), NULL, NULL, NULL, NULL );
-		    tlmin[i] =
-		        FunParamGetd( fun, "TLMIN", bin[i] + 1, 0.0, &got );
+		    tlmin[i] = FunParamGetd( fun, "TLMIN", bin[i] + 1, 0.0, &got );
 		    //      tlmax[i] = FunParamGetd(fun, "TLMAX", bin[i]+1, 0.0, &got);
-		    binsiz[i] =
-		        FunParamGetd( fun, "TDBIN", bin[i] + 1, 1.0, &got );
+		    binsiz[i] = FunParamGetd( fun, "TDBIN", bin[i] + 1, 1.0, &got );
 		}
 	    }
 	    got = FunColumnSelect( fun, sizeof( EvRec ), NULL,
 	                           "$x", "D", "r", FUN_OFFSET( Ev, x ),
 	                           "$y", "D", "r", FUN_OFFSET( Ev, y ),
-	                           "$region", "J", "r", FUN_OFFSET( Ev,
-	                                                            region ),
-	                           NULL );
+	                           "$region", "J", "r", FUN_OFFSET( Ev, region ), NULL );
 	}
 	else {
 	    if ( verbose >= 2 ) {
@@ -524,8 +475,7 @@ main( argc, argv )
 	    FunInfoGet( fun, FUN_ENDIAN, &endian, FUN_HEADER, &header,
 	                FUN_SECT_X0, &x0, FUN_SECT_X1, &x1,
 	                FUN_SECT_Y0, &y0, FUN_SECT_Y1, &y1,
-	                FUN_SECT_BLOCK, &block, FUN_BINCOLS, &bincols,
-	                FUN_RAWSIZE, &rawsize, 0 );
+	                FUN_SECT_BLOCK, &block, FUN_BINCOLS, &bincols, FUN_RAWSIZE, &rawsize, 0 );
 	    if ( doimfilt ) {
 		/* make sure we will have a valid image section in which to filter */
 		if ( ( x1 - x0 <= 0 ) || ( y1 - y0 <= 0 ) )
@@ -535,8 +485,7 @@ main( argc, argv )
 		/* make up the mode string */
 		snprintf( mode, SZ_LINE - 1,
 		          "type=events,convert=%s,evsect=\"%d %d %d %d %d\"",
-		          ( endian == is_bigendian(  ) )? "false" : "true",
-		          x0, x1, y0, y1, block );
+		          ( endian == is_bigendian(  ) )? "false" : "true", x0, x1, y0, y1, block );
 	    }
 	    else {
 		snprintf( mode, SZ_LINE - 1,
@@ -555,10 +504,7 @@ main( argc, argv )
 	while ( 1 ) {
 	    /* get data (already have it for memory processing */
 	    if ( !domem ) {
-		if ( !
-		     ( ebuf =
-		       ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL,
-		                              &got ) ) )
+		if ( !( ebuf = ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) )
 		    break;
 	    }
 	    /* do standard event filtering */
@@ -566,8 +512,7 @@ main( argc, argv )
 		for ( i = 0; i < got; i++ ) {
 		    ev = ebuf + i;
 		    if ( ev->region > nregion ) {
-			gerror( stderr,
-			        "compound regions are not allowed!\n" );
+			gerror( stderr, "compound regions are not allowed!\n" );
 		    }
 		    if ( !tflag[ev->region] ) {
 			xtot[ev->region] += ev->x;
@@ -575,8 +520,7 @@ main( argc, argv )
 			nev[ev->region] += 1;
 			/* debugging output */
 			if ( verbose > 2 ) {
-			    fprintf( stdout, "\t%.2f %.2f %d\n", ev->x, ev->y,
-			             ev->region );
+			    fprintf( stdout, "\t%.2f %.2f %d\n", ev->x, ev->y, ev->region );
 			}
 		    }
 		}
@@ -635,11 +579,9 @@ main( argc, argv )
 		if ( i != 1 ) fprintf( stdout, "\n" );
 		snprintf( tbuf, SZ_LINE - 1, regions[i], xavg[i], yavg[i] );
 		fprintf( stdout, "\tevents:\t\t%d\n", nev[i] );
-		fprintf( stdout, "\tcentroid(x,y):\t%.2f %.2f\n", xavg[i],
-		         yavg[i] );
+		fprintf( stdout, "\tcentroid(x,y):\t%.2f %.2f\n", xavg[i], yavg[i] );
 		if ( tflag[i] )
-		    fprintf( stdout, "\ttol**2:\t\t%.4f (tolerance met)\n",
-		             ctolsq );
+		    fprintf( stdout, "\ttol**2:\t\t%.4f (tolerance met)\n", ctolsq );
 		else
 		    fprintf( stdout, "\ttol**2:\t\t%.4f\n", ctolsq );
 		fprintf( stdout, "\tregion%d:\t%s\n", i, tbuf );
@@ -660,8 +602,7 @@ main( argc, argv )
 	/* handle all other regions */
 	for ( i = 1; i <= nregion; i++ ) {
 	    snprintf( tbuf, SZ_LINE - 1, regions[i], xavg[i], yavg[i] );
-	    while ( ( int ) ( strlen( tbuf ) + strlen( cregion ) ) >=
-		    ( clen - 2 ) ) {
+	    while ( ( int ) ( strlen( tbuf ) + strlen( cregion ) ) >= ( clen - 2 ) ) {
 		clen += SZ_LINE;
 		cregion = xrealloc( cregion, clen );
 	    }
@@ -672,8 +613,7 @@ main( argc, argv )
 	}
 	/* check for no tolerances left to do */
 	if ( ntol == 0 ) {
-	    if ( verbose > 1 ) fprintf( stdout,
-	                                "All tolerances have been met.\n" );
+	    if ( verbose > 1 ) fprintf( stdout, "All tolerances have been met.\n" );
 	    break;
 	}
 	else {
@@ -693,8 +633,7 @@ main( argc, argv )
 	/* append current region to filename root */
 	if ( !doimfilt ) {
 	    /* if the region string is not long, we append it to the file name */
-	    if ( ( strlen( fname2 ) + strlen( cregion ) + strlen( extn ) ) <
-	         ( SZ_LINE - 1 ) ) {
+	    if ( ( strlen( fname2 ) + strlen( cregion ) + strlen( extn ) ) < ( SZ_LINE - 1 ) ) {
 		snprintf( cname, clen - 1, "%s%s%s", fname2, cregion, extn );
 	    }
 	    /* otherwise we have to use a temp file */
@@ -702,22 +641,16 @@ main( argc, argv )
 		/* delete previous temp region file */
 		if ( *cregionfile ) unlink( cregionfile );
 		/* get new temp file name */
-		if ( !
-		     ( cfd =
-		       mkrtemp( prefix, ".reg", cregionfile, SZ_LINE,
-		                1 ) ) ) {
-		    gerror( stderr, "can't open temp region file: %s\n",
-		            cregionfile );
+		if ( !( cfd = mkrtemp( prefix, ".reg", cregionfile, SZ_LINE, 1 ) ) ) {
+		    gerror( stderr, "can't open temp region file: %s\n", cregionfile );
 		}
 		else {
 		    if ( !write( cfd, cregion, strlen( cregion ) ) ) {
-			gerror( stderr, "can't write temp file: %s\n",
-			        cregionfile );
+			gerror( stderr, "can't write temp file: %s\n", cregionfile );
 		    }
 		    close( cfd );
 		}
-		snprintf( cname, clen - 1, "%s@%s%s", fname2, cregionfile,
-		          extn );
+		snprintf( cname, clen - 1, "%s@%s%s", fname2, cregionfile, extn );
 	    }
 	}
 	/* but not for image-style filtering -- we filter the region manually */
@@ -726,27 +659,23 @@ main( argc, argv )
 	}
 	/* open the data file with the new region as part of the filter */
 	if ( !( fun = FunOpen( cname, "r", NULL ) ) ) {
-	    gerror( stderr, "can't FunOpen file (or find extension): %s\n",
-	            fname );
+	    gerror( stderr, "can't FunOpen file (or find extension): %s\n", fname );
 	}
 	/* make sure we have a table */
 	FunInfoGet( fun, FUN_TYPE, &type, 0 );
 	if ( type != FUN_TABLE ) {
-	    gerror( stderr,
-	            "please specify a table (image support not yet implemented)\n" );
+	    gerror( stderr, "please specify a table (image support not yet implemented)\n" );
 	}
 	got = FunColumnSelect( fun, sizeof( EvRec ), NULL,
 	                       "$x", "D", "r", FUN_OFFSET( Ev, x ),
 	                       "$y", "D", "r", FUN_OFFSET( Ev, y ),
-	                       "$region", "J", "r", FUN_OFFSET( Ev, region ),
-	                       NULL );
+	                       "$region", "J", "r", FUN_OFFSET( Ev, region ), NULL );
     }
     if ( domem || doimfilt ) {
 	FunInfoGet( fun, FUN_ENDIAN, &endian, FUN_HEADER, &header,
 	            FUN_SECT_X0, &x0, FUN_SECT_X1, &x1,
 	            FUN_SECT_Y0, &y0, FUN_SECT_Y1, &y1,
-	            FUN_SECT_BLOCK, &block, FUN_BINCOLS, &bincols,
-	            FUN_RAWSIZE, &rawsize, 0 );
+	            FUN_SECT_BLOCK, &block, FUN_BINCOLS, &bincols, FUN_RAWSIZE, &rawsize, 0 );
 	if ( doimfilt ) {
 	    /* make sure we will have a valid image section in which to filter */
 	    if ( ( x1 - x0 <= 0 ) || ( y1 - y0 <= 0 ) )
@@ -756,13 +685,11 @@ main( argc, argv )
 	    /* make up the mode string */
 	    snprintf( mode, SZ_LINE - 1,
 	              "type=events,convert=%s,evsect=\"%d %d %d %d %d\"",
-	              ( endian == is_bigendian(  ) )? "false" : "true",
-	              x0, x1, y0, y1, block );
+	              ( endian == is_bigendian(  ) )? "false" : "true", x0, x1, y0, y1, block );
 	}
 	else {
 	    snprintf( mode, SZ_LINE - 1,
-	              "type=events,convert=%s",
-	              ( endian == is_bigendian(  ) )? "false" : "true" );
+	              "type=events,convert=%s", ( endian == is_bigendian(  ) )? "false" : "true" );
 	}
 	/* add columns */
 	if ( bincols ) {
@@ -782,9 +709,7 @@ main( argc, argv )
     /* filter events and accumulate total events for each region */
     while ( 1 ) {
 	if ( !domem ) {
-	    if ( !
-	         ( ebuf =
-	           ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) )
+	    if ( !( ebuf = ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) )
 		break;
 	}
 	/* standard event filtering */
@@ -857,11 +782,9 @@ main( argc, argv )
 	    fprintf( stdout, "\n" );
 	    fprintf( stdout, "events:\t\t%d\n", nev[i] );
 	    if ( nev[i] > 0 ) {
-		fprintf( stdout, "x,y(physical):\t%.2f %.2f\n", xavg[i],
-		         yavg[i] );
+		fprintf( stdout, "x,y(physical):\t%.2f %.2f\n", xavg[i], yavg[i] );
 		if ( dowcs ) {
-		    fprintf( stdout, "ra,dec(%s):\t%.6f %.6f\n", wcssys, ra,
-		             dec );
+		    fprintf( stdout, "ra,dec(%s):\t%.6f %.6f\n", wcssys, ra, dec );
 		}
 		snprintf( tbuf, SZ_LINE - 1, regions[i], xavg[i], yavg[i] );
 		fprintf( stdout, "final_region%d:\t%s\n", i, tbuf );

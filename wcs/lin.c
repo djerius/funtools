@@ -187,10 +187,9 @@ const char *linrev_errmsg[] = {
 };
 
 int
-linset( lin )
-     struct linprm *lin;
-
-{
+linset(
+    struct linprm *lin
+ ) {
     int i, ij, j, mem, n;
 
     n = lin->naxis;
@@ -224,12 +223,11 @@ linset( lin )
 /*--------------------------------------------------------------------------*/
 
 int
-linfwd( imgcrd, lin, pixcrd )
-     const double imgcrd[];
-     struct linprm *lin;
-     double pixcrd[];
-
-{
+linfwd(
+    const double imgcrd[],
+    struct linprm *lin,
+    double pixcrd[]
+ ) {
     int i, ij, j, n;
 
     n = lin->naxis;
@@ -255,12 +253,11 @@ linfwd( imgcrd, lin, pixcrd )
 /*--------------------------------------------------------------------------*/
 
 int
-linrev( pixcrd, lin, imgcrd )
-     const double pixcrd[];
-     struct linprm *lin;
-     double imgcrd[];
-
-{
+linrev(
+    const double pixcrd[],
+    struct linprm *lin,
+    double imgcrd[]
+ ) {
     int i, ij, j, n;
     double temp;
 
@@ -287,12 +284,11 @@ linrev( pixcrd, lin, imgcrd )
 /*--------------------------------------------------------------------------*/
 
 int
-matinv( n, mat, inv )
-     const int n;
-     const double mat[];
-     double inv[];
-
-{
+matinv(
+    const int n,
+    const double mat[],
+    double inv[]
+ ) {
     register int i, ij, ik, j, k, kj, pj;
     int itemp, mem, *mxl, *lxm, pivot;
     double colmax, *lu, *rowmax, dtemp;

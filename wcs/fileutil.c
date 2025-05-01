@@ -27,7 +27,7 @@
  */
 
 /** ASCII file utilities
-/** Read, parse, and find out things about ASCII files
+ ** Read, parse, and find out things about ASCII files
  *
  ** Read an entire file
  *
@@ -138,9 +138,9 @@
 /* GETFILELINES -- Return number of lines in one file */
 
 int
-getfilelines( filepath )
-     char *filepath;            /* Pathname of file for which to find number of lines */
-{
+getfilelines(
+    char *filepath              /* Pathname of file for which to find number of lines */
+ ) {
 
     char *buffer, *bufline;
     int nlines = 0;
@@ -169,9 +169,9 @@ getfilelines( filepath )
 /* GETMAXLENGTH -- Return length of longest line in file */
 
 int
-getmaxlength( filepath )
-     char *filepath;            /* Pathname of file for which to find number of lines */
-{
+getmaxlength(
+    char *filepath              /* Pathname of file for which to find number of lines */
+ ) {
 
     char *buffer, *bufline, *buff0;
     int thislength;
@@ -205,9 +205,9 @@ getmaxlength( filepath )
 /* GETFILEBUFF -- return entire file contents in one character string */
 
 char *
-getfilebuff( filepath )
-     char *filepath;            /* Name of file from which to read */
-{
+getfilebuff(
+    char *filepath              /* Name of file from which to read */
+ ) {
 
     FILE *diskfile;
     int lfile, nr, lbuff, ipt, ibuff;
@@ -232,8 +232,7 @@ getfilebuff( filepath )
 		}
 	    }
 	    else {
-		fprintf( stderr, "GETFILEBUFF: No room for %d-byte buffer\n",
-		         lfile );
+		fprintf( stderr, "GETFILEBUFF: No room for %d-byte buffer\n", lfile );
 		break;
 	    }
 	}
@@ -260,8 +259,7 @@ getfilebuff( filepath )
 	fseek( diskfile, 0, 0 );
 	nr = fread( buffer, 1, lfile, diskfile );
 	if ( nr < lfile ) {
-	    fprintf( stderr, "GETFILEBUFF: File %s: read %d / %d bytes\n",
-	             filepath, nr, lfile );
+	    fprintf( stderr, "GETFILEBUFF: File %s: read %d / %d bytes\n", filepath, nr, lfile );
 	    free( buffer );
 	    fclose( diskfile );
 	    return ( NULL );
@@ -271,8 +269,7 @@ getfilebuff( filepath )
 	return ( buffer );
     }
     else {
-	fprintf( stderr, "GETFILEBUFF: File %s: no room for %d-byte buffer\n",
-	         filepath, lfile );
+	fprintf( stderr, "GETFILEBUFF: File %s: no room for %d-byte buffer\n", filepath, lfile );
 	fclose( diskfile );
 	return ( NULL );
     }
@@ -282,26 +279,24 @@ getfilebuff( filepath )
 /* PUTFILEBUFF -- Write a character string to a file */
 
 int
-putfilebuff( filepath, buffer )
-     char *filepath;            /* Pathname of file to which to write */
-     char *buffer;              /* Character string to write to the file */
-{
+putfilebuff(
+    char *filepath,             /* Pathname of file to which to write */
+    char *buffer                /* Character string to write to the file */
+ ) {
 
     FILE *diskfile;
     int nw, lbuff, nbytes;
 
     /* Open file */
     if ( ( diskfile = fopen( filepath, "w+b" ) ) == NULL ) {
-	fprintf( stderr, "PUTFILEBUFF: Could not open %s to write\n",
-	         filepath );
+	fprintf( stderr, "PUTFILEBUFF: Could not open %s to write\n", filepath );
 	return ( 1 );
     }
 
     /* Find length of string */
     lbuff = strlen( buffer );
     if ( lbuff < 1 ) {
-	fprintf( stderr, "PUTFILEBUFF: String is empty; %s not written.\n",
-	         filepath );
+	fprintf( stderr, "PUTFILEBUFF: String is empty; %s not written.\n", filepath );
 	fclose( diskfile );
 	return ( 1 );
     }
@@ -310,8 +305,7 @@ putfilebuff( filepath, buffer )
     nbytes = lbuff + 1;
     nw = fwrite( buffer, 1, nbytes, diskfile );
     if ( nw < nbytes ) {
-	fprintf( stderr, "PUTFILEBUFF: File %s: wrote %d / %d bytes\n",
-	         filepath, nw, nbytes );
+	fprintf( stderr, "PUTFILEBUFF: File %s: wrote %d / %d bytes\n", filepath, nw, nbytes );
 	fclose( diskfile );
 	return ( 1 );
     }
@@ -323,9 +317,9 @@ putfilebuff( filepath, buffer )
 /* GETFILESIZE -- return size of one file in bytes */
 
 int
-getfilesize( filepath )
-     char *filepath;            /* Name of file for which to find size */
-{
+getfilesize(
+    char *filepath              /* Name of file for which to find size */
+ ) {
     struct stat statbuff;
 
     if ( stat( filepath, &statbuff ) )
@@ -335,9 +329,9 @@ getfilesize( filepath )
 }
 
 int
-getfilesize0( filepath )
-     char *filepath;            /* Name of file for which to find size */
-{
+getfilesize0(
+    char *filepath              /* Name of file for which to find size */
+ ) {
     FILE *diskfile;
     long filesize;
 
@@ -361,9 +355,9 @@ getfilesize0( filepath )
 
 /* ISIMLIST -- Return 1 if list of FITS or IRAF files, else 0 */
 int
-isimlist( filepath )
-     char *filepath;            /* Name of possible list file */
-{
+isimlist(
+    char *filepath              /* Name of possible list file */
+ ) {
     FILE *diskfile;
     char token[SZ_PATHNAME];
     int ncmax = 127;
@@ -383,10 +377,10 @@ isimlist( filepath )
 
 /* ISIMLISTD -- Return 1 if list of FITS or IRAF files, else 0 */
 int
-isimlistd( filename, rootdir )
-     char *filename;            /* Name of possible list file */
-     char *rootdir;             /* Name of root directory for files in list */
-{
+isimlistd(
+    char *filename,             /* Name of possible list file */
+    char *rootdir               /* Name of root directory for files in list */
+ ) {
     FILE *diskfile;
     char token[SZ_PATHNAME];
     char filepath[SZ_PATHNAME];
@@ -414,10 +408,10 @@ isimlistd( filename, rootdir )
 
 /* ISFILELIST -- Return 1 if list of readable files, else 0 */
 int
-isfilelist( filename, rootdir )
-     char *filename;            /* Name of possible list file */
-     char *rootdir;             /* Name of root directory for files in list */
-{
+isfilelist(
+    char *filename,             /* Name of possible list file */
+    char *rootdir               /* Name of root directory for files in list */
+ ) {
     FILE *diskfile;
     char token[SZ_PATHNAME];
     char filepath[SZ_PATHNAME];
@@ -446,9 +440,9 @@ isfilelist( filename, rootdir )
 /* ISFILE -- Return 1 if file is a readable file, else 0 */
 
 int
-isfile( filepath )
-     char *filepath;            /* Name of file to check */
-{
+isfile(
+    char *filepath              /* Name of file to check */
+ ) {
     struct stat statbuff;
 
     if ( !strcasecmp( filepath, "stdin" ) )
@@ -470,11 +464,11 @@ isfile( filepath )
 /*              Lines beginning with # are ignored*/
 
 int
-next_line( diskfile, ncmax, line )
-     FILE *diskfile;            /* File descriptor for ASCII file */
-     int ncmax;                 /* Maximum number of characters returned */
-     char *line;                /* Next line (returned) */
-{
+next_line(
+    FILE * diskfile,            /* File descriptor for ASCII file */
+    int ncmax,                  /* Maximum number of characters returned */
+    char *line                  /* Next line (returned) */
+ ) {
     char *lastchar;
 
     /* If line can be read, add null at the end of the first token */
@@ -505,11 +499,11 @@ next_line( diskfile, ncmax, line )
 /*                Lines beginning with # are ignored */
 
 int
-first_token( diskfile, ncmax, token )
-     FILE *diskfile;            /* File descriptor for ASCII file */
-     int ncmax;                 /* Maximum number of characters returned */
-     char *token;               /* First token on next line (returned) */
-{
+first_token(
+    FILE * diskfile,            /* File descriptor for ASCII file */
+    int ncmax,                  /* Maximum number of characters returned */
+    char *token                 /* First token on next line (returned) */
+ ) {
     char *lastchar, *lspace;
 
     /* If line can be read, add null at the end of the first token */
@@ -542,10 +536,10 @@ first_token( diskfile, ncmax, token )
 /* Replace character in string with space */
 
 int
-stc2s( spchar, string )
-     char *spchar;              /* Character to replace with spaces */
-     char *string;
-{
+stc2s(
+    char *spchar,               /* Character to replace with spaces */
+    char *string
+ ) {
     int i, lstr, n;
     lstr = strlen( string );
     n = 0;
@@ -562,10 +556,10 @@ stc2s( spchar, string )
 /* Replace spaces in string with character */
 
 int
-sts2c( spchar, string )
-     char *spchar;              /* Character with which to replace spaces */
-     char *string;
-{
+sts2c(
+    char *spchar,               /* Character with which to replace spaces */
+    char *string
+ ) {
     int i, lstr, n;
     lstr = strlen( string );
     n = 0;
@@ -581,9 +575,9 @@ sts2c( spchar, string )
 
 /* ISTIFF -- Return 1 if TIFF file, else 0 */
 int
-istiff( filepath )
-     char *filepath;            /* Name of file to check */
-{
+istiff(
+    char *filepath              /* Name of file to check */
+ ) {
     int diskfile;
     char keyword[16];
     int nbr;
@@ -620,9 +614,9 @@ istiff( filepath )
 
 /* ISJPEG -- Return 1 if JPEG file, else 0 */
 int
-isjpeg( filepath )
-     char *filepath;            /* Name of file to check */
-{
+isjpeg(
+    char *filepath              /* Name of file to check */
+ ) {
     int diskfile;
     char keyword[16];
     int nbr;
@@ -650,8 +644,7 @@ isjpeg( filepath )
 	    close( diskfile );
 	    if ( nbr < 4 )
 		return ( 0 );
-	    else if ( keyword[0] == ( char ) 0xFF &&
-	              keyword[1] == ( char ) 0xD8 )
+	    else if ( keyword[0] == ( char ) 0xFF && keyword[1] == ( char ) 0xD8 )
 		return ( 1 );
 	    else
 		return ( 0 );
@@ -662,9 +655,9 @@ isjpeg( filepath )
 
 /* ISGIF -- Return 1 if GIF file, else 0 */
 int
-isgif( filepath )
-     char *filepath;            /* Name of file to check */
-{
+isgif(
+    char *filepath              /* Name of file to check */
+ ) {
     int diskfile;
     char keyword[16];
     int nbr;
@@ -700,12 +693,12 @@ static int maxtokens = MAXTOKENS;       /* Set maximum number of tokens from wcs
 /* -- SETOKEN -- tokenize a string for easy decoding */
 
 int
-setoken( tokens, string, cwhite )
-     struct Tokens *tokens;     /* Token structure returned */
-     char *string;              /* character string to tokenize */
-     char *cwhite;              /* additional whitespace characters
+setoken(
+    struct Tokens *tokens,      /* Token structure returned */
+    char *string,               /* character string to tokenize */
+    char *cwhite                /* additional whitespace characters
                                  * if = tab, disallow spaces and commas */
-{
+ ) {
     char squote, dquote, jch, newline;
     char *iq, *stri, *wtype, *str0, *inew;
     int i, j, naddw, ltok;
@@ -879,11 +872,11 @@ setoken( tokens, string, cwhite )
 /* NEXTOKEN -- get next token from tokenized string */
 
 int
-nextoken( tokens, token, maxchars )
-     struct Tokens *tokens;     /* Token structure returned */
-     char *token;               /* token (returned) */
-     int maxchars;              /* Maximum length of token */
-{
+nextoken(
+    struct Tokens *tokens,      /* Token structure returned */
+    char *token,                /* token (returned) */
+    int maxchars                /* Maximum length of token */
+ ) {
     int ltok;                   /* length of token string (returned) */
     int it, i;
     int maxc = maxchars - 1;
@@ -907,14 +900,14 @@ nextoken( tokens, token, maxchars )
 /* GETOKEN -- get specified token from tokenized string */
 
 int
-getoken( tokens, itok, token, maxchars )
-     struct Tokens *tokens;     /* Token structure returned */
-     int itok;                  /* token sequence number of token
+getoken(
+    struct Tokens *tokens,      /* Token structure returned */
+    int itok,                   /* token sequence number of token
                                  * if <0, get whole string after token -itok
                                  * if =0, get whole string */
-     char *token;               /* token (returned) */
-     int maxchars;              /* Maximum length of token */
-{
+    char *token,                /* token (returned) */
+    int maxchars                /* Maximum length of token */
+ ) {
     int ltok;                   /* length of token string (returned) */
     int it, i;
     int maxc = maxchars - 1;
@@ -960,11 +953,10 @@ getoken( tokens, itok, token, maxchars )
 /* RANGEINIT -- Initialize range structure from string */
 
 struct Range *
-RangeInit( string, ndef )
-     char *string;              /* String containing numbers separated by , and - */
-     int ndef;                  /* Maximum allowable range value */
-
-{
+RangeInit(
+    char *string,               /* String containing numbers separated by , and - */
+    int ndef                    /* Maximum allowable range value */
+ ) {
     struct Range *range;
     int ip, irange;
     char *slast;
@@ -988,8 +980,7 @@ RangeInit( string, ndef )
 	step = 1.0;
 
 	/* Skip delimiters to start of range */
-	while ( string[ip] == ' ' || string[ip] == '	' ||
-	        string[ip] == ',' )
+	while ( string[ip] == ' ' || string[ip] == '	' || string[ip] == ',' )
 	    ip++;
 
 	/* Get first limit
@@ -1022,16 +1013,14 @@ RangeInit( string, ndef )
 	}
 
 	/* Skip delimiters */
-	while ( string[ip] == ' ' || string[ip] == '	' ||
-	        string[ip] == ',' )
+	while ( string[ip] == ' ' || string[ip] == '	' || string[ip] == ',' )
 	    ip++;
 
 	/* Get last limit
 	 * Must be '-', or 'x' otherwise last = first */
 	if ( string[ip] == '-' || string[ip] == ':' ) {
 	    ip++;
-	    while ( string[ip] == ' ' || string[ip] == '	' ||
-	            string[ip] == ',' )
+	    while ( string[ip] == ' ' || string[ip] == '	' || string[ip] == ',' )
 		ip++;
 	    if ( string[ip] == ( char ) 0 )
 		last = first + ndef;
@@ -1046,16 +1035,14 @@ RangeInit( string, ndef )
 	    last = first;
 
 	/* Skip delimiters */
-	while ( string[ip] == ' ' || string[ip] == '	' ||
-	        string[ip] == ',' )
+	while ( string[ip] == ' ' || string[ip] == '	' || string[ip] == ',' )
 	    ip++;
 
 	/* Get step
 	 * Must be 'x' or assume default step. */
 	if ( string[ip] == 'x' ) {
 	    ip++;
-	    while ( string[ip] == ' ' || string[ip] == '	' ||
-	            string[ip] == ',' )
+	    while ( string[ip] == ' ' || string[ip] == '	' || string[ip] == ',' )
 		ip++;
 	    if ( string[ip] == ( char ) 0 )
 		step = 1.0;
@@ -1071,8 +1058,7 @@ RangeInit( string, ndef )
 	range->ranges[irange * 3] = first;
 	range->ranges[irange * 3 + 1] = last;
 	range->ranges[irange * 3 + 2] = step;
-	range->nvalues =
-	    range->nvalues + ( ( last - first + ( 0.1 * step ) ) / step + 1 );
+	range->nvalues = range->nvalues + ( ( last - first + ( 0.1 * step ) ) / step + 1 );
 	range->nranges++;
 	if ( step > 0.0 ) {
 	    if ( first < range->valmin )
@@ -1095,10 +1081,9 @@ RangeInit( string, ndef )
 /* ISRANGE -- Return 1 if string is a range, else 0 */
 
 int
-isrange( string )
-     char *string;              /* String which might be a range of numbers */
-
-{
+isrange(
+    char *string                /* String which might be a range of numbers */
+ ) {
     int i, lstr;
 
     /* If string is NULL or empty, return 0 */
@@ -1122,10 +1107,9 @@ isrange( string )
 /* RSTART -- Restart at beginning of range */
 
 void
-rstart( range )
-     struct Range *range;       /* Range structure */
-
-{
+rstart(
+    struct Range *range         /* Range structure */
+ ) {
     range->irange = -1;
     return;
 }
@@ -1134,10 +1118,9 @@ rstart( range )
 /* RGETN -- Return number of values from range structure */
 
 int
-rgetn( range )
-     struct Range *range;       /* Range structure */
-
-{
+rgetn(
+    struct Range *range         /* Range structure */
+ ) {
     return ( range->nvalues );
 }
 
@@ -1145,10 +1128,9 @@ rgetn( range )
 /*  RGETR8 -- Return next number from range structure as 8-byte f.p. number */
 
 double
-rgetr8( range )
-     struct Range *range;       /* Range structure */
-
-{
+rgetr8(
+    struct Range *range         /* Range structure */
+ ) {
     int i;
 
     if ( range == NULL )
@@ -1182,10 +1164,9 @@ rgetr8( range )
 /*  RGETI4 -- Return next number from range structure as 4-byte integer */
 
 int
-rgeti4( range )
-     struct Range *range;       /* Range structure */
-
-{
+rgeti4(
+    struct Range *range         /* Range structure */
+ ) {
     double value;
 
     value = rgetr8( range );
@@ -1196,12 +1177,12 @@ rgeti4( range )
 /* AGETL -- Get one LF- or CR-terminated line from an ASCII string */
 
 int
-agetl( string, iline, line, lline )
-     char *string;              /* Character string containing <keyword>= <value> info */
-     int iline;                 /* Sequential line to return with 0=first line */
-     char *line;                /* Line (returned) */
-     int lline;                 /* Maximum length for line */
-{
+agetl(
+    char *string,               /* Character string containing <keyword>= <value> info */
+    int iline,                  /* Sequential line to return with 0=first line */
+    char *line,                 /* Line (returned) */
+    int lline                   /* Maximum length for line */
+ ) {
     char *line1, *cchar1, *llf, *lcr;
     char *cchar2, *lastchar;
     int ichar, jline, lstring;
@@ -1256,8 +1237,7 @@ agetl( string, iline, line, lline )
     cchar1 = line1;
     cchar2 = line;
     lastchar = line + lline - 1;        /* Leave space for terminating 0 */
-    while ( *cchar1 != clf && *cchar1 != ccr &&
-            *cchar1 != ceos && cchar2 < lastchar ) {
+    while ( *cchar1 != clf && *cchar1 != ccr && *cchar1 != ceos && cchar2 < lastchar ) {
 	*cchar2 = *cchar1;
 	cchar1++;
 	cchar2++;
@@ -1275,14 +1255,14 @@ agetl( string, iline, line, lline )
 
 /* AGETI4 -- Get integer value from ASCII string where keyword=value anywhere */
 int
-ageti4( string, keyword, ival )
-     char *string;              /* character string containing <keyword>= <value> */
-     char *keyword;             /* character string containing the name of the keyword
+ageti4(
+    char *string,               /* character string containing <keyword>= <value> */
+    char *keyword,              /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" or ",n" is
                                    present, the n'th token in the value is returned. */
-     int *ival;                 /* Integer value, returned */
-{
+    int *ival                   /* Integer value, returned */
+ ) {
     char value[32];
     char kw[32];
 
@@ -1299,14 +1279,14 @@ ageti4( string, keyword, ival )
 
 /* AGETR8 -- Get double value from ASCII string where keyword=value anywhere */
 int
-agetr8( string, keyword, dval )
-     char *string;              /* character string containing <keyword>= <value> */
-     char *keyword;             /* character string containing the name of the keyword
+agetr8(
+    char *string,               /* character string containing <keyword>= <value> */
+    char *keyword,              /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" or ",n" is
                                    present, the n'th token in the value is returned. */
-     double *dval;              /* Double value, returned */
-{
+    double *dval                /* Double value, returned */
+ ) {
     char value[32];
     char kw[32];
 
@@ -1323,15 +1303,15 @@ agetr8( string, keyword, dval )
 
 /* AGETW -- Get first word of ASCII string where keyword=value anywhere */
 int
-agetw( string, keyword, word, maxlength )
-     char *string;              /* character string containing <keyword>= <value> */
-     char *keyword;             /* character string containing the name of the keyword
+agetw(
+    char *string,               /* character string containing <keyword>= <value> */
+    char *keyword,              /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" or ",n" is
                                    present, the n'th token in the value is returned. */
-     char *word;                /* First word of string value */
-     int maxlength;             /* Maximum number of characters in word */
-{
+    char *word,                 /* First word of string value */
+    int maxlength               /* Maximum number of characters in word */
+ ) {
     char *value;
     char kw[32];
 
@@ -1348,18 +1328,18 @@ agetw( string, keyword, word, maxlength )
 /* AGETS -- Get keyword value from ASCII string with keyword=value anywhere */
 
 int
-agets( string, keyword0, lval, fillblank, value )
-     char *string;              /* character string containing <keyword>= <value> info */
-     char *keyword0;            /* character string containing the name of the keyword
+agets(
+    char *string,               /* character string containing <keyword>= <value> info */
+    char *keyword0,             /* character string containing the name of the keyword
                                    the value of which is returned.  hget searches for a
                                    line beginning with this string.  if "[n]" or ",n" is
                                    present, the n'th token in the value is returned. */
-     int lval;                  /* Size of value in characters
+    int lval,                   /* Size of value in characters
                                    If negative, value ends at end of line */
-     int fillblank;             /* If 0, leave blanks, strip trailing blanks
+    int fillblank,              /* If 0, leave blanks, strip trailing blanks
                                    if non-zero, replace blanks with underscores */
-     char *value;               /* String (returned) */
-{
+    char *value                 /* String (returned) */
+ ) {
     char keyword[81];
     char *pval, *str, *pkey, *pv;
     char cquot, squot[2], dquot[2], lbracket[2], rbracket[2], comma[2];
@@ -1529,15 +1509,15 @@ agets( string, keyword0, lval, fillblank, value )
  */
 
 void
-polfit( x, y, x0, npts, nterms, a, stdev )
-     double *x;                 /* Array of independent variable points */
-     double *y;                 /* Array of dependent variable points */
-     double x0;                 /* Offset to independent variable */
-     int npts;                  /* Number of data points to fit */
-     int nterms;                /* Number of parameters to fit */
-     double *a;                 /* Vector containing current fit values */
-     double *stdev;             /* Standard deviation of fit (returned) */
-{
+polfit(
+    double *x,                  /* Array of independent variable points */
+    double *y,                  /* Array of dependent variable points */
+    double x0,                  /* Offset to independent variable */
+    int npts,                   /* Number of data points to fit */
+    int nterms,                 /* Number of parameters to fit */
+    double *a,                  /* Vector containing current fit values */
+    double *stdev               /* Standard deviation of fit (returned) */
+ ) {
     double sigma2sum;
     double xterm, yterm, xi, yi;
     double *sumx, *sumy;
@@ -1619,11 +1599,10 @@ polfit( x, y, x0, npts, nterms, a, stdev )
  */
 
 double
-determ( array, norder )
-     double *array;             /* Input matrix array */
-     int norder;                /* Order of determinant (degree of matrix) */
-
-{
+determ(
+    double *array,              /* Input matrix array */
+    int norder                  /* Order of determinant (degree of matrix) */
+ ) {
     double save, det;
     int i, j, k, k1, zero;
 
@@ -1655,8 +1634,7 @@ determ( array, norder )
 	    for ( i = k1; i < norder; i++ ) {
 		for ( j = k1; j < norder; j++ ) {
 		    array[i + j * norder] = array[i + j * norder] -
-		        ( array[i + k * norder] * array[k + j * norder] /
-		          array[k + k * norder] );
+		        ( array[i + k * norder] * array[k + j * norder] / array[k + k * norder] );
 		}
 	    }
 	}
@@ -1668,12 +1646,12 @@ determ( array, norder )
  *	Y = a(0) + a(1)*X + a(2)*X**2 + a(3)*X**3 + . . . */
 
 double
-polcomp( xi, x0, norder, a )
-     double xi;                 /* Independent variable */
-     double x0;                 /* Offset to independent variable */
-     int norder;                /* Number of coefficients */
-     double *a;                 /* Vector containing coeffiecients */
-{
+polcomp(
+    double xi,                  /* Independent variable */
+    double x0,                  /* Offset to independent variable */
+    int norder,                 /* Number of coefficients */
+    double *a                   /* Vector containing coeffiecients */
+ ) {
     double xterm, x, y;
     int iterm;
 

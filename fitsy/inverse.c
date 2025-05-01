@@ -42,10 +42,10 @@
 typedef double Matrix3[3][2];
 
 int
-ft_inverse( in, out )
-     register Matrix3 in;
-     register Matrix3 out;
-{
+ft_inverse(
+    register Matrix3 in,
+    register Matrix3 out
+ ) {
     register double det_1;
     double pos, neg, temp;
 

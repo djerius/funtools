@@ -150,20 +150,60 @@
 #define LEN_PIXHDR	1024
 #define LEN_FITSHDR	11520
 
-int check_immagic(  );
-
-static char *same_path( char *pixname, char *hdrname );
-static int irafsize( FILE * diskfile );
-static int machswap( void );
-static void irafputc( char *string, char *irafheader, int offset, int nc );
-static void irafputc2( char *string, char *irafheader, int offset, int nc );
-static void irafputi4( char *irafheader, int offset, int inum );
-static void irafputr4( char *irafheader, int offset, double rnum );
-static void irafswap( int bitpix, char *string, int nbytes );
-static void irafswap2( char *string, int nbytes );
-static void irafswap4( char *string, int nbytes );
-static void irafswap8( char *string, int nbytes );
-static void str2iraf( char *string, char *irafstring, int nchar );
+static char *same_path(
+    char *pixname,
+    char *hdrname
+ );
+static int irafsize(
+    FILE * diskfile
+ );
+static int machswap(
+    void
+ );
+static void irafputc(
+    char *string,
+    char *irafheader,
+    int offset,
+    int nc
+ );
+static void irafputc2(
+    char *string,
+    char *irafheader,
+    int offset,
+    int nc
+ );
+static void irafputi4(
+    char *irafheader,
+    int offset,
+    int inum
+ );
+static void irafputr4(
+    char *irafheader,
+    int offset,
+    float rnum
+ );
+static void irafswap(
+    int bitpix,
+    char *string,
+    int nbytes
+ );
+static void irafswap2(
+    char *string,
+    int nbytes
+ );
+static void irafswap4(
+    char *string,
+    int nbytes
+ );
+static void irafswap8(
+    char *string,
+    int nbytes
+ );
+static void str2iraf(
+    char *string,
+    char *irafstring,
+    int nchar
+ );
 
 static int headswap = -1;       /* =1 to swap data bytes of foreign IRAF file */
 
@@ -178,10 +218,10 @@ static int headswap = -1;       /* =1 to swap data bytes of foreign IRAF file */
  */
 
 char *
-irafrhead( filename, lihead )
-     char *filename;            /* Name of IRAF header file */
-     int *lihead;               /* Length of IRAF image header in bytes (returned) */
-{
+irafrhead(
+    char *filename,             /* Name of IRAF header file */
+    int *lihead                 /* Length of IRAF image header in bytes (returned) */
+ ) {
     FILE *fd;
     int nbr;
     char *irafheader;
@@ -194,15 +234,13 @@ irafrhead( filename, lihead )
     /* open the image header file */
     fd = fopen( filename, "rb" );
     if ( fd == NULL ) {
-	fprintf( stderr, "IRAFRHEAD:  cannot open file %s to read\n",
-	         filename );
+	fprintf( stderr, "IRAFRHEAD:  cannot open file %s to read\n", filename );
 	return ( NULL );
     }
 
     /* Find size of image header file */
     if ( ( nbhead = irafsize( fd ) ) <= 0 ) {
-	fprintf( stderr, "IRAFRHEAD:  cannot read file %s, size = %d\n",
-	         filename, nbhead );
+	fprintf( stderr, "IRAFRHEAD:  cannot read file %s, size = %d\n", filename, nbhead );
 	return ( NULL );
     }
 
@@ -210,9 +248,7 @@ irafrhead( filename, lihead )
     nbytes = nbhead + 5000;
     irafheader = ( char * ) calloc( nbytes / 4, 4 );
     if ( irafheader == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAFRHEAD Cannot allocate %d-byte header\n",
-	                  nbytes );
+	( void ) fprintf( stderr, "IRAFRHEAD Cannot allocate %d-byte header\n", nbytes );
 	return ( NULL );
     }
     *lihead = nbytes;
@@ -234,9 +270,7 @@ irafrhead( filename, lihead )
     imhver = head_version( irafheader );
     if ( imhver < 1 ) {
 	free( irafheader );
-	( void ) fprintf( stderr,
-	                  "IRAFRHEAD: %s is not a valid IRAF image header\n",
-	                  filename );
+	( void ) fprintf( stderr, "IRAFRHEAD: %s is not a valid IRAF image header\n", filename );
 	return ( NULL );
     }
 
@@ -256,13 +290,12 @@ irafrhead( filename, lihead )
 
 
 char *
-irafrimage( fitsheader )
-     char *fitsheader;          /* FITS image header (filled) */
-{
+irafrimage(
+    char *fitsheader            /* FITS image header (filled) */
+ ) {
     FILE *fd;
     char *bang;
-    int naxis, naxis1, naxis2, naxis3, npaxis1, npaxis2, bitpix, bytepix,
-        pixswap, i;
+    int naxis, naxis1, naxis2, naxis3, npaxis1, npaxis2, bitpix, bytepix, pixswap, i;
     char *image;
     int nbr, nbimage, nbaxis, nbl, nbdiff, lpname;
     char *pixheader;
@@ -300,18 +333,14 @@ irafrimage( fitsheader )
 
     /* Print error message and exit if pixel file is not found */
     if ( !fd ) {
-	( void ) fprintf( stderr,
-	                  "IRAFRIMAGE: Cannot open IRAF pixel file %s\n",
-	                  pixname );
+	( void ) fprintf( stderr, "IRAFRIMAGE: Cannot open IRAF pixel file %s\n", pixname );
 	return ( NULL );
     }
 
     /* Read pixel header */
     pixheader = ( char * ) calloc( lpixhead / 4, 4 );
     if ( pixheader == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAFRIMAGE Cannot allocate %d-byte pixel header\n",
-	                  lpixhead );
+	( void ) fprintf( stderr, "IRAFRIMAGE Cannot allocate %d-byte pixel header\n", lpixhead );
 	return ( NULL );
     }
     nbr = fread( pixheader, 1, lpixhead, fd );
@@ -328,8 +357,7 @@ irafrimage( fitsheader )
     /* check pixel header magic word */
     imhver = pix_version( pixheader );
     if ( imhver < 1 ) {
-	( void ) fprintf( stderr, "File %s not valid IRAF pixel file.\n",
-	                  pixname );
+	( void ) fprintf( stderr, "File %s not valid IRAF pixel file.\n", pixname );
 	free( pixheader );
 	fclose( fd );
 	return ( NULL );
@@ -367,9 +395,7 @@ irafrimage( fitsheader )
     else
 	image = ( char * ) calloc( nbimage, 1 );
     if ( image == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAFRIMAGE Cannot allocate %d-byte image buffer\n",
-	                  nbimage );
+	( void ) fprintf( stderr, "IRAFRIMAGE Cannot allocate %d-byte image buffer\n", nbimage );
 	return ( NULL );
     }
 
@@ -415,10 +441,9 @@ irafrimage( fitsheader )
 /* Return IRAF image format version number from magic word in IRAF header*/
 
 int
-head_version( irafheader )
-     char *irafheader;          /* IRAF image header from file */
-
-{
+head_version(
+    char *irafheader            /* IRAF image header from file */
+ ) {
 
     /* Check header file magic word */
     if ( irafncmp( irafheader, "imhdr", 5 ) != 0 ) {
@@ -435,10 +460,9 @@ head_version( irafheader )
 /* Return IRAF image format version number from magic word in IRAF pixel file */
 
 int
-pix_version( irafheader )
-     char *irafheader;          /* IRAF image header from file */
-
-{
+pix_version(
+    char *irafheader            /* IRAF image header from file */
+ ) {
 
     /* Check pixel file header magic word */
     if ( irafncmp( irafheader, "impix", 5 ) != 0 ) {
@@ -456,12 +480,11 @@ pix_version( irafheader )
  * Returns:	0 on success, 1 on failure */
 
 int
-irafncmp( irafheader, teststring, nc )
-     char *irafheader;          /* IRAF image header from file */
-     char *teststring;          /* C character string to compare */
-     int nc;                    /* Number of characters to compate */
-
-{
+irafncmp(
+    char *irafheader,           /* IRAF image header from file */
+    char *teststring,           /* C character string to compare */
+    int nc                      /* Number of characters to compate */
+ ) {
     char *line;
 
     headswap = -1;
@@ -480,13 +503,12 @@ irafncmp( irafheader, teststring, nc )
 /* Convert IRAF image header to FITS image header, returning FITS header */
 
 char *
-iraf2fits( hdrname, irafheader, nbiraf, nbfits )
-     char *hdrname;             /* IRAF header file name (may be path) */
-     char *irafheader;          /* IRAF image header */
-     int nbiraf;                /* Number of bytes in IRAF header */
-     int *nbfits;               /* Number of bytes in FITS header (returned) */
-
-{
+iraf2fits(
+    char *hdrname,              /* IRAF header file name (may be path) */
+    char *irafheader,           /* IRAF image header */
+    int nbiraf,                 /* Number of bytes in IRAF header */
+    int *nbfits                 /* Number of bytes in FITS header (returned) */
+ ) {
     char *objname;              /* object name from FITS file */
     int lstr, i, j, k, ib, nax, nbits, nl;
     int lname = 0;
@@ -513,8 +535,7 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
     /* Check header magic word */
     imhver = head_version( irafheader );
     if ( imhver < 1 ) {
-	( void ) fprintf( stderr, "File %s not valid IRAF image header\n",
-	                  hdrname );
+	( void ) fprintf( stderr, "File %s not valid IRAF image header\n", hdrname );
 	return ( NULL );
     }
     if ( imhver == 2 ) {
@@ -545,9 +566,7 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
     *nbfits = ( nblock + 5 ) * 2880 + 4;
     fitsheader = ( char * ) calloc( *nbfits, 1 );
     if ( fitsheader == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAF2FITS Cannot allocate %d-byte FITS header\n",
-	                  *nbfits );
+	( void ) fprintf( stderr, "IRAF2FITS Cannot allocate %d-byte FITS header\n", *nbfits );
 	return ( NULL );
     }
     hlength( fitsheader, *nbfits );
@@ -582,8 +601,7 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
 	    nbits = -64;
 	    break;
 	default:
-	    ( void ) fprintf( stderr, "Unsupported data type: %d\n",
-	                      pixtype );
+	    ( void ) fprintf( stderr, "Unsupported data type: %d\n", pixtype );
 	    return ( NULL );
     }
     hputi4( fitsheader, "BITPIX", nbits );
@@ -725,8 +743,7 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
     pixoff = irafgeti4( irafheader, impixoff );
     pixoff = ( pixoff - 1 ) * 2;
     hputi4( fitsheader, "PIXOFF", pixoff );
-    hputcom( fitsheader, "PIXOFF",
-             "IRAF .pix pixel offset (Do not change!)" );
+    hputcom( fitsheader, "PIXOFF", "IRAF .pix pixel offset (Do not change!)" );
     fhead = fhead + 80;
 
     /* Save IRAF file format version in header */
@@ -739,8 +756,7 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
 	hputl( fitsheader, "HEADSWAP", 1 );
     else
 	hputl( fitsheader, "HEADSWAP", 0 );
-    hputcom( fitsheader, "HEADSWAP",
-             "IRAF header, FITS byte orders differ if T" );
+    hputcom( fitsheader, "HEADSWAP", "IRAF header, FITS byte orders differ if T" );
     fhead = fhead + 80;
 
     /* Set flag if image pixels are byte-reversed on this machine */
@@ -759,8 +775,7 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
 	hputl( fitsheader, "PIXSWAP", 1 );
     else
 	hputl( fitsheader, "PIXSWAP", 0 );
-    hputcom( fitsheader, "PIXSWAP",
-             "IRAF pixels, FITS byte orders differ if T" );
+    hputcom( fitsheader, "PIXSWAP", "IRAF pixels, FITS byte orders differ if T" );
     fhead = fhead + 80;
 
     /* Read modification time */
@@ -874,13 +889,12 @@ iraf2fits( hdrname, irafheader, nbiraf, nbfits )
 
 
 int
-irafwhead( hdrname, lhead, irafheader, fitsheader )
-     char *hdrname;             /* Name of IRAF header file */
-     int lhead;                 /* Length of IRAF header */
-     char *irafheader;          /* IRAF header */
-     char *fitsheader;          /* FITS image header */
-
-{
+irafwhead(
+    char *hdrname,              /* Name of IRAF header file */
+    int lhead,                  /* Length of IRAF header */
+    char *irafheader,           /* IRAF header */
+    char *fitsheader            /* FITS image header */
+ ) {
     int fd;
     int nbw, nbhead, lphead, pixswap;
 
@@ -901,16 +915,14 @@ irafwhead( hdrname, lhead, irafheader, fitsheader )
     if ( !access( hdrname, 0 ) ) {
 	fd = open( hdrname, O_WRONLY );
 	if ( fd < 3 ) {
-	    fprintf( stderr, "IRAFWIMAGE:  file %s not writeable\n",
-	             hdrname );
+	    fprintf( stderr, "IRAFWIMAGE:  file %s not writeable\n", hdrname );
 	    return ( 0 );
 	}
     }
     else {
 	fd = open( hdrname, O_RDWR + O_CREAT, 0666 );
 	if ( fd < 3 ) {
-	    fprintf( stderr, "IRAFWIMAGE:  cannot create file %s\n",
-	             hdrname );
+	    fprintf( stderr, "IRAFWIMAGE:  cannot create file %s\n", hdrname );
 	    return ( 0 );
 	}
     }
@@ -921,8 +933,7 @@ irafwhead( hdrname, lhead, irafheader, fitsheader )
     close( fd );
     if ( nbw < nbhead ) {
 	( void ) fprintf( stderr,
-	                  "IRAF header file %s: %d / %d bytes written.\n",
-	                  hdrname, nbw, nbhead );
+	                  "IRAF header file %s: %d / %d bytes written.\n", hdrname, nbw, nbhead );
 	return ( -1 );
     }
 
@@ -933,14 +944,13 @@ irafwhead( hdrname, lhead, irafheader, fitsheader )
  * No matter what the input, this always writes in the local byte order */
 
 int
-irafwimage( hdrname, lhead, irafheader, fitsheader, image )
-     char *hdrname;             /* Name of IRAF header file */
-     int lhead;                 /* Length of IRAF header */
-     char *irafheader;          /* IRAF header */
-     char *fitsheader;          /* FITS image header */
-     char *image;               /* IRAF image */
-
-{
+irafwimage(
+    char *hdrname,              /* Name of IRAF header file */
+    int lhead,                  /* Length of IRAF header */
+    char *irafheader,           /* IRAF header */
+    char *fitsheader,           /* FITS image header */
+    char *image                 /* IRAF image */
+ ) {
     int fd;
     char *bang;
     int nbw, bytepix, bitpix, naxis, naxis1, naxis2, nbimage, lphead;
@@ -1000,16 +1010,14 @@ irafwimage( hdrname, lhead, irafheader, fitsheader, image )
     if ( !access( pixname, 0 ) ) {
 	fd = open( pixname, O_WRONLY );
 	if ( fd < 3 ) {
-	    fprintf( stderr, "IRAFWIMAGE:  file %s not writeable\n",
-	             pixname );
+	    fprintf( stderr, "IRAFWIMAGE:  file %s not writeable\n", pixname );
 	    return ( 0 );
 	}
     }
     else {
 	fd = open( pixname, O_RDWR + O_CREAT, 0666 );
 	if ( fd < 3 ) {
-	    fprintf( stderr, "IRAFWIMAGE:  cannot create file %s\n",
-	             pixname );
+	    fprintf( stderr, "IRAFWIMAGE:  cannot create file %s\n", pixname );
 	    return ( 0 );
 	}
     }
@@ -1036,11 +1044,10 @@ irafwimage( hdrname, lhead, irafheader, fitsheader, image )
 /* Put filename and header path together */
 
 static char *
-same_path( pixname, hdrname )
-     char *pixname;             /* IRAF pixel file pathname */
-     char *hdrname;             /* IRAF image header file pathname */
-
-{
+same_path(
+    char *pixname,              /* IRAF pixel file pathname */
+    char *hdrname               /* IRAF image header file pathname */
+ ) {
     int len, plen;
     char *newpixname;
 
@@ -1070,8 +1077,7 @@ same_path( pixname, hdrname )
     }
 
     /* Bare pixel file with no path is assumed to be same as HDR$filename */
-    else if ( strchr( pixname, '/' ) == NULL
-              && strchr( pixname, '$' ) == NULL ) {
+    else if ( strchr( pixname, '/' ) == NULL && strchr( pixname, '$' ) == NULL ) {
 	( void ) strncpy( newpixname, hdrname, SZ_IM2PIXFILE );
 
 	/* find the end of the pathname */
@@ -1107,13 +1113,12 @@ same_path( pixname, hdrname )
 /* No matter what the input, this always writes in the local byte order */
 
 char *
-fits2iraf( fitsheader, irafheader, nbhead, nbiraf )
-     char *fitsheader;          /* FITS image header */
-     char *irafheader;          /* IRAF image header (returned updated) */
-     int nbhead;                /* Length of IRAF header */
-     int *nbiraf;               /* Length of returned IRAF header */
-
-{
+fits2iraf(
+    char *fitsheader,           /* FITS image header */
+    char *irafheader,           /* IRAF image header (returned updated) */
+    int nbhead,                 /* Length of IRAF header */
+    int *nbiraf                 /* Length of returned IRAF header */
+ ) {
     int i, n, pixoff, lhdrdir;
     short *irafp, *irafs, *irafu;
     char *iraf2u, *iraf2p, *filename, *hdrdir;
@@ -1347,11 +1352,10 @@ fits2iraf( fitsheader, irafheader, nbhead, nbiraf )
 
 
 int
-irafgeti4( irafheader, offset )
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before number */
-
-{
+irafgeti4(
+    char *irafheader,           /* IRAF image header */
+    int offset                  /* Number of bytes to skip before number */
+ ) {
     char *ctemp, *cheader;
     int temp;
 
@@ -1383,11 +1387,10 @@ irafgeti4( irafheader, offset )
 
 
 float
-irafgetr4( irafheader, offset )
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before number */
-
-{
+irafgetr4(
+    char *irafheader,           /* IRAF image header */
+    int offset                  /* Number of bytes to skip before number */
+ ) {
     char *ctemp, *cheader;
     float temp;
 
@@ -1421,12 +1424,11 @@ irafgetr4( irafheader, offset )
 /* IRAFGETC2 -- Get character string from arbitrary part of v.1 IRAF header */
 
 char *
-irafgetc2( irafheader, offset, nc )
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before string */
-     int nc;                    /* Maximum number of characters in string */
-
-{
+irafgetc2(
+    char *irafheader,           /* IRAF image header */
+    int offset,                 /* Number of bytes to skip before string */
+    int nc                      /* Maximum number of characters in string */
+ ) {
     char *irafstring, *string;
 
     irafstring = irafgetc( irafheader, offset, 2 * ( nc + 1 ) );
@@ -1440,21 +1442,18 @@ irafgetc2( irafheader, offset, nc )
 /* IRAFGETC -- Get character string from arbitrary part of IRAF header */
 
 char *
-irafgetc( irafheader, offset, nc )
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before string */
-     int nc;                    /* Maximum number of characters in string */
-
-{
+irafgetc(
+    char *irafheader,           /* IRAF image header */
+    int offset,                 /* Number of bytes to skip before string */
+    int nc                      /* Maximum number of characters in string */
+ ) {
     char *ctemp, *cheader;
     int i;
 
     cheader = irafheader;
     ctemp = ( char * ) calloc( nc + 1, 1 );
     if ( ctemp == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAFGETC Cannot allocate %d-byte variable\n",
-	                  nc + 1 );
+	( void ) fprintf( stderr, "IRAFGETC Cannot allocate %d-byte variable\n", nc + 1 );
 	return ( NULL );
     }
     for ( i = 0; i < nc; i++ ) {
@@ -1470,10 +1469,10 @@ irafgetc( irafheader, offset, nc )
 /* Convert IRAF 2-byte/char string to 1-byte/char string */
 
 char *
-iraf2str( irafstring, nchar )
-     char *irafstring;          /* IRAF 2-byte/character string */
-     int nchar;                 /* Number of characters in string */
-{
+iraf2str(
+    char *irafstring,           /* IRAF 2-byte/character string */
+    int nchar                   /* Number of characters in string */
+ ) {
     char *string;
     int i, j;
 
@@ -1489,9 +1488,7 @@ iraf2str( irafstring, nchar )
 
     string = ( char * ) calloc( nchar + 1, 1 );
     if ( string == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAF2STR Cannot allocate %d-byte variable\n",
-	                  nchar + 1 );
+	( void ) fprintf( stderr, "IRAF2STR Cannot allocate %d-byte variable\n", nchar + 1 );
 	return ( NULL );
     }
 
@@ -1514,12 +1511,11 @@ iraf2str( irafstring, nchar )
 /* IRAFPUTI4 -- Insert 4-byte integer into arbitrary part of IRAF header */
 
 static void
-irafputi4( irafheader, offset, inum )
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before number */
-     int inum;                  /* Number to put into header */
-
-{
+irafputi4(
+    char *irafheader,           /* IRAF image header */
+    int offset,                 /* Number of bytes to skip before number */
+    int inum                    /* Number to put into header */
+ ) {
     char *cn, *chead;
 
     chead = irafheader;
@@ -1545,12 +1541,11 @@ irafputi4( irafheader, offset, inum )
 /* IRAFPUTR4 -- Insert 4-byte real number into arbitrary part of IRAF header */
 
 static void
-irafputr4( irafheader, offset, rnum )
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before number */
-     float rnum;                /* Number to put into header */
-
-{
+irafputr4(
+    char *irafheader,           /* IRAF image header */
+    int offset,                 /* Number of bytes to skip before number */
+    float rnum                  /* Number to put into header */
+ ) {
     char *cn, *chead;
 
     chead = irafheader;
@@ -1576,20 +1571,17 @@ irafputr4( irafheader, offset, rnum )
 /* IRAFPUTC2 -- Insert character string into arbitrary part of v.1 IRAF header */
 
 static void
-irafputc2( string, irafheader, offset, nc )
-     char *string;              /* String to insert into header */
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before string */
-     int nc;                    /* Maximum number of characters in string */
-
-{
+irafputc2(
+    char *string,               /* String to insert into header */
+    char *irafheader,           /* IRAF image header */
+    int offset,                 /* Number of bytes to skip before string */
+    int nc                      /* Maximum number of characters in string */
+ ) {
     char *irafstring;
 
     irafstring = ( char * ) calloc( 2 * nc, 1 );
     if ( irafstring == NULL ) {
-	( void ) fprintf( stderr,
-	                  "IRAFPUTC2 Cannot allocate %d-byte variable\n",
-	                  2 * nc );
+	( void ) fprintf( stderr, "IRAFPUTC2 Cannot allocate %d-byte variable\n", 2 * nc );
     }
     str2iraf( string, irafstring, nc );
     irafputc( irafstring, irafheader, offset, 2 * nc );
@@ -1601,13 +1593,12 @@ irafputc2( string, irafheader, offset, nc )
 /* IRAFPUTC -- Insert character string into arbitrary part of IRAF header */
 
 static void
-irafputc( string, irafheader, offset, nc )
-     char *string;              /* String to insert into header */
-     char *irafheader;          /* IRAF image header */
-     int offset;                /* Number of bytes to skip before string */
-     int nc;                    /* Maximum number of characters in string */
-
-{
+irafputc(
+    char *string,               /* String to insert into header */
+    char *irafheader,           /* IRAF image header */
+    int offset,                 /* Number of bytes to skip before string */
+    int nc                      /* Maximum number of characters in string */
+ ) {
     char *chead;
     int i;
 
@@ -1622,11 +1613,11 @@ irafputc( string, irafheader, offset, nc )
 /* STR2IRAF -- Convert 1-byte/char string to IRAF 2-byte/char string */
 
 static void
-str2iraf( string, irafstring, nchar )
-     char *string;              /* 1-byte/character string */
-     char *irafstring;          /* IRAF 2-byte/character string */
-     int nchar;                 /* Maximum number of characters in IRAF string */
-{
+str2iraf(
+    char *string,               /* 1-byte/character string */
+    char *irafstring,           /* IRAF 2-byte/character string */
+    int nchar                   /* Maximum number of characters in IRAF string */
+ ) {
     int i, j, nc, nbytes;
 
     nc = strlen( string );
@@ -1658,14 +1649,11 @@ str2iraf( string, irafstring, nchar )
 /* IRAFSWAP -- Reverse bytes of any type of vector in place */
 
 static void
-irafswap( bitpix, string, nbytes )
-     int bitpix;                /* Number of bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     char *string;              /* Address of starting point of bytes to swap */
-     int nbytes;                /* Number of bytes to swap */
-
-{
+irafswap(
+    int bitpix,                 /* Number of bits per pixel */
+    char *string,               /* Address of starting point of bytes to swap */
+    int nbytes                  /* Number of bytes to swap */
+ ) {
     switch ( bitpix ) {
 
 	case 16:
@@ -1701,11 +1689,10 @@ irafswap( bitpix, string, nbytes )
 /* IRAFSWAP2 -- Swap bytes in string in place */
 
 static void
-irafswap2( string, nbytes )
-     char *string;              /* Address of starting point of bytes to swap */
-     int nbytes;                /* Number of bytes to swap */
-
-{
+irafswap2(
+    char *string,               /* Address of starting point of bytes to swap */
+    int nbytes                  /* Number of bytes to swap */
+ ) {
     char *sbyte, temp, *slast;
 
     slast = string + nbytes;
@@ -1723,11 +1710,10 @@ irafswap2( string, nbytes )
 /* IRAFSWAP4 -- Reverse bytes of Integer*4 or Real*4 vector in place */
 
 static void
-irafswap4( string, nbytes )
-     char *string;              /* Address of Integer*4 or Real*4 vector */
-     int nbytes;                /* Number of bytes to reverse */
-
-{
+irafswap4(
+    char *string,               /* Address of Integer*4 or Real*4 vector */
+    int nbytes                  /* Number of bytes to reverse */
+ ) {
     char *sbyte, *slast;
     char temp0, temp1, temp2, temp3;
 
@@ -1752,11 +1738,10 @@ irafswap4( string, nbytes )
 /* IRAFSWAP8 -- Reverse bytes of Real*8 vector in place */
 
 static void
-irafswap8( string, nbytes )
-     char *string;              /* Address of Real*8 vector */
-     int nbytes;                /* Number of bytes to reverse */
-
-{
+irafswap8(
+    char *string,               /* Address of Real*8 vector */
+    int nbytes                  /* Number of bytes to reverse */
+ ) {
     char *sbyte, *slast;
     char temp[8];
 
@@ -1789,7 +1774,9 @@ irafswap8( string, nbytes )
  * ( i.e., if it is an Alpha or PC instead of a Sun ) */
 
 static int
-machswap(  ) {
+machswap(
+    void
+ ) {
     char *ctest;
     int itest;
 
@@ -1805,9 +1792,9 @@ machswap(  ) {
 /* ISIRAF -- return 1 if IRAF imh file, else 0 */
 
 int
-isiraf( filename )
-     char *filename;            /* Name of file for which to find size */
-{
+isiraf(
+    char *filename              /* Name of file for which to find size */
+ ) {
     if ( strchr( filename, '=' ) )
 	return ( 0 );
     else if ( strsrch( filename, ".imh" ) )
@@ -1820,9 +1807,9 @@ isiraf( filename )
 /* IRAFSIZE -- return size of file in bytes */
 
 static int
-irafsize( diskfile )
-     FILE *diskfile;            /* Descriptor of file for which to find size */
-{
+irafsize(
+    FILE * diskfile             /* Descriptor of file for which to find size */
+ ) {
     long filesize;
     long offset;
 

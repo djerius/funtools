@@ -16,14 +16,10 @@
  * _FunNew -- allocate a new fun record
  *
  */
-#ifdef ANSI_FUNC
 Fun
-_FunNew( void )
-#else
-Fun
-_FunNew(  )
-#endif
-{
+_FunNew(
+    void
+ ) {
     Fun fun;
 
     fun = ( Fun ) xcalloc( 1, sizeof( FunRec ) );
@@ -54,21 +50,15 @@ _FunNew(  )
     return fun;
 }
 
-#ifdef ANSI_FUNC
 int
-_FunSpecialFile( char *fname, char *type,
-                 char *name, char *tail, char *special, int mlen )
-#else
-int
-_FunSpecialFile( fname, type, name, tail, special, mlen )
-     char *fname;
-     char *type;
-     char *name;
-     char *tail;
-     char *special;
-     int mlen;
-#endif
-{
+_FunSpecialFile(
+    char *fname,
+    char *type,
+    char *name,
+    char *tail,
+    char *special,
+    int mlen
+ ) {
     int len, tlen;
     char *s, *t;
     char tbuf[SZ_LINE];
@@ -96,8 +86,7 @@ _FunSpecialFile( fname, type, name, tail, special, mlen )
 	strncpy( special, s + len + 1, tlen );
 	special[tlen] = '\0';
 	/* if special specification is blank, try to get it from the environment */
-	if ( !*special
-	     && getenv( type ) ) strncpy( special, getenv( type ), mlen );
+	if ( !*special && getenv( type ) ) strncpy( special, getenv( type ), mlen );
 	special[mlen - 1] = '\0';
 	/* create tail, skipping empty section if necessary */
 	while ( *t == ')' ) t++;
@@ -121,17 +110,12 @@ _FunSpecialFile( fname, type, name, tail, special, mlen )
  *  _FunRowNum -- get table/event row limits
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunRowNum( Fun fun, char *tail, char *env )
-#else
-int
-_FunRowNum( fun, tail, env )
-     Fun fun;
-     char *tail;
-     char *env;
-#endif
-{
+_FunRowNum(
+    Fun fun,
+    char *tail,
+    char *env
+ ) {
     char lobuf[SZ_LINE];
     char hibuf[SZ_LINE];
     char key[SZ_LINE];
@@ -193,17 +177,12 @@ _FunRowNum( fun, tail, env )
  *  _FunTableBinCols -- get table columns for binning
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunTableBinCols( Fun fun, char *tail, char *env )
-#else
-int
-_FunTableBinCols( fun, tail, env )
-     Fun fun;
-     char *tail;
-     char *env;
-#endif
-{
+_FunTableBinCols(
+    Fun fun,
+    char *tail,
+    char *env
+ ) {
     FITSCard card;
     int i, j, n;
     int got;
@@ -258,8 +237,7 @@ _FunTableBinCols( fun, tail, env )
 		got |= j;
 		if ( s ) xfree( s );
 	    }
-	    else if ( ( s =
-	                ft_headgets( fun->header, "PREFX", j, NULL, &card ) )
+	    else if ( ( s = ft_headgets( fun->header, "PREFX", j, NULL, &card ) )
 	              && card ) {
 		strcat( key, s );
 		strcat( key, "," );
@@ -275,8 +253,7 @@ _FunTableBinCols( fun, tail, env )
 		/* first look for X,Y as the default */
 		for ( i = 0; i < fun->header->table->tfields; i++ ) {
 		    if ( !fun->header->table->col[i].name ) continue;
-		    if ( !strcasecmp
-		         ( fun->header->table->col[i].name, tstr[j] ) ) {
+		    if ( !strcasecmp( fun->header->table->col[i].name, tstr[j] ) ) {
 			strcat( key, tstr[j] );
 			strcat( key, "," );
 			got |= ( j + 1 );
@@ -295,16 +272,13 @@ _FunTableBinCols( fun, tail, env )
 		    continue;
 		for ( i = 0; i < fun->header->table->tfields; i++ ) {
 		    if ( !fun->header->table->col[i].name ) continue;
-		    if ( strstr( fun->header->table->col[i].name, tstr[j] ) !=
-		         NULL ) {
+		    if ( strstr( fun->header->table->col[i].name, tstr[j] ) != NULL ) {
 			strcat( key, fun->header->table->col[i].name );
 			strcat( key, "," );
 			break;
 		    }
 		    /* sigh ... its gotta be case insensitive */
-		    else if ( strstr
-		              ( fun->header->table->col[i].name,
-		                tstr2[j] ) != NULL ) {
+		    else if ( strstr( fun->header->table->col[i].name, tstr2[j] ) != NULL ) {
 			strcat( key, fun->header->table->col[i].name );
 			strcat( key, "," );
 			break;
@@ -353,8 +327,7 @@ _FunTableBinCols( fun, tail, env )
 		fun->bin[j] = i;
 		/* if dim/binsize was specified, put it all back into the header */
 		if ( _FunColumnDims( s, fun->header->table->col[i].type,
-		                     &tlmin, &tlmax, &binsiz, &dims,
-		                     &tscale, &tzero, &scaled ) ) {
+		                     &tlmin, &tlmax, &binsiz, &dims, &tscale, &tzero, &scaled ) ) {
 		    switch ( fun->header->table->col[i].type ) {
 			case 'D':
 			case 'E':
@@ -365,22 +338,18 @@ _FunTableBinCols( fun, tail, env )
 				             tlmax, 7, "Max. axis value", 1 );
 			    }
 			    if ( binsiz > 0 ) {
-				ft_headsetr( fun->header, "TDBIN", i + 1,
-				             binsiz, 7, "Binsize", 1 );
+				ft_headsetr( fun->header, "TDBIN", i + 1, binsiz, 7, "Binsize", 1 );
 			    }
 			    break;
 			default:
 			    if ( tlmin != tlmax ) {
 				ft_headseti( fun->header, "TLMIN", i + 1,
-				             ( int ) tlmin, "Min. axis value",
-				             1 );
+				             ( int ) tlmin, "Min. axis value", 1 );
 				ft_headseti( fun->header, "TLMAX", i + 1,
-				             ( int ) tlmax, "Max. axis value",
-				             1 );
+				             ( int ) tlmax, "Max. axis value", 1 );
 			    }
 			    if ( binsiz > 0 ) {
-				ft_headsetr( fun->header, "TDBIN", i + 1,
-				             binsiz, 7, "Binsize", 1 );
+				ft_headsetr( fun->header, "TDBIN", i + 1, binsiz, 7, "Binsize", 1 );
 			    }
 			    break;
 		    }
@@ -427,28 +396,20 @@ _FunTableBinCols( fun, tail, env )
     /* make sure these keys have valid axis lengths associated with them */
     /* first look for TLMAX (and perhaps TLMIN) */
     if ( got & 1 ) {
-	fun->max1 =
-	    ft_headgetr( fun->header, "TLMAX", fun->bin[0] + 1, 0.0, &card );
+	fun->max1 = ft_headgetr( fun->header, "TLMAX", fun->bin[0] + 1, 0.0, &card );
 	if ( !card ) return 0;
-	fun->min1 =
-	    ft_headgetr( fun->header, "TLMIN", fun->bin[0] + 1, 1.0, &card );
-	fun->binsiz1 =
-	    ft_headgetr( fun->header, "TDBIN", fun->bin[0] + 1, 1.0, &card );
+	fun->min1 = ft_headgetr( fun->header, "TLMIN", fun->bin[0] + 1, 1.0, &card );
+	fun->binsiz1 = ft_headgetr( fun->header, "TDBIN", fun->bin[0] + 1, 1.0, &card );
 	fun->dim1 =
-	    tldim( fun->min1, fun->max1, fun->binsiz1,
-	           fun->header->table->col[fun->bin[0]].type );
+	    tldim( fun->min1, fun->max1, fun->binsiz1, fun->header->table->col[fun->bin[0]].type );
     }
     if ( got & 2 ) {
-	fun->max2 =
-	    ft_headgetr( fun->header, "TLMAX", fun->bin[1] + 1, 0.0, &card );
+	fun->max2 = ft_headgetr( fun->header, "TLMAX", fun->bin[1] + 1, 0.0, &card );
 	if ( !card ) return 0;
-	fun->min2 =
-	    ft_headgetr( fun->header, "TLMIN", fun->bin[1] + 1, 1.0, &card );
-	fun->binsiz2 =
-	    ft_headgetr( fun->header, "TDBIN", fun->bin[1] + 1, 1.0, &card );
+	fun->min2 = ft_headgetr( fun->header, "TLMIN", fun->bin[1] + 1, 1.0, &card );
+	fun->binsiz2 = ft_headgetr( fun->header, "TDBIN", fun->bin[1] + 1, 1.0, &card );
 	fun->dim2 =
-	    tldim( fun->min2, fun->max2, fun->binsiz2,
-	           fun->header->table->col[fun->bin[1]].type );
+	    tldim( fun->min2, fun->max2, fun->binsiz2, fun->header->table->col[fun->bin[1]].type );
     }
     return 1;
 
@@ -462,17 +423,12 @@ _FunTableBinCols( fun, tail, env )
  *  _FunTableValCol -- get value table column for binning
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunTableValCol( Fun fun, char *tail, char *env )
-#else
-int
-_FunTableValCol( fun, tail, env )
-     Fun fun;
-     char *tail;
-     char *env;
-#endif
-{
+_FunTableValCol(
+    Fun fun,
+    char *tail,
+    char *env
+ ) {
     int i;
     int got;
     int ip = 0;
@@ -488,8 +444,7 @@ _FunTableValCol( fun, tail, env )
     fun->vbin = -1;
 
     /* look in the extension for value column specification */
-    if ( _FunKeyword( tail, "vcol", env, tbuf, SZ_LINE ) ) strcpy( key,
-                                                                   tbuf );
+    if ( _FunKeyword( tail, "vcol", env, tbuf, SZ_LINE ) ) strcpy( key, tbuf );
     if ( !*key ) return 0;
 
     /* prepare to parse the bincol specifier */
@@ -527,18 +482,13 @@ _FunTableValCol( fun, tail, env )
  * of the event record and generate a fitsy header
  *
  */
-#ifdef ANSI_FUNC
 FITSHead
-_FunRawEvHeader( Fun fun, char *iname, char *iext, char *eventdef )
-#else
-FITSHead
-_FunRawEvHeader( fun, iname, iext, eventdef )
-     Fun fun;
-     char *iname;
-     char *iext;
-     char *eventdef;
-#endif
-{
+_FunRawEvHeader(
+    Fun fun,
+    char *iname,
+    char *iext,
+    char *eventdef
+ ) {
     char tbuf[SZ_LINE];
     char *s;
     char *neventdef = NULL;
@@ -662,8 +612,7 @@ _FunRawEvHeader( fun, iname, iext, eventdef )
     }
 
     /* get the size of the file and from this, the number of events */
-    if ( !iname || !*iname ||
-         !strcasecmp( iname, "stdin" ) || ( stat( iname, &buf ) < 0 ) ) {
+    if ( !iname || !*iname || !strcasecmp( iname, "stdin" ) || ( stat( iname, &buf ) < 0 ) ) {
 	total = -1;
     }
     else {
@@ -675,8 +624,7 @@ _FunRawEvHeader( fun, iname, iext, eventdef )
     }
 
     /* check for monotonically desceasing widths */
-    if ( _FunKeyword( iext, "align", "EVENTS_ALIGN", tbuf, SZ_LINE ) &&
-         istrue( tbuf ) ) {
+    if ( _FunKeyword( iext, "align", "EVENTS_ALIGN", tbuf, SZ_LINE ) && istrue( tbuf ) ) {
 	for ( i = 1; i < got; i++ ) {
 	    if ( widths[i] > widths[i - 1] ) {
 		gwarning( stderr,
@@ -694,33 +642,26 @@ _FunRawEvHeader( fun, iname, iext, eventdef )
     ft_headseti( header, "NAXIS", 2, total, "Number of entries in table", 1 );
     ft_headseti( header, "PCOUNT", 0, 0, "Random parameter count", 1 );
     ft_headseti( header, "GCOUNT", 0, 1, "Group count", 1 );
-    ft_headseti( header, "TFIELDS", 0, got, "Number of fields in each row",
-                 1 );
+    ft_headseti( header, "TFIELDS", 0, got, "Number of fields in each row", 1 );
     ft_headsets( header, "EXTNAME", 0, extname, "Table name", 1 );
     ft_headseti( header, "EXTVER", 0, extver, "Version number of table", 1 );
     /* info for each column */
     for ( i = 0; i < got; i++ ) {
-	ft_headsets( header, "TFORM", i + 1, types[i], "Data type for field",
-	             1 );
+	ft_headsets( header, "TFORM", i + 1, types[i], "Data type for field", 1 );
 	ft_headsets( header, "TTYPE", i + 1, names[i], "Label for field", 1 );
 	if ( dims[i] ) {
 	    if ( ( tlmins[i] == ( int ) tlmins[i] )
-		 && ( tlmaxs[i] == ( int ) tlmaxs[i] ) ) {
-		ft_headseti( header, "TLMIN", i + 1, ( int ) tlmins[i],
-		             "Min. axis value", 1 );
-		ft_headseti( header, "TLMAX", i + 1, ( int ) tlmaxs[i],
-		             "Max. axis value", 1 );
+	         && ( tlmaxs[i] == ( int ) tlmaxs[i] ) ) {
+		ft_headseti( header, "TLMIN", i + 1, ( int ) tlmins[i], "Min. axis value", 1 );
+		ft_headseti( header, "TLMAX", i + 1, ( int ) tlmaxs[i], "Max. axis value", 1 );
 	    }
 	    else {
-		ft_headsetr( header, "TLMIN", i + 1, tlmins[i], 7,
-		             "Min. axis value", 1 );
-		ft_headsetr( header, "TLMAX", i + 1, tlmaxs[i], 7,
-		             "Max. axis value", 1 );
+		ft_headsetr( header, "TLMIN", i + 1, tlmins[i], 7, "Min. axis value", 1 );
+		ft_headsetr( header, "TLMAX", i + 1, tlmaxs[i], 7, "Max. axis value", 1 );
 	    }
 	}
 	if ( binsizs[i] != 1.0 ) {
-	    ft_headsetr( header, "TDBIN", i + 1, binsizs[i], 7, "Bin size",
-	                 1 );
+	    ft_headsetr( header, "TDBIN", i + 1, binsizs[i], 7, "Bin size", 1 );
 	}
 	if ( scaleds[i] ) {
 	    ft_headsetr( header, "TSCAL", i + 1, tscales[i], 7,
@@ -765,16 +706,11 @@ _FunRawEvHeader( fun, iname, iext, eventdef )
  * to specified image plane of an N-dimensional image
  *
  */
-#ifdef ANSI_FUNC
 off_t
-_FunImageSkip( Fun fun, char *tail )
-#else
-off_t
-_FunImageSkip( fun, tail )
-     Fun fun;
-     char *tail;
-#endif
-{
+_FunImageSkip(
+    Fun fun,
+    char *tail
+ ) {
     int i, j, k;
     int naxes;
     int plane;
@@ -834,15 +770,10 @@ _FunImageSkip( fun, tail )
     return total;
 }
 
-#ifdef ANSI_FUNC
 Fun
-_FunValid( Fun fun )
-#else
-Fun
-_FunValid( fun )
-     Fun fun;
-#endif
-{
+_FunValid(
+    Fun fun
+ ) {
     Fun current;
     if ( !fun ) return NULL;
     /* if a current list member is defined, test that one */
@@ -862,16 +793,11 @@ _FunValid( fun )
  * _FunFree -- free up a fun record
  *
  */
-#ifdef ANSI_FUNC
 void
-_FunFree( Fun fun, int flag )
-#else
-void
-_FunFree( fun, flag )
-     Fun fun;
-     int flag;
-#endif
-{
+_FunFree(
+    Fun fun,
+    int flag
+ ) {
     int i;
     SaveBuf cur, tcur;
 
@@ -985,15 +911,10 @@ _FunFree( fun, flag )
  * _FunImageSize -- calculate the size of the image, including padding
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunImageSize( Fun fun )
-#else
-int
-_FunImageSize( fun )
-     Fun fun;
-#endif
-{
+_FunImageSize(
+    Fun fun
+ ) {
     /* get data type code (which is abs(length)) */
     fun->dtype = fun->bitpix / FT_WORDLEN;
     /* this is the length of the image, without padding */
@@ -1009,16 +930,11 @@ _FunImageSize( fun )
  * _FunMaxBufSize -- calculate the size of the image, including padding
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunMaxBufSize( Fun fun, char *tail )
-#else
-int
-_FunMaxBufSize( fun, tail )
-     Fun fun;
-     char *tail;
-#endif
-{
+_FunMaxBufSize(
+    Fun fun,
+    char *tail
+ ) {
     char tbuf[SZ_LINE];
 
     fun->maxbufsize = 0;
@@ -1034,15 +950,10 @@ _FunMaxBufSize( fun, tail )
  * _FunOpenCommon -- common code for different Fun open routines
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunOpenCommon( Fun fun )
-#else
-int
-_FunOpenCommon( fun )
-     Fun fun;
-#endif
-{
+_FunOpenCommon(
+    Fun fun
+ ) {
     int tval;
 
     if ( fun && fun->header ) {
@@ -1065,14 +976,12 @@ _FunOpenCommon( fun )
 	if ( ( fun->y1 < 1 ) || ( fun->y1 > tval ) ) fun->y1 = tval;
 	/* make sure the block factor divides the dimension evenly */
 	if ( ( fun->x1 - fun->x0 + 1 ) % fun->block ) {
-	    gwarning( stderr,
-	              "block factor does not divide dim1 evenly; decreasing dim1\n" );
+	    gwarning( stderr, "block factor does not divide dim1 evenly; decreasing dim1\n" );
 	    while ( ( fun->x1 - fun->x0 + 1 ) % fun->block ) fun->x1--;
 	}
 	if ( fun->dims > 1 ) {
 	    if ( ( fun->y1 - fun->y0 + 1 ) % fun->block ) {
-		gwarning( stderr,
-		          "block factor does not divide dim2 evenly; decreasing dim2\n" );
+		gwarning( stderr, "block factor does not divide dim2 evenly; decreasing dim2\n" );
 		while ( ( fun->y1 - fun->y0 + 1 ) % fun->block ) fun->y1--;
 	    }
 	}

@@ -7,36 +7,6 @@
 #ifndef _prsetup
 #define _prsetup
 
-#ifdef NO_ANSI_FUNC
-#define _PRbeg
-#define _PRend
-#define _PRx(s) ()
-#ifdef ANSI_FUNC
-#undef ANSI_FUNC
-#endif
-#else
-#if defined(__cplusplus) || defined(c_plusplus)
-#define _PRbeg extern "C" {   /* do not leave open across includes */
-#define _PRend }
-#define _PRx(s) s
-#define ANSI_FUNC 1
-#else
-#if defined(__STDC__)
-#define _PRbeg
-#define _PRend
-#define _PRx(s) s
-#define ANSI_FUNC 1
-#else
-#define _PRbeg
-#define _PRend
-#define _PRx(s) ()
-#ifdef ANSI_FUNC
-#undef ANSI_FUNC
-#endif
-#endif
-#endif
-#endif
-
 #ifndef UNUSED
 #ifdef __GNUC__
 #  define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))

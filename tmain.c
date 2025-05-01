@@ -36,15 +36,11 @@
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int ip;
     int len;
@@ -87,8 +83,7 @@ main( argc, argv )
 		}
 		else {
 		    if ( !( ifp = fopen( optarg, "r" ) ) ) {
-			fprintf( stderr, "can't open '%s' for reading\n",
-			         optarg );
+			fprintf( stderr, "can't open '%s' for reading\n", optarg );
 			exit( 1 );
 		    }
 		}
@@ -98,8 +93,7 @@ main( argc, argv )
 		break;
 	    case 'e':
 		if ( !( efp = fopen( optarg, "w" ) ) ) {
-		    fprintf( stderr, "can't open '%s' for writing\n",
-		             optarg );
+		    fprintf( stderr, "can't open '%s' for writing\n", optarg );
 		    exit( 1 );
 		}
 		snprintf( tbuf, SZ_LINE, "stderr=%d", fileno( efp ) );
@@ -115,8 +109,7 @@ main( argc, argv )
 		}
 		else {
 		    if ( !( ofp = fopen( optarg, "w" ) ) ) {
-			fprintf( stderr, "can't open '%s' for writing\n",
-			         optarg );
+			fprintf( stderr, "can't open '%s' for writing\n", optarg );
 			exit( 1 );
 		    }
 		}
@@ -177,8 +170,7 @@ main( argc, argv )
     /* load shared object and execute init routine */
     switch ( MainLibLoad( "funtools", shobj, ( void ** ) &ml2, &ermsg ) ) {
 	case -1:
-	    fprintf( stderr, "can't load shared object %s (%s)\n", shobj,
-	             ermsg );
+	    fprintf( stderr, "can't load shared object %s (%s)\n", shobj, ermsg );
 	    exit( 1 );
 	case -2:
 	    fprintf( stderr, "can't init %s (%s)\n", "funtools", ermsg );

@@ -32,22 +32,27 @@
 #include "macro.h"
 #include "xalloc.h"
 
-_PRbeg
-int FileExists _PRx((char *filename));
-int IsFile _PRx((char *s, char *filename, int len));
-int IsFits _PRx((char *filename));
-char *FileNameFromPath _PRx((char *s));
-char *FileContents _PRx((char *path, int isize, int *osize));
-int FileSize _PRx((char *path));
-int FileCopy _PRx((char *iname, char *oname));
-char *FileRoot _PRx((char *fname));
-char *FileExtension _PRx((char *fname));
-int GenerateArraySpecification _PRx((char *ispec, char *ospec, int olen));
-int GenerateArraySpec2 _PRx((char *iname, char *ispec, char *ospec, int olen));
-int GetNextFileName _PRx((char *filenames, int *ip, char *filename, int len));
-int ParseArraySpec _PRx((char *tbuf, int *xdim, int *ydim, int *bitpix,
-			 int *skip, int *bigendian));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-_PRend
+int FileExists (char *filename);
+int IsFile (char *s, char *filename, int len);
+int IsFits (char *filename);
+char *FileNameFromPath (char *s);
+char *FileContents (char *path, int isize, int *osize);
+int FileSize (char *path);
+int FileCopy (char *iname, char *oname);
+char *FileRoot (char *fname);
+char *FileExtension (char *fname);
+int GenerateArraySpecification (char *ispec, char *ospec, int olen);
+int GenerateArraySpec2 (char *iname, char *ispec, char *ospec, int olen);
+int GetNextFileName (char *filenames, int *ip, char *filename, int len);
+int ParseArraySpec (char *tbuf, int *xdim, int *ydim, int *bitpix,
+			 int *skip, int *bigendian);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

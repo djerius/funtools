@@ -25,12 +25,7 @@ extern int optind;
 #define h2d(r)  ( (r) * X_H2D )
 #define d2h(d)  ( (d) / X_H2D )
 
-#ifdef ANSI_FUNC
 void usage(char *s)
-#else
-void usage(s)
-     char *s;
-#endif
 {
   fprintf(stderr, "usage: [switches] %s fname[ext]\n", s);
   fprintf(stderr, "\n");
@@ -51,15 +46,8 @@ void usage(s)
   exit(1);
 }
 
-#ifdef ANSI_FUNC
 int 
 main (int argc, char **argv)
-#else
-int
-main(argc, argv)
-     int argc;
-     char **argv;
-#endif
 {
   int c;
   int ip;

@@ -47,38 +47,28 @@
 
 /* defines the types of callback procedure we use */
 typedef int (*MainLibProc)(
-#ifdef ANSI_FUNC
     int argc,
     char **argv
-#endif
 );
 
 /* define init call */
 typedef void *(*MainLibInitCall)(
-#ifdef ANSI_FUNC
   void
-#endif
 );
 
 /* define proc call */
 typedef int (*MainLibProcessCall)(
-#ifdef ANSI_FUNC
   void *ml, char *cmd, char **buf, char *mode
-#endif
 );
 
 /* define Tcl lookup call */
 typedef int (*MainLibTclLookup)(
-#ifdef ANSI_FUNC
   void *interp, char *s
-#endif
 );
 
 /* define Tcl eval call */
 typedef int (*MainLibTclEval)(
-#ifdef ANSI_FUNC
   void *interp, char *s
-#endif
 );
 
 /*
@@ -112,19 +102,24 @@ typedef struct mainlibrec{
 } *MainLib, MainLibRec;
 
 /* library declarations */
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /* public */
-int MainLibLoad _PRx((char *name, char *shlib, void **ml, char **ermsg));
-MainLib MainLibNew _PRx((void));
-MainLibEntry MainLibAdd _PRx((MainLib ml, char *xclass, char *name, 
-			      MainLibProc mainlibproc, int type));
-int MainLibProcess _PRx((MainLib ml, char *cmd, char **buf, char *mode));
-int MainLibProcessCleanup _PRx((MainLib ml));
-int MainLibDel _PRx((MainLib ml, MainLibEntry mle));
-int MainLibFree _PRx((MainLib ml));
+int MainLibLoad (char *name, char *shlib, void **ml, char **ermsg);
+MainLib MainLibNew (void);
+MainLibEntry MainLibAdd (MainLib ml, char *xclass, char *name, 
+			      MainLibProc mainlibproc, int type);
+int MainLibProcess (MainLib ml, char *cmd, char **buf, char *mode);
+int MainLibProcessCleanup (MainLib ml);
+int MainLibDel (MainLib ml, MainLibEntry mle);
+int MainLibFree (MainLib ml);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __mainlib.h */
 

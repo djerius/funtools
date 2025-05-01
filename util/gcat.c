@@ -15,17 +15,12 @@
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 static void
-swap2( char *to, char *from, size_t nbytes )
-#else
-static void
-swap2( to, from, nbytes )
-     char *to;
-     char *from;
-     size_t nbytes;
-#endif
-{
+swap2(
+    char *to,
+    char *from,
+    size_t nbytes
+ ) {
     char c;
     size_t i;
     for ( i = 0; i < nbytes; i += 2, ( to += 2 ), ( from += 2 ) ) {
@@ -35,17 +30,12 @@ swap2( to, from, nbytes )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-swap4( char *to, char *from, size_t nbytes )
-#else
-static void
-swap4( to, from, nbytes )
-     char *to;
-     char *from;
-     size_t nbytes;
-#endif
-{
+swap4(
+    char *to,
+    char *from,
+    size_t nbytes
+ ) {
     char c;
     size_t i;
     for ( i = 0; i < nbytes; i += 4, ( to += 4 ), ( from += 4 ) ) {
@@ -58,17 +48,12 @@ swap4( to, from, nbytes )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-swap8( char *to, char *from, size_t nbytes )
-#else
-static void
-swap8( to, from, nbytes )
-     char *to;
-     char *from;
-     size_t nbytes;
-#endif
-{
+swap8(
+    char *to,
+    char *from,
+    size_t nbytes
+ ) {
     char c;
     size_t i;
     for ( i = 0; i < nbytes; i += 8, ( to += 8 ), ( from += 8 ) ) {
@@ -88,47 +73,33 @@ swap8( to, from, nbytes )
 }
 
 
-#ifdef ANSI_FUNC
 static void
-usage( char *s )
-#else
-static void
-usage( s )
-     char *s;
-#endif
-{
+usage(
+    char *s
+ ) {
     fprintf( stderr, "usage: %s <switches> [iname [oname]]\n", s );
     fprintf( stderr, "optional switches:\n" );
     fprintf( stderr,
-             "  -b bufsize       # number of records to read at once (def: %d)\n",
-             BUFSIZE );
-    fprintf( stderr,
-             "  -e elsize        # size of an individual record (def: 1)\n" );
+             "  -b bufsize       # number of records to read at once (def: %d)\n", BUFSIZE );
+    fprintf( stderr, "  -e elsize        # size of an individual record (def: 1)\n" );
     fprintf( stderr,
              "  -s elsize        # swap bytes in a record of this size (def: no swapping)\n" );
-    fprintf( stderr,
-             "  -v               # verbose messages as data is transferred\n" );
+    fprintf( stderr, "  -v               # verbose messages as data is transferred\n" );
     fprintf( stderr, "examples:\n" );
     fprintf( stderr, "# copy named files\n" );
     fprintf( stderr, "%s foo foo2\n", s );
     fprintf( stderr, "# or copy file to socket 1234 on this host\n" );
     fprintf( stderr, "%s foo '$host:1234'\n", s );
-    fprintf( stderr,
-             "# or copy from a socket on this host to another host\n" );
+    fprintf( stderr, "# or copy from a socket on this host to another host\n" );
     fprintf( stderr, "%s '$host:1234' 'remotehost:2345'\n", s );
     exit( 0 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int got;
     int args;
@@ -175,9 +146,7 @@ main( argc, argv )
 			doswap = 1;
 			break;
 		    default:
-			gerror( stderr,
-			        "ERROR: invalid swap size argument: %d\n",
-			        elsize );
+			gerror( stderr, "ERROR: invalid swap size argument: %d\n", elsize );
 			break;
 		}
 		break;
@@ -208,8 +177,7 @@ main( argc, argv )
     }
 
     /* sanity checks */
-    if ( bufsize <= 0 ) gerror( stderr, "bufsize must be positive\n",
-                                bufsize );
+    if ( bufsize <= 0 ) gerror( stderr, "bufsize must be positive\n", bufsize );
     if ( elsize <= 0 ) gerror( stderr, "elsize must be positive\n", elsize );
 
     /* allocate space */
@@ -256,12 +224,10 @@ main( argc, argv )
 	/* verbose display */
 	if ( verbose >= 2 ) {
 	    if ( doswap ) {
-		fprintf( stderr, "transferring %d swapped %d-byte records\n",
-		         got, elsize );
+		fprintf( stderr, "transferring %d swapped %d-byte records\n", got, elsize );
 	    }
 	    else if ( elsize > 1 ) {
-		fprintf( stderr, "transferring %d %d-byte records\n",
-		         got, elsize );
+		fprintf( stderr, "transferring %d %d-byte records\n", got, elsize );
 	    }
 	    else {
 		fprintf( stderr, "transferring %d bytes\n", got );
@@ -286,8 +252,7 @@ main( argc, argv )
 	             iname, oname, ntot, elsize );
 	}
 	else {
-	    fprintf( stderr, "transfer from %s to %s: %d bytes\n",
-	             iname, oname, ntot );
+	    fprintf( stderr, "transfer from %s to %s: %d bytes\n", iname, oname, ntot );
 	}
     }
 

@@ -20,8 +20,7 @@ ft_fileimageread( file, fits, data, x )
     ( *data )[x->n - 1].bitpix = x->pixtype;
 
     if ( x->flag || ft_seek( fits ) == -1 ) {
-        if ( ( ( *data )[x->n - 1].data =
-               ft_dataread( file, fits, NULL, x->pixtype ) )
+        if ( ( ( *data )[x->n - 1].data = ft_dataread( file, fits, NULL, x->pixtype ) )
 	     == NULL ) {
 	    return 0;
 	}
@@ -31,7 +30,12 @@ ft_fileimageread( file, fits, data, x )
 /* Read an entire FITS file.
  */
 FITSFile
-ft_fileread( file, flag, pixtype, n )
+ft_fileread(
+    file,
+    flag,
+    pixtype,
+    n
+ )
      File file;
      int flag;
      int pixtype;
@@ -53,7 +57,10 @@ ft_fileread( file, flag, pixtype, n )
 /* Return a pointer the data poriton of a FITS HDU.
  */
 void *
-ft_filedata( file, ft )
+ft_filedata(
+    file,
+    ft
+ )
      File file;
      FITSFile ft;
 {

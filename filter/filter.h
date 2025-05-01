@@ -267,19 +267,19 @@ typedef struct filtrec {
   GFilt g;
   /* loadable drivers for each technique */
   /* NB: can't use typdef because we refer to this struct */
-  int (*filt_start) _PRx((struct filtrec *filter));
-  int (*filt_open) _PRx((struct filtrec *filter));
-  int (*filt_prepend) _PRx((struct filtrec *filter));
-  int (*filt_write) _PRx((struct filtrec *filter));
-  int (*filt_append) _PRx((struct filtrec *filter));
-  int (*filt_close) _PRx((struct filtrec *filter));
-  int (*filt_compile) _PRx((struct filtrec *filter));
-  int (*filt_end) _PRx((struct filtrec *filter));
-  char *(*filt_name) _PRx((struct filtrec *filter, char *name));
-  char *(*filt_routine1) _PRx((struct filtrec *filter, char *name));
-  char *(*filt_routine2) _PRx((struct filtrec *filter, char *name));
-  char *(*filt_region1) _PRx((struct filtrec *filter, char *name));
-  char *(*filt_region2) _PRx((struct filtrec *filter, char *name));
+  int (*filt_start) (struct filtrec *filter);
+  int (*filt_open) (struct filtrec *filter);
+  int (*filt_prepend) (struct filtrec *filter);
+  int (*filt_write) (struct filtrec *filter);
+  int (*filt_append) (struct filtrec *filter);
+  int (*filt_close) (struct filtrec *filter);
+  int (*filt_compile) (struct filtrec *filter);
+  int (*filt_end) (struct filtrec *filter);
+  char *(*filt_name) (struct filtrec *filter, char *name);
+  char *(*filt_routine1) (struct filtrec *filter, char *name);
+  char *(*filt_routine2) (struct filtrec *filter, char *name);
+  char *(*filt_region1) (struct filtrec *filter, char *name);
+  char *(*filt_region2) (struct filtrec *filter, char *name);
   /* fits image mask info */
   int nmask;
   int nmaskreg;
@@ -293,86 +293,88 @@ typedef struct filtrec {
 } *Filter, FilterRec;
 
 typedef void *(*FilterTableCall)(
-#ifdef ANSI_FUNC
   void *tg, char *ebuf, int ne, int esize, int *rbuf
-#endif
 );
 
 typedef FilterMask (*FilterImageCall)(
-#ifdef ANSI_FUNC
   int txmin, int txmax, int tymin, int tymax, int tblock, int *got
-#endif
 );
+
 
 /* this makes it look like a simple flag */
 #define NOFILTER FilterNull()
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /* filter.c */
-int FilterNum _PRx((void));
-char *FilterClip _PRx((char *filter));
-Filter FilterDefault _PRx((void));
-Filter FilterNull _PRx((void));
-char *FilterPath _PRx((void));
-Filter FilterOpen _PRx((FITSHead header, char *filter, char *mode));
-int FilterEvents _PRx((Filter filter, 
-		       char *ebuf, int esize, int n, int *vbuf));
-int FilterImage _PRx((Filter filter,
+int FilterNum (void);
+char *FilterClip (char *filter);
+Filter FilterDefault (void);
+Filter FilterNull (void);
+char *FilterPath (void);
+Filter FilterOpen (FITSHead header, char *filter, char *mode);
+int FilterEvents (Filter filter, 
+		       char *ebuf, int esize, int n, int *vbuf);
+int FilterImage (Filter filter,
 		      int x0, int x1, int y0, int y1, int block,
-		      FilterMask *masks, int *nreg));
-int FilterClose _PRx((Filter filter));
-char *FilterConcats _PRx((char **filters, int n));
-char *FilterConcat _PRx((char *f1, char *f2, char *op));
-char *FilterString _PRx((Filter filter));
+		      FilterMask *masks, int *nreg);
+int FilterClose (Filter filter);
+char *FilterConcats (char **filters, int n);
+char *FilterConcat (char *f1, char *f2, char *op);
+char *FilterString (Filter filter);
 
 /* symbols.c */
-int FilterSymbolInit _PRx((Filter filter));
-char *FilterSymbolEnter _PRx((Filter filter, char *s, int *got));
-FilterSymbols FilterSymbolLookup _PRx((Filter filter, char *s));
-int FilterSymbolDefaults _PRx((Filter filter, int enter));
-void FilterSymbolFree _PRx((Filter filter));
+int FilterSymbolInit (Filter filter);
+char *FilterSymbolEnter (Filter filter, char *s, int *got);
+FilterSymbols FilterSymbolLookup (Filter filter, char *s);
+int FilterSymbolDefaults (Filter filter, int enter);
+void FilterSymbolFree (Filter filter);
 
 /* filt.l */
-char *_FilterString _PRx((void));
-void FiltInitParser _PRx((void));
-void FiltScanString _PRx((char *s));
-int FilterRoutineCount _PRx((void));
-int FilterShapeCount _PRx((void));
-int FilterRegionCount _PRx((int type));
-int  FilterParseError _PRx((void));
-int  FilterTlInfo _PRx((double *tlmins, double *binsizs, int *tltyps));
-char *FilterRadAng _PRx((void));
+char *_FilterString (void);
+void FiltInitParser (void);
+void FiltScanString (char *s);
+int FilterRoutineCount (void);
+int FilterShapeCount (void);
+int FilterRegionCount (int type);
+int  FilterParseError (void);
+int  FilterTlInfo (double *tlmins, double *binsizs, int *tltyps);
+char *FilterRadAng (void);
 
-int filterror _PRx((char *msg));
-int filtlex _PRx((void));
-int filtwrap _PRx((void));
-int filtparse _PRx((void));
+int filterror (char *msg);
+int filtlex (void);
+int filtwrap (void);
+int filtparse (void);
 
 /* filtprog.c */
-int FilterProgStart _PRx((Filter filter));
-int FilterProgOpen _PRx((Filter filter));
-int FilterProgPrepend _PRx((Filter filter));
-int FilterProgWrite _PRx((Filter filter));
-int FilterProgAppend _PRx((Filter filter));
-int FilterProgClose _PRx((Filter filter));
-int FilterProgCompile _PRx((Filter filter));
-int FilterProgEnd _PRx((Filter filter));
-char *FilterLexName _PRx((Filter filter, char *name));
-char *FilterLexRoutine1 _PRx((Filter filter, char *name));
-char *FilterLexRoutine2 _PRx((Filter filter, char *name));
-char *FilterLexRegion1 _PRx((Filter filter, char *name));
-char *FilterLexRegion2 _PRx((Filter filter, char *name));
+int FilterProgStart (Filter filter);
+int FilterProgOpen (Filter filter);
+int FilterProgPrepend (Filter filter);
+int FilterProgWrite (Filter filter);
+int FilterProgAppend (Filter filter);
+int FilterProgClose (Filter filter);
+int FilterProgCompile (Filter filter);
+int FilterProgEnd (Filter filter);
+char *FilterLexName (Filter filter, char *name);
+char *FilterLexRoutine1 (Filter filter, char *name);
+char *FilterLexRoutine2 (Filter filter, char *name);
+char *FilterLexRegion1 (Filter filter, char *name);
+char *FilterLexRegion2 (Filter filter, char *name);
 
 /* filtprog_c.c */
-int FilterProgLoad_C _PRx((Filter filter));
+int FilterProgLoad_C (Filter filter);
 
 /* evregions.c */
-void initevregions _PRx((void));
+void initevregions (void);
 /* imregions.c */
-void initimregions _PRx((void));
+void initimregions (void);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 /* for compatibility with funtools */
 #define FilterTable FilterEvents

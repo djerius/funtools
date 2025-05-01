@@ -5,11 +5,11 @@
 #include "fitsy.h"
 
 FITSHead
-ft_headread0( file, card1, n )
-     File file;
-     char *card1;
-     size_t n;
-{
+ft_headread0(
+    File file,
+    char *card1,
+    size_t n
+ ) {
     int nbloks;
 
     FITSHead fits;
@@ -32,8 +32,7 @@ ft_headread0( file, card1, n )
     if ( card1 )
 	memmove( fits->cards, card1, n );
 
-    if ( ftRead( file, ( void * ) &fits->cards[0].c[n],
-	         1, FT_BLOCK - n ) != FT_BLOCK - n ) {
+    if ( ftRead( file, ( void * ) &fits->cards[0].c[n], 1, FT_BLOCK - n ) != FT_BLOCK - n ) {
 	( void ) Free( fits->cards );
 	( void ) Free( fits );
 	return NULL;
@@ -55,8 +54,7 @@ ft_headread0( file, card1, n )
 	else
 	    nbloks--;
 
-	if ( ftRead( file, ( void * ) &fits->cards[nbloks * FT_CARDS],
-	             1, FT_BLOCK ) != FT_BLOCK ) {
+	if ( ftRead( file, ( void * ) &fits->cards[nbloks * FT_CARDS], 1, FT_BLOCK ) != FT_BLOCK ) {
 	    ( void ) Free( fits->cards );
 	    ( void ) Free( fits );
 	    return NULL;
@@ -79,19 +77,19 @@ ft_headread0( file, card1, n )
 	The #FITSHead read from #file.
  */
 FITSHead
-ft_headread( file )
-     File file;                 /* File pointer to read or write a FITS header on. */
-{
+ft_headread(
+    File file                   /* File pointer to read or write a FITS header on. */
+ ) {
     return ft_headread0( file, NULL, 0 );
 }
 
 /* Write a FITS header to a file pointer.
  */
 int
-ft_headwrite( file, fits )
-     File file;
-     FITSHead fits;             /* Header to write.             */
-{
+ft_headwrite(
+    File file,
+    FITSHead fits               /* Header to write.             */
+ ) {
     if ( file == NULL ) return 0;
     if ( fits == NULL ) return 0;
 
@@ -105,11 +103,14 @@ ft_headwrite( file, fits )
 }
 
 void *
-ft_fileparse( ifile, callback, cdata )
-     File ifile;
-     int ( *callback )( File, FITSHead, void *, void * );
-     void *cdata;
-{
+ft_fileparse(
+    File ifile,
+    int ( *callback ) ( File,
+                        FITSHead,
+                        void *,
+                        void * ),
+    void *cdata
+ ) {
     FITSHead fits;
     void *data = NULL;
 
@@ -127,10 +128,10 @@ ft_fileparse( ifile, callback, cdata )
    one from which the FITS header was read and must be seekable.
  */
 long
-ft_headseek( file, fits )
-     File file;
-     FITSHead fits;
-{
+ft_headseek(
+    File file,
+    FITSHead fits
+ ) {
     if ( file == NULL ) return -1;
     if ( fits == NULL ) return -1;
 
@@ -138,10 +139,10 @@ ft_headseek( file, fits )
 }
 
 int
-ft_sync( fits, x )
-     FITSHead fits;
-     int x;
-{
+ft_sync(
+    FITSHead fits,
+    int x
+ ) {
     int sync;
 
     if ( fits == NULL ) return -1;

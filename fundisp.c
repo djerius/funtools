@@ -56,15 +56,10 @@ static struct colfmtrec {
 } colfmts[MAX_COLFMTS];
 static int ncolfmt = 0;
 
-#ifdef ANSI_FUNC
 int
-Index( int type )
-#else
-int
-Index( type )
-     int type;
-#endif
-{
+Index(
+    int type
+ ) {
     switch ( type ) {
 	case 'D':
 	    return 0;
@@ -107,17 +102,12 @@ Index( type )
 }
 
 /* order of formats: double float int short byte string bits ushort uint */
-#ifdef ANSI_FUNC
 static void
-Format( char *s, char **names, int n )
-#else
-static void
-Format( s, names, n )
-     char *s;
-     char **names;
-     int n;
-#endif
-{
+Format(
+    char *s,
+    char **names,
+    int n
+ ) {
     int i, j, x;
     int col;
     int ival;
@@ -141,9 +131,7 @@ Format( s, names, n )
 	/* look for "=", meaning we have a column format */
 	if ( ( e = strchr( format, '=' ) ) != NULL ) {
 	    if ( ncolfmt >= MAX_COLFMTS ) {
-		fprintf( stderr,
-		         "WARNING: too many column formats; skipping %s\n",
-		         format );
+		fprintf( stderr, "WARNING: too many column formats; skipping %s\n", format );
 		continue;
 	    }
 	    f = e + 1;
@@ -152,8 +140,7 @@ Format( s, names, n )
 	         || ( ( x = Index( *format ) ) < 0 ) ) {
 		for ( j = 0; j < n; j++ ) {
 		    if ( !strcasecmp( format, names[j] ) ) {
-			if ( colfmts[ncolfmt].name ) xfree( colfmts[ncolfmt].
-			                                    name );
+			if ( colfmts[ncolfmt].name ) xfree( colfmts[ncolfmt].name );
 			colfmts[ncolfmt].name = xstrdup( names[j] );
 			col = j;
 			break;
@@ -226,17 +213,12 @@ Format( s, names, n )
     freedtable(  );
 }
 
-#ifdef ANSI_FUNC
 static char *
-tdimstr( int *dims, int ndim, int ival )
-#else
-static char *
-tdimstr( dims, ndim, ival )
-     int *dims;
-     int ndim;
-     int ival;
-#endif
-{
+tdimstr(
+    int *dims,
+    int ndim,
+    int ival
+ ) {
     int i, j;
     int *prods;
     int *idxs;
@@ -278,20 +260,15 @@ tdimstr( dims, ndim, ival )
     return _tdim;
 }
 
-#ifdef ANSI_FUNC
 static void
-Header( FILE * fp, int dmode, char *name, int type, int n, char *tdim )
-#else
-static void
-Header( fp, dmode, name, type, n, tdim )
-     FILE *fp;
-     int dmode;
-     char *name;
-     int type;
-     int n;
-     char *tdim;
-#endif
-{
+Header(
+    FILE * fp,
+    int dmode,
+    char *name,
+    int type,
+    int n,
+    char *tdim
+ ) {
     int ind;
     int i, j;
     int xfmti;
@@ -349,8 +326,7 @@ Header( fp, dmode, name, type, n, tdim )
     if ( ( n > 1 ) && tdim ) {
 	newdtable( ",()" );
 	for ( ip = 0; word( tdim, tbuf, &ip ); ndim++ ) {
-	    if ( ndim >= SZ_LINE ) gerror( stderr,
-	                                   "too many dimensions in TDIM\n" );
+	    if ( ndim >= SZ_LINE ) gerror( stderr, "too many dimensions in TDIM\n" );
 	    dims[ndim] = atoi( tbuf );
 	}
 	freedtable(  );
@@ -372,8 +348,7 @@ Header( fp, dmode, name, type, n, tdim )
 		    strcpy( tbuf, " " );
 	    }
 	    else {
-		snprintf( tbuf, SZ_LINE - 1, "%s[%s]", t,
-		          tdimstr( dims, ndim, i ) );
+		snprintf( tbuf, SZ_LINE - 1, "%s[%s]", t, tdimstr( dims, ndim, i ) );
 	    }
 	}
 	else
@@ -401,19 +376,14 @@ Header( fp, dmode, name, type, n, tdim )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-Dashes( FILE * fp, int dmode, char *name, int type, int n )
-#else
-static void
-Dashes( fp, dmode, name, type, n )
-     FILE *fp;
-     int dmode;
-     char *name;
-     int type;
-     int n;
-#endif
-{
+Dashes(
+    FILE * fp,
+    int dmode,
+    char *name,
+    int type,
+    int n
+ ) {
     int ind;
     int i, j;
     int xfmti;
@@ -480,20 +450,15 @@ Dashes( fp, dmode, name, type, n )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-Display( FILE * fp, int dmode, char *name, int type, int n, char *buf )
-#else
-static void
-Display( fp, dmode, name, type, n, buf )
-     FILE *fp;
-     int dmode;
-     char *name;
-     int type;
-     int n;
-     char *buf;
-#endif
-{
+Display(
+    FILE * fp,
+    int dmode,
+    char *name,
+    int type,
+    int n,
+    char *buf
+ ) {
     int ind;
     int i;
     int ival = 0;
@@ -637,8 +602,7 @@ Display( fp, dmode, name, type, n, buf )
 	    case 'K':
 	    case 64:
 #if HAVE_LONG_LONG == 0
-		gerror( stderr,
-		        "64-bit data support not built (long long not available)\n" );
+		gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		lval = *( longlong * ) buf;
 		if ( maskonly && !lval )
@@ -725,45 +689,28 @@ Display( fp, dmode, name, type, n, buf )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
-    fprintf( stderr,
-             "usage: %s [-f format] [-l] [-n] [-T] iname [columns|bitpix=n]\n",
-             fname );
+usage(
+    char *fname
+ ) {
+    fprintf( stderr, "usage: %s [-f format] [-l] [-n] [-T] iname [columns|bitpix=n]\n", fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -f 'format' # format definitions for table columns\n" );
-    fprintf( stderr,
-             "  -l          # display image as a list containing the columns X, Y, VAL\n" );
+    fprintf( stderr, "  -f 'format' # format definitions for table columns\n" );
+    fprintf( stderr, "  -l          # display image as a list containing the columns X, Y, VAL\n" );
     fprintf( stderr, "  -n          # don't output header\n" );
-    fprintf( stderr,
-             "  -F [c]      # use specified character as column separator (def: space)\n" );
-    fprintf( stderr,
-             "  -T          # output in rdb/starbase format (tab separators)\n" );
+    fprintf( stderr, "  -F [c]      # use specified character as column separator (def: space)\n" );
+    fprintf( stderr, "  -T          # output in rdb/starbase format (tab separators)\n" );
     fprintf( stderr, "For tables, columns to display can be specified.\n" );
-    fprintf( stderr,
-             "For images, data type (bitpix) of display can be specified.\n" );
+    fprintf( stderr, "For images, data type (bitpix) of display can be specified.\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i, j, k;
     int args;
@@ -851,8 +798,7 @@ main( argc, argv )
 
     /* open the input FITS file */
     if ( !( fun = FunOpen( argv[optind], "r", NULL ) ) )
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-                argv[optind] );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", argv[optind] );
 
     /* determine which type of data we have */
     FunInfoGet( fun, FUN_TYPE, &type, 0 );
@@ -888,15 +834,13 @@ main( argc, argv )
 	                FUN_SECT_DIM2, &dim2,
 	                FUN_SECT_X0, &x0,
 	                FUN_SECT_Y0, &y0,
-	                FUN_SECT_BLOCK, &block,
-	                FUN_SECT_BITPIX, &bitpix, FUN_BITPIX, &ibitpix, 0 );
+	                FUN_SECT_BLOCK, &block, FUN_SECT_BITPIX, &bitpix, FUN_BITPIX, &ibitpix, 0 );
 	    /* set dim2 to 1 for a 1D image */
 	    if ( dim2 == 0 ) dim2 = 1;
 	    /* display header */
 	    if ( dolist ) {
 		if ( dmode & DMODE_MASKONLY )
-		    gerror( stderr,
-		            "'list' and 'maskonly' are mutually exclusive\n" );
+		    gerror( stderr, "'list' and 'maskonly' are mutually exclusive\n" );
 		if ( dohead ) {
 		    Header( stdout, dmode, "X", 'J', 1, NULL );
 		    fprintf( stdout, "%c", coldelim );
@@ -919,24 +863,20 @@ main( argc, argv )
 		for ( i = 0; i < dim2; i++ ) {
 		    for ( j = 0; j < dim1; j++ ) {
 			val = j + x0;
-			Display( stdout, dmode, NULL, 32, 1,
-			         ( char * ) &val );
+			Display( stdout, dmode, NULL, 32, 1, ( char * ) &val );
 			fprintf( stdout, "%c", coldelim );
 			val = i + y0;
-			Display( stdout, dmode, NULL, 32, 1,
-			         ( char * ) &val );
+			Display( stdout, dmode, NULL, 32, 1, ( char * ) &val );
 			fprintf( stdout, "%c", coldelim );
 			Display( stdout, dmode, "VALUE",
-			         bitpix, 1,
-			         buf + ( ( i * dim1 + j ) * size ) );
+			         bitpix, 1, buf + ( ( i * dim1 + j ) * size ) );
 			fprintf( stdout, "\n" );
 		    }
 		}
 	    }
 	    else {
 		if ( dmode & DMODE_RDB )
-		    gerror( stderr,
-		            "'table' mode is only for tables or 'list' images\n" );
+		    gerror( stderr, "'table' mode is only for tables or 'list' images\n" );
 		/* output header */
 		fprintf( stdout, "          " );
 		for ( i = 0; i < dim1; i++ ) {
@@ -951,8 +891,7 @@ main( argc, argv )
 			    dval += j;
 			}
 			dval /= block;
-			snprintf( tbuf, SZ_LINE - 1, "%8.1f",
-			          y0 + ( i * block ) + dval );
+			snprintf( tbuf, SZ_LINE - 1, "%8.1f", y0 + ( i * block ) + dval );
 			if ( i )
 			    fprintf( stdout, "%c", coldelim );
 			Header( stdout, dmode, tbuf, bitpix, 1, NULL );
@@ -977,8 +916,7 @@ main( argc, argv )
 			    dval += j;
 			}
 			dval /= block;
-			fprintf( stdout, "%8.1f:",
-			         y0 + ( i * block ) + dval );
+			fprintf( stdout, "%8.1f:", y0 + ( i * block ) + dval );
 		    }
 		    if ( ft_sizeof( bitpix ) )
 			size = ft_sizeof( bitpix );
@@ -987,8 +925,7 @@ main( argc, argv )
 		    for ( j = 0; j < dim1; j++ ) {
 			fprintf( stdout, "%c", coldelim );
 			Display( stdout, dmode, NULL,
-			         bitpix, 1,
-			         buf + ( ( i * dim1 + j ) * size ) );
+			         bitpix, 1, buf + ( ( i * dim1 + j ) * size ) );
 		    }
 		    fprintf( stdout, "\n" );
 		}
@@ -1019,8 +956,7 @@ main( argc, argv )
 	    offsets = ( int * ) xcalloc( ncol, sizeof( int ) );
 	    for ( i = 0; i < ncol; i++ ) {
 		FunColumnLookup( fun, NULL, i, &names[i],
-		                 &types[i], &modes[i], &offsets[i], &ns[i],
-		                 NULL );
+		                 &types[i], &modes[i], &offsets[i], &ns[i], NULL );
 		/* get tdim, if available */
 		tdims[i] = FunParamGets( fun, "TDIM", i + 1, NULL, &got );
 		/* use dynamically allocated names ... */
@@ -1030,17 +966,14 @@ main( argc, argv )
 		    xfree( names[i] );
 		    /* best to use "region", if its not already used */
 		    if ( !FunColumnLookup( fun, COL_REGION_ONAME, 0,
-		                           NULL, NULL, NULL, NULL, NULL,
-		                           NULL ) )
+		                           NULL, NULL, NULL, NULL, NULL, NULL ) )
 			names[i] = xstrdup( COL_REGION_ONAME );
 		    /* otherwise use region<n>, using the first free int value for <n> */
 		    else {
 			for ( j = 1;; j++ ) {
-			    snprintf( tbuf, SZ_LINE - 1, "%s%d",
-			              COL_REGION_ONAME, j );
+			    snprintf( tbuf, SZ_LINE - 1, "%s%d", COL_REGION_ONAME, j );
 			    if ( !FunColumnLookup
-			         ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL,
-			           NULL ) ) {
+			         ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
 				names[i] = xstrdup( tbuf );
 				break;
 			    }
@@ -1052,17 +985,14 @@ main( argc, argv )
 		    xfree( names[i] );
 		    /* best to use "n", if its not already used */
 		    if ( !FunColumnLookup( fun, COL_NUM_ONAME, 0,
-		                           NULL, NULL, NULL, NULL, NULL,
-		                           NULL ) )
+		                           NULL, NULL, NULL, NULL, NULL, NULL ) )
 			names[i] = xstrdup( COL_NUM_ONAME );
 		    /* otherwise use region<n>, using the first free int value for <n> */
 		    else {
 			for ( j = 1;; j++ ) {
-			    snprintf( tbuf, SZ_LINE - 1, "%s%d",
-			              COL_NUM_ONAME, j );
+			    snprintf( tbuf, SZ_LINE - 1, "%s%d", COL_NUM_ONAME, j );
 			    if ( !FunColumnLookup
-			         ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL,
-			           NULL ) ) {
+			         ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
 				names[i] = xstrdup( tbuf );
 				break;
 			    }
@@ -1095,8 +1025,7 @@ main( argc, argv )
 			continue;
 		    if ( j )
 			fprintf( stdout, "%c", coldelim );
-		    Header( stdout, dmode, names[i], types[i], ns[i],
-		            tdims[i] );
+		    Header( stdout, dmode, names[i], types[i], ns[i], tdims[i] );
 		    j++;
 		}
 		fprintf( stdout, "\n" );
@@ -1116,8 +1045,7 @@ main( argc, argv )
 	    }
 
 	    /* for each event, display each specified column */
-	    while ( ( ebuf =
-	              FunTableRowGet( fun, NULL, maxrow, mode, &got ) ) ) {
+	    while ( ( ebuf = FunTableRowGet( fun, NULL, maxrow, mode, &got ) ) ) {
 		for ( k = 0; k < got; k++ ) {
 		    eptr = ( char * ) ( ebuf + ( rowsize * k ) );
 		    for ( i = 0, j = 0; i < ncol; i++ ) {
@@ -1125,8 +1053,7 @@ main( argc, argv )
 			    continue;
 			if ( j )
 			    fprintf( stdout, "%c", coldelim );
-			Display( stdout, dmode, names[i], types[i], ns[i],
-			         eptr + offsets[i] );
+			Display( stdout, dmode, names[i], types[i], ns[i], eptr + offsets[i] );
 			j++;
 		    }
 		    fprintf( stdout, "\n" );

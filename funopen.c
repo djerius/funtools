@@ -16,18 +16,13 @@
  *	      set up binning and filtering parameters
  *
  */
-#ifdef ANSI_FUNC
 static Fun
-_FunRawEvOpen( char *fname, char *tail, char *mode, char *eventdef )
-#else
-static Fun
-_FunRawEvOpen( fname, tail, mode, eventdef )
-     char *fname;
-     char *tail;
-     char *mode;
-     char *eventdef;
-#endif
-{
+_FunRawEvOpen(
+    char *fname,
+    char *tail,
+    char *mode,
+    char *eventdef
+ ) {
     Fun fun;
     char tbuf[SZ_LINE];
 
@@ -60,8 +55,7 @@ _FunRawEvOpen( fname, tail, mode, eventdef )
     /* look for indication of whether these data are bigendian */
     if ( _FunKeyword( tail, "endian", "EVENTS_ENDIAN", tbuf, SZ_LINE ) )
 	fun->endian = ( ( *tbuf == 'b' ) || ( *tbuf == 'B' ) );
-    else if ( _FunKeyword
-              ( tail, "bigendian", "EVENTS_BIGENDIAN", tbuf, SZ_LINE ) )
+    else if ( _FunKeyword( tail, "bigendian", "EVENTS_BIGENDIAN", tbuf, SZ_LINE ) )
 	fun->endian = istrue( tbuf );
     /* otherwise assume we have native format */
     else
@@ -116,18 +110,13 @@ _FunRawEvOpen( fname, tail, mode, eventdef )
  *	      set up binning and filtering parameters
  *
  */
-#ifdef ANSI_FUNC
 static Fun
-_FunArrayOpen( char *fname, char *tail, char *mode, char *arraydef )
-#else
-static Fun
-_FunArrayOpen( fname, tail, mode, arraydef )
-     char *fname;
-     char *tail;
-     char *mode;
-     char *arraydef;
-#endif
-{
+_FunArrayOpen(
+    char *fname,
+    char *tail,
+    char *mode,
+    char *arraydef
+ ) {
     Fun fun;
     char tbuf[SZ_LINE];
 
@@ -151,8 +140,7 @@ _FunArrayOpen( fname, tail, mode, arraydef )
     /* look for indication of whether these data are bigendian */
     if ( _FunKeyword( tail, "endian", "ARRAY_ENDIAN", tbuf, SZ_LINE ) )
 	fun->endian = ( ( *tbuf == 'b' ) || ( *tbuf == 'B' ) );
-    else if ( _FunKeyword
-              ( tail, "bigendian", "ARRAY_BIGENDIAN", tbuf, SZ_LINE ) )
+    else if ( _FunKeyword( tail, "bigendian", "ARRAY_BIGENDIAN", tbuf, SZ_LINE ) )
 	fun->endian = istrue( tbuf );
     /* otherwise assume we have native format */
     else
@@ -160,8 +148,7 @@ _FunArrayOpen( fname, tail, mode, arraydef )
 
     /* parse the array spec for dimension info */
     if ( ParseArraySpec( arraydef, &( fun->dim1 ), &( fun->dim2 ),
-                         &( fun->bitpix ), &( fun->skip ),
-                         &( fun->endian ) ) ) {
+                         &( fun->bitpix ), &( fun->skip ), &( fun->endian ) ) ) {
 	fun->min1 = 1;
 	fun->max1 = fun->dim1;
 	if ( fun->dim2 ) {
@@ -186,14 +173,12 @@ _FunArrayOpen( fname, tail, mode, arraydef )
 
     /* make a dummy FITS header for this array */
     fun->header = ft_headinit( NULL, 0 );
-    ft_headsetl( fun->header, "SIMPLE", 0, 1, "Is FITS of standard type?",
-                 1 );
+    ft_headsetl( fun->header, "SIMPLE", 0, 1, "Is FITS of standard type?", 1 );
     ft_headseti( fun->header, "BITPIX", 0, fun->bitpix, "bits/pixel", 1 );
     ft_headseti( fun->header, "NAXIS", 0, fun->dims, "number of axes", 1 );
     ft_headseti( fun->header, "NAXIS", 1, fun->dim1, "x axis dimension", 1 );
     if ( fun->dims >= 2 )
-	ft_headseti( fun->header, "NAXIS", 2, fun->dim2, "y axis dimension",
-                     1 );
+	ft_headseti( fun->header, "NAXIS", 2, fun->dim2, "y axis dimension", 1 );
     ft_syncdata( fun->header );
 
     /* calculate the image length including padding */
@@ -229,17 +214,12 @@ _FunArrayOpen( fname, tail, mode, arraydef )
  *	      set up binning and filtering parameters
  *
  */
-#ifdef ANSI_FUNC
 Fun
-_FunFITSOpen( Fun ifun, char *fname, char *mode )
-#else
-Fun
-_FunFITSOpen( ifun, fname, mode )
-     Fun ifun;
-     char *fname;
-     char *mode;
-#endif
-{
+_FunFITSOpen(
+    Fun ifun,
+    char *fname,
+    char *mode
+ ) {
     char tbuf[SZ_LINE];
     char tail[SZ_LINE];
     char iline[SZ_LINE];
@@ -338,8 +318,7 @@ _FunFITSOpen( ifun, fname, mode )
 	    /* now parse the section specification */
 	    _FunParseSection( fun, tail,
 	                      &( fun->x0 ), &( fun->x1 ), &( fun->y0 ),
-	                      &( fun->y1 ), &( fun->block ), &( fun->btype ),
-	                      tail, SZ_LINE );
+	                      &( fun->y1 ), &( fun->block ), &( fun->btype ), tail, SZ_LINE );
 	    /* get maxbufsize for table access */
 	    _FunMaxBufSize( fun, tail );
 	    /* what's left in the tail is the filter */
@@ -371,9 +350,7 @@ _FunFITSOpen( ifun, fname, mode )
 	    else
 		fun->bitpix = 32;
 	    /* should we use indices if we find them? */
-	    if ( _FunKeyword
-	         ( tail, "idx_activate", "FILTER_IDX_ACTIVATE", tbuf,
-	           SZ_LINE ) ) {
+	    if ( _FunKeyword( tail, "idx_activate", "FILTER_IDX_ACTIVATE", tbuf, SZ_LINE ) ) {
 		if ( istrue( tbuf ) )
 		    fun->idx = 1;
 		else if ( isfalse( tbuf ) )
@@ -382,8 +359,7 @@ _FunFITSOpen( ifun, fname, mode )
 	    /* else assume yes */
 	    else
 		fun->idx = 1;
-	    if ( _FunKeyword
-	         ( tail, "idx_debug", "FILTER_IDX_DEBUG", tbuf, SZ_LINE ) ) {
+	    if ( _FunKeyword( tail, "idx_debug", "FILTER_IDX_DEBUG", tbuf, SZ_LINE ) ) {
 		if ( istrue( tbuf ) )
 		    idxdebug( 1 );
 		else if ( isfalse( tbuf ) )
@@ -400,8 +376,7 @@ _FunFITSOpen( ifun, fname, mode )
 	    /* now parse the section specification */
 	    _FunParseSection( fun, tail,
 	                      &( fun->x0 ), &( fun->x1 ), &( fun->y0 ),
-	                      &( fun->y1 ), &( fun->block ), &( fun->btype ),
-	                      tail, SZ_LINE );
+	                      &( fun->y1 ), &( fun->block ), &( fun->btype ), tail, SZ_LINE );
 	    /* get maxbufsize for table access */
 	    _FunMaxBufSize( fun, tail );
 	    /* what's left in the tail is the filter */
@@ -424,19 +399,14 @@ _FunFITSOpen( ifun, fname, mode )
     return NULL;
 }
 
-#ifdef ANSI_FUNC
 static Fun
-_FunOpen( char *fname, char *name, char *tail, int len, char *mode )
-#else
-static Fun
-_FunOpen( fname, name, tail, len, mode )
-     char *fname;
-     char *name;
-     char *tail;
-     int len;
-     char *mode;
-#endif
-{
+_FunOpen(
+    char *fname,
+    char *name,
+    char *tail,
+    int len,
+    char *mode
+ ) {
     Fun fun = NULL;
     char *special = NULL;
     char *xname = NULL;
@@ -466,7 +436,7 @@ _FunOpen( fname, name, tail, len, mode )
 	/* here is the bad bit: we will want to select on the input file fd, but
 	   gio "files" do not always have an fd and when they do, they might
 	   have two of them.  I am hacking this for the time being */
-	if ( ( fun->gio->type == GIO_DISK )
+        if ( ( fun->gio->type == GIO_DISK )
 	     || ( fun->gio->type == GIO_STREAM ) )
 	    fun->ifd = fileno( fun->gio->fp );
 	else if ( ( fun->gio->type == GIO_SOCKET )
@@ -493,17 +463,12 @@ _FunOpen( fname, name, tail, len, mode )
  *	      set up binning and filtering parameters
  *
  */
-#ifdef ANSI_FUNC
 Fun
-FunOpen( char *fname, char *mode, Fun ref )
-#else
-Fun
-FunOpen( fname, mode, ref )
-     char *fname;
-     char *mode;
-     Fun ref;
-#endif
-{
+FunOpen(
+    char *fname,
+    char *mode,
+    Fun ref
+ ) {
     int i;
     int ltype;
     int lmem;
@@ -574,8 +539,7 @@ FunOpen( fname, mode, ref )
 	lmem = -1;
 	/* process as a space-delimited list of files */
 	while ( _FunFile( fname, tbuf, SZ_LINE, &ip ) ) {
-	    if ( _FunKeyword
-	         ( tbuf, "listorder", "FUN_LISTORDER", tbuf2, SZ_LINE ) ) {
+	    if ( _FunKeyword( tbuf, "listorder", "FUN_LISTORDER", tbuf2, SZ_LINE ) ) {
 		if ( !strncasecmp( tbuf2, "s", 1 ) )
 		    ltype = LIST_SORT;
 		else if ( !strncasecmp( tbuf2, "t", 1 ) )
@@ -586,8 +550,7 @@ FunOpen( fname, mode, ref )
 		    ltype = LIST_FILEORDER;
 		continue;
 	    }
-	    if ( _FunKeyword
-	         ( tbuf, "listmem", "FUN_LISTMEM", tbuf2, SZ_LINE ) ) {
+	    if ( _FunKeyword( tbuf, "listmem", "FUN_LISTMEM", tbuf2, SZ_LINE ) ) {
 		lmem = ( int ) ( atof( tbuf2 ) * 1000000 );
 		continue;
 	    }
@@ -624,16 +587,11 @@ FunOpen( fname, mode, ref )
     return NULL;
 }
 
-#ifdef ANSI_FUNC
 void
-FunFlush( Fun fun, char *plist )
-#else
-void
-FunFlush( fun, plist )
-     Fun fun;
-     char *plist;
-#endif
-{
+FunFlush(
+    Fun fun,
+    char *plist
+ ) {
     int i;
     int pad;
     int got;
@@ -696,14 +654,12 @@ FunFlush( fun, plist )
     }
     else {
 	/* for writing, we might have to output the FITS header, padding, etc. */
-	if ( strchr( fun->mode, 'w' ) || strchr( fun->mode, 'a' ) ||
-	     strchr( fun->mode, 'A' ) ) {
+	if ( strchr( fun->mode, 'w' ) || strchr( fun->mode, 'a' ) || strchr( fun->mode, 'A' ) ) {
 	    /* process extension-specific flush */
 	    switch ( fun->type ) {
 		case FUN_IMAGE:
 		    /* might have to write the header */
-		    _FunImagePutHeader( fun, fun->dim1, fun->dim2,
-		                        fun->bitpix );
+		    _FunImagePutHeader( fun, fun->dim1, fun->dim2, fun->bitpix );
 		    /* pad to end of extension, if necessary */
 		    pad = FT_BLOCK - ( fun->bytes % FT_BLOCK );
 		    if ( pad && ( pad != FT_BLOCK ) ) {
@@ -756,14 +712,11 @@ FunFlush( fun, plist )
 	    case FUN_EVENTS:
 		/* calculate bytes we should have read to end of extension, but didn't */
 		skip =
-		    ( ( tfun->rawsize * tfun->total ) +
-		      ft_pcount( tfun->header ) ) - tfun->bytes;
+		    ( ( tfun->rawsize * tfun->total ) + ft_pcount( tfun->header ) ) - tfun->bytes;
 		/* if there are any ... */
 		if ( skip ) {
 		    /* ... it also means we did not skip the padding */
-		    pad =
-		        FT_BLOCK -
-		        ( ( tfun->rawsize * tfun->total ) % FT_BLOCK );
+		    pad = FT_BLOCK - ( ( tfun->rawsize * tfun->total ) % FT_BLOCK );
 		    if ( pad == FT_BLOCK ) pad = 0;
 		    skip += pad;
 		    /* do it now */
@@ -774,16 +727,14 @@ FunFlush( fun, plist )
 		break;
 	}
 	/* write out the rest of the reference file */
-	while ( ( got =
-	          gread( tfun->gio, tbuf, sizeof( char ), SZ_LINE ) ) > 0 ) {
+	while ( ( got = gread( tfun->gio, tbuf, sizeof( char ), SZ_LINE ) ) > 0 ) {
 	    if ( dorest ) {
 		gwrite( fun->gio, tbuf, sizeof( char ), got );
 	    }
 	    else if ( doback ) {
 		for ( i = 0; i < FUN_MAXBFUN; i++ ) {
 		    if ( fun->bfun[i] && fun->bfun[i]->gio ) {
-			gwrite( fun->bfun[i]->gio, tbuf, sizeof( char ),
-			        got );
+			gwrite( fun->bfun[i]->gio, tbuf, sizeof( char ), got );
 		    }
 		}
 	    }
@@ -796,15 +747,10 @@ FunFlush( fun, plist )
     fun->ops = 0;
 }
 
-#ifdef ANSI_FUNC
 void
-FunClose( Fun fun )
-#else
-void
-FunClose( fun )
-     Fun fun;
-#endif
-{
+FunClose(
+    Fun fun
+ ) {
     int i;
     Fun tfun;
     if ( !_FunValid( fun ) )

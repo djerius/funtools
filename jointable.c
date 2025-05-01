@@ -33,9 +33,12 @@
 int table = 1;
 File ofile;
 
-char *xmalloc(  );
-char *xrealloc(  );
-static void usage(  );
+char *xmalloc(
+ );
+char *xrealloc(
+ );
+static void usage(
+ );
 
 #define min(A, B) ((A) < (B) ? (A) : (B))
 #define max(A, B) ((A) > (B) ? (A) : (B))
@@ -102,19 +105,14 @@ static struct line uni_blank;
 static struct line blank1;
 static struct line blank2;
 
-static void
-ADD_FIELD( line, field, len )
-     struct line *line;
-     char *field;
-     size_t len;
+static void 
+ADD_FIELD (struct line *line, char *field, size_t len)
 {
     if ( line->nfields >= line->nfields_allocated ) {
 	line->nfields_allocated = ( 3 * line->nfields_allocated ) / 2 + 1;
 	line->fields = ( struct field * ) xrealloc( ( char * ) line->fields,
 	                                            ( line->nfields_allocated
-	                                              *
-	                                              sizeof( struct
-	                                                      field ) ) );
+	                                              * sizeof( struct field ) ) );
     }
     line->fields[line->nfields].beg = field;
     line->fields[line->nfields].len = len;
@@ -123,9 +121,8 @@ ADD_FIELD( line, field, len )
 
 /* Fill in the `fields' structure in LINE. */
 
-static void
-xfields( line )
-     struct line *line;
+static void 
+xfields (struct line *line)
 {
     int i;
     register char *ptr, *lim;
@@ -166,8 +163,7 @@ xfields( line )
     }
 
     if ( !table ) {
-	if ( ptr > line->beg
-	     && ( ( tab && ISSPACE( ptr[-1] ) ) || ptr[-1] == tab ) ) {
+	if ( ptr > line->beg && ( ( tab && ISSPACE( ptr[-1] ) ) || ptr[-1] == tab ) ) {
 	    /* Add one more (empty) field because the last character of the
 	       line was a delimiter.  */
 	    ADD_FIELD( line, NULL, 0 );
@@ -184,7 +180,9 @@ xfields( line )
    Return 0 if EOF, 1 otherwise. */
 
 int
-GetCh( fp )
+GetCh(
+    fp
+ )
      FILE *fp;
 {
     int c;
@@ -194,7 +192,10 @@ GetCh( fp )
 }
 
 static int
-get_line( fp, line )
+get_line(
+    fp,
+    line
+ )
      FILE *fp;
      struct line *line;
 {
@@ -229,37 +230,36 @@ get_line( fp, line )
     return 1;
 }
 
-static void
-freeline( line )
-     struct line *line;
+static void 
+freeline (struct line *line)
 {
     free( ( char * ) line->fields );
     free( line->beg );
     line->beg = NULL;
 }
 
-static void
-initseq( seq )
-     struct seq *seq;
+static void 
+initseq (struct seq *seq)
 {
     seq->count = 0;
     seq->alloc = 1;
-    seq->lines =
-        ( struct line * ) xmalloc( seq->alloc * sizeof( struct line ) );
+    seq->lines = ( struct line * ) xmalloc( seq->alloc * sizeof( struct line ) );
 }
 
 /* Read a line from FP and add it to SEQ.  Return 0 if EOF, 1 otherwise. */
 
 static int
-getseq( fp, seq )
+getseq(
+    fp,
+    seq
+ )
      FILE *fp;
      struct seq *seq;
 {
     if ( seq->count == seq->alloc ) {
 	seq->alloc *= 2;
 	seq->lines = ( struct line * )
-	    xrealloc( ( char * ) seq->lines,
-	              seq->alloc * sizeof( struct line ) );
+	    xrealloc( ( char * ) seq->lines, seq->alloc * sizeof( struct line ) );
     }
 
     if ( get_line( fp, &seq->lines[seq->count] ) ) {
@@ -269,9 +269,8 @@ getseq( fp, seq )
     return 0;
 }
 
-static void
-delseq( seq )
-     struct seq *seq;
+static void 
+delseq (struct seq *seq)
 {
     int i;
     for ( i = 0; i < seq->count; i++ )
@@ -286,10 +285,8 @@ delseq( seq )
 static int Numeric = 0;
 static int Reverse = 0;
 
-static int
-keycmp( line1, line2 )
-     struct line *line1;
-     struct line *line2;
+static int 
+keycmp (struct line *line1, struct line *line2)
 {
     char *beg1, *beg2;          /* Start of field to compare in each file. */
     int len1, len2;             /* Length of fields to compare. */
@@ -370,10 +367,8 @@ keycmp( line1, line2 )
 /* Print field N of LINE if it exists and is nonempty, otherwise
    `empty_filler' if it is nonempty. */
 
-static void
-prfield( n, line )
-     int n;
-     struct line *line;
+static void 
+prfield (int n, struct line *line)
 {
     int len;
 
@@ -390,10 +385,8 @@ prfield( n, line )
 
 /* Print the join of LINE1 and LINE2. */
 
-static void
-prjoin( line1, line2 )
-     struct line *line1;
-     struct line *line2;
+static void 
+prjoin (struct line *line1, struct line *line2)
 {
     if ( outlist ) {
 	struct outlist *o;
@@ -437,7 +430,10 @@ prjoin( line1, line2 )
 /* Print the join of the files in FP1 and FP2. */
 
 static void
-join( fp1, fp2 )
+join(
+    fp1,
+    fp2
+ )
      FILE *fp1;
      FILE *fp2;
 {
@@ -542,10 +538,8 @@ join( fp1, fp2 )
 /* Add a field spec for field FIELD of file FILE to `outlist' and return 1,
    unless either argument is invalid; then just return 0. */
 
-static int
-add_field( file, field )
-     int file;
-     int field;
+static int 
+add_field (int file, int field)
 {
     struct outlist *o;
 
@@ -569,9 +563,8 @@ add_field( file, field )
 /* Add the comma or blank separated field spec(s) in STR to `outlist'.
    Return the number of fields added. */
 
-static int
-add_field_list( str )
-     char *str;
+static int 
+add_field_list (char *str)
 {
     int added = 0;
     int file = -1, field = -1;
@@ -609,16 +602,13 @@ add_field_list( str )
 
 /* Create a blank line with COUNT fields separated by tabs. */
 
-void
-make_blank( blank, count )
-     struct line *blank;
-     int count;
+void 
+make_blank (struct line *blank, int count)
 {
     int i;
     blank->nfields = count;
     blank->beg = xmalloc( blank->nfields + 1 );
-    blank->fields =
-        ( struct field * ) xmalloc( sizeof( struct field ) * count );
+    blank->fields = ( struct field * ) xmalloc( sizeof( struct field ) * count );
     for ( i = 0; i < blank->nfields; i++ ) {
 	blank->beg[i] = '\t';
 	blank->fields[i].beg = &blank->beg[i];
@@ -628,11 +618,11 @@ make_blank( blank, count )
     blank->lim = &blank->beg[i];
 }
 
-char *trim(  );
+char *trim(
+ );
 
-main( argc, argv )
-     int argc;
-     char *argv[];
+int 
+main (int argc, char *argv[])
 {
     char *names[2];
     FILE *fp1, *fp2;
@@ -733,9 +723,7 @@ main( argc, argv )
 		    i++;
 		    if ( ( ofile = ( !strcmp( "-", argv[i] ) )
 		           ? Stdout : Open( argv[i], "w" ) ) == NULL ) {
-			FPrint( Stderr,
-			        "jointable: can't open output file: %s\n",
-			        argv[i] );
+			FPrint( Stderr, "jointable: can't open output file: %s\n", argv[i] );
 			perror( "jointable" );
 			exit( 1 );
 		    }
@@ -781,13 +769,11 @@ main( argc, argv )
     }
 
     if ( ( T1 = table_header( fp1, 0 ) ) == NULL ) {
-	FPrint( Stderr, "jointable: can't read table header from: %s\n",
-	        names[0] );
+	FPrint( Stderr, "jointable: can't read table header from: %s\n", names[0] );
 	exit( 1 );
     }
     if ( ( T2 = table_header( fp2, 0 ) ) == NULL ) {
-	FPrint( stderr, "jointable: can't read table header from: %s\n",
-	        names[1] );
+	FPrint( stderr, "jointable: can't read table header from: %s\n", names[1] );
 	exit( 1 );
     }
 
@@ -802,13 +788,11 @@ main( argc, argv )
     }
 
     if ( !( join_field_1 = table_colnum( T1, join_column1 ) ) ) {
-	FPrint( Stderr, "jointable: can't find column: %s in file: %s\n",
-	        join_column1, names[0] );
+	FPrint( Stderr, "jointable: can't find column: %s in file: %s\n", join_column1, names[0] );
 	exit( 1 );
     }
     if ( !( join_field_2 = table_colnum( T2, join_column2 ) ) ) {
-	FPrint( Stderr, "jointable: can't find column: %s in file: %s\n",
-	        join_column2, names[1] );
+	FPrint( Stderr, "jointable: can't find column: %s in file: %s\n", join_column2, names[1] );
 	exit( 1 );
     }
 
@@ -819,31 +803,24 @@ main( argc, argv )
 	/* look up column name in the other table.
          */
 	if ( i != join_field_1 ) {
-	    int c2 =
-	        table_colnum( T2, trim( table_colval( T1->header, i ) ) );
+	    int c2 = table_colnum( T2, trim( table_colval( T1->header, i ) ) );
 
 	    hdrfix( ofile, table_colval( T1->header, i )
-	            , c2 != 0
-	            && c2 != join_field_2 ? 1 : 0, i == table_ncol( T1 )
+	            , c2 != 0 && c2 != join_field_2 ? 1 : 0, i == table_ncol( T1 )
 	            && T2->header->ncol == 1 ? '\n' : '\t' );
 	}
 
     {
-	int lastcol =
-	    T2->header->ncol ==
-	    join_field_2 ? join_field_2 - 1 : T2->header->ncol;
+	int lastcol = T2->header->ncol == join_field_2 ? join_field_2 - 1 : T2->header->ncol;
 
 	if ( lastcol != 0 ) {
 	    for ( i = 1; i <= lastcol; i++ )
 		if ( i != join_field_2 ) {
-		    int c1 =
-		        table_colnum( T1,
-		                      trim( table_colval( T2->header, i ) ) );
+		    int c1 = table_colnum( T1,
+		                           trim( table_colval( T2->header, i ) ) );
 
 		    hdrfix( ofile, table_colval( T2->header, i )
-		            , c1 != 0
-		            && c1 != join_field_1 ? 2 : 0,
-		            i == lastcol ? '\n' : '\t' );
+		            , c1 != 0 && c1 != join_field_1 ? 2 : 0, i == lastcol ? '\n' : '\t' );
 		}
 	}
     }
@@ -853,19 +830,14 @@ main( argc, argv )
     for ( i = 1; i <= table_ncol( T1 ); i++ )
 	if ( i != join_field_1 ) FPrint( ofile, "%s%c", T1->dashes->column[i]
 	                                 , i == table_ncol( T1 )
-                                         && T2->header->ncol ==
-                                         1 ? '\n' : '\t' );
+	                                 && T2->header->ncol == 1 ? '\n' : '\t' );
     {
-	int lastcol =
-	    T2->header->ncol ==
-	    join_field_2 ? join_field_2 - 1 : T2->header->ncol;
+	int lastcol = T2->header->ncol == join_field_2 ? join_field_2 - 1 : T2->header->ncol;
 
 	if ( lastcol != 0 ) {
 	    for ( i = 1; i <= lastcol; i++ )
-		if ( i != join_field_2 ) FPrint( ofile, "%s%c",
-		                                 T2->dashes->column[i]
-		                                 ,
-	                                         i == lastcol ? '\n' : '\t' );
+		if ( i != join_field_2 ) FPrint( ofile, "%s%c", T2->dashes->column[i]
+		                                 , i == lastcol ? '\n' : '\t' );
 	}
     }
 
@@ -900,13 +872,11 @@ main( argc, argv )
     exit( 0 );
 }
 
-static void
-usage( status )
-     int status;
+static void 
+usage (int status)
 {
     if ( status != 0 )
-	fprintf( stderr, "jointable -? for more information.\n",
-                 program_name );
+	fprintf( stderr, "jointable -? for more information.\n", program_name );
     else {
 	printf( "\
 Usage: %s [OPTION]... FILE1 FILE2\n\

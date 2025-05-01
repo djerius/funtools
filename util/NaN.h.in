@@ -60,11 +60,16 @@ typedef union {
 #define isnand(X) ((((uddu*)&X)->x[DNANOFF] & DNANMASK) == DNANMASK)
 #endif
  
-_PRbeg
 
-float  getnanf _PRx((void));
-double getnand _PRx((void));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-_PRend
+float  getnanf (void);
+double getnand (void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -31,14 +31,10 @@
 #include "xlaunch.h"
 #include "find.h"
 
-_PRbeg
-
-int ProcessOpen  _PRx((char *cmd, int *inchan, int *outchan, int *pid));
-void *ProcessRead  _PRx((int fd, void *buf, int maxbytes, int *got));
-int ProcessWrite _PRx((int fd, void *buf, int nbytes));
-int ProcessClose _PRx((int pid, int *exit_status));
-int ProcessGetChan _PRx((int pid, int *inchan, int *outchan));
-
-_PRend
+int ProcessOpen  (char *cmd, int *inchan, int *outchan, int *pid);
+void *ProcessRead  (int fd, void *buf, int maxbytes, int *got);
+int ProcessWrite (int fd, void *buf, int nbytes);
+int ProcessClose (int pid, int *exit_status);
+int ProcessGetChan (int pid, int *inchan, int *outchan);
 
 #endif /* __zprocess.h */

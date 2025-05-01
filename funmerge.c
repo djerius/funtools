@@ -25,7 +25,8 @@ typedef struct evstruct {
     double x, y;
     double ox, oy;
     short nfile;
-}  *Ev, EvRec;
+}  *Ev,
+    EvRec;
 
 typedef struct filestruct {
     struct filestruct *next;
@@ -41,18 +42,14 @@ typedef struct filestruct {
     int bin[2];
     char *bincols[2];
     int nfile;
-}  *MFile, MFileRec;
+}  *MFile,
+    MFileRec;
 
-#ifdef ANSI_FUNC
 static void
-InputFileParams( MFile ifile, int flag )
-#else
-static void
-InputFileParams( ifile, flag )
-     MFile ifile;
-     int flag;
-#endif
-{
+InputFileParams(
+    MFile ifile,
+    int flag
+ ) {
     int i;
     int got;
 
@@ -61,17 +58,10 @@ InputFileParams( ifile, flag )
     for ( i = 0; i <= 1; i++ ) {
 	if ( ifile->bin[i] >= 0 ) {
 	    FunColumnLookup( ifile->fun, NULL, ifile->bin[i],
-	                     &( ifile->bincols[i] ), &( ifile->tltyp[i] ),
-	                     NULL, NULL, NULL, NULL );
-	    ifile->tlmin[i] =
-	        FunParamGetd( ifile->fun, "TLMIN", ifile->bin[i] + 1, 0.0,
-	                      &got );
-	    ifile->tlmax[i] =
-	        FunParamGetd( ifile->fun, "TLMAX", ifile->bin[i] + 1, 0.0,
-	                      &got );
-	    ifile->binsiz[i] =
-	        FunParamGetd( ifile->fun, "TDBIN", ifile->bin[i] + 1, 1.0,
-	                      &got );
+	                     &( ifile->bincols[i] ), &( ifile->tltyp[i] ), NULL, NULL, NULL, NULL );
+	    ifile->tlmin[i] = FunParamGetd( ifile->fun, "TLMIN", ifile->bin[i] + 1, 0.0, &got );
+	    ifile->tlmax[i] = FunParamGetd( ifile->fun, "TLMAX", ifile->bin[i] + 1, 0.0, &got );
+	    ifile->binsiz[i] = FunParamGetd( ifile->fun, "TDBIN", ifile->bin[i] + 1, 1.0, &got );
 	}
     }
     /* get WCS info if necessary */
@@ -87,16 +77,11 @@ InputFileParams( ifile, flag )
     FunInfoGet( ifile->fun, FUN_HEADER, &( ifile->header ), 0 );
 }
 
-#ifdef ANSI_FUNC
 static int
-OpenInputFile( MFile ifile, int flag )
-#else
-static int
-OpenInputFile( ifile, flag )
-     MFile ifile;
-     int flag;
-#endif
-{
+OpenInputFile(
+    MFile ifile,
+    int flag
+ ) {
     char *mode;
 
     /* mode depends on file count */
@@ -107,16 +92,14 @@ OpenInputFile( ifile, flag )
 
     /* open input file */
     if ( !( ifile->fun = FunOpen( ifile->fname, mode, NULL ) ) ) {
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-	        ifile->fname );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", ifile->fname );
 	return 0;
     }
 
     /* check data type */
     FunInfoGet( ifile->fun, FUN_TYPE, &( ifile->type ), 0 );
     if ( ( ifile->type != FUN_TABLE ) && ( ifile->type != FUN_EVENTS ) ) {
-	gerror( stderr,
-	        "Sorry, only binary tables can be merged (thus far)\n" );
+	gerror( stderr, "Sorry, only binary tables can be merged (thus far)\n" );
 	return 0;
     }
 
@@ -127,17 +110,12 @@ OpenInputFile( ifile, flag )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static MFile
-NewInputFile( MFile head, char *s, int flag )
-#else
-static MFile
-NewInputFile( head, s, flag )
-     MFile head;
-     char *s;
-     int flag;
-#endif
-{
+NewInputFile(
+    MFile head,
+    char *s,
+    int flag
+ ) {
     MFile thead, cfile, cur;
 
     /* allocate space */
@@ -168,34 +146,23 @@ NewInputFile( head, s, flag )
     return thead;
 }
 
-#ifdef ANSI_FUNC
 static void
-FreeInputFile( MFile file )
-#else
-static void
-FreeInputFile( file )
-     MFile file;
-#endif
-{
+FreeInputFile(
+    MFile file
+ ) {
     if ( file->fname ) xfree( file->fname );
     if ( file ) xfree( file );
 }
 
-#ifdef ANSI_FUNC
 static void
-ConvertEvents( MFile ifile, MFile ofile, MFile file1, Ev ebuf, int nrow,
-               int flag )
-#else
-static void
-ConvertEvents( ifile, ofile, file1, ebuf, nrow, flag )
-     MFile ifile;
-     MFile ofile;
-     MFile file1;
-     Ev  ebuf;
-     int nrow;
-     int flag;
-#endif
-{
+ConvertEvents(
+    MFile ifile,
+    MFile ofile,
+    MFile file1,
+    Ev ebuf,
+    int nrow,
+    int flag
+ ) {
     int i;
     int offscl;
     double dval1, dval2;
@@ -214,26 +181,17 @@ ConvertEvents( ifile, ofile, file1, ebuf, nrow, flag )
 	    if ( ifile != file1 ) {
 		if ( flag & FLAG_IWCS ) {
 		    /* convert physical pixels to image */
-		    ev->x = tlp2i( ev->x,
-		                   ifile->tlmin[0], ifile->binsiz[0],
-		                   ifile->tltyp[0] );
-		    ev->y =
-		        tlp2i( ev->y, ifile->tlmin[1], ifile->binsiz[1],
-		               ifile->tltyp[1] );
+		    ev->x = tlp2i( ev->x, ifile->tlmin[0], ifile->binsiz[0], ifile->tltyp[0] );
+		    ev->y = tlp2i( ev->y, ifile->tlmin[1], ifile->binsiz[1], ifile->tltyp[1] );
 		}
 		/* convert image pixels to ra/dec using wcs */
 		pix2wcs( ifile->wcs, ev->x, ev->y, &dval1, &dval2 );
 		/* convert ra/dec to image pixels using base wcs */
-		wcs2pix( file1->wcs, dval1, dval2, &( ev->x ), &( ev->y ),
-		         &offscl );
+		wcs2pix( file1->wcs, dval1, dval2, &( ev->x ), &( ev->y ), &offscl );
 		if ( flag & FLAG_IWCS ) {
 		    /* convert pixels back to physical in base system */
-		    ev->x = tli2p( ev->x,
-		                   file1->tlmin[0], file1->binsiz[0],
-		                   file1->tltyp[0] );
-		    ev->y =
-		        tli2p( ev->y, file1->tlmin[1], file1->binsiz[1],
-		               file1->tltyp[1] );
+		    ev->x = tli2p( ev->x, file1->tlmin[0], file1->binsiz[0], file1->tltyp[0] );
+		    ev->y = tli2p( ev->y, file1->tlmin[1], file1->binsiz[1], file1->tltyp[1] );
 		}
 		/* if output coords are not float, we need to round before update */
 		switch ( ofile->tltyp[0] ) {
@@ -263,38 +221,24 @@ ConvertEvents( ifile, ofile, file1, ebuf, nrow, flag )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
-    fprintf( stderr,
-             "usage: %s [-w|-x] [-f colname] iname1 iname2 ...  oname\n",
-             fname );
+usage(
+    char *fname
+ ) {
+    fprintf( stderr, "usage: %s [-w|-x] [-f colname] iname1 iname2 ...  oname\n", fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -f  # output a column specifying file from which this event came\n" );
+    fprintf( stderr, "  -f  # output a column specifying file from which this event came\n" );
     fprintf( stderr, "  -w  # adjust position values using WCS info\n" );
-    fprintf( stderr,
-             "  -x  # adjust position values using WCS info and save old values\n" );
+    fprintf( stderr, "  -x  # adjust position values using WCS info and save old values\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int i;
     int c;
     int iargs;
@@ -406,8 +350,7 @@ main( argc, argv )
     if ( savemode ) {
 	for ( i = 0; i <= 1; i++ ) {
 	    if ( ifiles->bincols[i] ) {
-		snprintf( onames[i], SZ_LINE - 1, "OLD_%s",
-		          ifiles->bincols[i] );
+		snprintf( onames[i], SZ_LINE - 1, "OLD_%s", ifiles->bincols[i] );
 	    }
 	}
     }
@@ -433,16 +376,14 @@ main( argc, argv )
 	/* make sure stdin was not specified for one of these input files */
 	FunInfoGet( cfile->fun, FUN_GIO, &gio, 0 );
 	if ( gio->type & GIO_STREAM ) {
-	    gerror( stderr,
-	            "a stream can only be used for the first input file\n" );
+	    gerror( stderr, "a stream can only be used for the first input file\n" );
 	}
 	/* make sure we have the same column structure as the base file */
 	if ( ifiles->header->table->tfields != cfile->header->table->tfields ) {
 	    gerror( stderr,
 	            "%s and %s have a different number of columns (%d, %d)\n",
 	            ifiles->fname, cfile->fname,
-	            ifiles->header->table->tfields,
-	            cfile->header->table->tfields );
+	            ifiles->header->table->tfields, cfile->header->table->tfields );
 	}
 	for ( i = 0; i < cfile->header->table->tfields; i++ ) {
 	    if ( strcasecmp( ifiles->header->table->col[i].name,
@@ -451,13 +392,11 @@ main( argc, argv )
 		        "column names for %s and %s differ in column #%d (%s, %s)\n",
 		        ifiles->fname, cfile->fname,
 		        i + 1,
-		        ifiles->header->table->col[i].name,
-		        cfile->header->table->col[i].name );
+		        ifiles->header->table->col[i].name, cfile->header->table->col[i].name );
 	    }
 	    else if ( ( ifiles->header->table->col[i].type !=
 	                cfile->header->table->col[i].type ) ||
-	              ( ifiles->header->table->col[i].n !=
-	                cfile->header->table->col[i].n ) ) {
+	              ( ifiles->header->table->col[i].n != cfile->header->table->col[i].n ) ) {
 		gerror( stderr,
 		        "data types for %s and %s differ in column '%s' (%d%c, %d%c)\n",
 		        ifiles->fname,
@@ -465,8 +404,7 @@ main( argc, argv )
 		        ifiles->header->table->col[i].name,
 		        ifiles->header->table->col[i].n,
 		        ifiles->header->table->col[i].type,
-		        cfile->header->table->col[i].n,
-		        cfile->header->table->col[i].type );
+		        cfile->header->table->col[i].n, cfile->header->table->col[i].type );
 	    }
 	}
 	ev = &tev;
@@ -476,13 +414,11 @@ main( argc, argv )
 	ConvertEvents( cfile, ofile, ifiles, ev, 1, flag );
 	if ( ev->x < tlmin0 ) {
 	    tlmin0 = ( int ) ( ev->x - 1 );
-	    FunParamPutd( ofun, "TLMIN", cfile->bin[0] + 1, tlmin0, 7,
-	                  "Min. axis value", 1 );
+	    FunParamPutd( ofun, "TLMIN", cfile->bin[0] + 1, tlmin0, 7, "Min. axis value", 1 );
 	}
 	if ( ev->y < tlmin1 ) {
 	    tlmin1 = ( int ) ( ev->y - 1 );
-	    FunParamPutd( ofun, "TLMIN", cfile->bin[1] + 1, tlmin1, 7,
-	                  "Min. axis value", 1 );
+	    FunParamPutd( ofun, "TLMIN", cfile->bin[1] + 1, tlmin1, 7, "Min. axis value", 1 );
 	}
 	/* this is the largest x,y we can have */
 	ev->x = cfile->tlmax[0];
@@ -490,13 +426,11 @@ main( argc, argv )
 	ConvertEvents( cfile, ofile, ifiles, ev, 1, flag );
 	if ( ev->x > tlmax0 ) {
 	    tlmax0 = ( int ) ( ev->x + 1 );
-	    FunParamPutd( ofun, "TLMAX", cfile->bin[0] + 1, tlmax0, 7,
-	                  "Max. axis value", 1 );
+	    FunParamPutd( ofun, "TLMAX", cfile->bin[0] + 1, tlmax0, 7, "Max. axis value", 1 );
 	}
 	if ( ev->y > tlmax1 ) {
 	    tlmax1 = ( int ) ( ev->y + 1 );
-	    FunParamPutd( ofun, "TLMAX", cfile->bin[1] + 1, tlmax1, 7,
-	                  "Max. axis value", 1 );
+	    FunParamPutd( ofun, "TLMAX", cfile->bin[1] + 1, tlmax1, 7, "Max. axis value", 1 );
 	}
 	/* we have to close the file now so as not to run out of descriptors */
 	FunClose( cfile->fun );
@@ -526,24 +460,17 @@ main( argc, argv )
 	                     "$Y", "D", wcsmode, FUN_OFFSET( Ev, y ),
 	                     onames[0], "D", savemode, FUN_OFFSET( Ev, ox ),
 	                     onames[1], "D", savemode, FUN_OFFSET( Ev, oy ),
-	                     colname, "I", filemode, FUN_OFFSET( Ev, nfile ),
-	                     NULL );
+	                     colname, "I", filemode, FUN_OFFSET( Ev, nfile ), NULL );
 	}
 	/* make the new extension the reference handle for the output file */
 	FunInfoPut( ofile->fun, FUN_IFUN0, &cfile->fun, 0 );
 	/* extract events from this file */
-	while ( ( ebuf =
-	          FunTableRowGet( cfile->fun, NULL, maxrow, mode,
-	                          &nrow ) ) ) {
+	while ( ( ebuf = FunTableRowGet( cfile->fun, NULL, maxrow, mode, &nrow ) ) ) {
 	    /* translate events, if necessary */
 	    ConvertEvents( cfile, ofile, ifiles, ebuf, nrow, flag );
 	    /* write to output file */
-	    if ( ( put =
-	           FunTableRowPut( ofile->fun, ebuf, nrow, 0,
-	                           mode ) ) != nrow ) {
-		gerror( stderr,
-		        "expected to write %d events; only wrote %d\n", nrow,
-		        put );
+	    if ( ( put = FunTableRowPut( ofile->fun, ebuf, nrow, 0, mode ) ) != nrow ) {
+		gerror( stderr, "expected to write %d events; only wrote %d\n", nrow, put );
 	    }
 	    xfree( ebuf );
 	}

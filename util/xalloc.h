@@ -35,17 +35,21 @@
 
 #include "prsetup.h"
 
-_PRbeg
-
-void *xmalloc _PRx((size_t n));
-void *xcalloc _PRx((size_t n, size_t s));
-void *xrealloc _PRx((void *p, size_t n));
-void xfree _PRx((void *p));
-char *xstrdup _PRx((char *s));
-#if HAVE_SETJMP
-void xalloc_savejmp _PRx((jmp_buf *env));
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-_PRend
+void *xmalloc (size_t n);
+void *xcalloc (size_t n, size_t s);
+void *xrealloc (void *p, size_t n);
+void xfree (void *p);
+char *xstrdup (char *s);
+#if HAVE_SETJMP
+void xalloc_savejmp (jmp_buf *env);
+#endif
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

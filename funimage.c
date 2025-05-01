@@ -20,7 +20,8 @@ extern int optind;
 /* list event structure */
 typedef struct evstruct {
     double x, y, val;
-}  *Ev, EvRec;
+}  *Ev,
+    EvRec;
 
 /* list structure */
 typedef struct List {
@@ -35,29 +36,22 @@ typedef struct List {
     int scaled[2];
 } List;
 
-#ifdef ANSI_FUNC
 static void
-doimproj( int dim, int bitpix, void *buf, int i, int j, void *pbuf, int idx )
-#else
-static void
-doimproj( dim, bitpix, buf, i, j, pbuf, idx )
-     int dim;
-     int bitpix;
-     void *buf;
-     int i;
-     int j;
-     void *pbuf;
-     int idx;
-#endif
-{
+doimproj(
+    int dim,
+    int bitpix,
+    void *buf,
+    int i,
+    int j,
+    void *pbuf,
+    int idx
+ ) {
     switch ( bitpix / FT_WORDLEN ) {
 	case TY_CHAR:
-	    ( ( unsigned char * ) pbuf )[idx] +=
-	        ( ( unsigned char * ) buf )[( j * dim ) + i];
+	    ( ( unsigned char * ) pbuf )[idx] += ( ( unsigned char * ) buf )[( j * dim ) + i];
 	    break;
 	case TY_USHORT:
-	    ( ( unsigned short * ) pbuf )[idx] +=
-	        ( ( unsigned short * ) buf )[( j * dim ) + i];
+	    ( ( unsigned short * ) pbuf )[idx] += ( ( unsigned short * ) buf )[( j * dim ) + i];
 	    break;
 	case TY_SHORT:
 	    ( ( short * ) pbuf )[idx] += ( ( short * ) buf )[( j * dim ) + i];
@@ -67,79 +61,54 @@ doimproj( dim, bitpix, buf, i, j, pbuf, idx )
 	    break;
 	case TY_LONG:
 #if HAVE_LONG_LONG == 0
-	    gerror( stderr,
-	            "64-bit data support not built (long long not available)\n" );
+	    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
-	    ( ( longlong * ) pbuf )[idx] +=
-	        ( ( longlong * ) buf )[( j * dim ) + i];
+	    ( ( longlong * ) pbuf )[idx] += ( ( longlong * ) buf )[( j * dim ) + i];
 	    break;
 	case TY_FLOAT:
 	    ( ( float * ) pbuf )[idx] += ( ( float * ) buf )[( j * dim ) + i];
 	    break;
 	case TY_DOUBLE:
-	    ( ( double * ) pbuf )[idx] +=
-	        ( ( double * ) buf )[( j * dim ) + i];
+	    ( ( double * ) pbuf )[idx] += ( ( double * ) buf )[( j * dim ) + i];
 	    break;
 	default:
 	    break;
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
+usage(
+    char *fname
+ ) {
     fprintf( stderr, "usage:\n" );
-    fprintf( stderr,
-             "%s [-a] iname oname [bitpix=n[,bscale=false]]\n", fname );
-    fprintf( stderr,
-             "%s -l [-a] iname oname xcol:xdims ycol:ydims vcol bitpix=n\n",
-             fname );
+    fprintf( stderr, "%s [-a] iname oname [bitpix=n[,bscale=false]]\n", fname );
+    fprintf( stderr, "%s -l [-a] iname oname xcol:xdims ycol:ydims vcol bitpix=n\n", fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -a       # append to existing output file as an image extension\n" );
-    fprintf( stderr,
-             "  -l       # input is a list file containing xcol, ycol, value\n" );
-    fprintf( stderr,
-             "  -p [x|y] # project along x or y axis to create a 1D image\n" );
+    fprintf( stderr, "  -a       # append to existing output file as an image extension\n" );
+    fprintf( stderr, "  -l       # input is a list file containing xcol, ycol, value\n" );
+    fprintf( stderr, "  -p [x|y] # project along x or y axis to create a 1D image\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "Specify output image data type using bitpix=n, where n is:\n" );
+    fprintf( stderr, "Specify output image data type using bitpix=n, where n is:\n" );
     fprintf( stderr, "   8      # unsigned char\n" );
     fprintf( stderr, "  16      # short\n" );
     fprintf( stderr, "  32      # int\n" );
     fprintf( stderr, " -32      # float\n" );
     fprintf( stderr, " -64      # double\n" );
-    fprintf( stderr,
-             "(Defaults: same as input image, or 32 (int) for tables.)\n" );
+    fprintf( stderr, "(Defaults: same as input image, or 32 (int) for tables.)\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "List format requires x, y column information of the form:\n" );
-    fprintf( stderr,
-             "  name:dim               # values range from 1 to dim\n" );
-    fprintf( stderr,
-             "  name:min:max           # values range from min to max\n" );
-    fprintf( stderr,
-             "  name:min:max:binsiz    # dimensions scaled by binsize\n" );
+    fprintf( stderr, "List format requires x, y column information of the form:\n" );
+    fprintf( stderr, "  name:dim               # values range from 1 to dim\n" );
+    fprintf( stderr, "  name:min:max           # values range from min to max\n" );
+    fprintf( stderr, "  name:min:max:binsiz    # dimensions scaled by binsize\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 static List *
-ColumnInfo( Fun fun, char *colstr[] )
-#else
-static List *
-ColumnInfo( fun, colstr )
-     Fun fun;
-     char *colstr[];
-#endif
-{
+ColumnInfo(
+    Fun fun,
+    char *colstr[]
+ ) {
     int i;
     int ip;
     char tbuf[SZ_LINE];
@@ -161,8 +130,7 @@ ColumnInfo( fun, colstr )
 	    switch ( i ) {
 		case 0:
 		    if ( FunColumnLookup( fun, COL1_DEFAULT, 0,
-		                          NULL, NULL, NULL, NULL, NULL,
-		                          NULL ) )
+		                          NULL, NULL, NULL, NULL, NULL, NULL ) )
 			strcpy( tbuf, COL1_DEFAULT );
 		    else {
 			strcpy( tbuf, X_DEFAULT );
@@ -170,8 +138,7 @@ ColumnInfo( fun, colstr )
 		    break;
 		case 1:
 		    if ( FunColumnLookup( fun, COL2_DEFAULT, 0,
-		                          NULL, NULL, NULL, NULL, NULL,
-		                          NULL ) )
+		                          NULL, NULL, NULL, NULL, NULL, NULL ) )
 			strcpy( tbuf, COL2_DEFAULT );
 		    else {
 			strcpy( tbuf, Y_DEFAULT );
@@ -179,8 +146,7 @@ ColumnInfo( fun, colstr )
 		    break;
 		case 2:
 		    if ( FunColumnLookup( fun, COL3_DEFAULT, 0,
-		                          NULL, NULL, NULL, NULL, NULL,
-		                          NULL ) )
+		                          NULL, NULL, NULL, NULL, NULL, NULL ) )
 			strcpy( tbuf, COL3_DEFAULT );
 		    else {
 			strcpy( tbuf, VAL_DEFAULT );
@@ -200,12 +166,10 @@ ColumnInfo( fun, colstr )
 		    _FunColumnDims( &colstr[i][ip], 'I',
 		                    &list->tlmin[i], &list->tlmax[i],
 		                    &list->binsiz[i], &list->dim[i],
-		                    &list->tscale[i], &list->tzero[i],
-		                    &list->scaled[i] );
+		                    &list->tscale[i], &list->tzero[i], &list->scaled[i] );
 		    if ( list->tlmin[i] && list->tlmax[i] )
 			list->dim[i] =
-		            ( int ) tldim( list->tlmin[i], list->tlmax[i],
-		                           list->binsiz[i], 'I' );
+		            ( int ) tldim( list->tlmin[i], list->tlmax[i], list->binsiz[i], 'I' );
 		    else
 			list->dim[i] = 0;
 		    break;
@@ -218,9 +182,7 @@ ColumnInfo( fun, colstr )
 	    switch ( i ) {
 		case 0:
 		case 1:
-		    gerror( stderr,
-		            "dimension specification missing for %s\n",
-		            colstr[i] );
+		    gerror( stderr, "dimension specification missing for %s\n", colstr[i] );
 		    return NULL;
 		case 2:
 		    break;
@@ -233,23 +195,17 @@ ColumnInfo( fun, colstr )
     FunColumnSelect( fun, sizeof( EvRec ), NULL,
                      list->colname[0], "D", "r", FUN_OFFSET( Ev, x ),
                      list->colname[1], "D", "r", FUN_OFFSET( Ev, y ),
-                     list->colname[2], "D", "r", FUN_OFFSET( Ev, val ),
-                     NULL );
+                     list->colname[2], "D", "r", FUN_OFFSET( Ev, val ), NULL );
 
     /* return list */
     return list;
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i, j;
     int args;
@@ -374,8 +330,7 @@ main( argc, argv )
 
     /* open the input FITS file */
     if ( !( fun = FunOpen( iname, "rc", NULL ) ) ) {
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-	        iname );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
     }
 
     /* open the output FITS image, preparing to copy input params */
@@ -406,8 +361,7 @@ main( argc, argv )
 	else
 	    maxidx = list->dim[0];
 	if ( !( buf = ( char * ) xcalloc( maxidx, ft_sizeof( bitpix ) ) ) ) {
-	    gerror( stderr, "can't allocate image buffer of size %d\n",
-	            maxidx );
+	    gerror( stderr, "can't allocate image buffer of size %d\n", maxidx );
 	}
 
 	/* process events */
@@ -415,8 +369,7 @@ main( argc, argv )
 	    /* get x, y indices */
 	    ix = ( int ) ( ( evrec.x - list->tlmin[0] ) / list->binsiz[0] );
 	    if ( list->dim[1] )
-		iy = ( int ) ( ( evrec.y -
-	                         list->tlmin[1] ) / list->binsiz[1] );
+		iy = ( int ) ( ( evrec.y - list->tlmin[1] ) / list->binsiz[1] );
 	    else
 		iy = 0;
 	    /* make sure this pixel is within the image */
@@ -429,8 +382,7 @@ main( argc, argv )
 	    /* add pixel value */
 	    switch ( bitpix ) {
 		case 8:
-		    ( ( unsigned char * ) buf )[idx] +=
-		        ( unsigned char ) evrec.val;
+		    ( ( unsigned char * ) buf )[idx] += ( unsigned char ) evrec.val;
 		    break;
 		case 16:
 		    ( ( short * ) buf )[idx] += ( short ) evrec.val;
@@ -447,17 +399,14 @@ main( argc, argv )
 	    }
 	}
 	/* write the output image, updating the FITS header from the orig file */
-	if ( !FunImagePut
-	     ( fun2, buf, list->dim[0], list->dim[1], bitpix, NULL ) ) {
+	if ( !FunImagePut( fun2, buf, list->dim[0], list->dim[1], bitpix, NULL ) ) {
 	    gerror( stderr, "could not FunImagePut: %s\n", argv[2] );
 	}
     }
     /* no list: bin input data into an image */
     else {
 	/* get required information from funtools structure */
-	FunInfoGet( fun,
-	            FUN_SECT_BITPIX, &bitpix,
-	            FUN_SECT_DIM1, &dim1, FUN_SECT_DIM2, &dim2, 0 );
+	FunInfoGet( fun, FUN_SECT_BITPIX, &bitpix, FUN_SECT_DIM1, &dim1, FUN_SECT_DIM2, &dim2, 0 );
 	if ( type != FORCE_IMAGE ) FunInfoGet( fun, FUN_TYPE, &type, 0 );
 	/* set dim2 to 1 for a 1D image */
 	if ( dim2 == 0 ) {
@@ -492,8 +441,7 @@ main( argc, argv )
 		    if ( mode && *mode ) {
 			tmode = xstrdup( mode );
 			/* but if output data is float, we will apply bscale */
-			if ( _FunKeyword
-			     ( tmode, "bitpix", NULL, tbuf, SZ_LINE ) ) {
+			if ( _FunKeyword( tmode, "bitpix", NULL, tbuf, SZ_LINE ) ) {
 			    if ( ( i = atoi( tbuf ) ) < 0 ) {
 				/* apple bscale */
 				doscale = 1;
@@ -520,16 +468,11 @@ main( argc, argv )
 			buf = NULL;
 			for ( j = 1; j <= dim2; j++ ) {
 			    /* extract and bin 1 row of the data section into an image buffer */
-			    if ( !
-			         ( buf =
-			           FunImageRowGet( fun, buf, j, j, mode ) ) )
-				gerror( stderr, "can't FunImageRowGet: %s\n",
-			                iname );
+			    if ( !( buf = FunImageRowGet( fun, buf, j, j, mode ) ) )
+				gerror( stderr, "can't FunImageRowGet: %s\n", iname );
 			    /* write output image, updating the FITS header from the orig file */
-			    if ( !FunImageRowPut
-			         ( fun2, buf, j, j, 0, 0, 0, NULL ) )
-				gerror( stderr, "can't FunImageRowPut: %s\n",
-			                oname );
+			    if ( !FunImageRowPut( fun2, buf, j, j, 0, 0, 0, NULL ) )
+				gerror( stderr, "can't FunImageRowPut: %s\n", oname );
 			}
 			break;
 		    case 'x':
@@ -537,24 +480,17 @@ main( argc, argv )
 			buf = NULL;
 			for ( j = 0; j < dim2; j++ ) {
 			    /* extract and bin 1 row of the data section into an image buffer */
-			    if ( !
-			         ( buf =
-			           FunImageRowGet( fun, buf, j + 1, j + 1,
-			                           mode ) ) )
-				gerror( stderr, "can't FunImageRowGet: %s\n",
-			                iname );
+			    if ( !( buf = FunImageRowGet( fun, buf, j + 1, j + 1, mode ) ) )
+				gerror( stderr, "can't FunImageRowGet: %s\n", iname );
 			    /* project each pixel of each line */
 			    for ( i = 0; i < dim1; i++ ) {
 				idx = ( doproj == 'x' ) ? i : j;
-				doimproj( dim, bitpix, ( void * ) buf, i, 0,
-				          ( void * ) pbuf, idx );
+				doimproj( dim, bitpix, ( void * ) buf, i, 0, ( void * ) pbuf, idx );
 			    }
 			}
 			/* write output image, updating the FITS header from the orig file */
-			if ( !FunImagePut
-			     ( fun2, pbuf, dim, 0, bitpix, NULL ) )
-			    gerror( stderr, "can't FunImagePut: %s\n",
-			            oname );
+			if ( !FunImagePut( fun2, pbuf, dim, 0, bitpix, NULL ) )
+			    gerror( stderr, "can't FunImagePut: %s\n", oname );
 			break;
 		}
 		break;
@@ -566,32 +502,26 @@ main( argc, argv )
 		    case 0:
 			/* extract and bin the data section into an image buffer */
 			if ( !( buf = FunImageGet( fun, NULL, mode ) ) )
-			    gerror( stderr, "can't FunImageGet: %s\n",
-			            iname );
+			    gerror( stderr, "can't FunImageGet: %s\n", iname );
 			/* write output image, updating the FITS header from the orig file */
 			if ( !FunImagePut( fun2, buf, 0, 0, 0, NULL ) )
-			    gerror( stderr, "can't FunImagePut: %s\n",
-			            oname );
+			    gerror( stderr, "can't FunImagePut: %s\n", oname );
 			break;
 		    case 'x':
 		    case 'y':
 			/* extract and bin the data section into an image buffer */
 			if ( !( buf = FunImageGet( fun, NULL, mode ) ) )
-			    gerror( stderr, "can't FunImageGet: %s\n",
-			            iname );
+			    gerror( stderr, "can't FunImageGet: %s\n", iname );
 			/* project each pixel of each line */
 			for ( j = 0; j < dim2; j++ ) {
 			    for ( i = 0; i < dim1; i++ ) {
 				idx = ( doproj == 'x' ) ? i : j;
-				doimproj( dim, bitpix, ( void * ) buf, i, j,
-				          ( void * ) pbuf, idx );
+				doimproj( dim, bitpix, ( void * ) buf, i, j, ( void * ) pbuf, idx );
 			    }
 			}
 			/* write output image, updating the FITS header from the orig file */
-			if ( !FunImagePut
-			     ( fun2, pbuf, dim, 0, bitpix, NULL ) )
-			    gerror( stderr, "can't FunImagePut: %s\n",
-			            oname );
+			if ( !FunImagePut( fun2, pbuf, dim, 0, bitpix, NULL ) )
+			    gerror( stderr, "can't FunImagePut: %s\n", oname );
 			break;
 		}
 		break;

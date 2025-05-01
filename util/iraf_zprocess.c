@@ -45,15 +45,10 @@ static struct proctable {
  * the process cannot be found, otherwise a pointer to the table entry is
  * returned.
  */
-#ifdef ANSI_FUNC
 static struct proctable *
-pr_findpid( int pid )
-#else
-static struct proctable *
-pr_findpid( pid )
-     int pid;
-#endif
-{
+pr_findpid(
+    int pid
+ ) {
     register int pr;
 
     for ( pr = 0; pr < MAXPROCS; pr++ ) {
@@ -66,16 +61,12 @@ pr_findpid( pid )
 /* PR_ENTER -- Make a new entry in the process table.  Something is very wrong
  * if the table overflows.
  */
-#ifdef ANSI_FUNC
 static int
-pr_enter( int pid, int inchan, int outchan )
-#else
-static int
-pr_enter( pid, inchan, outchan )
-     int pid;
-     int inchan, outchan;
-#endif
-{
+pr_enter(
+    int pid,
+    int inchan,
+    int outchan
+ ) {
     int pr;
 
     for ( pr = 0; pr < MAXPROCS; pr++ ) {
@@ -92,16 +83,12 @@ pr_enter( pid, inchan, outchan )
 
 /* PR_GETCHAN -- Get the codes for the IPC channels assigned to a process.
  */
-#ifdef ANSI_FUNC
 static int
-pr_getchan( int pid, int *inchan, int *outchan )
-#else
-static int
-pr_getchan( pid, inchan, outchan )
-     int pid;
-     int *inchan, *outchan;
-#endif
-{
+pr_getchan(
+    int pid,
+    int *inchan,
+    int *outchan
+ ) {
     register struct proctable *pr;
 
     /* Lookup process in table.  Return an error if there is no entry.
@@ -118,15 +105,10 @@ pr_getchan( pid, inchan, outchan )
 /* PR_RELEASE -- Release the table entry for the process.  Used when a process
  * is killed and we do not wish to wait for process termination.
  */
-#ifdef ANSI_FUNC
 static void
-pr_release( int pid )
-#else
-static void
-pr_release( pid )
-     int pid;
-#endif
-{
+pr_release(
+    int pid
+ ) {
     register struct proctable *pr;
 
     if ( ( pr = pr_findpid( pid ) ) != NULL ) {
@@ -148,15 +130,10 @@ pr_release( pid )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 static void
-PRSleep( int msec )
-#else
-static void
-PRSleep( msec )
-     int msec;
-#endif
-{
+PRSleep(
+    int msec
+ ) {
     struct timeval tv;
 
     if ( msec > 0 ) {
@@ -180,18 +157,14 @@ PRSleep( msec )
  * IPC channels, implemented with pipes for this version of Berkeley UNIX.
  *
  */
-#ifdef ANSI_FUNC
 int
-ProcessOpen( char *osfn, char **argv, int *inchan, int *outchan, int *pid )
-#else
-int
-ProcessOpen( osfn, argv, inchan, outchan, pid )
-     char *osfn;                /* name of executable file              */
-     char **argv;               /* argument list */
-     int *inchan, *outchan;     /* IPC channels (parent reads inchan)   */
-     int *pid;                  /* returned process id */
-#endif
-{
+ProcessOpen(
+    char *osfn,
+    char **argv,
+    int *inchan,
+    int *outchan,
+    int *pid
+ ) {
     int pin[2], pout[2];
     int maxforks = 3;
     char **targv;
@@ -308,16 +281,11 @@ ProcessOpen( osfn, argv, inchan, outchan, pid )
  * wait for subprocess to terminate.
  *
  */
-#ifdef ANSI_FUNC
 int
-ProcessClose( int pid, int *exit_status )
-#else
-int
-ProcessClose( pid, exit_status )
-     int pid;
-     int *exit_status;
-#endif
-{
+ProcessClose(
+    int pid,
+    int *exit_status
+ ) {
     int inchan, outchan;
     int tries = 0;
 
@@ -336,8 +304,7 @@ ProcessClose( pid, exit_status )
     }
 
     if ( pr_debug )
-	fprintf( stderr, "[%d] terminated, exit code %d\n",
-                 pid, *exit_status );
+	fprintf( stderr, "[%d] terminated, exit code %d\n", pid, *exit_status );
     return ( *exit_status );
 }
 
@@ -354,18 +321,13 @@ ProcessClose( pid, exit_status )
   * requests until the entire block has been read.
   *
 */
-#ifdef ANSI_FUNC
 void *
-ProcessRead( int fd, void *buf, int maxbytes, int *got )
-#else
-void *
-ProcessRead( fd, buf, maxbytes, got )
-     int fd;
-     void *buf;
-     int maxbytes;
-     int *got;
-#endif
-{
+ProcessRead(
+    int fd,
+    void *buf,
+    int maxbytes,
+    int *got
+ ) {
     register char *op;
     register int nbytes;
     char *obuf;
@@ -444,17 +406,12 @@ ProcessRead( fd, buf, maxbytes, got )
  * Write the IPC block header followed by the data block.
  *
 */
-#ifdef ANSI_FUNC
 int
-ProcessWrite( int fd, void *buf, int nbytes )
-#else
-int
-ProcessWrite( fd, buf, nbytes )
-     int fd;
-     void *buf;
-     int nbytes;
-#endif
-{
+ProcessWrite(
+    int fd,
+    void *buf,
+    int nbytes
+ ) {
     int got;
 
     /* write byte count */
@@ -474,15 +431,11 @@ ProcessWrite( fd, buf, nbytes )
 /* 
  * ProcessGetChan -- Get the codes for the IPC channels assigned to a process.
  */
-#ifdef ANSI_FUNC
 int
-ProcessGetChan( int pid, int *inchan, int *outchan )
-#else
-int
-ProcessGetChan( pid, inchan, outchan )
-     int pid;
-     int *inchan, *outchan;
-#endif
-{
+ProcessGetChan(
+    int pid,
+    int *inchan,
+    int *outchan
+ ) {
     return pr_getchan( pid, inchan, outchan );
 }

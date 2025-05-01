@@ -13,13 +13,17 @@
 
 #include "prsetup.h"
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-double tlp2i _PRx((double dp, double tlmin, double binsiz, int type));
-int    itlp2i  _PRx((double dp, double tlmin, double binsiz, int type));
-double tli2p _PRx((double di, double tlmin, double binsiz, int type));
-double tldim _PRx((double tlmin, double tlmax, double binsiz, int type));
+double tlp2i (double dp, double tlmin, double binsiz, int type);
+int    itlp2i  (double dp, double tlmin, double binsiz, int type);
+double tli2p (double di, double tlmin, double binsiz, int type);
+double tldim (double tlmin, double tlmax, double binsiz, int type);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif

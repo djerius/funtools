@@ -28,14 +28,10 @@ static Filter default_filter = NULL;
 /* null filters return this special record */
 static FilterRec null_filter;
 
-#ifdef ANSI_FUNC
 static void
-FiltInitRegions( void )
-#else
-static void
-FiltInitRegions(  )
-#endif
-{
+FiltInitRegions(
+    void
+ ) {
     initevregions(  );
     initimregions(  );
 }
@@ -45,16 +41,11 @@ FiltInitRegions(  )
  * _FilterImageCmp -- compare routine for qsort
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FilterImageCmp( const void *s1, const void *s2 )
-#else
-static int
-_FilterImageCmp( s1, s2 )
-     const void *s1;
-     const void *s2;
-#endif
-{
+_FilterImageCmp(
+    const void *s1,
+    const void *s2
+ ) {
     FilterMask f1 = ( FilterMask ) s1;
     FilterMask f2 = ( FilterMask ) s2;
 
@@ -91,15 +82,10 @@ _FilterImageCmp( s1, s2 )
  * FilterClip -- save the filter without the enclosing brackets
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterClip( char *filter )
-#else
-char *
-FilterClip( filter )
-     char *filter;
-#endif
-{
+FilterClip(
+    char *filter
+ ) {
     char *tbuf;
     char *tptr;
     char *ofilter;
@@ -142,14 +128,10 @@ FilterClip( filter )
  * FilterDefault -- get the default filter handle for the parser
  *
  */
-#ifdef ANSI_FUNC
 Filter
-FilterDefault( void )
-#else
-Filter
-FilterDefault(  )
-#endif
-{
+FilterDefault(
+    void
+ ) {
     return ( default_filter );
 }
 
@@ -158,14 +140,10 @@ FilterDefault(  )
  * FilterNull -- get the null filter pointer
  *
  */
-#ifdef ANSI_FUNC
 Filter
-FilterNull( void )
-#else
-Filter
-FilterNull(  )
-#endif
-{
+FilterNull(
+    void
+ ) {
     return ( &null_filter );
 }
 
@@ -175,14 +153,10 @@ FilterNull(  )
  *
  */
 static int filter_num = 0;
-#ifdef ANSI_FUNC
 int
-FilterNum( void )
-#else
-int
-FilterNum(  )
-#endif
-{
+FilterNum(
+    void
+ ) {
     filter_num++;
     return ( filter_num );
 }
@@ -192,14 +166,10 @@ FilterNum(  )
  * FilterPath -- get the path through which we look for things
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterPath( void )
-#else
-char *
-FilterPath(  )
-#endif
-{
+FilterPath(
+    void
+ ) {
     static char *filter_path = NULL;
     if ( filter_path == NULL ) {
 	filter_path = ( char * ) getenv( "PATH" );
@@ -212,17 +182,12 @@ FilterPath(  )
  * FilterOpen -- open a filter and initialize the symbol table
  *
  */
-#ifdef ANSI_FUNC
 Filter
-FilterOpen( FITSHead header, char *string, char *mode )
-#else
-Filter
-FilterOpen( header, string, mode )
-     FITSHead header;           /* fitsy header struct */
-     char *string;              /* filter string */
-     char *mode;                /* "C", "f77", "awk", etc. */
-#endif
-{
+FilterOpen(
+    FITSHead header,
+    char *string,
+    char *mode
+ ) {
     int lexonly = 0;
     int got = 0;
     char *s, *t;
@@ -237,7 +202,7 @@ FilterOpen( header, string, mode )
 
     /* more checks for an essentially blank string */
     for ( got = 0, s = string; *s; s++ ) {
-	if ( ( *s != ' ' ) && ( *s != '\t' ) && ( *s != '\n' )
+        if ( ( *s != ' ' ) && ( *s != '\t' ) && ( *s != '\n' )
 	     && ( *s != ';' ) ) {
 	    got++;
 	    break;
@@ -429,7 +394,7 @@ FilterOpen( header, string, mode )
 
     /* make sure we have something to filter */
     if ( !( filtstr = ( char * ) _FilterString(  ) )
-	 || !strcmp( filtstr, "()" ) ) {
+         || !strcmp( filtstr, "()" ) ) {
 	FilterClose( filter );
 	return ( NOFILTER );
     }
@@ -461,8 +426,7 @@ FilterOpen( header, string, mode )
 	/* if we are using an index and we are only processing indexed columns,
 	   we don't need to use compiled filter */
 	if ( FILTER_INDEX_ONLY( filter ) ) {
-	    if ( idx_debug ) fprintf( stderr,
-	                              "idx: skipping compiled filter\n" );
+	    if ( idx_debug ) fprintf( stderr, "idx: skipping compiled filter\n" );
 	    goto done;
 	}
     }
@@ -508,20 +472,17 @@ FilterOpen( header, string, mode )
 #if HAVE_CYGWIN||HAVE_MINGW32
 			    if ( !WinProcessOpen( filter->prog,
 			                          &( filter->ihandle ),
-			                          &( filter->ohandle ),
-			                          &( filter->process ) ) )
+			                          &( filter->ohandle ), &( filter->process ) ) )
 				goto error;
 #else
-			    gerror( stderr,
-			            "internal error: no WinProcess without Windows" );
+			    gerror( stderr, "internal error: no WinProcess without Windows" );
 			    goto error;
 #endif
 			    break;
 			default:
 			    if ( !ProcessOpen( filter->prog,
 			                       &( filter->ichan ),
-			                       &( filter->ochan ),
-			                       &( filter->pid ) ) )
+			                       &( filter->ochan ), &( filter->pid ) ) )
 				goto error;
 			    break;
 		    }
@@ -556,19 +517,14 @@ FilterOpen( header, string, mode )
  * which returns a char array of good event flags
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterEvents( Filter filter, char *ebuf, int esize, int n, int *vbuf )
-#else
-int
-FilterEvents( filter, ebuf, esize, n, vbuf )
-     Filter filter;
-     char *ebuf;
-     int esize;
-     int n;
-     int *vbuf;
-#endif
-{
+FilterEvents(
+    Filter filter,
+    char *ebuf,
+    int esize,
+    int n,
+    int *vbuf
+ ) {
     int i;
     int flag;
     int get = 0, got = 0;
@@ -583,8 +539,7 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
     FilterSymbols sp;
 
     /* make sure we have a valid filter and a valid table */
-    if ( !filter || ( filter == NOFILTER ) || !filter->fhd
-         || !filter->fhd->table )
+    if ( !filter || ( filter == NOFILTER ) || !filter->fhd || !filter->fhd->table )
 	return ( 0 );
 
     /* handle fits image mask specially */
@@ -598,15 +553,12 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
 	return 0;
 
     /* we only send the necessary parts of each event record */
-    if ( ( obuf =
-           ( char * ) xcalloc( n * filter->evsize,
-                               sizeof( char ) ) ) == NULL )
+    if ( ( obuf = ( char * ) xcalloc( n * filter->evsize, sizeof( char ) ) ) == NULL )
 	return ( 0 );
     optr = obuf;
 
     /* extract (and convert) the necessary columns of the event */
-    for ( eptr = ebuf, etop = ebuf + ( n * esize ); eptr < etop;
-          eptr += esize ) {
+    for ( eptr = ebuf, etop = ebuf + ( n * esize ); eptr < etop; eptr += esize ) {
 	/* loop through the symbol table and process columns */
 	for ( i = 0; i < filter->nsyms; i++ ) {
 	    sp = &( filter->symtab[i] );
@@ -621,8 +573,7 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
 			            filter->fhd->table->col[sp->idx].offset,
 			            filter->fhd->table->col[sp->idx].size,
 			            ( filter->fhd->table->col[sp->idx].n +
-			              7 ) / 8, filter->convert,
-			            optr + sp->offset );
+			              7 ) / 8, filter->convert, optr + sp->offset );
 		    }
 		    else {
 			ColumnLoad( eptr +
@@ -648,9 +599,7 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
 #if HAVE_CYGWIN||HAVE_MINGW32
 		    /* write events to the filter process */
 		    bytes = n * filter->evsize;
-		    if ( ( got =
-		           WinProcessWrite( filter->ohandle, obuf,
-		                            bytes ) ) != bytes ) {
+		    if ( ( got = WinProcessWrite( filter->ohandle, obuf, bytes ) ) != bytes ) {
 			gerror( stderr,
 			        "event filter failed: wanted to write %d bytes but wrote %d\n",
 			        bytes, got );
@@ -660,17 +609,14 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
 		    get = n * sizeof( unsigned int );
 		    WinProcessRead( filter->ihandle, vbuf, get, &got );
 #else
-		    gerror( stderr,
-		            "internal error: no WinProcess without Windows" );
+		    gerror( stderr, "internal error: no WinProcess without Windows" );
 		    flag = -1;
 #endif
 		    break;
 		default:
 		    /* write events to the filter process */
 		    bytes = n * filter->evsize;
-		    if ( ( got =
-		           ProcessWrite( filter->ochan, obuf,
-		                         bytes ) ) != bytes ) {
+		    if ( ( got = ProcessWrite( filter->ochan, obuf, bytes ) ) != bytes ) {
 			gerror( stderr,
 			        "event filter failed: wanted to write %d bytes but wrote %d\n",
 			        bytes, got );
@@ -687,18 +633,14 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
 	    }
 	    else {
 		gerror( stderr,
-		        "event filter failed: wanted to read %d bytes but got %d\n",
-		        get, got );
+		        "event filter failed: wanted to read %d bytes but got %d\n", get, got );
 		flag = -1;
 	    }
 	    break;
 #ifdef USE_DL
 	case PTYPE_DYNAMIC:
-	    if ( ( evrtn =
-	           ( FilterTableCall ) DLSym( filter->dl,
-	                                      filter->pname ) ) ) {
-		filter->g =
-		    ( *evrtn ) ( filter->g, obuf, n, filter->evsize, vbuf );
+	    if ( ( evrtn = ( FilterTableCall ) DLSym( filter->dl, filter->pname ) ) ) {
+		filter->g = ( *evrtn ) ( filter->g, obuf, n, filter->evsize, vbuf );
 		flag = 1;
 	    }
 	    else {
@@ -723,19 +665,17 @@ FilterEvents( filter, ebuf, esize, n, vbuf )
  * which returns segments of valid image data
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterImage( Filter filter, int x0, int x1, int y0, int y1, int block,
-             FilterMask * masks, int *nreg )
-#else
-int
-FilterImage( filter, x0, x1, y0, y1, block, masks, nreg )
-     Filter filter;
-     int x0, x1, y0, y1, block;
-     FilterMask *masks;
-     int *nreg;
-#endif
-{
+FilterImage(
+    Filter filter,
+    int x0,
+    int x1,
+    int y0,
+    int y1,
+    int block,
+    FilterMask * masks,
+    int *nreg
+ ) {
     int i, j;
     int got;
     int fsize;
@@ -756,8 +696,7 @@ FilterImage( filter, x0, x1, y0, y1, block, masks, nreg )
 	    ( int ) ( ( ( double ) ( ( x1 - x0 + 1 ) / block ) /
 	                ( double ) ft_naxis( filter->maskhd, 1 ) ) + 0.5 );
 	if ( mblock < 1 ) {
-	    gerror( stderr,
-	            "image mask cannot be larger than blocked image section" );
+	    gerror( stderr, "image mask cannot be larger than blocked image section" );
 	    return ( 0 );
 	}
 	/* copy mask records into return buffer */
@@ -767,10 +706,8 @@ FilterImage( filter, x0, x1, y0, y1, block, masks, nreg )
 	for ( got = 0, i = 0; i < filter->nmask; i++ ) {
 	    xmasks[got].region = filter->masks[i].region;
 	    xmasks[got].y = ( filter->masks[i].y - 1.0 ) * mblock + 1.0;
-	    xmasks[got].xstart =
-	        ( filter->masks[i].xstart - 1.0 ) * mblock + 1.0;
-	    xmasks[got].xstop =
-	        ( filter->masks[i].xstop - 1.0 ) * mblock + 1.0;
+	    xmasks[got].xstart = ( filter->masks[i].xstart - 1.0 ) * mblock + 1.0;
+	    xmasks[got].xstop = ( filter->masks[i].xstop - 1.0 ) * mblock + 1.0;
 	    /* replicate the segment up to the block factor */
 	    for ( j = 1; j < mblock; j++ ) {
 		xmasks[got + j].region = xmasks[got].region;
@@ -800,26 +737,20 @@ FilterImage( filter, x0, x1, y0, y1, block, masks, nreg )
 		case PIPE_WIN32:
 #if HAVE_CYGWIN||HAVE_MINGW32
 		    /* write command to process */
-		    snprintf( tbuf, SZ_LINE - 1, "%d %d %d %d %d\n", x0, x1,
-		              y0, y1, block );
-		    WinProcessWrite( filter->ohandle, tbuf,
-		                     ( int ) strlen( tbuf ) );
+		    snprintf( tbuf, SZ_LINE - 1, "%d %d %d %d %d\n", x0, x1, y0, y1, block );
+		    WinProcessWrite( filter->ohandle, tbuf, ( int ) strlen( tbuf ) );
 		    /* read back mask records */
-		    *masks =
-		        WinProcessRead( filter->ihandle, NULL, -1, &got );
+		    *masks = WinProcessRead( filter->ihandle, NULL, -1, &got );
 		    got /= sizeof( FilterMaskRec );
 #else
-		    gerror( stderr,
-		            "internal error: no WinProcess without Windows" );
+		    gerror( stderr, "internal error: no WinProcess without Windows" );
 		    return ( -1 );
 #endif
 		    break;
 		default:
 		    /* write command to process */
-		    snprintf( tbuf, SZ_LINE - 1, "%d %d %d %d %d\n", x0, x1,
-		              y0, y1, block );
-		    ProcessWrite( filter->ochan, tbuf,
-		                  ( int ) strlen( tbuf ) );
+		    snprintf( tbuf, SZ_LINE - 1, "%d %d %d %d %d\n", x0, x1, y0, y1, block );
+		    ProcessWrite( filter->ochan, tbuf, ( int ) strlen( tbuf ) );
 		    /* read back mask records */
 		    *masks = ProcessRead( filter->ichan, NULL, -1, &got );
 		    got /= sizeof( FilterMaskRec );
@@ -828,9 +759,7 @@ FilterImage( filter, x0, x1, y0, y1, block, masks, nreg )
 	    break;
 #ifdef USE_DL
 	case PTYPE_DYNAMIC:
-	    if ( ( imrtn =
-	           ( FilterImageCall ) DLSym( filter->dl,
-	                                      filter->pname ) ) ) {
+	    if ( ( imrtn = ( FilterImageCall ) DLSym( filter->dl, filter->pname ) ) ) {
 		*masks = ( *imrtn ) ( x0, x1, y0, y1, block, &got );
 	    }
 	    else
@@ -853,15 +782,10 @@ FilterImage( filter, x0, x1, y0, y1, block, masks, nreg )
  * FilterClose -- close a filter and free up memory
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterClose( Filter filter )
-#else
-int
-FilterClose( filter )
-     Filter filter;
-#endif
-{
+FilterClose(
+    Filter filter
+ ) {
     int status = 0;
     int i, j;
     Scan scan, tscan;
@@ -879,16 +803,13 @@ FilterClose( filter )
 	    switch ( filter->pipeos ) {
 		case PIPE_WIN32:
 #if HAVE_CYGWIN||HAVE_MINGW32
-		    if ( filter->process ) WinProcessClose( filter->process,
-		                                            &status );
+		    if ( filter->process ) WinProcessClose( filter->process, &status );
 #else
-		    gerror( stderr,
-		            "internal error: no WinProcess without Windows" );
+		    gerror( stderr, "internal error: no WinProcess without Windows" );
 #endif
 		    break;
 		default:
-		    if ( filter->pid > 0 ) ProcessClose( filter->pid,
-		                                         &status );
+		    if ( filter->pid > 0 ) ProcessClose( filter->pid, &status );
 		    break;
 	    }
 	    /* delete program */
@@ -967,16 +888,11 @@ FilterClose( filter )
  * FilterConcats -- concat n filters, removing enclosing brackets as necessary
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterConcats( char **filters, int n )
-#else
-char *
-FilterConcats( filters, n )
-     char **filters;
-     int n;
-#endif
-{
+FilterConcats(
+    char **filters,
+    int n
+ ) {
     char *ofilter;
     char *optr;
     char *clip;
@@ -1026,17 +942,12 @@ FilterConcats( filters, n )
  * FilterConcat -- concat 2 filters, with an optional operation in between
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterConcat( char *f1, char *f2, char *op )
-#else
-char *
-FilterConcat( f1, f2, op )
-     char *f1;
-     char *f2;
-     char *op;
-#endif
-{
+FilterConcat(
+    char *f1,
+    char *f2,
+    char *op
+ ) {
     char *nf1, *nf2, *nop;
     char *result;
     char *filters[4];
@@ -1050,8 +961,7 @@ FilterConcat( f1, f2, op )
     if ( nf1 && ( *nf1 != '\0' ) ) {
 	filters[n++] = nf1;
     }
-    if ( nop && ( *nop != '\0' ) &&
-         nf1 && ( *nf1 != '\0' ) && nf2 && ( *nf2 != '\0' ) ) {
+    if ( nop && ( *nop != '\0' ) && nf1 && ( *nf1 != '\0' ) && nf2 && ( *nf2 != '\0' ) ) {
 	filters[n++] = nop;
     }
     if ( nf2 && ( *nf2 != '\0' ) ) {
@@ -1078,15 +988,10 @@ FilterConcat( f1, f2, op )
  * FilterString -- return the filter string used for this filter
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterString( Filter filter )
-#else
-char *
-FilterString( filter )
-     Filter filter;
-#endif
-{
+FilterString(
+    Filter filter
+ ) {
     if ( !filter || ( filter == NOFILTER ) )
 	return NULL;
     else

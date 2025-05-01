@@ -1,10 +1,16 @@
 /* datatable.c
  */
 
-ft_tablerecread(  ) {
+int
+ft_tablerecread(
+    void
+ ) {
 
 }
 
-ft_tablerecwrite(  ) {
+int
+ft_tablerecwrite(
+    void
+ ) {
 
 }

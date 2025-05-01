@@ -28,32 +28,35 @@
 
 /* defines the types of callback procedure we use */
 typedef char *(*MacroCB)(
-#ifdef ANSI_FUNC
     char *buf,
     void *client_data
-#endif
 );
 
-_PRbeg
 
-int word _PRx((char *lbuf, char *tbuf, int *lptr));
-int newdtable _PRx((char *s));
-int freedtable _PRx((void));
-void newdelim _PRx((char *s));
-void freedelim _PRx((char *s));
-int lastdelim _PRx((void));
-int tmatch _PRx((char *string, char *xtemplate));
-int keyword _PRx((char *ibuf, char *key, char *obuf, int maxlen));
-char *macro _PRx((char *icmd, char **keyword, char **value, int nkey,
-		  MacroCB client_callback, void *client_data));
-void cluc _PRx((char *s));
-void culc _PRx((char *s));
-int nowhite _PRx((char *c, char *cr));
-void nocr _PRx((char *s));
-int istrue _PRx((char *s));
-int isfalse _PRx((char *s));
-unsigned long strtoul16 _PRx((char *s, char **t));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-_PRend
+int word (char *lbuf, char *tbuf, int *lptr);
+int newdtable (char *s);
+int freedtable (void);
+void newdelim (char *s);
+void freedelim (char *s);
+int lastdelim (void);
+int tmatch (char *string, char *xtemplate);
+int keyword (char *ibuf, char *key, char *obuf, int maxlen);
+char *macro (char *icmd, char **keyword, char **value, int nkey,
+		  MacroCB client_callback, void *client_data);
+void cluc (char *s);
+void culc (char *s);
+int nowhite (char *c, char *cr);
+void nocr (char *s);
+int istrue (char *s);
+int isfalse (char *s);
+unsigned long strtoul16 (char *s, char **t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

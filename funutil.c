@@ -11,19 +11,14 @@
  * _FunKeyword -- look for a keyword=value string, or an environment variable
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunKeyword( char *buf, char *key, char *env, char *vbuf, int vlen )
-#else
-int
-_FunKeyword( buf, key, env, vbuf, vlen )
-     char *buf;
-     char *key;
-     char *env;
-     char *vbuf;
-     int vlen;
-#endif
-{
+_FunKeyword(
+    char *buf,
+    char *key,
+    char *env,
+    char *vbuf,
+    int vlen
+ ) {
     char *eptr;
     /* look for the keyword in the input string */
     if ( keyword( buf, key, vbuf, vlen ) )
@@ -64,26 +59,19 @@ _FunKeyword( buf, key, env, vbuf, vlen )
  *
  *
  */
-#ifdef ANSI_FUNC
 void
-_FunParseSection( Fun fun, char *section,
-                  int *x0, int *x1, int *y0, int *y1,
-                  int *block, int *btype, char *tail, int maxlen )
-#else
-void
-_FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
-     Fun fun;
-     char *section;
-     int *x0;
-     int *x1;
-     int *y0;
-     int *y1;
-     int *block;
-     int *btype;
-     char *tail;
-     int maxlen;
-#endif
-{
+_FunParseSection(
+    Fun fun,
+    char *section,
+    int *x0,
+    int *x1,
+    int *y0,
+    int *y1,
+    int *block,
+    int *btype,
+    char *tail,
+    int maxlen
+ ) {
     char *f;
     char *tbuf;
     char *s;
@@ -161,8 +149,7 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 	ty1 = ( *s4 == '*' ) ? nan : atof( s4 );
 	f += n;
     }
-    else if ( sscanf( f, "%[-0-9.*] : %[-0-9.*] , %[*] , %[0-9as]%n",
-                      s1, s2, s3, s4, &n ) == 4 ) {
+    else if ( sscanf( f, "%[-0-9.*] : %[-0-9.*] , %[*] , %[0-9as]%n", s1, s2, s3, s4, &n ) == 4 ) {
 	/* sanity check */
 	if ( fun->dims == 1 ) {
 	    gerror( stderr, "can't specify a 2D section with a 1D image\n" );
@@ -174,8 +161,7 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 	    *btype = FUN_AVG;
 	f += n;
     }
-    else if ( sscanf( f, "%[-0-9.*] : %[-0-9.*] , %[*]%n",
-                      s1, s2, s3, &n ) == 3 ) {
+    else if ( sscanf( f, "%[-0-9.*] : %[-0-9.*] , %[*]%n", s1, s2, s3, &n ) == 3 ) {
 	/* sanity check */
 	if ( fun->dims == 1 ) {
 	    gerror( stderr, "can't specify a 2D section with a 1D image\n" );
@@ -184,8 +170,7 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 	tx1 = ( *s2 == '*' ) ? nan : atof( s2 );
 	f += n;
     }
-    else if ( sscanf( f, "%[*] , %[-0-9.*] : %[-0-9.*] , %[0-9as]%n",
-                      s1, s2, s3, s4, &n ) == 4 ) {
+    else if ( sscanf( f, "%[*] , %[-0-9.*] : %[-0-9.*] , %[0-9as]%n", s1, s2, s3, s4, &n ) == 4 ) {
 	/* sanity check */
 	if ( fun->dims == 1 ) {
 	    gerror( stderr, "can't specify a 2D section with a 1D image\n" );
@@ -197,8 +182,7 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 	    *btype = FUN_AVG;
 	f += n;
     }
-    else if ( sscanf( f, "%[*] , %[-0-9.*] : %[-0-9.*]%n",
-                      s1, s2, s3, &n ) == 3 ) {
+    else if ( sscanf( f, "%[*] , %[-0-9.*] : %[-0-9.*]%n", s1, s2, s3, &n ) == 3 ) {
 	/* sanity check */
 	if ( fun->dims == 1 ) {
 	    gerror( stderr, "can't specify a 2D section with a 1D image\n" );
@@ -207,8 +191,7 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 	ty1 = ( *s4 == '*' ) ? nan : atof( s4 );
 	f += n;
     }
-    else if ( sscanf( f, "%[-0-9.*] : %[-0-9.*] , %[0-9as]%n",
-                      s1, s2, s3, &n ) == 3 ) {
+    else if ( sscanf( f, "%[-0-9.*] : %[-0-9.*] , %[0-9as]%n", s1, s2, s3, &n ) == 3 ) {
 	tx0 = ( *s1 == '*' ) ? nan : atof( s1 );
 	tx1 = ( *s2 == '*' ) ? nan : atof( s2 );
 	ty0 = tx0;
@@ -301,8 +284,7 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 	f += n;
 	itype++;
     }
-    else if ( sscanf( f, "%[0-9.*] @ %[-0-9.*] @ %[-0-9.*]%n",
-                      s1, s2, s3, &n ) == 3 ) {
+    else if ( sscanf( f, "%[0-9.*] @ %[-0-9.*] @ %[-0-9.*]%n", s1, s2, s3, &n ) == 3 ) {
 	/* sanity check */
 	if ( fun->dims == 1 ) {
 	    gerror( stderr, "can't specify 2D section with a 1D image\n" );
@@ -354,18 +336,12 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
 		    break;
 		case FUN_TABLE:
 		case FUN_EVENTS:
-		    type1 =
-		        MAX( 0, fun->header->table->col[fun->bin[0]].type );
-		    type2 =
-		        MAX( 0, fun->header->table->col[fun->bin[1]].type );
-		    if ( !isnand( tx0 ) ) tx0 =
-		            tlp2i( tx0, fun->min1, fun->binsiz1, type1 );
-		    if ( !isnand( tx1 ) ) tx1 =
-		            tlp2i( tx1, fun->min1, fun->binsiz1, type1 );
-		    if ( !isnand( ty0 ) ) ty0 =
-		            tlp2i( ty0, fun->min2, fun->binsiz2, type2 );
-		    if ( !isnand( ty1 ) ) ty1 =
-		            tlp2i( ty1, fun->min2, fun->binsiz2, type2 );
+		    type1 = MAX( 0, fun->header->table->col[fun->bin[0]].type );
+		    type2 = MAX( 0, fun->header->table->col[fun->bin[1]].type );
+		    if ( !isnand( tx0 ) ) tx0 = tlp2i( tx0, fun->min1, fun->binsiz1, type1 );
+		    if ( !isnand( tx1 ) ) tx1 = tlp2i( tx1, fun->min1, fun->binsiz1, type1 );
+		    if ( !isnand( ty0 ) ) ty0 = tlp2i( ty0, fun->min2, fun->binsiz2, type2 );
+		    if ( !isnand( ty1 ) ) ty1 = tlp2i( ty1, fun->min2, fun->binsiz2, type2 );
 		    break;
 		case FUN_ARRAY:
 		    break;
@@ -428,15 +404,10 @@ _FunParseSection( fun, section, x0, x1, y0, y1, block, btype, tail, maxlen )
  * FunPrimaryExtension -- write a dummy primary header for a FITS extension
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunPrimaryExtension( Fun fun )
-#else
-int
-_FunPrimaryExtension( fun )
-     Fun fun;
-#endif
-{
+_FunPrimaryExtension(
+    Fun fun
+ ) {
     FITSHead header, merge;
 
     /* exit if we already have written the header (or if we have no funtools) */
@@ -451,8 +422,7 @@ _FunPrimaryExtension( fun )
     ft_headsetl( header, "SIMPLE", 0, 1, "FITS STANDARD", 1 );
     ft_headseti( header, "BITPIX", 0, 8, "Binary data", 1 );
     ft_headseti( header, "NAXIS", 0, 0, "No image array present", 1 );
-    ft_headsetl( header, "EXTEND", 0, 1, "Standard extensions might follow",
-                 1 );
+    ft_headsetl( header, "EXTEND", 0, 1, "Standard extensions might follow", 1 );
     ft_syncdata( header );
 
     /* merge these new params in with any we added earlier using FunParamPut */
@@ -491,25 +461,18 @@ _FunPrimaryExtension( fun )
  *
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunColumnDims( char *s, int type, double *tlmin, double *tlmax,
-                double *binsiz, int *dims,
-                double *tscale, double *tzero, int *scaled )
-#else
-int
-_FunColumnDims( s, type, tlmin, tlmax, binsiz, dims, tscale, tzero, scaled )
-     char *s;
-     int type;
-     double *tlmin;
-     double *tlmax;
-     double *binsiz;
-     int *dims;
-     double *tscale;
-     double *tzero;
-     int *scaled;
-#endif
-{
+_FunColumnDims(
+    char *s,
+    int type,
+    double *tlmin,
+    double *tlmax,
+    double *binsiz,
+    int *dims,
+    double *tscale,
+    double *tzero,
+    int *scaled
+ ) {
     int i, got, got2;
     char *v;
     char vbuf[SZ_LINE];
@@ -536,8 +499,7 @@ _FunColumnDims( s, type, tlmin, tlmax, binsiz, dims, tscale, tzero, scaled )
 	s++;
 	/* fill buffer with next value */
 	*vbuf = '\0';
-	for ( v = vbuf;
-	      *s && ( *s != ',' ) && ( *s != ':' ) && ( *s != ';' ); )
+	for ( v = vbuf; *s && ( *s != ',' ) && ( *s != ':' ) && ( *s != ';' ); )
 	    *v++ = *s++;
 	*v = '\0';
 	/* convert string to double */
@@ -594,8 +556,7 @@ _FunColumnDims( s, type, tlmin, tlmax, binsiz, dims, tscale, tzero, scaled )
 	    s++;
 	    /* fill buffer with next value */
 	    *vbuf = '\0';
-	    for ( v = vbuf;
-	          *s && ( *s != ',' ) && ( *s != ':' ) && ( *s != ';' ); )
+	    for ( v = vbuf; *s && ( *s != ',' ) && ( *s != ':' ) && ( *s != ';' ); )
 		*v++ = *s++;
 	    *v = '\0';
 	    /* convert string to double */
@@ -629,29 +590,21 @@ _FunColumnDims( s, type, tlmin, tlmax, binsiz, dims, tscale, tzero, scaled )
  * where @ means ptype (pointer type) is true
  *
  */
-#ifdef ANSI_FUNC
 void
-_FunColumnType( char *s, int *type, int *n,
-                double *tlmin, double *tlmax, double *binsiz, int *dims,
-                double *tscale, double *tzero, int *scaled,
-                int *ptype, int *poff )
-#else
-void
-_FunColumnType( s, type, n, tlmin, tlmax, binsiz, dims,
-                tscale, tzero, scaled, ptype, poff )
-     char *s;
-     int *type;
-     int *n;
-     double *tlmin;
-     double *tlmax;
-     double *binsiz;
-     int *dims, double *tscale;
-     double *tzero;
-     int *scaled;
-     int *ptype;
-     int *poff;
-#endif
-{
+_FunColumnType(
+    char *s,
+    int *type,
+    int *n,
+    double *tlmin,
+    double *tlmax,
+    double *binsiz,
+    int *dims,
+    double *tscale,
+    double *tzero,
+    int *scaled,
+    int *ptype,
+    int *poff
+ ) {
     int ival;
     int boff = 0;
     char *t;
@@ -715,8 +668,7 @@ _FunColumnType( s, type, n, tlmin, tlmax, binsiz, dims,
     }
 
     /* parse the rest of the string into tlmin, tlmax, binsiz, etc. */
-    ( void ) _FunColumnDims( s, *type, tlmin, tlmax, binsiz, dims,
-                             tscale, tzero, scaled );
+    ( void ) _FunColumnDims( s, *type, tlmin, tlmax, binsiz, dims, tscale, tzero, scaled );
 }
 
 /*
@@ -724,18 +676,13 @@ _FunColumnType( s, type, n, tlmin, tlmax, binsiz, dims,
  * _FunFile -- parse next filename from a string
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunFile( char *lbuf, char *tbuf, int len, int *lptr )
-#else
-int
-_FunFile( lbuf, tbuf, len, lptr )
-     char *lbuf;
-     char *tbuf;
-     int len;
-     int *lptr;
-#endif
-{
+_FunFile(
+    char *lbuf,
+    char *tbuf,
+    int len,
+    int *lptr
+ ) {
     int ip;
     int i;
     int bracklev = 0;
@@ -828,9 +775,8 @@ _FunFile( lbuf, tbuf, len, lptr )
 	/* grab up to next whitespace */
 	i = 0;
       again:
-	for ( ;
-	      lbuf[ip] && ( !isspace( ( int ) lbuf[ip] )
-	                    || ( bracklev > 0 ) ); i++, ip++ ) {
+	for ( ; lbuf[ip] && ( !isspace( ( int ) lbuf[ip] )
+	                      || ( bracklev > 0 ) ); i++, ip++ ) {
 	    if ( i >= len ) goto error;
 	    tbuf[i] = lbuf[ip];
 	    if ( lbuf[ip] == '[' )

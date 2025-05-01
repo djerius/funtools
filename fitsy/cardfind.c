@@ -38,14 +38,14 @@
 #include "fitsy.h"
 
 int
-ft_compare( const void *void_a, const void *void_b ) {
+ft_compare(
+    const void *void_a,
+    const void *void_b
+ ) {
     int ax, bx;
 
-    const FITSCard fc_a = ( const FITSCard ) void_a;
-    const FITSCard fc_b = ( const FITSCard ) void_b;
-
-    const char *a = ( const char * ) &( fc_a->c );
-    const char *b = ( const char * ) &( fc_b->c );
+    const char *a = * ( const char ** ) void_a;
+    const char *b = * ( const char ** ) void_b;
 
     if ( !strncmp( a, b, 5 )
          && ( a[5] != ' ' ) && ( b[5] != ' ' )
@@ -65,14 +65,14 @@ ft_compare( const void *void_a, const void *void_b ) {
    it searches sequentially through the header to find the card.
  */
 FITSCard
-ft_cardfind( fits, key, add )
-     FITSHead fits;             /* The FITS header to look in.  */
-     FITSCard key;              /* The card keyword to lookup.  */
-     int add;                   /* If add is true the card will
+ft_cardfind(
+    FITSHead fits,              /* The FITS header to look in.  */
+    FITSCard key,               /* The card keyword to lookup.  */
+    int add                     /* If add is true the card will
                                    be added to the header if it is
                                    not found.
                                  */
-{
+ ) {
     FITSCard card;
     int match;
 
@@ -92,13 +92,13 @@ ft_cardfind( fits, key, add )
    If the header is not indexed an index is created for it.
  */
 FITSCard
-ft_cardfindidx( fits, key, match )
-     FITSHead fits;
-     FITSCard key;
-     int *match;                /* Returns true if the card found is
+ft_cardfindidx(
+    FITSHead fits,
+    FITSCard key,
+    int *match                  /* Returns true if the card found is
                                    an exact match for the keyword requested.
                                  */
-{
+ ) {
     FITSCard *base;
     int length;
 
@@ -147,11 +147,11 @@ ft_cardfindidx( fits, key, match )
    match is set to 0.
  */
 FITSCard
-ft_cardfindseq( fits, key, match )
-     FITSHead fits;
-     FITSCard key;
-     int *match;
-{
+ft_cardfindseq(
+    FITSHead fits,
+    FITSCard key,
+    int *match
+ ) {
     FITSCard card;
     FITSCard xnear = NULL;
 
@@ -179,12 +179,12 @@ ft_cardfindseq( fits, key, match )
 }
 
 FITSCard
-ft_cardfindblok( cards, key, match, nhist )
-     FITSCard cards;
-     FITSCard key;
-     int *match;
-     int *nhist;
-{
+ft_cardfindblok(
+    FITSCard cards,
+    FITSCard key,
+    int *match,
+    int *nhist
+ ) {
     FITSCard card;
     FITSCard xnear = NULL;
 

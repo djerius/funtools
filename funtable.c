@@ -18,21 +18,17 @@ typedef struct rowstruct {
     double value;
     int region;
     int n;
-}  *Row, RowRec;
+}  *Row,
+    RowRec;
 
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 static char *
-_funtableCB( char *name, void *client_data )
-#else
-static char *
-_funtableCB( name, client_data )
-     char *name;
-     void *client_data;
-#endif
-{
+_funtableCB(
+    char *name,
+    void *client_data
+ ) {
     int n = *( int * ) client_data;
     if ( !strcasecmp( name, "n" ) ) {
 	snprintf( macrobuf, SZ_LINE - 1, "%d", n );
@@ -43,41 +39,26 @@ _funtableCB( name, client_data )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
-    fprintf( stderr,
-             "usage: %s [-a] [-i|-z] [-m] [-s cols] iname oname [columns]\n",
-             fname );
+usage(
+    char *fname
+ ) {
+    fprintf( stderr, "usage: %s [-a] [-i|-z] [-m] [-s cols] iname oname [columns]\n", fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -a  # append to existing output file as a table extension\n" );
-    fprintf( stderr,
-             "  -i  # for image data, only generate X and Y columns\n" );
-    fprintf( stderr,
-             "  -m  # for tables, write a separate file for each region\n" );
+    fprintf( stderr, "  -a  # append to existing output file as a table extension\n" );
+    fprintf( stderr, "  -i  # for image data, only generate X and Y columns\n" );
+    fprintf( stderr, "  -m  # for tables, write a separate file for each region\n" );
     fprintf( stderr, "  -s 'col1 ...'  # columns on which to sort\n" );
     fprintf( stderr, "  -z  # for image data, output zero-valued pixels\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i, j, k, n;
     int args;
@@ -163,8 +144,7 @@ main( argc, argv )
     oname = xstrdup( argv[optind + 1] );
 
     if ( !( fun = FunOpen( iname, "rc", NULL ) ) )
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-                iname );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
 
     /* for multiple outputs, we need a file for each region and one extra */
     if ( domulti ) {
@@ -173,26 +153,21 @@ main( argc, argv )
 	else {
 	    /* for non-disk files, we should punt, but we'll open a fake
 	       Chandra/ACIS FITS file and hope for the best */
-	    if ( !strncasecmp( iname, "stdin", 5 )
-	         || !strncmp( iname, "-", 1 )
+            if ( !strncasecmp( iname, "stdin", 5 )
+                 || !strncmp( iname, "-", 1 )
 	         || !strncasecmp( iname, "pipe:", 5 ) ) {
 		extn = FileExtension( iname );
 		plen = strlen( _prim );
-		if ( ( ppad =
-		       FT_BLOCK - ( plen % FT_BLOCK ) ) == FT_BLOCK ) ppad =
-		 0;
+		if ( ( ppad = FT_BLOCK - ( plen % FT_BLOCK ) ) == FT_BLOCK ) ppad = 0;
 		elen = strlen( _extn );
-		if ( ( epad =
-		       FT_BLOCK - ( elen % FT_BLOCK ) ) == FT_BLOCK ) epad =
-		 0;
+		if ( ( epad = FT_BLOCK - ( elen % FT_BLOCK ) ) == FT_BLOCK ) epad = 0;
 		flen = plen + ppad + elen + epad;
 		fits = ( char * ) calloc( flen + 1, sizeof( char ) );
 		memset( fits, ( int ) ' ', flen );
 		memcpy( fits, _prim, plen );
 		memcpy( fits + plen + ppad, _extn, elen );
 		snprintf( tbuf, SZ_LINE - 1,
-		          "buf:%#lx:%d%s", ( long ) fits, flen,
-		          extn ? extn : "" );
+		          "buf:%#lx:%d%s", ( long ) fits, flen, extn ? extn : "" );
 		tfun = FunOpen( tbuf, "r", NULL );
 	    }
 	    /* otherwise we can open the input file once again */
@@ -235,8 +210,7 @@ main( argc, argv )
 	for ( i = 0; i < nfile; i++ ) {
 	    /* put ivalue exactly where the user asked for it */
 	    if ( u )
-		s = ExpandMacro( oname, NULL, NULL, 0, _funtableCB,
-	                         ( void * ) &i );
+		s = ExpandMacro( oname, NULL, NULL, 0, _funtableCB, ( void * ) &i );
 	    /* put ivalue before first '.' */
 	    else if ( t )
 		snprintf( s, SZ_LINE - 1, "%s%d.%s", oname, i, t );
@@ -275,8 +249,7 @@ main( argc, argv )
 		FunColumnSelect( fun, sizeof( RowRec ), "merge=replace",
 		                 "$REGION", "J", "rw", FUN_OFFSET( Row,
 		                                                   region ),
-		                 "$N", "J", "rw", FUN_OFFSET( Row, n ),
-		                 NULL );
+		                 "$N", "J", "rw", FUN_OFFSET( Row, n ), NULL );
 		FunColumnActivate( fun, "-$REGION -$N", NULL );
 	    }
 
@@ -286,9 +259,8 @@ main( argc, argv )
 
 	    /* if region was not activiated by the user, activate now for read only */
 	    if ( domulti ) {
-		if ( !FunColumnLookup( fun, COL_REGION_NAME,
-		                       0, NULL, &rtype, &rmode, &roffset,
-		                       NULL, NULL )
+	        if ( !FunColumnLookup( fun, COL_REGION_NAME,
+	                               0, NULL, &rtype, &rmode, &roffset, NULL, NULL )
 		     || !( rmode & COL_ACTIVE ) )
 		    FunColumnActivate( fun, "+$REGION", "mode=r" );
 	    }
@@ -302,8 +274,7 @@ main( argc, argv )
 		/* look for sort program */
 		path = ( char * ) getenv( "PATH" );
 		if ( !( prog = Find( SORTPROG, "x", NULL, path ) ) )
-		    gerror( stderr, "can't locate sort program: %s\n",
-		            SORTPROG );
+		    gerror( stderr, "can't locate sort program: %s\n", SORTPROG );
 		/* allow commas as delims */
 		newdtable( "," );
 		/* get the size of the input record */
@@ -313,19 +284,15 @@ main( argc, argv )
 		rlen = SZ_LINE - strlen( cmd ) - 1;
 		for ( ncol = 0; word( sortcols, col, &ip ); ncol++ ) {
 		    if ( !FunColumnLookup
-		         ( fun, col, 0, NULL, &dtype, &dmode, &doffset, &dn,
-		           NULL ) ) {
-			gerror( stderr, "can't find sort column '%s'\n",
-			        col );
+		         ( fun, col, 0, NULL, &dtype, &dmode, &doffset, &dn, NULL ) ) {
+			gerror( stderr, "can't find sort column '%s'\n", col );
 		    }
 		    if ( !( dmode & COL_ACTIVE ) ) {
-			gerror( stderr, "sort column '%s' must be active\n",
-			        col );
+			gerror( stderr, "sort column '%s' must be active\n", col );
 		    }
 		    switch ( dtype ) {
 			case 'A':
-			    snprintf( tbuf, SZ_LINE - 1, "+t%d.%d", doffset,
-			              dn );
+			    snprintf( tbuf, SZ_LINE - 1, "+t%d.%d", doffset, dn );
 			    break;
 			case 'B':
 			    snprintf( tbuf, SZ_LINE - 1, "+B%d", doffset );
@@ -352,9 +319,7 @@ main( argc, argv )
 			    snprintf( tbuf, SZ_LINE - 1, "+d%d", doffset );
 			    break;
 			default:
-			    gerror( stderr,
-			            "unsupported sort data type for column %s\n",
-			            tbuf );
+			    gerror( stderr, "unsupported sort data type for column %s\n", tbuf );
 		    }
 		    strncat( cmd, " ", rlen );
 		    rlen--;
@@ -368,13 +333,11 @@ main( argc, argv )
 		freedtable(  );
 		/* start the sort program */
 		if ( !ProcessOpen( cmd, &ichan, &ochan, &pid ) ) {
-		    gerror( stderr, "ERROR: can't start sort program: %s\n",
-		            prog );
+		    gerror( stderr, "ERROR: can't start sort program: %s\n", prog );
 		}
 	    }
 	    /* extract events */
-	    while ( ( ebuf =
-	              FunTableRowGet( fun, NULL, maxrow, mode, &got ) ) ) {
+	    while ( ( ebuf = FunTableRowGet( fun, NULL, maxrow, mode, &got ) ) ) {
 		/* sort: write unsorted events to sort program */
 		if ( dosort ) {
 		    write( ochan, ebuf, got * isize );
@@ -386,23 +349,17 @@ main( argc, argv )
 			for ( n = 0; n < got; n++ ) {
 			    row = ( Row ) ebuf + n;
 			    r = MAX( 0, row->region );
-			    if ( ( put =
-			           FunTableRowPut( funs[r], row, 1, n,
-			                           NULL ) ) != 1 ) {
+			    if ( ( put = FunTableRowPut( funs[r], row, 1, n, NULL ) ) != 1 ) {
 				gerror( stderr,
-				        "expected to write %d rows; only wrote %d\n",
-				        1, put );
+				        "expected to write %d rows; only wrote %d\n", 1, put );
 			    }
 			}
 		    }
 		    /* single file output */
 		    else {
-			if ( ( put =
-			       FunTableRowPut( funs[r], ebuf, got, 0,
-			                       NULL ) ) != got ) {
+			if ( ( put = FunTableRowPut( funs[r], ebuf, got, 0, NULL ) ) != got ) {
 			    gerror( stderr,
-			            "expected to write %d rows; only wrote %d\n",
-			            got, put );
+			            "expected to write %d rows; only wrote %d\n", got, put );
 			}
 		    }
 		}
@@ -433,19 +390,13 @@ main( argc, argv )
 			    /* get region id */
 			    switch ( rtype ) {
 				case 'B':
-				    rval =
-				        ( int ) *( unsigned char * ) ( eptr +
-				                                       roffset );
+				    rval = ( int ) *( unsigned char * ) ( eptr + roffset );
 				    break;
 				case 'I':
-				    rval =
-				        ( int ) *( short * ) ( eptr +
-				                               roffset );
+				    rval = ( int ) *( short * ) ( eptr + roffset );
 				    break;
 				case 'U':
-				    rval =
-				        ( int ) *( unsigned short * ) ( eptr +
-				                                        roffset );
+				    rval = ( int ) *( unsigned short * ) ( eptr + roffset );
 				    break;
 				case 'J':
 				    rval = *( int * ) ( eptr + roffset );
@@ -458,42 +409,30 @@ main( argc, argv )
 				    rval = *( longlong * ) ( eptr + roffset );
 				    break;
 				case 'V':
-				    rval =
-				        ( int ) *( unsigned int * ) ( eptr +
-				                                      roffset );
+				    rval = ( int ) *( unsigned int * ) ( eptr + roffset );
 				    break;
 				case 'E':
-				    rval =
-				        ( int ) *( float * ) ( eptr +
-				                               roffset );
+				    rval = ( int ) *( float * ) ( eptr + roffset );
 				    break;
 				case 'D':
-				    rval =
-				        ( int ) *( double * ) ( eptr +
-				                                roffset );
+				    rval = ( int ) *( double * ) ( eptr + roffset );
 				    break;
 			    }
 			    /* offset is region id (but not less than 0) */
 			    r = MAX( 0, rval );
 			    /* output event to appropriate file */
-			    if ( ( put =
-			           FunTableRowPut( funs[r], eptr, 1, n,
-			                           NULL ) ) != 1 ) {
+			    if ( ( put = FunTableRowPut( funs[r], eptr, 1, n, NULL ) ) != 1 ) {
 				gerror( stderr,
-				        "expected to write %d rows; only wrote %d\n",
-				        1, put );
+				        "expected to write %d rows; only wrote %d\n", 1, put );
 			    }
 			}
 		    }
 		    /* single file output */
 		    else {
 			/* output all events in this buffer to single file */
-			if ( ( put =
-			       FunTableRowPut( funs[r], ebuf, got, 0,
-			                       NULL ) ) != got ) {
+			if ( ( put = FunTableRowPut( funs[r], ebuf, got, 0, NULL ) ) != got ) {
 			    gerror( stderr,
-			            "expected to write %d rows; only wrote %d\n",
-			            got, put );
+			            "expected to write %d rows; only wrote %d\n", got, put );
 			}
 		    }
 		}
@@ -515,8 +454,7 @@ main( argc, argv )
 		    fun->bytes += got;
 		    /* write heap data to each output file */
 		    for ( n = 0; n < nfile; n++ ) {
-			got =
-			    gwrite( funs[n]->gio, heap, sizeof( char ), got );
+			got = gwrite( funs[n]->gio, heap, sizeof( char ), got );
 			funs[n]->bytes += got;
 		    }
 		    xfree( heap );
@@ -526,12 +464,9 @@ main( argc, argv )
 	case FUN_IMAGE:
 	case FUN_ARRAY:
 	    if ( dosort ) gerror( stderr, "can't sort image data\n" );
-	    if ( domulti ) gerror( stderr,
-	                           "can't output to multiple image files\n" );
+	    if ( domulti ) gerror( stderr, "can't output to multiple image files\n" );
 	    /* get image section information */
-	    FunInfoGet( fun,
-	                FUN_SECT_DIM1, &dim1,
-	                FUN_SECT_DIM2, &dim2, FUN_SECT_DIMS, &dims, 0 );
+	    FunInfoGet( fun, FUN_SECT_DIM1, &dim1, FUN_SECT_DIM2, &dim2, FUN_SECT_DIMS, &dims, 0 );
 	    /* make a standard extension name for the new binary table */
 	    FunParamPuts( funs[r], "EXTNAME", 0, "EVENTS", NULL, 1 );
 	    if ( dims >= 2 ) {
@@ -542,30 +477,20 @@ main( argc, argv )
 		FunParamPuti( funs[r], "TLMAX2", 0, dim2, NULL, 1 );
 		/* transform WCS cards from image to binary table */
 		for ( i = 1; i <= 2; i++ ) {
-		    if ( ( s =
-		           ft_headgets( fun->header, "CTYPE", i, NULL,
-		                        &card ) ) && card ) {
+		    if ( ( s = ft_headgets( fun->header, "CTYPE", i, NULL, &card ) ) && card ) {
 			FunParamPuts( funs[r], "TCTYP", i, s, NULL, 1 );
 			xfree( s );
 		    }
-		    if ( ( dval =
-		           ft_headgetr( fun->header, "CRVAL", i, 0.0,
-		                        &card ) ) && card ) {
+		    if ( ( dval = ft_headgetr( fun->header, "CRVAL", i, 0.0, &card ) ) && card ) {
 			FunParamPutd( funs[r], "TCRVL", i, dval, 7, NULL, 1 );
 		    }
-		    if ( ( dval =
-		           ft_headgetr( fun->header, "CDELT", i, 0.0,
-		                        &card ) ) && card ) {
+		    if ( ( dval = ft_headgetr( fun->header, "CDELT", i, 0.0, &card ) ) && card ) {
 			FunParamPutd( funs[r], "TCDLT", i, dval, 7, NULL, 1 );
 		    }
-		    if ( ( dval =
-		           ft_headgetr( fun->header, "CROTA", i, 0.0,
-		                        &card ) ) && card ) {
+		    if ( ( dval = ft_headgetr( fun->header, "CROTA", i, 0.0, &card ) ) && card ) {
 			FunParamPutd( funs[r], "TCROT", i, dval, 7, NULL, 1 );
 		    }
-		    if ( ( dval =
-		           ft_headgetr( fun->header, "CRPIX", i, 0.0,
-		                        &card ) ) && card ) {
+		    if ( ( dval = ft_headgetr( fun->header, "CRPIX", i, 0.0, &card ) ) && card ) {
 			FunParamPutd( funs[r], "TCRPX", i, dval, 7, NULL, 1 );
 		    }
 		}
@@ -573,16 +498,13 @@ main( argc, argv )
 		if ( doindiv ) {
 		    FunColumnSelect( funs[r], sizeof( RowRec ), NULL,
 		                     "X", "J", "w", FUN_OFFSET( Row, x ),
-		                     "Y", "J", "w", FUN_OFFSET( Row, y ),
-		                     NULL );
+		                     "Y", "J", "w", FUN_OFFSET( Row, y ), NULL );
 		}
 		else {
 		    FunColumnSelect( funs[r], sizeof( RowRec ), NULL,
 		                     "X", "J", "w", FUN_OFFSET( Row, x ),
 		                     "Y", "J", "w", FUN_OFFSET( Row, y ),
-		                     "VALUE", "D", "rw", FUN_OFFSET( Row,
-		                                                     value ),
-		                     NULL );
+		                     "VALUE", "D", "rw", FUN_OFFSET( Row, value ), NULL );
 		}
 	    }
 	    else {
@@ -591,15 +513,12 @@ main( argc, argv )
 		/* select columns */
 		if ( doindiv ) {
 		    FunColumnSelect( funs[r], sizeof( RowRec ), NULL,
-		                     "X", "J", "w", FUN_OFFSET( Row, x ),
-		                     NULL );
+		                     "X", "J", "w", FUN_OFFSET( Row, x ), NULL );
 		}
 		else {
 		    FunColumnSelect( funs[r], sizeof( RowRec ), NULL,
 		                     "X", "J", "w", FUN_OFFSET( Row, x ),
-		                     "VALUE", "D", "rw", FUN_OFFSET( Row,
-		                                                     value ),
-		                     NULL );
+		                     "VALUE", "D", "rw", FUN_OFFSET( Row, value ), NULL );
 		}
 	    }
 	    /* we will make event row(s) for each x,y pixel */
@@ -607,9 +526,7 @@ main( argc, argv )
 	    /* process each image row */
 	    for ( j = 1; j <= dim2; j++ ) {
 		/* extract image data and make event rows */
-		if ( !
-		     ( dbuf =
-		       FunImageRowGet( fun, dbuf, j, j, "bitpix=-64" ) ) )
+		if ( !( dbuf = FunImageRowGet( fun, dbuf, j, j, "bitpix=-64" ) ) )
 		    gerror( stderr, "can't FunImageRowGet: %s\n", iname );
 		if ( doindiv ) {
 		    /* generate an event for this pixel */
@@ -621,12 +538,8 @@ main( argc, argv )
 			    rowbuf[i].y = j;
 			    for ( k = 0; k < ( int ) ( dbuf[i] + 0.5 ); k++ ) {
 				/* write replicated row */
-				if ( FunTableRowPut
-				     ( funs[r], &rowbuf[i], 1, 0,
-				       NULL ) != 1 )
-				    gerror( stderr,
-				            "can't FunTableRowPut: %s\n",
-				            oname );
+				if ( FunTableRowPut( funs[r], &rowbuf[i], 1, 0, NULL ) != 1 )
+				    gerror( stderr, "can't FunTableRowPut: %s\n", oname );
 			    }
 			}
 		    }
@@ -640,10 +553,8 @@ main( argc, argv )
 			    rowbuf[i].y = j;
 			    rowbuf[i].value = dbuf[i];
 			    /* write row */
-			    if ( FunTableRowPut
-			         ( funs[r], &rowbuf[i], 1, 0, NULL ) != 1 )
-				gerror( stderr, "can't FunTableRowPut: %s\n",
-			                oname );
+			    if ( FunTableRowPut( funs[r], &rowbuf[i], 1, 0, NULL ) != 1 )
+				gerror( stderr, "can't FunTableRowPut: %s\n", oname );
 			}
 		    }
 		}

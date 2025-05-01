@@ -15,17 +15,26 @@ extern int N;
 #include <tablesearch.h>
 #include <filelist.h>
 
-double slaDsep(  );
-void radecbox(  );
+double slaDsep(
+ );
+void radecbox(
+ );
 
 exception ex_search = "search";
 
-typedef void *( *vvector )(  );
+typedef void *(
+    *vvector
+ )  (
+ );
 
-TableSearch table_search(  );
-TableSearch table_searchsetup(  );
-char *table_searchcheckindexpattern(  );
-Range *table_srange2(  );
+TableSearch table_search(
+ );
+TableSearch table_searchsetup(
+ );
+char *table_searchcheckindexpattern(
+ );
+Range *table_srange2(
+ );
 
 typedef struct Axis {
     int type;
@@ -42,15 +51,12 @@ typedef struct Axis {
     struct Axis *pair;
 } Axis;
 
-char *table_searchcheckindexpattern(  );
+char *table_searchcheckindexpattern(
+ );
 
 
-void
-table_searchpairs( table, axes, naxes, filecache )
-     char *table;
-     Axis **axes;
-     int naxes;
-     void *filecache;
+void 
+table_searchpairs (char *table, Axis **axes, int naxes, void *filecache)
 {
     char *here;
     char directo[1024];
@@ -88,23 +94,17 @@ table_searchpairs( table, axes, naxes, filecache )
 
 	    sprintf( pattern, "%s.%s.%s[-.:][sbhir]", here, col1, col2 );
 
-	    if ( ( name =
-	           table_searchcheckindexpattern( search, directo,
-	                                          pattern ) ) ) {
+	    if ( ( name = table_searchcheckindexpattern( search, directo, pattern ) ) ) {
 		table_searchsetupindex( search, name, col1 );
 		table_searchsetupcache( search, NULL );
 
 		axes[i]->search = search;
 		axes[j]->search = search;
 		axes[i]->search->Index = name;
-		axes[i]->search->Tcolumn =
-		    table_colnum( search->THead, col1 );
-		axes[i]->search->Indxcol =
-		    table_colnum( search->IHead, col1 );
-		axes[i]->search->Tcolum2 =
-		    table_colnum( search->THead, col2 );
-		axes[i]->search->Indxco2 =
-		    table_colnum( search->IHead, col2 );
+		axes[i]->search->Tcolumn = table_colnum( search->THead, col1 );
+		axes[i]->search->Indxcol = table_colnum( search->IHead, col1 );
+		axes[i]->search->Tcolum2 = table_colnum( search->THead, col2 );
+		axes[i]->search->Indxco2 = table_colnum( search->IHead, col2 );
 		axes[i]->type = 'S';
 		axes[j]->type = '4';
 		axes[j]->pair = axes[i];
@@ -117,8 +117,14 @@ table_searchpairs( table, axes, naxes, filecache )
 
 
 typedef struct CsysDef {
-    void ( *setup )(  );
-    int ( *filte )(  );
+    void (
+    *setup
+     )  (
+     );
+    int (
+    *filte
+     )  (
+     );
     int nrange;
     double *range;
     int naxes;
@@ -129,9 +135,18 @@ typedef struct CsysDef {
 typedef struct CsysType {
     char option;
     char *name;
-    int ( *filte )(  );
-    void ( *setup )(  );
-    char *( *parse )(  );
+    int (
+    *filte
+     )  (
+     );
+    void (
+    *setup
+     )  (
+     );
+    char *(
+    *parse
+     )  (
+     );
 } CsysType;
 
 typedef struct RCache {
@@ -159,9 +174,7 @@ rowcmp( a, b )
 }
 
 char *
-cartparse( csys, option )
-     CsysDef *csys;
-     char *option;
+cartparse (CsysDef *csys, char *option)
 {
     int i;
 
@@ -184,17 +197,18 @@ cartparse( csys, option )
 }
 
 void
-cartsetup( csys, row )
+cartsetup(
+    csys,
+    row
+ )
      CsysDef *csys;
      TableRow row;
 {
     int i;
 
     for ( i = 0; i < csys->naxes; i++ ) {
-	csys->axis[i].lo =
-	    table_colvald( row, csys->axis[i].c1 ) - csys->range[0];
-	csys->axis[i].hi =
-	    table_colvald( row, csys->axis[i].c1 ) + csys->range[0];
+	csys->axis[i].lo = table_colvald( row, csys->axis[i].c1 ) - csys->range[0];
+	csys->axis[i].hi = table_colvald( row, csys->axis[i].c1 ) + csys->range[0];
     }
 }
 
@@ -218,9 +232,7 @@ cartfilte( csys, row1, row2 )
 }
 
 char *
-sphrparse( csys, option )
-     CsysDef *csys;
-     char *option;
+sphrparse (CsysDef *csys, char *option)
 {
     int i;
 
@@ -269,7 +281,10 @@ sphrparse( csys, option )
 }
 
 void
-sphrsetup( csys, row )
+sphrsetup(
+    csys,
+    row
+ )
      CsysDef *csys;
      TableRow row;
 {
@@ -278,12 +293,10 @@ sphrsetup( csys, row )
     double r0, r1, d0, d1;
 
     if ( csys->naxes == 1 ) {
-	csys->axis[0].lo = table_colvald( row, csys->axis[0].c1 ) -
-	    csys->range[0];
+	csys->axis[0].lo = table_colvald( row, csys->axis[0].c1 ) - csys->range[0];
 	if ( csys->axis[0].lo < 0 ) csys->axis[0].lo += csys->axis[0].wp;
 
-	csys->axis[0].hi = table_colvald( row, csys->axis[0].c1 ) +
-	    csys->range[0];
+	csys->axis[0].hi = table_colvald( row, csys->axis[0].c1 ) + csys->range[0];
 	if ( csys->axis[0].hi > csys->axis[0].wp )
 	    csys->axis[0].hi -= csys->axis[0].wp;
 
@@ -362,7 +375,11 @@ sphrsetup( csys, row )
 }
 
 int
-sphrfilte( csys, row1, row2 )
+sphrfilte(
+    csys,
+    row1,
+    row2
+ )
      CsysDef *csys;
      TableRow row1;
      TableRow row2;
@@ -415,9 +432,7 @@ sphrfilte( csys, row1, row2 )
 }
 
 char *
-singparse( csys, option )
-     CsysDef *csys;
-     char *option;
+singparse (CsysDef *csys, char *option)
 {
 
     csys->naxes = 1;
@@ -432,7 +447,10 @@ singparse( csys, option )
 }
 
 void
-singsetup( csys, row )
+singsetup(
+    csys,
+    row
+ )
      CsysDef *csys;
      TableRow row;
 {
@@ -441,9 +459,7 @@ singsetup( csys, row )
 
 
 char *
-rangparse( csys, option )
-     CsysDef *csys;
-     char *option;
+rangparse (CsysDef *csys, char *option)
 {
 
     csys->naxes = 1;
@@ -464,7 +480,10 @@ rangparse( csys, option )
 }
 
 void
-rangsetup( csys, row )
+rangsetup(
+    csys,
+    row
+ )
      CsysDef *csys;
      TableRow row;
 {
@@ -475,9 +494,7 @@ rangsetup( csys, row )
 }
 
 char *
-valuparse( csys, option )
-     CsysDef *csys;
-     char *option;
+valuparse (CsysDef *csys, char *option)
 {
     csys->naxes = 1;
     csys->nrange = 0;
@@ -491,7 +508,10 @@ valuparse( csys, option )
 }
 
 void
-valusetup( csys, row )
+valusetup(
+    csys,
+    row
+ )
      CsysDef *csys;
      TableRow row;
 {
@@ -507,9 +527,7 @@ valusetup( csys, row )
 }
 
 char *
-limtparse( csys, option )
-     CsysDef *csys;
-     char *option;
+limtparse (CsysDef *csys, char *option)
 {
     csys->naxes = 1;
     csys->nrange = 2;
@@ -524,7 +542,10 @@ limtparse( csys, option )
 
 
 void
-limtsetup( csys, row )
+limtsetup(
+    csys,
+    row
+ )
      CsysDef *csys;
      TableRow row;
 {
@@ -549,7 +570,14 @@ CsysType CsysTypes[] = {
 
 
 void *
-joinem( data, start, end, row, table, file )
+joinem(
+    data,
+    start,
+    end,
+    row,
+    table,
+    file
+ )
      void *data;
      off_t start;
      off_t end;
@@ -600,11 +628,11 @@ joinem( data, start, end, row, table, file )
     return data;
 }
 
-char *trim(  );
+char *trim(
+ );
 
-main( argc, argv )
-     int argc;
-     char *argv[];
+int 
+main (int argc, char *argv[])
 {
     int n, i, j, k;
     int nsys = 0;
@@ -644,13 +672,11 @@ main( argc, argv )
     off_t Start, End;
 
     if ( argc < 2 ) {
-	FPrint( Stderr,
-	        "usage: search table [-p] [-s] [-j] [-i keytable] [-m[bhisr]]\n" );
+	FPrint( Stderr, "usage: search table [-p] [-s] [-j] [-i keytable] [-m[bhisr]]\n" );
 	FPrint( Stderr, "		[Column]\n" );
 	FPrint( Stderr, "		[-R Column <Min> <Max>]\n" );
 	FPrint( Stderr, "		[-S[uuu] Column Column Range]\n" );
-	FPrint( Stderr,
-	        "		[-C[n] Column [... Column<n>] Range]\n" );
+	FPrint( Stderr, "		[-C[n] Column [... Column<n>] Range]\n" );
 	FPrint( Stderr, "		[-Z[wrap] Column Column]\n" );
 	exit( 1 );
     }
@@ -714,8 +740,7 @@ main( argc, argv )
 		    }
 
 		    if ( CsysTypes[i].name == NULL )
-			except( ex_search, "search: unknown option: %c",
-		                argv[n][1] );
+			except( ex_search, "search: unknown option: %c", argv[n][1] );
 
 		    arg = &argv[n][2];
 		    n++;
@@ -732,8 +757,7 @@ main( argc, argv )
 		    except( ex_search, "can't open table: %s : %s", argv[n]
 		            , exc_oserror(  ) );
 		if ( ( T2 = table_header( F2, 0 ) ) == NULL )
-		    except( ex_search, "can't read table header from: %s\n",
-		            argv[n] );
+		    except( ex_search, "can't read table header from: %s\n", argv[n] );
 		file2 = argv[n];
 
 		if ( ( Start = Seek( F2, 0, SEEK_CUR ) ) == -1 ) {
@@ -763,15 +787,13 @@ main( argc, argv )
 	if ( csys[nsys].nrange )
 	    Malloc( csys[nsys].range, sizeof( double ) * csys[nsys].nrange );
 
-	for ( i = 0; i < csys[nsys].naxes || ( *args && *args != 'C' );
-	      n++, i++ ) {
+	for ( i = 0; i < csys[nsys].naxes || ( *args && *args != 'C' ); n++, i++ ) {
 	    char *c1;
 	    char *c2;
 	    char *nchr;
 
 	    if ( n >= argc )
-		except( ex_search,
-	                "not enough columns for this coordinate system" );
+		except( ex_search, "not enough columns for this coordinate system" );
 
 	    c1 = argv[n];
 
@@ -784,10 +806,8 @@ main( argc, argv )
 	    else c2 = c1;
 
 	    if ( *args == 'C' || *args == '1' ) {
-		if ( T1 == NULL
-		     && ( T1 = table_header( F1, TABLE_PARSE ) ) == NULL )
-		    except( ex_search, "can't read table header from: %s\n",
-		            file1 );
+		if ( T1 == NULL && ( T1 = table_header( F1, TABLE_PARSE ) ) == NULL )
+		    except( ex_search, "can't read table header from: %s\n", file1 );
 
 		if ( !( csys[nsys].axis[i].c1 = table_colnum( T1, c1 ) ) )
 		    except( ex_search, "no column %s in keytable", c1 );
@@ -795,8 +815,7 @@ main( argc, argv )
 
 	    if ( *args == 'C' || *args == '2' ) {
 		if ( !( csys[nsys].axis[i].c2 = table_colnum( T2, c2 ) ) )
-		    except( ex_search, "no column %s in table %s\n", c2,
-		            file2 );
+		    except( ex_search, "no column %s in table %s\n", c2, file2 );
 
 	    }
 
@@ -817,13 +836,11 @@ main( argc, argv )
 	    char *here = NULL;
 
 	    if ( n >= argc )
-		except( ex_search,
-	                "not enough ranges given for this coordinate system.\n" );
+		except( ex_search, "not enough ranges given for this coordinate system.\n" );
 
 	    csys[nsys].range[i] = SAOstrtod( argv[n], &here );
 	    if ( *here )
-		except( ex_search, "this doesn't look like a range: %s",
-	                argv[n] );
+		except( ex_search, "this doesn't look like a range: %s", argv[n] );
 	}
 
 	naxes += csys[nsys].naxes;
@@ -844,9 +861,8 @@ main( argc, argv )
 
     for ( k = 0; k < naxes; k++ ) {
 	if ( axes[k]->search == NULL ) {
-	    if ( ( axes[k]->search
-	           = table_search( file2, table_colnam( T2, axes[k]->c2 )
-	                           , axes[k]->method, NULL ) ) == NULL ) {
+	    if ( ( axes[k]->search = table_search( file2, table_colnam( T2, axes[k]->c2 )
+	                                           , axes[k]->method, NULL ) ) == NULL ) {
 
 		except( ex_search, "can't access index for: %s column: %s\n",
 		        file2, table_colnam( T2, axes[k]->c2 ) );
@@ -864,8 +880,7 @@ main( argc, argv )
     }
     else if ( T1 && joiner ) {
 	if ( header )
-	    table_hdrput( ofile, T1, TBLHDR_VALUES | TBLHDR_TEXT, NULL, NULL,
-	                  0 );
+	    table_hdrput( ofile, T1, TBLHDR_VALUES | TBLHDR_TEXT, NULL, NULL, 0 );
 	table_ors( T1, '\t' );
 
 	if ( header ) {
@@ -882,9 +897,7 @@ main( argc, argv )
 	        lcol[ncol++] = hdrfix( ofile, table_colval( T1->header, j )
 		                       , table_colnum( T2,
 	                                               trim( table_colval
-	                                                     ( T1->header,
-	                                                       j ) ) ) ? 1 :
-	                               0, '\t' );
+	                                                     ( T1->header, j ) ) ) ? 1 : 0, '\t' );
 
 	    for ( j = 1; j <= T2->header->ncol; j++ )
 	        lcol[ncol++] = hdrfix( ofile, table_colval( T2->header, j )
@@ -892,16 +905,14 @@ main( argc, argv )
 	                                               trim( table_colval
 	                                                     ( T2->header,
 	                                                       j ) ) ) ? 2 :
-	                               0,
-	                               j == T2->header->ncol ? '\n' : '\t' );
+	                               0, j == T2->header->ncol ? '\n' : '\t' );
 
 	    if ( setcnt ) fprintf( ofile, "---------\t" );
 
 	    /* Output dashline
 	     */
 	    for ( i = 0; i < ncol; i++ ) {
-		table_dashes( ofile, lcol[i], ( i == ncol - 1 ) ? '\n'
-		              : '\t' );
+		table_dashes( ofile, lcol[i], ( i == ncol - 1 ) ? '\n' : '\t' );
 	    }
 	}
     }
@@ -931,8 +942,7 @@ main( argc, argv )
 
 	if ( setcnt ) {
 	    jdata.cache =
-	        ( RCache ) cache_init( sizeof( struct RCache ), 7967, 0, NULL,
-	                               NULL, rowcmp );
+	        ( RCache ) cache_init( sizeof( struct RCache ), 7967, 0, NULL, NULL, rowcmp );
 	}
 	else {
 	    jdata.cache = NULL;
@@ -940,8 +950,7 @@ main( argc, argv )
 
 	/* For each row in the input.
 	 */
-	while ( T1 == NULL
-	        || ( row1 = table_rowget( F1, T1, row, NULL, NULL, 0 ) ) ) {
+	while ( T1 == NULL || ( row1 = table_rowget( F1, T1, row, NULL, NULL, 0 ) ) ) {
 	    Range *R = NULL;    /* Intersection of all axes     */
 	    Range *r;           /* Search of one axis           */
 
@@ -969,8 +978,7 @@ main( argc, argv )
 			}
 		    case '1':{
 			    r = table_svalue( axes[i]->search, axes[i]->value,
-			                      ( vvector ) range_add, NULL,
-			                      X );
+			                      ( vvector ) range_add, NULL, X );
 			    break;
 			}
 		    case '2':{
@@ -988,27 +996,20 @@ main( argc, argv )
 
 			    if ( lo > hi ) {
 				r = table_srange( axes[i]->search, loval,
-				                  wpval,
-				                  ( vvector ) range_add, NULL,
-				                  X );
+				                  wpval, ( vvector ) range_add, NULL, X );
 				r = table_srange( axes[i]->search, zeval,
-				                  hival,
-				                  ( vvector ) range_add, r,
-				                  X );
+				                  hival, ( vvector ) range_add, r, X );
 			    }
 			    else {
 				r = table_srange( axes[i]->search, loval,
-				                  hival,
-				                  ( vvector ) range_add, NULL,
-				                  X );
+				                  hival, ( vvector ) range_add, NULL, X );
 			    }
 			    break;
 			}
 		    case '4':{
 			    double hi1 = axes[i]->pair->hi;
 			    double lo1 = axes[i]->pair->lo;
-			    double wp1 =
-			        axes[i]->pair->wp ? axes[i]->pair->wp : 0.0;
+			    double wp1 = axes[i]->pair->wp ? axes[i]->pair->wp : 0.0;
 
 			    double hi2 = axes[i]->hi;
 			    double lo2 = axes[i]->lo;
@@ -1034,57 +1035,39 @@ main( argc, argv )
 				if ( lo2 > hi2 ) {
 				    r = table_srange2( axes[i]->pair->search,
 				                       loval1, wpval1, loval2,
-				                       wpval2,
-				                       ( vvector ) range_add,
-				                       NULL, X );
+				                       wpval2, ( vvector ) range_add, NULL, X );
 				    r = table_srange2( axes[i]->pair->search,
 				                       loval1, wpval1, wpval2,
-				                       hival2,
-				                       ( vvector ) range_add,
-				                       NULL, X );
+				                       hival2, ( vvector ) range_add, NULL, X );
 				    r = table_srange2( axes[i]->pair->search,
 				                       wpval1, hival1, loval2,
-				                       wpval2,
-				                       ( vvector ) range_add,
-				                       r, X );
+				                       wpval2, ( vvector ) range_add, r, X );
 				    r = table_srange2( axes[i]->pair->search,
 				                       wpval1, hival1, wpval2,
-				                       hival2,
-				                       ( vvector ) range_add,
-				                       r, X );
+				                       hival2, ( vvector ) range_add, r, X );
 				}
 				else {
 				    r = table_srange2( axes[i]->pair->search,
 				                       wpval1, hival1, loval2,
-				                       hival2,
-				                       ( vvector ) range_add,
-				                       r, X );
+				                       hival2, ( vvector ) range_add, r, X );
 				    r = table_srange2( axes[i]->pair->search,
 				                       wpval1, hival1, loval2,
-				                       hival2,
-				                       ( vvector ) range_add,
-				                       r, X );
+				                       hival2, ( vvector ) range_add, r, X );
 				}
 			    }
 			    else {
 				if ( lo2 > hi2 ) {
 				    r = table_srange2( axes[i]->pair->search,
 				                       loval1, hival1, loval2,
-				                       wpval2,
-				                       ( vvector ) range_add,
-				                       r, X );
+				                       wpval2, ( vvector ) range_add, r, X );
 				    r = table_srange2( axes[i]->pair->search,
 				                       loval1, hival1, wpval2,
-				                       hival2,
-				                       ( vvector ) range_add,
-				                       r, X );
+				                       hival2, ( vvector ) range_add, r, X );
 				}
 				else {
 				    r = table_srange2( axes[i]->pair->search,
 				                       loval1, hival1, loval2,
-				                       hival2,
-				                       ( vvector ) range_add,
-				                       NULL, X );
+				                       hival2, ( vvector ) range_add, NULL, X );
 				}
 			    }
 			    break;
@@ -1093,9 +1076,7 @@ main( argc, argv )
 			    continue;
 			}
 		    default:{
-			    fprintf( stderr,
-			             "search error unknown axis type %c\n",
-			             axes[i]->type );
+			    fprintf( stderr, "search error unknown axis type %c\n", axes[i]->type );
 			    exit( 1 );
 			}
 		}
@@ -1142,12 +1123,8 @@ main( argc, argv )
 }
 
 
-void
-radecbox( ra, dec, width, r1, r2, d1, d2 )
-     double ra;
-     double dec;
-     double width;
-     double *r1, *r2, *d1, *d2;
+void 
+radecbox (double ra, double dec, double width, double *r1, double *r2, double *d1, double *d2)
 {
     double cosdec;
 
@@ -1181,7 +1158,11 @@ radecbox( ra, dec, width, r1, r2, d1, d2 )
 
 
 void
-slaDcs2c( double a, double b, double v[3] ) {
+slaDcs2c(
+    double a,
+    double b,
+    double v[3]
+ ) {
     double cosb;
 
     cosb = cos( b );
@@ -1191,7 +1172,12 @@ slaDcs2c( double a, double b, double v[3] ) {
 }
 
 double
-slaDsep( double a1, double b1, double a2, double b2 ) {
+slaDsep(
+    double a1,
+    double b1,
+    double a2,
+    double b2
+ ) {
     int i;
     double d, v1[3], v2[3], s2, c2;
 
@@ -1210,8 +1196,8 @@ slaDsep( double a1, double b1, double a2, double b2 ) {
 }
 
 
-progress( count )
-     int count;
+int 
+progress (int count)
 {
     if ( ( count % 1000 ) == 0 ) {
 	if ( ( count % 100000 ) == 0 ) {

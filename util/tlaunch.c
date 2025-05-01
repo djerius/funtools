@@ -14,16 +14,11 @@
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int got = 0;
     int doattach = 0;
@@ -69,8 +64,7 @@ main( argc, argv )
     }
     if ( optind >= argc ) {
 	fprintf( stderr,
-	         "usage: %s -a -i stdin -o stdout -e stderr -p pfile [command]\n",
-	         argv[0] );
+	         "usage: %s -a -i stdin -o stdout -e stderr -p pfile [command]\n", argv[0] );
 	return 1;
     }
     prog = argv[optind++];
@@ -78,9 +72,7 @@ main( argc, argv )
 	fprintf( stderr, "ERROR: use -p [file] with tlaunch2\n" );
 	return 1;
     }
-    if ( ( got =
-           Launch( prog, doattach, dofiles ? files : NULL,
-                   dopipes ? pipes : NULL ) ) )
+    if ( ( got = Launch( prog, doattach, dofiles ? files : NULL, dopipes ? pipes : NULL ) ) )
 	fprintf( stderr, "ERROR: got=%d\n", got );
     else
 	fprintf( stderr, "SUCCESS: got(%x)=%d\n", dofiles, got );

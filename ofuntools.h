@@ -72,86 +72,78 @@ typedef void *Fun;
 	((int) (((char *) (&(((p_type)NULL)->field))) - ((char *) NULL)))
 
 /* library declarations */
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* funopen.c */
-Fun  FunOpen _PRx((char *fname, char *mode, Fun copy));
-void FunFlush _PRx((Fun fun, char *plist));
-void FunClose _PRx((Fun fun));
+Fun  FunOpen (char *fname, char *mode, Fun copy);
+void FunFlush (Fun fun, char *plist);
+void FunClose (Fun fun);
 
 /* funim.c */
-void *FunImageGet _PRx((Fun fun, void *buf, char *plist));
-void *FunImageRowGet _PRx((Fun fun, void *buf, 
-			   int ystart, int ystop, char *plist));
-int  FunImagePut _PRx((Fun fun, void *buf, 
-		       int dim1, int dim2, int bitpix, char *plist));
-int  FunImageRowPut _PRx((Fun fun, void *buf, int rstart, int rstop,
-			  int dim1, int dim2, int bitpix, char *plist));
+void *FunImageGet (Fun fun, void *buf, char *plist);
+void *FunImageRowGet (Fun fun, void *buf, 
+			   int ystart, int ystop, char *plist);
+int  FunImagePut (Fun fun, void *buf, 
+		       int dim1, int dim2, int bitpix, char *plist);
+int  FunImageRowPut (Fun fun, void *buf, int rstart, int rstop,
+			  int dim1, int dim2, int bitpix, char *plist);
 
 /* funtab.c */
-void *FunTableRowGet _PRx((Fun fun, void *rows, int maxrow,
-			   char *plist, int *nrow));
-int FunTableRowPut _PRx((Fun fun, void *rows, int nrow,
-			 int idx, char *plist));
-off_t FunTableRowSeek _PRx((Fun fun, int nrow, char *plist));
+void *FunTableRowGet (Fun fun, void *rows, int maxrow,
+			   char *plist, int *nrow);
+int FunTableRowPut (Fun fun, void *rows, int nrow,
+			 int idx, char *plist);
+off_t FunTableRowSeek (Fun fun, int nrow, char *plist);
 
 /* funcol.c */
-void FunColumnActivate _PRx((Fun fun, char *s, char *plist));
-int FunColumnSelectArr _PRx((Fun fun, size_t size, char *mode,
+void FunColumnActivate (Fun fun, char *s, char *plist);
+int FunColumnSelectArr (Fun fun, size_t size, char *mode,
 			     char **names, char **types, char **modes,
-			     int *offsets, int nargs));
-#ifdef __STDC__
+			     int *offsets, int nargs);
 int FunColumnSelect(Fun fun, size_t size, char *plist, ...);
-#else
-int FunColumnSelect();
-#endif
-int FunColumnLookup _PRx((Fun fun, char *s, int which, char **name,
+int FunColumnLookup (Fun fun, char *s, int which, char **name,
 			  int *type, int *plist, int *offset, int *n, 
-			  int *width));
-int FunColumnLookup2 _PRx((Fun fun, char *s, int which,
+			  int *width);
+int FunColumnLookup2 (Fun fun, char *s, int which,
 			   double *tlmin, double *tlmax,
-			   double *binsize, double *tscale, double *tzero));
+			   double *binsize, double *tscale, double *tzero);
 /* funinfo.c */
-#ifdef __STDC__
 int FunInfoGet(Fun fun, ...);
 int FunInfoPut(Fun fun, ...);
-#else
-int FunInfoGet();
-int FunInfoPut();
-#endif
+
 /* funparam.c */
-Fun FUN_PRIMARY _PRx((Fun fun));
-char *FUN_RAW _PRx((char *name));
-int FunParamGetb _PRx((Fun fun, char *name, int n, int defval, int *got));
-int FunParamGeti _PRx((Fun fun, char *name, int n, int defval, int *got));
-longlong FunParamGetl _PRx((Fun fun, char *name, int n, longlong defval, int *got));
-double FunParamGetd _PRx((Fun fun, char *name, int n, double defval, int *got));
-char *FunParamGets _PRx((Fun fun, char *name, int n, char *defval, int *got));
-int FunParamPutb _PRx((Fun fun, char *name, int n, int value, char *comm,
-		       int append));
-int FunParamPuti _PRx((Fun fun, char *name, int n, int value, char *comm,
-		       int append));
-int FunParamPutl _PRx((Fun fun, char *name, int n, longlong value, char *comm,
-		       int append));
-int FunParamPutd _PRx((Fun fun, char *name, int n, double value,
-		       int prec, char *comm, int append));
-int FunParamPuts _PRx((Fun fun, char *name, int n, char *value, 
-		       char *comm, int append));
+Fun FUN_PRIMARY (Fun fun);
+char *FUN_RAW (char *name);
+int FunParamGetb (Fun fun, char *name, int n, int defval, int *got);
+int FunParamGeti (Fun fun, char *name, int n, int defval, int *got);
+longlong FunParamGetl (Fun fun, char *name, int n, longlong defval, int *got);
+double FunParamGetd (Fun fun, char *name, int n, double defval, int *got);
+char *FunParamGets (Fun fun, char *name, int n, char *defval, int *got);
+int FunParamPutb (Fun fun, char *name, int n, int value, char *comm,
+		       int append);
+int FunParamPuti (Fun fun, char *name, int n, int value, char *comm,
+		       int append);
+int FunParamPutl (Fun fun, char *name, int n, longlong value, char *comm,
+		       int append);
+int FunParamPutd (Fun fun, char *name, int n, double value,
+		       int prec, char *comm, int append);
+int FunParamPuts (Fun fun, char *name, int n, char *value, 
+		       char *comm, int append);
 
 /* funcalc.l */
-char *FunCalcParse _PRx((char *iname, char *oname,
-                         char *cmd, char *expr, char *autod, int args));
+char *FunCalcParse (char *iname, char *oname,
+                         char *cmd, char *expr, char *autod, int args);
 
 /* funwcs.c */
-struct WorldCoor *_FunWCS _PRx((Fun fun, int doimage));
+struct WorldCoor *_FunWCS (Fun fun, int doimage);
 
 /* funutil.c */
-int _FunKeyword _PRx((char *buf, char *key, char *env, char *vbuf, int vlen));
+int _FunKeyword (char *buf, char *key, char *env, char *vbuf, int vlen);
 
 /* funtoolsmainlib.c */
-void FuntoolsMainLibInit _PRx((void));
-
-_PRend
+void FuntoolsMainLibInit (void);
 
 /* for backward compatibility */
 #define FunEventsGet FunTableRowGet
@@ -235,6 +227,11 @@ _PRend
 #define FUN_ROW			59
 #define FUN_DIMS		60
 #define FUN_SECT_DIMS		61
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* __funtools.h */
 

@@ -146,26 +146,30 @@ typedef struct parseRec{
   ParsedToken tokens;
 } *Parse, ParseRec;
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-Parse ParseNew _PRx((char *delims, char *comchars, char *eot, char *mode));
+Parse ParseNew (char *delims, char *comchars, char *eot, char *mode);
 	
-ParsedLine ParseLineDup _PRx((Parse parse, ParsedLine line));
+ParsedLine ParseLineDup (Parse parse, ParsedLine line);
 
-int  ParseWord _PRx((int *delims, int *comtab, int nullvalues, int whitespace,
+int  ParseWord (int *delims, int *comtab, int nullvalues, int whitespace,
   	             char *lbuf, void *token, int tmax,
-		     int *lptr, int *lastd));
+		     int *lptr, int *lastd);
 
-int ParseLine _PRx((Parse parse, char *lbuf, char *mode));
+int ParseLine (Parse parse, char *lbuf, char *mode);
 
-int ParseAnalyze _PRx((Parse *parsers, int nparser, char *lbuf));
+int ParseAnalyze (Parse *parsers, int nparser, char *lbuf);
 
-int ParseReset _PRx((Parse parse, ParsedLine line, int state));
+int ParseReset (Parse parse, ParsedLine line, int state);
 
-int ParseFree _PRx((Parse parse));
+int ParseFree (Parse parse);
 
-int ParseDataType _PRx((char *s, double *dval, longlong *ival));
+int ParseDataType (char *s, double *dval, longlong *ival);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __parse.h */

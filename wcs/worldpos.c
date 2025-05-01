@@ -90,22 +90,18 @@
 #include <stdio.h>
 #include "wcs.h"
 
-int
-worldpos( xpix, ypix, wcs, xpos, ypos )
+int worldpos(
 /* Routine to determine accurate position for pixel coordinates */
 /* returns 0 if successful otherwise 1 = angle too large for projection; */
 /* does: -SIN, -TAN, -ARC, -NCP, -GLS or -SFL, -MER, -AIT projections */
 /* anything else is linear */
 /* Input: */
-     double xpix;               /* x pixel number  (RA or long without rotation) */
-     double ypix;               /* y pixel number  (Dec or lat without rotation) */
-     struct WorldCoor *wcs;     /* WCS parameter structure */
-
-/* Output: */
-     double *xpos;              /* x (RA) coordinate (deg) */
-     double *ypos;              /* y (dec) coordinate (deg) */
-
-{
+    double xpix,                /* x pixel number  (RA or long without rotation) */
+    double ypix,                /* y pixel number  (Dec or lat without rotation) */
+    struct WorldCoor *wcs,      /* WCS parameter structure */
+    double *xpos,               /* x (RA) coordinate (deg) */
+    double *ypos                /* y (dec) coordinate (deg) */
+ ) {
     double cosr, sinr, dx, dy, dz, tx;
     double sins, coss, dt, l, m, mg, da, dd, cos0, sin0;
     double rat = 0.0;
@@ -302,8 +298,7 @@ worldpos( xpix, ypix, wcs, xpos, ypos )
 	    dt = degrad( dt );
 	    dx = 2.0 * cos( dy ) * sin( dt / 2.0 );
 	    if ( dx == 0.0 ) dx = 1.0;
-	    geo1 =
-	        dt * sqrt( ( 1.0 + cos( dy ) * cos( dt / 2.0 ) ) / 2.0 ) / dx;
+	    geo1 = dt * sqrt( ( 1.0 + cos( dy ) * cos( dt / 2.0 ) ) / 2.0 ) / dx;
 	    geo3 = geo2 * sin( dy ) / sqrt( ( 1.0 + cos( dy ) ) / 2.0 );
 	    rat = ra0;
 	    dect = dec0;
@@ -336,8 +331,7 @@ worldpos( xpix, ypix, wcs, xpos, ypos )
 	    rat = asin( rat );
 	    mg = 1.0 + sin( dect ) * sin0 + cos( dect ) * cos0 * cos( rat );
 	    if ( fabs( mg ) < deps ) return 1;
-	    mg = 2.0 * ( sin( dect ) * cos0 -
-	                 cos( dect ) * sin0 * cos( rat ) ) / mg;
+	    mg = 2.0 * ( sin( dect ) * cos0 - cos( dect ) * sin0 * cos( rat ) ) / mg;
 	    if ( fabs( mg - m ) > deps ) rat = twopi / 2.0 - rat;
 	    rat = ra0 + rat;
 	    break;
@@ -352,9 +346,7 @@ worldpos( xpix, ypix, wcs, xpos, ypos )
 		a = atan2( l, mt );
 	    rat = ra0 - ( a / sin0 );
 	    r2 = ( l * l ) + ( mt * mt );
-	    dect =
-	        asin( 1.0 / ( sin0 * 2.0 ) *
-	              ( 1.0 + sin0 * sin0 * ( 1.0 - r2 ) ) );
+	    dect = asin( 1.0 / ( sin0 * 2.0 ) * ( 1.0 + sin0 * sin0 * ( 1.0 - r2 ) ) );
 	    break;
     }
 
@@ -373,8 +365,7 @@ worldpos( xpix, ypix, wcs, xpos, ypos )
 }                               /* End of worldpos */
 
 
-int
-worldpix( xpos, ypos, wcs, xpix, ypix )
+int worldpix(
 /*-----------------------------------------------------------------------*/
 /* routine to determine accurate pixel coordinates for an RA and Dec     */
 /* returns 0 if successful otherwise:                                    */
@@ -383,14 +374,12 @@ worldpix( xpos, ypos, wcs, xpix, ypix )
 /* does: SIN, TAN, ARC, NCP, GLS or SFL, MER, AIT, STG, CAR, COE projections    */
 /* anything else is linear                                               */
 /* Input: */
-     double xpos;               /* x (RA) coordinate (deg) */
-     double ypos;               /* y (dec) coordinate (deg) */
-     struct WorldCoor *wcs;     /* WCS parameter structure */
-
-/* Output: */
-     double *xpix;              /* x pixel number  (RA or long without rotation) */
-     double *ypix;              /* y pixel number  (dec or lat without rotation) */
-{
+    double xpos,                /* x (RA) coordinate (deg) */
+    double ypos,                /* y (dec) coordinate (deg) */
+    struct WorldCoor *wcs,      /* WCS parameter structure */
+    double *xpix,               /* x pixel number  (RA or long without rotation) */
+    double *ypix                /* y pixel number  (dec or lat without rotation) */
+ ) {
     double dx, dy, ra0, dec0, ra, dec, coss, sins, dt, da, dd, sint;
     double l, m, geo1, geo2, geo3, sinr, cosr, tx, x, a2, a3, a4;
     double rthea, gamby2, a, b, c, phi, an, rap, v, tthea, co1, co2, co3, co4, ansq;    /* COE */
@@ -486,8 +475,7 @@ worldpix( xpos, ypos, wcs, xpix, ypix )
 	    if ( sint <= 0.0 ) return 1;
 	    m = sins * sin( dec0 ) + coss * cos( dec0 ) * cos( ra - ra0 );
 	    l = l / m;
-	    m = ( sins * cos( dec0 ) -
-	          coss * sin( dec0 ) * cos( ra - ra0 ) ) / m;
+	    m = ( sins * cos( dec0 ) - coss * sin( dec0 ) * cos( ra - ra0 ) ) / m;
 	    break;
 
 	case WCS_ARC:          /* -ARC Arc */
@@ -500,8 +488,7 @@ worldpix( xpos, ypos, wcs, xpix, ypix )
 	    else
 		m = 1.0;
 	    l = l * m;
-	    m = ( sins * cos( dec0 ) -
-	          coss * sin( dec0 ) * cos( ra - ra0 ) ) * m;
+	    m = ( sins * cos( dec0 ) - coss * sin( dec0 ) * cos( ra - ra0 ) ) * m;
 	    break;
 
 	case WCS_NCP:          /* -NCP North celestial pole */
@@ -557,8 +544,7 @@ worldpix( xpos, ypos, wcs, xpix, ypix )
 	    dt = degrad( dt );
 	    dx = 2.0 * cos( dy ) * sin( dt / 2.0 );
 	    if ( dx == 0.0 ) dx = 1.0;
-	    geo1 =
-	        dt * sqrt( ( 1.0 + cos( dy ) * cos( dt / 2.0 ) ) / 2.0 ) / dx;
+	    geo1 = dt * sqrt( ( 1.0 + cos( dy ) * cos( dt / 2.0 ) ) / 2.0 ) / dx;
 	    geo3 = geo2 * sin( dy ) / sqrt( ( 1.0 + cos( dy ) ) / 2.0 );
 	    dt = sqrt( ( 1.0 + cos( dec ) * cos( da ) ) / 2.0 );
 	    if ( fabs( dt ) < deps ) return 3;
@@ -589,20 +575,14 @@ worldpix( xpos, ypos, wcs, xpix, ypix )
 	    co1 = a / 2.;
 	    co2 = -0.125 * a2 + b / 2.;
 	    co3 = -0.25 * a * b + 0.0625 * a3 + c / 2.0;
-	    co4 =
-	        -0.125 * b * b - 0.25 * a * c + 0.1875 * b * a2 -
-	        ( 5.0 / 128.0 ) * a4;
+	    co4 = -0.125 * b * b - 0.25 * a * c + 0.1875 * b * a2 - ( 5.0 / 128.0 ) * a4;
 	    phi = ra0 - ra;
 	    an = phi * gamby2;
 	    v = dec - dec0;
-	    rap =
-	        rthea * ( 1.0 +
-	                  v * ( co1 + v * ( co2 + v * ( co3 + v * co4 ) ) ) );
+	    rap = rthea * ( 1.0 + v * ( co1 + v * ( co2 + v * ( co3 + v * co4 ) ) ) );
 	    ansq = an * an;
 	    if ( wcs->rotmat )
-		l = rap * an * ( 1.0 -
-	                         ansq / 6.0 ) * ( wcs->cd[0] /
-	                                          fabs( wcs->cd[0] ) );
+		l = rap * an * ( 1.0 - ansq / 6.0 ) * ( wcs->cd[0] / fabs( wcs->cd[0] ) );
 	    else
 		l = rap * an * ( 1.0 - ansq / 6.0 ) * ( xinc / fabs( xinc ) );
 	    m = rthea - ( rap * ( 1.0 - ansq / 2.0 ) );

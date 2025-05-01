@@ -16,16 +16,11 @@
  *
  */
 
-#ifdef ANSI_FUNC
 void
-_FunCopyBinDelete( FITSHead header, int n )
-#else
-void
-_FunCopyBinDelete( header, n )
-     FITSHead header;
-     int n;
-#endif
-{
+_FunCopyBinDelete(
+    FITSHead header,
+    int n
+ ) {
     int i;
     char *s;
     FITSCard card;
@@ -119,16 +114,11 @@ _FunCopyBinDelete( header, n )
  * This beastly routine is used by FunImagePut to make ordinary life easier.
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunCopy2ImageHeader( Fun from, Fun to )
-#else
-int
-_FunCopy2ImageHeader( from, to )
-     Fun from;                  /* input FITS header */
-     Fun to;                    /* output FITS header */
-#endif
-{
+_FunCopy2ImageHeader(
+    Fun from,
+    Fun to
+ ) {
     int simple = 1;
     int i, j;
     int cols;
@@ -156,8 +146,7 @@ _FunCopy2ImageHeader( from, to )
     ft_headseti( to->header, "NAXIS", 0, from->odims, "number of axes", 1 );
     ft_headseti( to->header, "NAXIS", 1, from->odim1, "x axis dimension", 1 );
     if ( from->odims >= 2 ) {
-	ft_headseti( to->header,
-	             "NAXIS", 2, from->odim2, "y axis dimension", 1 );
+	ft_headseti( to->header, "NAXIS", 2, from->odim2, "y axis dimension", 1 );
 
     }
     else {
@@ -213,45 +202,33 @@ _FunCopy2ImageHeader( from, to )
 	    /* this assumes the TFORMnnn are in order ... hmmm! */
 	    for ( j = 1; j <= 2; j++ ) {
 		if ( ( i = from->bin[j - 1] + 1 ) >= 1 ) {
-		    if ( ( s =
-		           ft_headgets( from->header, "TCTYP", i, NULL,
-		                        &card ) ) && card ) {
+		    if ( ( s = ft_headgets( from->header, "TCTYP", i, NULL, &card ) ) && card ) {
 			ft_headapps( to->header, "CTYPE", j, s, NULL );
 			xfree( s );
 		    }
-		    if ( ( s =
-		           ft_headgets( from->header, "TCRVL", i, NULL,
-		                        &card ) ) && card ) {
+		    if ( ( s = ft_headgets( from->header, "TCRVL", i, NULL, &card ) ) && card ) {
 			ft_headappv( to->header, "CRVAL", j, s, NULL );
 			xfree( s );
 		    }
-		    if ( ( dval =
-		           ft_headgetr( from->header, "TCDLT", i, 0.0,
-		                        &card ) ) && card ) {
+		    if ( ( dval = ft_headgetr( from->header, "TCDLT", i, 0.0, &card ) ) && card ) {
 			/* factor in binsize */
-			if ( from->cols[i - 1]
+		        if ( from->cols[i - 1]
 			     && ( from->cols[i - 1]->binsiz > 0 ) )
 			    dval *= from->cols[i - 1]->binsiz;
-			ft_headsetr( to->header, "CDELT", j, dval, 7, NULL,
-			             1 );
+			ft_headsetr( to->header, "CDELT", j, dval, 7, NULL, 1 );
 		    }
-		    if ( ( s =
-		           ft_headgets( from->header, "TCROT", i, NULL,
-		                        &card ) ) && card ) {
+		    if ( ( s = ft_headgets( from->header, "TCROT", i, NULL, &card ) ) && card ) {
 			ft_headappv( to->header, "CROTA", j, s, NULL );
 			xfree( s );
 		    }
-		    if ( ( dval =
-		           ft_headgetr( from->header, "TCRPX", i, 0.0,
-		                        &card ) ) && card ) {
+		    if ( ( dval = ft_headgetr( from->header, "TCRPX", i, 0.0, &card ) ) && card ) {
 			/* convert WCS center value from physical to image coords */
 			if ( from->cols[i - 1] ) {
 			    dval = tlp2i( dval,
 			                  from->cols[i - 1]->tlmin,
 			                  from->cols[i - 1]->binsiz, 'D' );
 			}
-			ft_headsetr( to->header, "CRPIX", j, dval, 7, NULL,
-			             1 );
+			ft_headsetr( to->header, "CRPIX", j, dval, 7, NULL, 1 );
 		    }
 		}
 	    }
@@ -277,22 +254,19 @@ _FunCopy2ImageHeader( from, to )
 		ft_headsetr( to->header, "BZERO", 0, dval, 7, "", 1 );
 	    }
 	    /* deal with the IRAF DETSEC keyword */
-	    if ( ( s =
-	           ft_headgets( from->header, "DATASEC", 0, NULL, &card ) )
+	    if ( ( s = ft_headgets( from->header, "DATASEC", 0, NULL, &card ) )
 	         && card ) {
 		int dx0, dx1, dy0, dy1;
 		char s1[SZ_LINE], s2[SZ_LINE], s3[SZ_LINE], s4[SZ_LINE];
 		char *t = s;
 		if ( *t == '[' ) t++;
 		if ( sscanf
-		     ( t, "%[-0-9.*] : %[-0-9.*] , %[-0-9.*] : %[-0-9.*]", s1,
-		       s2, s3, s4 ) == 4 ) {
+		     ( t, "%[-0-9.*] : %[-0-9.*] , %[-0-9.*] : %[-0-9.*]", s1, s2, s3, s4 ) == 4 ) {
 		    dx0 = MAX( 1, atoi( s1 ) - from->x0 + 1 );
 		    dx1 = MIN( from->odim1, atoi( s2 ) - from->x0 + 1 );
 		    dy0 = MAX( 1, atoi( s3 ) - from->y0 + 1 );
 		    dy1 = MIN( from->odim2, atoi( s4 ) - from->y0 + 1 );
-		    snprintf( s1, SZ_LINE, "[%d:%d,%d:%d]", dx0, dx1, dy0,
-		              dy1 );
+		    snprintf( s1, SZ_LINE, "[%d:%d,%d:%d]", dx0, dx1, dy0, dy1 );
 		    ft_headsets( to->header, "DATASEC", 0, s1, NULL, 1 );
 		}
 		xfree( s );
@@ -308,14 +282,12 @@ _FunCopy2ImageHeader( from, to )
     crpix1 = ft_headgetr( to->header, "CRPIX", 1, 0.0, &card );
     if ( card != NULL ) {
 	crpix1 = ( crpix1 + 1.0 - from->x0 - 0.5 ) / from->block + 0.5;
-	ft_headsetr( to->header, "CRPIX", 1, crpix1, 7, "reference point",
-	             1 );
+	ft_headsetr( to->header, "CRPIX", 1, crpix1, 7, "reference point", 1 );
     }
     crpix2 = ft_headgetr( to->header, "CRPIX", 2, 0.0, &card );
     if ( card != NULL ) {
 	crpix2 = ( crpix2 + 1.0 - from->y0 - 0.5 ) / from->block + 0.5;
-	ft_headsetr( to->header, "CRPIX", 2, crpix2, 7, "reference point",
-	             1 );
+	ft_headsetr( to->header, "CRPIX", 2, crpix2, 7, "reference point", 1 );
     }
 
     /* update degrees/pixel  */
@@ -337,8 +309,7 @@ _FunCopy2ImageHeader( from, to )
 	    dval = ft_headgetr( to->header, tbuf, 0, 0.0, &card );
 	    if ( card != NULL ) {
 		dval *= from->block;
-		ft_headsetr( to->header, tbuf, 0, dval, 7, "WCS matrix value",
-		             1 );
+		ft_headsetr( to->header, tbuf, 0, dval, 7, "WCS matrix value", 1 );
 	    }
 	}
     }
@@ -355,12 +326,8 @@ _FunCopy2ImageHeader( from, to )
 	    ltv1 = 1.0 - ( int ) ( from->min1 + 0.5 );
 	    ltv2 = 1.0 - ( int ) ( from->min2 + 0.5 );
 	}
-	ltv1 =
-	    ( ltv1 + 1.0 - from->x0 -
-	      0.5 ) / ( from->block * from->binsiz1 ) + 0.5;
-	ltv2 =
-	    ( ltv2 + 1.0 - from->y0 -
-	      0.5 ) / ( from->block * from->binsiz2 ) + 0.5;
+	ltv1 = ( ltv1 + 1.0 - from->x0 - 0.5 ) / ( from->block * from->binsiz1 ) + 0.5;
+	ltv2 = ( ltv2 + 1.0 - from->y0 - 0.5 ) / ( from->block * from->binsiz2 ) + 0.5;
 	ft_headsetr( to->header, "LTV", 1, ltv1, 7, "IRAF ref. point", 1 );
 	ft_headsetr( to->header, "LTV", 2, ltv2, 7, "IRAF ref. point", 1 );
 
@@ -373,14 +340,10 @@ _FunCopy2ImageHeader( from, to )
 	ltm2_1 /= ( from->block * from->binsiz2 );
 	ltm1_2 /= ( from->block * from->binsiz1 );
 	ltm2_2 /= ( from->block * from->binsiz2 );
-	ft_headsetr( to->header, "LTM1_1", 0, ltm1_1, 7, "IRAF matrix value",
-	             1 );
-	ft_headsetr( to->header, "LTM2_1", 0, ltm2_1, 7, "IRAF matrix value",
-	             1 );
-	ft_headsetr( to->header, "LTM1_2", 0, ltm1_2, 7, "IRAF matrix value",
-	             1 );
-	ft_headsetr( to->header, "LTM2_2", 0, ltm2_2, 7, "IRAF matrix value",
-	             1 );
+	ft_headsetr( to->header, "LTM1_1", 0, ltm1_1, 7, "IRAF matrix value", 1 );
+	ft_headsetr( to->header, "LTM2_1", 0, ltm2_1, 7, "IRAF matrix value", 1 );
+	ft_headsetr( to->header, "LTM1_2", 0, ltm1_2, 7, "IRAF matrix value", 1 );
+	ft_headsetr( to->header, "LTM2_2", 0, ltm2_2, 7, "IRAF matrix value", 1 );
     }
 
     return ( 1 );

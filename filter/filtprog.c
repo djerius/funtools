@@ -15,15 +15,10 @@
  * FilterProgStart -- start the filtering process
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgStart( Filter filter )
-#else
-int
-FilterProgStart( filter )
-     Filter filter;
-#endif
-{
+FilterProgStart(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -41,15 +36,10 @@ FilterProgStart( filter )
  * FilterProgOpen -- return filter program as a file for writing
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgOpen( Filter filter )
-#else
-int
-FilterProgOpen( filter )
-     Filter filter;
-#endif
-{
+FilterProgOpen(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -60,8 +50,7 @@ FilterProgOpen( filter )
 	    FilterProgLoad_C( filter );
 	    break;
 	default:
-	    gerror( stderr, "unknown filter technique: %d\n",
-	            filter->method );
+	    gerror( stderr, "unknown filter technique: %d\n", filter->method );
 	    return ( 0 );
     }
 
@@ -79,15 +68,10 @@ FilterProgOpen( filter )
  * FilterProgPrepend -- prepend to the filter
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgPrepend( Filter filter )
-#else
-int
-FilterProgPrepend( filter )
-     Filter filter;
-#endif
-{
+FilterProgPrepend(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -104,15 +88,10 @@ FilterProgPrepend( filter )
  * FilterProgWrite -- write the symbols
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgWrite( Filter filter )
-#else
-int
-FilterProgWrite( filter )
-     Filter filter;
-#endif
-{
+FilterProgWrite(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -129,15 +108,10 @@ FilterProgWrite( filter )
  * FilterProgAppend -- append the filter program body
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgAppend( Filter filter )
-#else
-int
-FilterProgAppend( filter )
-     Filter filter;
-#endif
-{
+FilterProgAppend(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -154,15 +128,10 @@ FilterProgAppend( filter )
  * FilterProgClose -- close the filter program file
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgClose( Filter filter )
-#else
-int
-FilterProgClose( filter )
-     Filter filter;
-#endif
-{
+FilterProgClose(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -183,15 +152,10 @@ FilterProgClose( filter )
  * FilterProgCompile -- compile the filter program
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgCompile( Filter filter )
-#else
-int
-FilterProgCompile( filter )
-     Filter filter;
-#endif
-{
+FilterProgCompile(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -212,15 +176,10 @@ FilterProgCompile( filter )
  * FilterProgEnd -- end the filtering process
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterProgEnd( Filter filter )
-#else
-int
-FilterProgEnd( filter )
-     Filter filter;
-#endif
-{
+FilterProgEnd(
+    Filter filter
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( 0 );
@@ -238,16 +197,11 @@ FilterProgEnd( filter )
  * FilterLexName -- return the "in-expression" name
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterLexName( Filter filter, char *name )
-#else
-char *
-FilterLexName( filter, name )
-     Filter filter;
-     char *name;
-#endif
-{
+FilterLexName(
+    Filter filter,
+    char *name
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( name );
@@ -264,16 +218,11 @@ FilterLexName( filter, name )
  * FilterLexRoutine1 -- return the beginning of the routine string
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterLexRoutine1( Filter filter, char *name )
-#else
-char *
-FilterLexRoutine1( filter, name )
-     Filter filter;
-     char *name;
-#endif
-{
+FilterLexRoutine1(
+    Filter filter,
+    char *name
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( NULL );
@@ -290,16 +239,11 @@ FilterLexRoutine1( filter, name )
  * FilterLexRoutine2 -- return the beginning of the routine string
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterLexRoutine2( Filter filter, char *name )
-#else
-char *
-FilterLexRoutine2( filter, name )
-     Filter filter;
-     char *name;
-#endif
-{
+FilterLexRoutine2(
+    Filter filter,
+    char *name
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( NULL );
@@ -316,16 +260,11 @@ FilterLexRoutine2( filter, name )
  * FilterLexRegion1 -- return the beginning of the region string
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterLexRegion1( Filter filter, char *name )
-#else
-char *
-FilterLexRegion1( filter, name )
-     Filter filter;
-     char *name;
-#endif
-{
+FilterLexRegion1(
+    Filter filter,
+    char *name
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( NULL );
@@ -342,16 +281,11 @@ FilterLexRegion1( filter, name )
  * FilterLexRegion2 -- return the end of the region string
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterLexRegion2( Filter filter, char *name )
-#else
-char *
-FilterLexRegion2( filter, name )
-     Filter filter;
-     char *name;
-#endif
-{
+FilterLexRegion2(
+    Filter filter,
+    char *name
+ ) {
     /* make sure we have something to play with */
     if ( filter == NULL )
 	return ( NULL );

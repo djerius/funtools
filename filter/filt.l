@@ -5,6 +5,7 @@
 %top {
 /* stdio.h: fileno */
 #define _POSIX_C_SOURCE 200112L
+#define YY_USE_PROTOS 1
 }
 
 %{
@@ -181,32 +182,32 @@ static int vargs[] =     {'y', 'o', 'y', 'o',
 
 static int _FiltLexTypeCmp(const void *s1, const void *s2);
 static int _FiltLexTypeMatch(int ftype, int ttype);
-static int _FiltLexAccel _PRx((int n));
-static int _FiltLexRegionPanda _PRx((void));
-static int _FiltLexLcx _PRx((void));
-static int _FiltLexArgCheck _PRx((char *name, int args));
-static int _FiltLexNeedOp _PRx((int i, char *s));
-static void _FiltLexOp _PRx((char *s));
-static void _FiltLexTypeSet _PRx((int type));
-static void _FiltLexNew _PRx((void));
-static void _FiltLexParen _PRx((char *s));
-static void _FiltLexCat _PRx((char *s));
-static void _FiltLexRegionStart _PRx((int docols));
-static void _FiltLexRegionVal _PRx((char *s));
-static void _FiltLexRegionEnd _PRx((void));
-static void _FiltLexRangeAdd _PRx((char *xname, char *str, int type, int n, int maxlen));
-static void _FiltLexArgSave _PRx((double dval));
-static void _FiltLexSetWcs _PRx((char *s));
-static void _FiltLexWcsCols _PRx((FITSHead header, char *name1, char *name2));
-static void _FiltLexNum _PRx((int lcx));
-static void _FiltLexEnd _PRx((void));
-static void _FiltLexMake _PRx((void));
-static char *_FiltLexGetWcs _PRx((void));
+static int _FiltLexAccel (int n);
+static int _FiltLexRegionPanda (void);
+static int _FiltLexLcx (void);
+static int _FiltLexArgCheck (char *name, int args);
+static int _FiltLexNeedOp (int i, char *s);
+static void _FiltLexOp (char *s);
+static void _FiltLexTypeSet (int type);
+static void _FiltLexNew (void);
+static void _FiltLexParen (char *s);
+static void _FiltLexCat (char *s);
+static void _FiltLexRegionStart (int docols);
+static void _FiltLexRegionVal (char *s);
+static void _FiltLexRegionEnd (void);
+static void _FiltLexRangeAdd (char *xname, char *str, int type, int n, int maxlen);
+static void _FiltLexArgSave (double dval);
+static void _FiltLexSetWcs (char *s);
+static void _FiltLexWcsCols (FITSHead header, char *name1, char *name2);
+static void _FiltLexNum (int lcx);
+static void _FiltLexEnd (void);
+static void _FiltLexMake (void);
+static char *_FiltLexGetWcs (void);
 static int _FiltIncMask(FilterMask masks, int maxmask, int nmask);
 static int _FiltFitsMask(char *filename, FilterMask *rmasks, FITSHead *rhead, int *nreg);
 static void bin2num(char *d, char *s, int maxlen);
 
-int _filterror _PRx((char *msg));
+int _filterror (char *msg);
 %}
 
 DIG	[0-9]

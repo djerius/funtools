@@ -5,6 +5,7 @@
 %top {
 /* math.h: M_PI */
 #define _XOPEN_SOURCE 1
+#define YY_USE_PROTOS 1
 }
 
 %{

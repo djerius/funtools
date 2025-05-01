@@ -44,11 +44,11 @@
 #include "wcs.h"
 
 void
-distortinit( wcs, hstring )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     const char *hstring;       /* character string containing FITS header information
+distortinit(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    const char *hstring         /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-{
+ ) {
     int i, j, m;
     char keyword[12];
 
@@ -63,8 +63,7 @@ distortinit( wcs, hstring )
 	}
 	else {
 	    if ( !hgeti4( hstring, "A_ORDER", &wcs->distort.a_order ) ) {
-		setwcserr
-		    ( "DISTINIT: Missing A_ORDER keyword for Spitzer distortion" );
+		setwcserr( "DISTINIT: Missing A_ORDER keyword for Spitzer distortion" );
 	    }
 	    else {
 		m = wcs->distort.a_order;
@@ -81,8 +80,7 @@ distortinit( wcs, hstring )
 		}
 	    }
 	    if ( !hgeti4( hstring, "B_ORDER", &wcs->distort.b_order ) ) {
-		setwcserr
-		    ( "DISTINIT: Missing B_ORDER keyword for Spitzer distortion" );
+		setwcserr( "DISTINIT: Missing B_ORDER keyword for Spitzer distortion" );
 	    }
 	    else {
 		m = wcs->distort.b_order;
@@ -99,8 +97,7 @@ distortinit( wcs, hstring )
 		}
 	    }
 	    if ( !hgeti4( hstring, "AP_ORDER", &wcs->distort.ap_order ) ) {
-		setwcserr
-		    ( "DISTINIT: Missing AP_ORDER keyword for Spitzer distortion" );
+		setwcserr( "DISTINIT: Missing AP_ORDER keyword for Spitzer distortion" );
 	    }
 	    else {
 		m = wcs->distort.ap_order;
@@ -117,8 +114,7 @@ distortinit( wcs, hstring )
 		}
 	    }
 	    if ( !hgeti4( hstring, "BP_ORDER", &wcs->distort.bp_order ) ) {
-		setwcserr
-		    ( "DISTINIT: Missing BP_ORDER keyword for Spitzer distortion" );
+		setwcserr( "DISTINIT: Missing BP_ORDER keyword for Spitzer distortion" );
 	    }
 	    else {
 		m = wcs->distort.bp_order;
@@ -144,11 +140,10 @@ distortinit( wcs, hstring )
  * return 0 if at least one such field is found, else -1.  */
 
 int
-DelDistort( header, verbose )
-     char *header;
-     int verbose;
-
-{
+DelDistort(
+    char *header,
+    int verbose
+ ) {
     char keyword[16];
     char str[32];
     int i, j, m;
@@ -228,11 +223,13 @@ DelDistort( header, verbose )
 }
 
 void
-foc2pix( wcs, x, y, u, v )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     double x, y;               /* Focal plane coordinates */
-     double *u, *v;             /* Image pixel coordinates (returned) */
-{
+foc2pix(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    double x,
+    double y,                   /* Focal plane coordinates */
+    double *u,
+    double *v                   /* Image pixel coordinates (returned) */
+ ) {
     int m, n, i, j, k;
     double s[DISTMAX], sum;
     double temp_x, temp_y;
@@ -288,11 +285,13 @@ foc2pix( wcs, x, y, u, v )
 
 
 void
-pix2foc( wcs, u, v, x, y )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     double u, v;               /* Image pixel coordinates */
-     double *x, *y;             /* Focal plane coordinates (returned) */
-{
+pix2foc(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    double u,
+    double v,                   /* Image pixel coordinates */
+    double *x,
+    double *y                   /* Focal plane coordinates (returned) */
+ ) {
     int m, n, i, j, k;
     double s[DISTMAX], sum;
     double temp_u, temp_v;
@@ -353,11 +352,10 @@ pix2foc( wcs, u, v, x, y )
 /* SETDISTCODE -- Set WCS distortion code from CTYPEi in FITS header */
 
 void
-setdistcode( wcs, ctype )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     char *ctype;               /* Value of CTYPEi from FITS header */
-
-{
+setdistcode(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    char *ctype                 /* Value of CTYPEi from FITS header */
+ ) {
     char *extension;
     int lctype;
 
@@ -378,10 +376,9 @@ setdistcode( wcs, ctype )
 /* GETDISTCODE -- Return NULL if no distortion or code from wcs.h */
 
 char *
-getdistcode( wcs )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-
-{
+getdistcode(
+    struct WorldCoor *wcs       /* World coordinate system structure */
+ ) {
     char *dcode;                /* Distortion string for CTYPEi */
 
     if ( wcs->distcode == DISTORT_SIRTF ) {

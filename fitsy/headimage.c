@@ -16,9 +16,9 @@
    and #FITSTable data structures.
  */
 void
-ft_syncdata( fits )
-     FITSHead fits;
-{
+ft_syncdata(
+    FITSHead fits
+ ) {
     if ( fits == NULL ) return;
 
     if ( fits->basic ) ft_basicfree( fits->basic );
@@ -34,9 +34,9 @@ ft_syncdata( fits )
    structures into a #FITSHead.
  */
 void
-ft_synchead( fits )
-     FITSHead fits;
-{
+ft_synchead(
+    FITSHead fits
+ ) {
     if ( fits == NULL ) return;
 
     if ( fits->basic ) ft_basicstorhead( fits, fits->basic );
@@ -47,10 +47,10 @@ ft_synchead( fits )
 /* Load image FITS values into the #FITSImage structure.
  */
 FITSImage
-ft_imageloadhead( fits )
-     FITSHead fits;             /* FITS header to read/write image
+ft_imageloadhead(
+    FITSHead fits               /* FITS header to read/write image
                                    cards from/to.       */
-{
+ ) {
     FITSImage image = NULL;
     FITSCard card;
 
@@ -128,10 +128,10 @@ ft_imageloadhead( fits )
 /* Store image FITS values from a #FITSImage structure into a header.
  */
 void
-ft_imagestorhead( fits, image )
-     FITSHead fits;
-     FITSImage image;           /* Image data to copy into header. */
-{
+ft_imagestorhead(
+    FITSHead fits,
+    FITSImage image             /* Image data to copy into header. */
+ ) {
     if ( fits == NULL ) return;
     if ( image == NULL ) return;
 
@@ -175,18 +175,18 @@ ft_imagestorhead( fits, image )
 /* Free a FITSImage data structure.
  */
 void
-ft_imagefree( image )
-     FITSImage image;
-{
+ft_imagefree(
+    FITSImage image
+ ) {
     if ( image ) ( void ) Free( image );
 }
 
 /* Load basic FITS values into the #FITSBasic structure.
  */
 FITSBasic
-ft_basicloadhead( fits )
-     FITSHead fits;
-{
+ft_basicloadhead(
+    FITSHead fits
+ ) {
     FITSBasic basic;
     FITSCard card;
     int i;
@@ -226,8 +226,7 @@ ft_basicloadhead( fits )
 	for ( i = 1; i <= basic->naxes; i++ )
 	    basic->datapixls *= basic->naxis[i - 1];
 
-	basic->datapixls =
-	    basic->gcount * ( basic->pcount + basic->datapixls );
+	basic->datapixls = basic->gcount * ( basic->pcount + basic->datapixls );
     }
 
     basic->databytes = basic->datapixls * ( Abs( basic->bitpix ) / 8 );
@@ -240,10 +239,10 @@ ft_basicloadhead( fits )
 /* Store basic FITS values from a #FITSBasic structre into a fits header.
  */
 void
-ft_basicstorhead( fits, basic )
-     FITSHead fits;
-     FITSBasic basic;           /* FITSBasic structure  */
-{
+ft_basicstorhead(
+    FITSHead fits,
+    FITSBasic basic             /* FITSBasic structure  */
+ ) {
     FITSCard card;
 
     int i;
@@ -273,9 +272,9 @@ ft_basicstorhead( fits, basic )
 /* Free a FITSBasic data structure.
  */
 void
-ft_basicfree( basic )
-     FITSBasic basic;
-{
+ft_basicfree(
+    FITSBasic basic
+ ) {
     if ( basic->name ) ( void ) Free( basic->name );
     if ( basic->hduname ) ( void ) Free( basic->hduname );
     if ( basic ) ( void ) Free( basic );

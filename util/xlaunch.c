@@ -19,16 +19,11 @@ static pid_t pid = 0;
 #if HAVE_MINGW32==0
 
 /* wait for child process to start, using waitpid() */
-#ifdef ANSI_FUNC
 static int
-launch_pipes( int *pipes, int flag )
-#else
-static int
-launch_pipes( pipes, flag )
-     int *pipes;
-     int flag;
-#endif
-{
+launch_pipes(
+    int *pipes,
+    int flag
+ ) {
     int i;
     char tbuf[SZ_LINE];
     if ( pipes ) {
@@ -39,8 +34,7 @@ launch_pipes( pipes, flag )
 	     || ( pipe( &pipes[2] ) < 0 ) ) return -1;
 	if ( flag ) {
 #if HAVE_SETENV
-	    snprintf( tbuf, SZ_LINE - 1, "%d,%d,%d,%d",
-	              pipes[0], pipes[1], pipes[2], pipes[3] );
+	    snprintf( tbuf, SZ_LINE - 1, "%d,%d,%d,%d", pipes[0], pipes[1], pipes[2], pipes[3] );
 	    setenv( "LAUNCH_PIPES", tbuf, 1 );
 #else
 	    snprintf( tbuf, SZ_LINE - 1, "LAUNCH_PIPES=%d,%d,%d,%d",
@@ -52,15 +46,10 @@ launch_pipes( pipes, flag )
     return 0;
 }
 
-#ifdef ANSI_FUNC
 static int
-cleanup_pipes( int *pipes )
-#else
-static int
-cleanup_pipes( pipes )
-     int *pipes;
-#endif
-{
+cleanup_pipes(
+    int *pipes
+ ) {
     if ( pipes ) {
 	/* close child pipes */
 	close( pipes[1] );
@@ -76,15 +65,10 @@ cleanup_pipes( pipes )
 
 #if LAUNCH_USE_WAITPID
 /* wait for child process to start, using waitpid() */
-#ifdef ANSI_FUNC
 static int
-launch_waitstart( pid_t pid )
-#else
-static int
-launch_waitstart( pid )
-     pid_t pid;
-#endif
-{
+launch_waitstart(
+    pid_t pid
+ ) {
     int i, got;
     int status = 0;
     struct timeval tv;
@@ -127,18 +111,13 @@ launch_waitstart( pid )
  *  Addison-Wesley Publishing Co, 1992
  *  p. 314
  */
-#ifdef ANSI_FUNC
 static int
-launch_fork_exec( char *cmdstring, int attach, char **stdfiles, int *pipes )
-#else
-static int
-launch_fork_exec( cmdstring, attach, stdfiles, pipes )
-     char *cmdstring;
-     int attach;
-     char **stdfiles;
-     int *pipes;
-#endif
-{
+launch_fork_exec(
+    char *cmdstring,
+    int attach,
+    char **stdfiles,
+    int *pipes
+ ) {
     int status;
     int tpipes[4];
     struct sigaction ignore, saveintr, savequit;
@@ -224,9 +203,7 @@ launch_fork_exec( cmdstring, attach, stdfiles, pipes )
 			    }
 			    break;
 			case 1:
-			    if ( open
-			         ( stdfiles[i], O_CREAT | O_WRONLY | O_TRUNC,
-			           0600 ) < 0 ) {
+			    if ( open( stdfiles[i], O_CREAT | O_WRONLY | O_TRUNC, 0600 ) < 0 ) {
 				_exit( -1 );
 			    }
 			    break;
@@ -237,10 +214,7 @@ launch_fork_exec( cmdstring, attach, stdfiles, pipes )
 				dup( 1 );
 			    }
 			    else {
-				if ( open
-				     ( stdfiles[i],
-				       O_CREAT | O_WRONLY | O_TRUNC,
-				       0600 ) < 0 ) {
+				if ( open( stdfiles[i], O_CREAT | O_WRONLY | O_TRUNC, 0600 ) < 0 ) {
 				    _exit( -1 );
 				}
 			    }
@@ -355,18 +329,13 @@ extern char **environ;
 #endif
 
 /* spawn calls POSIX posix_spawn */
-#ifdef ANSI_FUNC
 static int
-launch_posix_spawn( char *cmdstring, int attach, char **stdfiles, int *pipes )
-#else
-static int
-launch_posix_spawn( cmdstring, attach, stdfiles, pipes )
-     char *cmdstring;
-     int attach;
-     char **stdfiles;
-     int *pipes;
-#endif
-{
+launch_posix_spawn(
+    char *cmdstring,
+    int attach,
+    char **stdfiles,
+    int *pipes
+ ) {
     int i, j, len;
     int status = 0;
     int got = 0;
@@ -388,8 +357,7 @@ launch_posix_spawn( cmdstring, attach, stdfiles, pipes )
 
     /* package up the arguments for new process */
     t = ( char * ) xstrdup( cmdstring );
-    for ( i = 0, s = ( char * ) strtok( t, " \t" ); s;
-	  i++, s = ( char * ) strtok( NULL, " \t" ) ) {
+    for ( i = 0, s = ( char * ) strtok( t, " \t" ); s; i++, s = ( char * ) strtok( NULL, " \t" ) ) {
 	if ( i < LAUNCH_ARGS ) {
 	    /* save argument */
 	    argv[i] = xstrdup( s );
@@ -414,21 +382,17 @@ launch_posix_spawn( cmdstring, attach, stdfiles, pipes )
 	if ( posix_spawn_file_actions_init( &act ) != 0 )
 	    return -1;
 	/* stdin */
-	if ( stdfiles[0] &&
-	     posix_spawn_file_actions_addopen( &act, 0, stdfiles[0], O_RDONLY,
-	                                       0 ) )
+	if ( stdfiles[0] && posix_spawn_file_actions_addopen( &act, 0, stdfiles[0], O_RDONLY, 0 ) )
 	    return -1;
 	/* stdout */
 	if ( stdfiles[1] &&
 	     posix_spawn_file_actions_addopen( &act, 1, stdfiles[1],
-	                                       O_CREAT | O_WRONLY | O_TRUNC,
-	                                       0600 ) )
+	                                       O_CREAT | O_WRONLY | O_TRUNC, 0600 ) )
 	    return -1;
 	/* stderr */
 	if ( stdfiles[2] &&
 	     posix_spawn_file_actions_addopen( &act, 2, stdfiles[2],
-	                                       O_CREAT | O_WRONLY | O_TRUNC,
-	                                       0600 ) )
+	                                       O_CREAT | O_WRONLY | O_TRUNC, 0600 ) )
 	    return -1;
 	pact = &act;
     }
@@ -469,18 +433,13 @@ launch_posix_spawn( cmdstring, attach, stdfiles, pipes )
 
 #if HAVE_SPAWNVP
 
-#ifdef ANSI_FUNC
 static int
-launch_spawnvp( char *cmdstring, int attach, char **stdfiles, int *pipes )
-#else
-static int
-launch_spawnvp( cmdstring, attach, stdfiles, pipes )
-     char *cmdstring;
-     int attach;
-     char **stdfiles;
-     int *pipes;
-#endif
-{
+launch_spawnvp(
+    char *cmdstring,
+    int attach,
+    char **stdfiles,
+    int *pipes
+ ) {
     int i, j;
     int len;
     int got;
@@ -577,29 +536,20 @@ launch_spawnvp( cmdstring, attach, stdfiles, pipes )
  * LaunchPid() -- return pid of last  launched process 
  *
  */
-#ifdef ANSI_FUNC
 pid_t
-LaunchPid( void )
-#else
-pid_t
-LaunchPid(  )
-#endif
-{
+LaunchPid(
+    void
+ ) {
     return pid;
 }
 
-#ifdef ANSI_FUNC
 int
-Launch( char *cmdstring, int attach, char **stdfiles, int *pipes )
-#else
-int
-Launch( cmdstring, attach, stdfiles, pipes )
-     char *cmdstring;
-     int attach;
-     char **stdfiles;
-     int *pipes;
-#endif
-{
+Launch(
+    char *cmdstring,
+    int attach,
+    char **stdfiles,
+    int *pipes
+ ) {
     static int which_launch = 0;
     static int which_debug = 0;
     char *s = NULL;
@@ -609,8 +559,7 @@ Launch( cmdstring, attach, stdfiles, pipes )
 
     /* sanity check: don't specify stdfiles and pipes simultaneously */
     if ( stdfiles && pipes ) {
-	fprintf( stderr,
-	         "ERROR: stdfiles and pipes are mutually exclusive in Launch()\n" );
+	fprintf( stderr, "ERROR: stdfiles and pipes are mutually exclusive in Launch()\n" );
 	return -1;
     }
 
@@ -645,45 +594,37 @@ Launch( cmdstring, attach, stdfiles, pipes )
     switch ( which_launch ) {
 	case 1:
 #if HAVE_MINGW32==0
-	    if ( which_debug ) fprintf( stderr, "launch_fork_exec: %s\n",
-	                                cmdstring );
+	    if ( which_debug ) fprintf( stderr, "launch_fork_exec: %s\n", cmdstring );
 	    return launch_fork_exec( cmdstring, attach, stdfiles, pipes );
 #else
-	    fprintf( stderr,
-	             "ERROR: fork_exec() not available on this host\n" );
+	    fprintf( stderr, "ERROR: fork_exec() not available on this host\n" );
 	    exit( 1 );
 #endif
 	    break;
 	case 2:
 #if HAVE_POSIX_SPAWN
-	    if ( which_debug ) fprintf( stderr, "launch_posix_spawn: %s\n",
-	                                cmdstring );
+	    if ( which_debug ) fprintf( stderr, "launch_posix_spawn: %s\n", cmdstring );
 	    return launch_posix_spawn( cmdstring, attach, stdfiles, pipes );
 #else
-	    fprintf( stderr,
-	             "ERROR: posix_spawn() not available on this host\n" );
+	    fprintf( stderr, "ERROR: posix_spawn() not available on this host\n" );
 	    exit( 1 );
 #endif
 	    break;
 	case 3:
 #if HAVE_SPAWNVP
-	    if ( which_debug ) fprintf( stderr, "launch_spawnvp: %s\n",
-	                                cmdstring );
+	    if ( which_debug ) fprintf( stderr, "launch_spawnvp: %s\n", cmdstring );
 	    return launch_spawnvp( cmdstring, attach, stdfiles, pipes );
 #else
-	    fprintf( stderr,
-	             "ERROR: spawnvp() not available on this host\n" );
+	    fprintf( stderr, "ERROR: spawnvp() not available on this host\n" );
 	    exit( 1 );
 #endif
 	    break;
 	default:
 #if HAVE_MINGW32==0
-	    if ( which_debug ) fprintf( stderr, "launch_fork_exec: %s\n",
-	                                cmdstring );
+	    if ( which_debug ) fprintf( stderr, "launch_fork_exec: %s\n", cmdstring );
 	    return launch_fork_exec( cmdstring, attach, stdfiles, pipes );
 #else
-	    fprintf( stderr,
-	             "ERROR: no launch techniques available on this host\n" );
+	    fprintf( stderr, "ERROR: no launch techniques available on this host\n" );
 	    exit( 1 );
 #endif
 	    break;

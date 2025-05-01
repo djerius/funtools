@@ -1005,8 +1005,8 @@ extern "C" {
 	char *keyword);	/* column header of desired value */
     int istab(		/* Return 1 if tab table file, else 0 */
 	char *filename); /* Name of file to check */
-    char *gettaberr();	/* Return most recent tab table error message */
-    int gettabndec();	/* Return number of decimal places in tab catalog ids */
+    char *gettaberr(void);	/* Return most recent tab table error message */
+    int gettabndec(void);	/* Return number of decimal places in tab catalog ids */
 
 /* Subroutines to read catalogs over the web, from SCAT, HST, ESO, or SDSS servers */
     int webread(	/* Read sources by sky region from WWW catalog */
@@ -1303,7 +1303,7 @@ extern "C" {
 	double cra,	/* Search center right ascension */
 	double cdec,	/* Search center declination */
 	double drad);	/* Radius to search in degrees */
-    void vottail();	/* Terminate VOTable SCAT output */
+    void vottail(void);	/* Terminate VOTable SCAT output */
 
 /* Subroutines for version/date string */
     void setrevmsg(	/* Set version/date string */

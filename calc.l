@@ -5,6 +5,7 @@
 %top{
 /* stdio.h: fileno */
 #define _POSIX_C_SOURCE 200112L
+#define YY_USE_PROTOS 1
 }
 
 %{
@@ -68,19 +69,19 @@ static int nexpr;
 static int xnl;
 static int *lenptr=&nexpr;
 
-static void setn _PRx((int newn));
-static char *_CalcMake _PRx((void));
-static int _CalcColProc _PRx((char *s, int expl));
-static int _CalcColName _PRx((char *sname));
-static CalcCols _CalcColNew _PRx((Fun fun, 
+static void setn (int newn);
+static char *_CalcMake (void);
+static int _CalcColProc (char *s, int expl);
+static int _CalcColName (char *sname);
+static CalcCols _CalcColNew (Fun fun, 
                                   char *name, char *sname, char *cname, 
 			          int type, int n, 
 				  double tlmin, double tlmax, double binsiz,
 				  double tscale, double tzero, int scaled,
-				  int exists, int settype));
-static CalcCols _CalcColLookup _PRx((char *cname));
+				  int exists, int settype);
+static CalcCols _CalcColLookup (char *cname);
 
-int _calcerror _PRx((char *msg));
+int _calcerror (char *msg);
 %}
 
 DIG	[0-9]

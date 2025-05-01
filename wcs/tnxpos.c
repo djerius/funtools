@@ -47,15 +47,38 @@
 
 #define	max_niter	500
 #define	SZ_ATSTRING	2000
-static int wf_gscoeff( struct IRAFsurface *sf, double *coeff );
-static struct IRAFsurface *wf_gspset( int xorder, int yorder, int xterms,
-                                      double *coeff );
-static struct IRAFsurface *wf_gsrestore( double *fit );
-static void wf_gsb1cheb( double x, int order, double k1, double k2,
-                         double *basis );
-static void wf_gsb1leg( double x, int order, double k1, double k2,
-                        double *basis );
-static void wf_gsb1pol( double x, int order, double *basis );
+static int wf_gscoeff(
+    struct IRAFsurface *sf,
+    double *coeff
+ );
+static struct IRAFsurface *wf_gspset(
+    int xorder,
+    int yorder,
+    int xterms,
+    double *coeff
+ );
+static struct IRAFsurface *wf_gsrestore(
+    double *fit
+ );
+static void wf_gsb1cheb(
+    double x,
+    int order,
+    double k1,
+    double k2,
+    double *basis
+ );
+static void wf_gsb1leg(
+    double x,
+    int order,
+    double k1,
+    double k2,
+    double *basis
+ );
+static void wf_gsb1pol(
+    double x,
+    int order,
+    double *basis
+ );
 
 
 /* tnxinit -- initialize the gnomonic forward or inverse transform.
@@ -76,10 +99,10 @@ static void wf_gsb1pol( double x, int order, double *basis );
  */
 
 int
-tnxinit( header, wcs )
-     const char *header;        /* FITS header */
-     struct WorldCoor *wcs;     /* pointer to WCS structure */
-{
+tnxinit(
+    const char *header,         /* FITS header */
+    struct WorldCoor *wcs       /* pointer to WCS structure */
+ ) {
     char *str1, *str2, *lngstr, *latstr;
 
     /* allocate space for the attribute strings */
@@ -159,11 +182,13 @@ tnxinit( header, wcs )
 /* tnxpos -- forward transform (physical to world) gnomonic projection. */
 
 int
-tnxpos( xpix, ypix, wcs, xpos, ypos )
-     double xpix, ypix;         /*i physical coordinates (x, y) */
-     struct WorldCoor *wcs;     /*i pointer to WCS descriptor */
-     double *xpos, *ypos;       /*o world coordinates (ra, dec) */
-{
+tnxpos(
+    double xpix,
+    double ypix,                /*i physical coordinates (x, y) */
+    struct WorldCoor *wcs,      /*i pointer to WCS descriptor */
+    double *xpos,
+    double *ypos                /*o world coordinates (ra, dec) */
+ ) {
     int ira, idec;
     double x, y, r, phi, theta, costhe, sinthe, dphi, cosphi, sinphi, dlng, z;
     double colatp, coslatp, sinlatp, longp;
@@ -307,11 +332,13 @@ tnxpos( xpix, ypix, wcs, xpos, ypos )
 /* tnxpix -- inverse transform (world to physical) gnomonic projection */
 
 int
-tnxpix( xpos, ypos, wcs, xpix, ypix )
-     double xpos, ypos;         /*i world coordinates (ra, dec) */
-     struct WorldCoor *wcs;     /*i pointer to WCS descriptor */
-     double *xpix, *ypix;       /*o physical coordinates (x, y) */
-{
+tnxpix(
+    double xpos,
+    double ypos,                /*i world coordinates (ra, dec) */
+    struct WorldCoor *wcs,      /*i pointer to WCS descriptor */
+    double *xpix,
+    double *ypix                /*o physical coordinates (x, y) */
+ ) {
     int ira, idec, niter;
     double ra, dec, cosdec, sindec, cosra, sinra, x, y, phi, theta;
     double s, r, dphi, z, dpi, dhalfpi, twopi, tx;
@@ -442,9 +469,7 @@ tnxpix( xpos, ypos, wcs, xpix, ypix )
 		dy = ( -g * fx + f * gx ) / denom;
 		x = x + dx;
 		y = y + dy;
-		if ( MAX
-		     ( MAX( fabs( dx ), fabs( dy ) ),
-		       MAX( fabs( f ), fabs( g ) ) ) < 2.80e-8 )
+		if ( MAX( MAX( fabs( dx ), fabs( dy ) ), MAX( fabs( f ), fabs( g ) ) ) < 2.80e-8 )
 		    break;
 
 		niter = niter + 1;
@@ -497,10 +522,9 @@ tnxpix( xpos, ypos, wcs, xpix, ypix )
 /* TNXCLOSE -- free up the distortion surface pointers */
 
 void
-tnxclose( wcs )
-     struct WorldCoor *wcs;     /* pointer to the WCS descriptor */
-
-{
+tnxclose(
+    struct WorldCoor *wcs       /* pointer to the WCS descriptor */
+ ) {
     if ( wcs->lngcor != NULL )
 	wf_gsclose( wcs->lngcor );
     if ( wcs->latcor != NULL )
@@ -552,10 +576,9 @@ tnxclose( wcs )
  */
 
 struct IRAFsurface *
-wf_gsopen( astr )
-     char *astr;                /* the input mwcs attribute string */
-
-{
+wf_gsopen(
+    char *astr                  /* the input mwcs attribute string */
+ ) {
     double dval;
     char *estr;
     int npar, szcoeff;
@@ -579,9 +602,7 @@ wf_gsopen( astr )
 	    npar++;
 	    if ( npar >= szcoeff ) {
 		szcoeff = szcoeff + SZ_GSCOEFFBUF;
-		coeff =
-		    ( double * ) realloc( coeff,
-		                          ( szcoeff * sizeof( double ) ) );
+		coeff = ( double * ) realloc( coeff, ( szcoeff * sizeof( double ) ) );
 	    }
 	    coeff[npar - 1] = dval;
 	    astr = estr;
@@ -603,10 +624,9 @@ wf_gsopen( astr )
 /* wf_gsclose -- procedure to free the surface descriptor */
 
 void
-wf_gsclose( sf )
-     struct IRAFsurface *sf;    /* the surface descriptor */
-
-{
+wf_gsclose(
+    struct IRAFsurface *sf      /* the surface descriptor */
+ ) {
     if ( sf != NULL ) {
 	if ( sf->xbasis != NULL )
 	    free( sf->xbasis );
@@ -625,11 +645,11 @@ wf_gsclose( sf )
  */
 
 double
-wf_gseval( sf, x, y )
-     struct IRAFsurface *sf;    /* pointer to surface descriptor structure */
-     double x;                  /* x value */
-     double y;                  /* y value */
-{
+wf_gseval(
+    struct IRAFsurface *sf,     /* pointer to surface descriptor structure */
+    double x,                   /* x value */
+    double y                    /* y value */
+ ) {
     double sum, accum;
     int i, ii, k, maxorder, xorder;
 
@@ -698,11 +718,10 @@ wf_gseval( sf, x, y )
  */
 
 static int
-wf_gscoeff( sf, coeff )
-     struct IRAFsurface *sf;    /* pointer to the surface fitting descriptor */
-     double *coeff;             /* the coefficients of the fit */
-
-{
+wf_gscoeff(
+    struct IRAFsurface *sf,     /* pointer to the surface fitting descriptor */
+    double *coeff               /* the coefficients of the fit */
+ ) {
     int ncoeff;                 /* the number of coefficients */
     int i;
 
@@ -722,12 +741,13 @@ static int nbcoeff = 0;
  */
 
 double
-wf_gsder( sf1, x, y, nxd, nyd )
-     struct IRAFsurface *sf1;   /* pointer to the previous surface */
-     double x;                  /* x values */
-     double y;                  /* y values */
-     int nxd, nyd;              /* order of the derivatives in x and y */
-{
+wf_gsder(
+    struct IRAFsurface *sf1,    /* pointer to the previous surface */
+    double x,                   /* x values */
+    double y,                   /* y values */
+    int nxd,
+    int nyd                     /* order of the derivatives in x and y */
+ ) {
     int nxder, nyder, i, j, k, nbytes;
     int order, maxorder1, maxorder2, nmove1, nmove2;
     struct IRAFsurface *sf2 = 0;
@@ -758,8 +778,7 @@ wf_gsder( sf1, x, y, nxd, nyd )
     sf2->type = sf1->type;
 
     /* Set the derivative surface parameters */
-    if ( sf2->type == TNX_LEGENDRE ||
-         sf2->type == TNX_CHEBYSHEV || sf2->type == TNX_POLYNOMIAL ) {
+    if ( sf2->type == TNX_LEGENDRE || sf2->type == TNX_CHEBYSHEV || sf2->type == TNX_POLYNOMIAL ) {
 
 	sf2->xterms = sf1->xterms;
 
@@ -785,19 +804,12 @@ wf_gsder( sf1, x, y, nxd, nyd )
 
 	    case TNX_XHALF:
 		maxorder1 = MAX( sf1->xorder + 1, sf1->yorder + 1 );
-		order =
-		    MAX( 1,
-		         MIN( maxorder1 - 1 - nyder - nxder,
-		              sf1->xorder - nxder ) );
+		order = MAX( 1, MIN( maxorder1 - 1 - nyder - nxder, sf1->xorder - nxder ) );
 		sf2->xorder = order;
-		order =
-		    MAX( 1,
-		         MIN( maxorder1 - 1 - nyder - nxder,
-		              sf1->yorder - nyder ) );
+		order = MAX( 1, MIN( maxorder1 - 1 - nyder - nxder, sf1->yorder - nyder ) );
 		sf2->yorder = order;
 		order = MIN( sf2->xorder, sf2->yorder );
-		sf2->ncoeff =
-		    sf2->xorder * sf2->yorder - ( order * ( order - 1 ) / 2 );
+		sf2->ncoeff = sf2->xorder * sf2->yorder - ( order * ( order - 1 ) / 2 );
 		break;
 
 	    default:
@@ -870,8 +882,7 @@ wf_gsder( sf1, x, y, nxd, nyd )
 		ptr2 = ptr2 - nmove2;
 		for ( j = i; j > i - nyder + 1; j-- ) {
 		    for ( k = 0; k < nmove2; k++ )
-			ptr1[nxder + k] =
-		            ptr1[nxder + k] * ( double ) ( j - 1 );
+			ptr1[nxder + k] = ptr1[nxder + k] * ( double ) ( j - 1 );
 		}
 		for ( j = nmove1; j >= nxder + 1; j-- ) {
 		    for ( k = j; k >= j - nxder + 1; k-- )
@@ -915,8 +926,7 @@ wf_gsder( sf1, x, y, nxd, nyd )
 
     /* normalize */
     if ( sf2->type != TNX_POLYNOMIAL ) {
-	norm = pow( sf2->xrange, ( double ) nxder ) *
-	    pow( sf2->yrange, ( double ) nyder );
+	norm = pow( sf2->xrange, ( double ) nxder ) * pow( sf2->yrange, ( double ) nyder );
 	zfit = norm * zfit;
     }
 
@@ -937,10 +947,10 @@ wf_gsder( sf1, x, y, nxd, nyd )
  */
 
 static struct IRAFsurface *
-wf_gsrestore( fit )
-     double *fit;               /* array containing the surface parameters
+wf_gsrestore(
+    double *fit                 /* array containing the surface parameters
                                    and coefficients */
-{
+ ) {
     struct IRAFsurface *sf;     /* surface descriptor */
     int surface_type, xorder, yorder, order, i;
     double xmin, xmax, ymin, ymax;
@@ -960,15 +970,13 @@ wf_gsrestore( fit )
     xmin = fit[TNX_SAVEXMIN];
     xmax = fit[TNX_SAVEXMAX];
     if ( xmax <= xmin ) {
-	fprintf( stderr, "wf_gsrestore: illegal x range %f-%f\n", xmin,
-	         xmax );
+	fprintf( stderr, "wf_gsrestore: illegal x range %f-%f\n", xmin, xmax );
 	return ( NULL );
     }
     ymin = fit[TNX_SAVEYMIN];
     ymax = fit[TNX_SAVEYMAX];
     if ( ymax <= ymin ) {
-	fprintf( stderr, "wf_gsrestore: illegal y range %f-%f\n", ymin,
-	         ymax );
+	fprintf( stderr, "wf_gsrestore: illegal y range %f-%f\n", ymin, ymax );
 	return ( NULL );
     }
 
@@ -993,8 +1001,7 @@ wf_gsrestore( fit )
 		break;
 	    case TNX_XHALF:
 		order = MIN( xorder, yorder );
-		sf->ncoeff =
-		    sf->xorder * sf->yorder - order * ( order - 1 ) / 2;
+		sf->ncoeff = sf->xorder * sf->yorder - order * ( order - 1 ) / 2;
 		break;
 	    case TNX_XFULL:
 		sf->ncoeff = sf->xorder * sf->yorder;
@@ -1002,8 +1009,7 @@ wf_gsrestore( fit )
 	}
     }
     else {
-	fprintf( stderr, "wf_gsrestore: unknown surface type %d\n",
-	         surface_type );
+	fprintf( stderr, "wf_gsrestore: unknown surface type %d\n", surface_type );
 	return ( NULL );
     }
 
@@ -1027,11 +1033,11 @@ wf_gsrestore( fit )
    for a single point and given order. */
 
 static void
-wf_gsb1pol( x, order, basis )
-     double x;                  /*i data point */
-     int order;                 /*i order of polynomial, order = 1, constant */
-     double *basis;             /*o basis functions */
-{
+wf_gsb1pol(
+    double x,                   /*i data point */
+    int order,                  /*i order of polynomial, order = 1, constant */
+    double *basis               /*o basis functions */
+ ) {
     int i;
 
     basis[0] = 1.0;
@@ -1053,12 +1059,13 @@ wf_gsb1pol( x, order, basis )
    a single point and given order. */
 
 static void
-wf_gsb1leg( x, order, k1, k2, basis )
-     double x;                  /*i data point */
-     int order;                 /*i order of polynomial, order = 1, constant */
-     double k1, k2;             /*i normalizing constants */
-     double *basis;             /*o basis functions */
-{
+wf_gsb1leg(
+    double x,                   /*i data point */
+    int order,                  /*i order of polynomial, order = 1, constant */
+    double k1,
+    double k2,                  /*i normalizing constants */
+    double *basis               /*o basis functions */
+ ) {
     int i;
     double ri, xnorm;
 
@@ -1073,8 +1080,7 @@ wf_gsb1leg( x, order, k1, k2, basis )
 
     for ( i = 2; i < order; i++ ) {
 	ri = i;
-	basis[i] = ( ( 2.0 * ri - 1.0 ) * xnorm * basis[i - 1] -
-	             ( ri - 1.0 ) * basis[i - 2] ) / ri;
+	basis[i] = ( ( 2.0 * ri - 1.0 ) * xnorm * basis[i - 1] - ( ri - 1.0 ) * basis[i - 2] ) / ri;
     }
 
     return;
@@ -1085,12 +1091,13 @@ wf_gsb1leg( x, order, k1, k2, basis )
    coefficients for a given x and order. */
 
 static void
-wf_gsb1cheb( x, order, k1, k2, basis )
-     double x;                  /*i number of data points */
-     int order;                 /*i order of polynomial, 1 is a constant */
-     double k1, k2;             /*i normalizing constants */
-     double *basis;             /*o array of basis functions */
-{
+wf_gsb1cheb(
+    double x,                   /*i number of data points */
+    int order,                  /*i order of polynomial, 1 is a constant */
+    double k1,
+    double k2,                  /*i normalizing constants */
+    double *basis               /*o array of basis functions */
+ ) {
     int i;
     double xnorm;
 
@@ -1112,14 +1119,13 @@ wf_gsb1cheb( x, order, k1, k2, basis )
 /* Set surface polynomial from arguments */
 
 int
-tnxpset( wcs, xorder, yorder, xterms, coeff )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     int xorder;                /* Number of x coefficients (same for x and y) */
-     int yorder;                /* Number of y coefficients (same for x and y) */
-     int xterms;                /* Number of xy coefficients (same for x and y) */
-     double *coeff;             /* Plate fit coefficients */
-
-{
+tnxpset(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    int xorder,                 /* Number of x coefficients (same for x and y) */
+    int yorder,                 /* Number of y coefficients (same for x and y) */
+    int xterms,                 /* Number of xy coefficients (same for x and y) */
+    double *coeff               /* Plate fit coefficients */
+ ) {
     double *ycoeff;
     wcs->prjcode = WCS_TNX;
 
@@ -1138,12 +1144,12 @@ tnxpset( wcs, xorder, yorder, xterms, coeff )
  */
 
 static struct IRAFsurface *
-wf_gspset( xorder, yorder, xterms, coeff )
-     int xorder;
-     int yorder;
-     int xterms;
-     double *coeff;
-{
+wf_gspset(
+    int xorder,
+    int yorder,
+    int xterms,
+    double *coeff
+ ) {
     struct IRAFsurface *sf;     /* surface descriptor */
     int surface_type, order, i;
     double xmin, xmax;
@@ -1173,8 +1179,7 @@ wf_gspset( xorder, yorder, xterms, coeff )
 		break;
 	    case TNX_XHALF:
 		order = MIN( xorder, yorder );
-		sf->ncoeff =
-		    sf->xorder * sf->yorder - order * ( order - 1 ) / 2;
+		sf->ncoeff = sf->xorder * sf->yorder - order * ( order - 1 ) / 2;
 		break;
 	    case TNX_XFULL:
 		sf->ncoeff = sf->xorder * sf->yorder;
@@ -1182,8 +1187,7 @@ wf_gspset( xorder, yorder, xterms, coeff )
 	}
     }
     else {
-	fprintf( stderr, "TNX_GSSET: unknown surface type %d\n",
-	         surface_type );
+	fprintf( stderr, "TNX_GSSET: unknown surface type %d\n", surface_type );
 	return ( NULL );
     }
 

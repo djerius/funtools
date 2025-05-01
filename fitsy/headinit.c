@@ -34,10 +34,10 @@
 	
  */
 FITSHead
-ft_headinit( data, bytes )
-     void *data;                /* Pointer to FITS cards.       */
-     int bytes;                 /* Number of bytes in buffer.   */
-{
+ft_headinit(
+    void *data,                 /* Pointer to FITS cards.       */
+    int bytes                   /* Number of bytes in buffer.   */
+ ) {
     int match;
     FITSHead fits;
     FITSCard end = NULL;
@@ -60,8 +60,7 @@ ft_headinit( data, bytes )
 
 	if ( bytes > 0 && ( end = ft_headfindseq( fits, "END", 0, &match ) ) ) {
 	    fits->ncard = end - fits->cards + 1;
-	    fits->acard =
-	        ( ( fits->ncard + FT_CARDS - 1 ) / FT_CARDS ) * FT_CARDS;
+	    fits->acard = ( ( fits->ncard + FT_CARDS - 1 ) / FT_CARDS ) * FT_CARDS;
 	    fits->data = fits->acard * FT_CARDLEN;
 	}
     }
@@ -98,9 +97,9 @@ ft_headinit( data, bytes )
 /* Make a copy of a #FITSHead data structure.
  */
 FITSHead
-ft_headcopy( fits )
-     FITSHead fits;
-{
+ft_headcopy(
+    FITSHead fits
+ ) {
     FITSHead head;
 
     if ( fits == NULL ) return ft_headinit( NULL, 0 );
@@ -143,10 +142,10 @@ ft_headcopy( fits )
 /* Free a Fitsy FITS header data structure.
  */
 void
-ft_headfree( fits, freecards )
-     FITSHead fits;
-     int freecards;             /* Free the FITS cards?         */
-{
+ft_headfree(
+    FITSHead fits,
+    int freecards               /* Free the FITS cards?         */
+ ) {
     if ( fits == NULL ) return;
 
     if ( --fits->rfcount ) return;
@@ -173,10 +172,10 @@ ft_headfree( fits, freecards )
 }
 
 void
-ft_primlink( prim, fits )
-     FITSHead prim;
-     FITSHead fits;
-{
+ft_primlink(
+    FITSHead prim,
+    FITSHead fits
+ ) {
     if ( prim == NULL ) return;
     if ( fits == NULL ) return;
 
@@ -187,19 +186,19 @@ ft_primlink( prim, fits )
 /* Set the card buffer
  */
 void
-ft_setcards( fits, cards )
-     FITSHead fits;
-     void *cards;
-{
+ft_setcards(
+    FITSHead fits,
+    void *cards
+ ) {
     fits->cards = ( FITSCard ) cards;
 }
 
 /* Make a copy of the header and force it to be a simple primary header.
  */
 FITSHead
-ft_primary( fits )
-     FITSHead fits;
-{
+ft_primary(
+    FITSHead fits
+ ) {
     FITSHead prim;
     int one = 1;
 
@@ -221,11 +220,11 @@ ft_primary( fits )
 /* Merge cards from fits1 to fits2
  */
 FITSHead
-ft_headmerge( fits1, fits2, copy )
-     FITSHead fits1;
-     FITSHead fits2;
-     int copy;
-{
+ft_headmerge(
+    FITSHead fits1,
+    FITSHead fits2,
+    int copy
+ ) {
     FITSHead merge;
     FITSCard card;
     int i, match;
@@ -240,10 +239,7 @@ ft_headmerge( fits1, fits2, copy )
 	for ( ; i < ft_ncards( fits2 ); i++ ) {
 	    /* The card is not in the merge header
 	     */
-	    if ( !
-	         ( card =
-	           ft_cardfindseq( merge, ft_cardnth( fits2, i ),
-	                           &match ) ) ) {
+	    if ( !( card = ft_cardfindseq( merge, ft_cardnth( fits2, i ), &match ) ) ) {
 		ft_cardapp( merge, ft_cardnth( fits2, i ) );
 	    }
 	    else {
@@ -254,11 +250,9 @@ ft_headmerge( fits1, fits2, copy )
 		    /* special cards always are inserted */
 		    if ( !strncmp( card->c, "HISTORY ", 8 ) ||
 		         !strncmp( card->c, "CONTINUE ", 9 ) ||
-		         !strncmp( card->c, "COMMENT ", 8 ) ||
-		         !strncmp( card->c, "        ", 8 ) )
+		         !strncmp( card->c, "COMMENT ", 8 ) || !strncmp( card->c, "        ", 8 ) )
 			ft_cardapp( merge, ft_cardnth( fits2, i ) );
-		    else if ( copy ) ft_cardcpy( card,
-		                                 ft_cardnth( fits2, i ) );
+		    else if ( copy ) ft_cardcpy( card, ft_cardnth( fits2, i ) );
 		}
 	    }
 	}

@@ -11,13 +11,16 @@
 
 #include "prsetup.h"
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void *DLOpen _PRx((char *name));
-void *DLSym _PRx((void *dl, char *name));
-int DLClose _PRx((void *dl));
+void *DLOpen (char *name);
+void *DLSym (void *dl, char *name);
+int DLClose (void *dl);
 
-
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif

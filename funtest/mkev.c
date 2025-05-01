@@ -134,14 +134,8 @@ static double xlo, xhi, ylo, yhi;
 static int tev;
 static char macrobuf[SZ_LINE];
 
-#ifdef ANSI_FUNC
 static char *
 MacroCB(char *name, void *UNUSED(client_data))
-#else
-static char *MacroCB(name, client_data)
-	char *name;
-	void *client_data;
-#endif
 {
   if( !strcmp(name, "TEV") ){
     sprintf(macrobuf, "%10d", tev);
@@ -208,14 +202,8 @@ static char *MacroCB(name, client_data)
   }
 }
 
-#ifdef ANSI_FUNC
 int 
 main (int argc, char **argv)
-#else
-main(argc, argv)
-     int argc;
-     char **argv;
-#endif
 {
   int c;
   int convert;

@@ -1,19 +1,48 @@
 #include <tclmainlib.h>
 
-int funcen_main( int argc, char **argv );
-int funcnts_main( int argc, char **argv );
-int fundisp_main( int argc, char **argv );
-int funhead_main( int argc, char **argv );
-int funhist_main( int argc, char **argv );
-int funimage_main( int argc, char **argv );
-int funmerge_main( int argc, char **argv );
-int funtable_main( int argc, char **argv );
-int funcalc_main( int argc, char **argv );
+int funcen_main(
+    int argc,
+    char **argv
+ );
+int funcnts_main(
+    int argc,
+    char **argv
+ );
+int fundisp_main(
+    int argc,
+    char **argv
+ );
+int funhead_main(
+    int argc,
+    char **argv
+ );
+int funhist_main(
+    int argc,
+    char **argv
+ );
+int funimage_main(
+    int argc,
+    char **argv
+ );
+int funmerge_main(
+    int argc,
+    char **argv
+ );
+int funtable_main(
+    int argc,
+    char **argv
+ );
+int funcalc_main(
+    int argc,
+    char **argv
+ );
 #if HAVE_TCL
 #include <tcl.h>
 
 int
-Funtools_Init( void *vinterp ) {
+Funtools_Init(
+    void *vinterp
+ ) {
     Tcl_Interp *interp = ( Tcl_Interp * ) vinterp;
 
     Tcl_CreateObjCommand( interp, "funcen", MainLib_Tcl,

@@ -15,14 +15,23 @@
 
 static char __abuf[EVSIZE + 1];
 static char *
-acopy( void *s, int n ) {
+acopy(
+    void *s,
+    int n
+ ) {
     memset( __abuf, 0, n + 1 );
     memmove( __abuf, s, n );
     return __abuf;
 }
 
 void *
-EVFILTRTN( void *tg, char *ebuf, int ne, int esize, int *rbuf ) {
+EVFILTRTN(
+    void *tg,
+    char *ebuf,
+    int ne,
+    int esize,
+    int *rbuf
+ ) {
     int i, j;
     int *rptr;
     char *eptr;
@@ -44,8 +53,7 @@ EVFILTRTN( void *tg, char *ebuf, int ne, int esize, int *rbuf ) {
 #ifdef EVSECT
 	/* if evsect is defined, we are filtering an image section */
 	g->evsect = EVSECT;
-	sscanf( g->evsect, "%d %d %d %d %d",
-	        &g->xmin, &g->xmax, &g->ymin, &g->ymax, &g->block );
+	sscanf( g->evsect, "%d %d %d %d %d", &g->xmin, &g->xmax, &g->ymin, &g->ymax, &g->block );
 	/* get x and y limits on subsection */
 	g->x0 = 1;
 	g->y0 = 1;
@@ -128,7 +136,10 @@ EVFILTRTN( void *tg, char *ebuf, int ne, int esize, int *rbuf ) {
 }
 
 int
-main( int argc, char **argv ) {
+main(
+    int argc,
+    char **argv
+ ) {
     int i;
 #if HAVE_MINGW32==0
     int pipes[4];

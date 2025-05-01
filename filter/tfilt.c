@@ -41,14 +41,10 @@ int debug = 0;
 
 /* from Harbison&Steele by way of GNU cinfigure ...
    returns 1 for bigendian, 0 for littleendian */
-#ifdef ANSI_FUNC
 int
-is_bigendian( void )
-#else
-int
-is_bigendian(  )
-#endif
-{
+is_bigendian(
+    void
+ ) {
     union {
 	long l;
 	char c[sizeof( long )];
@@ -62,287 +58,266 @@ is_bigendian(  )
  * ListEvents -- list events in a binary table
  *
  */
-#ifdef ANSI_FUNC
 static int
-ListEvents( GIO gio, FILE * ofd, FITSHead header, char *s, int iformat,
-            char *mode )
-#else
-static int
-ListEvents( gio, ofd, header, s, iformat, mode )
-     GIO gio;                   /* input FITS file handle */
-     FILE *ofd;                 /* output file handle */
-     FITSHead header;           /* fitsy header */
-     char *s;                   /* filter for events */
-     int iformat;               /* input format of data: 0=native, 1=fits */
-     char *mode                 /* filteropen mode */
-#endif
-     {
-	 size_t get;            /* number of events to read */
-	 size_t got;            /* number of events read */
-	 int i, j;              /* loop counters */
-	 int left;              /* number of events left to read */
-	 int total;             /* total number of events in file */
-	 int convert;           /* whether we have to convert to native */
-	 int nev;               /* max number of events to read at once */
-	 int evsize;            /* size of an event record */
-	 int ototal;            /* output total events */
-	 int *vbuf;             /* valid event flags */
-	 char *ebuf;            /* event buffer */
-	 char *eptr;            /* current pointer into ebuf */
-	 char tbuf[SZ_LINE];    /* ever-present temp buf */
-	 unsigned char bval;    /* byte value */
-	 short sval;            /* short value */
-	 unsigned short usval;  /* short value */
-	 int ival;              /* int value */
-	 long long lval;        /* 64-bit int value */
-	 unsigned int uival;    /* unsigned int value */
-	 float fval;            /* float value */
-	 double dval;           /* double value */
-	 int dofilt = 0;        /* true if we can filter */
-	 Filter filter = NULL;
+ListEvents(
+    GIO gio,
+    FILE * ofd,
+    FITSHead header,
+    char *s,
+    int iformat,
+    char *mode
+ ) {
+    size_t get;                 /* number of events to read */
+    size_t got;                 /* number of events read */
+    int i, j;                   /* loop counters */
+    int left;                   /* number of events left to read */
+    int total;                  /* total number of events in file */
+    int convert;                /* whether we have to convert to native */
+    int nev;                    /* max number of events to read at once */
+    int evsize;                 /* size of an event record */
+    int ototal;                 /* output total events */
+    int *vbuf;                  /* valid event flags */
+    char *ebuf;                 /* event buffer */
+    char *eptr;                 /* current pointer into ebuf */
+    char tbuf[SZ_LINE];         /* ever-present temp buf */
+    unsigned char bval;         /* byte value */
+    short sval;                 /* short value */
+    unsigned short usval;       /* short value */
+    int ival;                   /* int value */
+    long long lval;             /* 64-bit int value */
+    unsigned int uival;         /* unsigned int value */
+    float fval;                 /* float value */
+    double dval;                /* double value */
+    int dofilt = 0;             /* true if we can filter */
+    Filter filter = NULL;
 
-	 /* we have to convert to native if the data is not the
-	    same as the big-endian-ness of the machine */
-	     convert = ( iformat != is_bigendian(  ) );
-	 /* create the mode string */
-	 if  ( convert )
-	         strcpy( tbuf, "convert=true" );
-	 else
-	         strcpy( tbuf, "convert=false" );
-	     strcat( tbuf, bincols );
-	 if  ( debug )
-	         strcat( tbuf, ",debug=2" );
+    /* we have to convert to native if the data is not the
+       same as the big-endian-ness of the machine */
+    convert = ( iformat != is_bigendian(  ) );
+    /* create the mode string */
+    if ( convert )
+	strcpy( tbuf, "convert=true" );
+    else
+	strcpy( tbuf, "convert=false" );
+    strcat( tbuf, bincols );
+    if ( debug )
+	strcat( tbuf, ",debug=2" );
 
-	 /* now add the input mode */
-	 if  ( mode && *mode ) {
-strcat( tbuf, "," );
-strcat( tbuf, mode );
-	 }
+    /* now add the input mode */
+    if ( mode && *mode ) {
+	strcat( tbuf, "," );
+	strcat( tbuf, mode );
+    }
 
-	 /* init some convenience variables */
-	 evsize = header->basic->naxis[0];
-	 total = header->basic->naxis[1];
-	 ototal = 0;
+    /* init some convenience variables */
+    evsize = header->basic->naxis[0];
+    total = header->basic->naxis[1];
+    ototal = 0;
 
-	 /* open the filter */
-	 if ( ( filter = FilterOpen( header, s, tbuf ) ) == NULL ) {
-	     fprintf( stderr, "ERROR: tfilt could not open filter: %s\n",
-	              s ? s : "no filter" );
-	     return ( 0 );
-	 }
-	 else if ( filter == NOFILTER ) {
-	     fprintf( stderr, "no valid filter specified\n" );
-	     return ( 0 );
-	 }
+    /* open the filter */
+    if ( ( filter = FilterOpen( header, s, tbuf ) ) == NULL ) {
+	fprintf( stderr, "ERROR: tfilt could not open filter: %s\n", s ? s : "no filter" );
+	return ( 0 );
+    }
+    else if ( filter == NOFILTER ) {
+	fprintf( stderr, "no valid filter specified\n" );
+	return ( 0 );
+    }
 
-	 /* allocate space for a pile of event records */
-	 for ( nev = NEVENTS; nev > 0; nev /= 2 ) {
-	     if ( ( ( ebuf = ( char * ) xmalloc( evsize * nev ) ) != NULL ) &&
-	          ( ( vbuf =
-	              ( int * ) xmalloc( sizeof( int ) * nev ) ) != NULL ) )
-		 break;
-	 }
+    /* allocate space for a pile of event records */
+    for ( nev = NEVENTS; nev > 0; nev /= 2 ) {
+	if ( ( ( ebuf = ( char * ) xmalloc( evsize * nev ) ) != NULL ) &&
+	     ( ( vbuf = ( int * ) xmalloc( sizeof( int ) * nev ) ) != NULL ) )
+	    break;
+    }
 
-	 /* print out header */
-	 for ( j = 0; j < header->table->tfields; j++ ) {
-	     switch ( header->table->col[j].type ) {
-		 case 'B':
-		 case 'L':
-		     fprintf( ofd, "%6s", header->table->col[j].name );
-		     break;
-		 case 'I':
-		 case 'U':
-		     fprintf( ofd, "%6s", header->table->col[j].name );
-		     break;
-		 case 'J':
-		 case 'V':
-		     fprintf( ofd, "%11s", header->table->col[j].name );
-		     break;
-		 case 'K':
-		     fprintf( ofd, "%20s", header->table->col[j].name );
-		     break;
-		 case 'E':
-		     fprintf( ofd, "%11s", header->table->col[j].name );
-		     break;
-		 case 'D':
-		     fprintf( ofd, "%17s", header->table->col[j].name );
-		     break;
-		 default:
-		     break;
-	     }
-	 }
-	 fprintf( ofd, "\n" );
+    /* print out header */
+    for ( j = 0; j < header->table->tfields; j++ ) {
+	switch ( header->table->col[j].type ) {
+	    case 'B':
+	    case 'L':
+		fprintf( ofd, "%6s", header->table->col[j].name );
+		break;
+	    case 'I':
+	    case 'U':
+		fprintf( ofd, "%6s", header->table->col[j].name );
+		break;
+	    case 'J':
+	    case 'V':
+		fprintf( ofd, "%11s", header->table->col[j].name );
+		break;
+	    case 'K':
+		fprintf( ofd, "%20s", header->table->col[j].name );
+		break;
+	    case 'E':
+		fprintf( ofd, "%11s", header->table->col[j].name );
+		break;
+	    case 'D':
+		fprintf( ofd, "%17s", header->table->col[j].name );
+		break;
+	    default:
+		break;
+	}
+    }
+    fprintf( ofd, "\n" );
 
-	 for ( j = 0; j < header->table->tfields; j++ ) {
-	     switch ( header->table->col[j].type ) {
-		 case 'B':
-		 case 'L':
-		     fprintf( ofd, " -----" );
-		     break;
-		 case 'I':
-		 case 'U':
-		     fprintf( ofd, " -----" );
-		     break;
-		 case 'J':
-		 case 'V':
-		     fprintf( ofd, " ----------" );
-		     break;
-		 case 'K':
-		     fprintf( ofd, " -------------------" );
-		     break;
-		 case 'E':
-		     fprintf( ofd, " ----------" );
-		     break;
-		 case 'D':
-		     fprintf( ofd, " ----------------" );
-		     break;
-		 default:
-		     break;
-	     }
-	 }
-	 fprintf( ofd, "\n" );
+    for ( j = 0; j < header->table->tfields; j++ ) {
+	switch ( header->table->col[j].type ) {
+	    case 'B':
+	    case 'L':
+		fprintf( ofd, " -----" );
+		break;
+	    case 'I':
+	    case 'U':
+		fprintf( ofd, " -----" );
+		break;
+	    case 'J':
+	    case 'V':
+		fprintf( ofd, " ----------" );
+		break;
+	    case 'K':
+		fprintf( ofd, " -------------------" );
+		break;
+	    case 'E':
+		fprintf( ofd, " ----------" );
+		break;
+	    case 'D':
+		fprintf( ofd, " ----------------" );
+		break;
+	    default:
+		break;
+	}
+    }
+    fprintf( ofd, "\n" );
 
-	 /* set the total number of events or 'read til eof' */
-	 left = total;
+    /* set the total number of events or 'read til eof' */
+    left = total;
 
-	 /* read all event records */
-	 while ( left != 0 ) {
-	     /* figure out how many to read this time */
-	     get = MIN( nev, left );
-	     /* read in a pile of events */
-	     if ( ( filter == NOFILTER ) || ( filter->doidx != 1 ) ) {
-		 got = gread( gio, ebuf, evsize, get );
-	     }
-	     else {
-		 /* indexed read */
-		 idxread( filter->idx, gio, header, ebuf, evsize, get, &got,
-		          &dofilt );
-	     }
-	     /* if we got what we asked for ... */
-	     if ( got == get ) {
-		 /* if we are reading a set number of rows ... */
-		 if ( left > 0 ) {
-		     /* subtract the number we just got */
-		     left -= got;
-		     /* just in case! */
-		     if ( left < 0 )
-			 left = 0;
-		 }
-	     }
-	     /* didn't get what we asked for ... */
-	     else {
-		 /* if we are reading a set number of rows ... */
-		 if ( left > 0 ) {
-		     /* using an index => already filtering, so fewer rows are acceptable */
-		     if ( ( filter == NOFILTER ) || ( filter->doidx != 1 ) ) {
-			 /* otherwise its unexpected */
-			 gerror( stderr, "unexpected EOF reading rows\n" );
-		     }
-		     /* ensure we stop after this iteration */
-		     left = 0;
-		 }
-		 /* if we are reading til EOF, we just got there */
-		 else {
-		     left = 0;
-		 }
-	     }
-	     /* filter the events through the co-process */
-	     if ( ( filter == NOFILTER ) || ( filter->doidx != 1 ) ) {
-		 dofilt = FilterEvents( filter, ebuf, evsize, got, vbuf );
-	     }
-	     /* process each event in the pile */
-	     for ( eptr = ebuf, i = 0; i < ( int ) got; i++, eptr += evsize ) {
-		 /* if its not a valid event, skip it */
-		 if ( dofilt && ( vbuf[i] == 0 ) )
-		     continue;
-		 /* else increment the total events */
-		 ototal++;
-		 /* process this event */
-		 for ( j = 0; j < header->table->tfields; j++ ) {
-		     switch ( header->table->col[j].type ) {
-			 case 'B':
-			 case 'L':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &bval );
-			     fprintf( ofd, "%6d", ( int ) bval );
-			     break;
-			 case 'I':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &sval );
-			     fprintf( ofd, "%6d", ( int ) sval );
-			     break;
-			 case 'U':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &usval );
-			     fprintf( ofd, "%6d", ( int ) usval );
-			     break;
-			 case 'J':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &ival );
-			     fprintf( ofd, "%11d", ival );
-			     break;
-			 case 'V':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &uival );
-			     fprintf( ofd, "%11d", uival );
-			     break;
-			 case 'K':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &lval );
-			     fprintf( ofd, "%20lld", lval );
-			     break;
-			 case 'E':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &fval );
-			     fprintf( ofd, "%11.2f", fval );
-			     break;
-			 case 'D':
-			     ColumnLoad( eptr + header->table->col[j].offset,
-			                 header->table->col[j].size, 1,
-			                 convert, ( char * ) &dval );
-			     fprintf( ofd, "%17.4f", dval );
-			     break;
-			 default:
-			     break;
-		     }
-		 }
-		 fprintf( ofd, "\n" );
-	     }
-	 }
+    /* read all event records */
+    while ( left != 0 ) {
+	/* figure out how many to read this time */
+	get = MIN( nev, left );
+	/* read in a pile of events */
+	if ( ( filter == NOFILTER ) || ( filter->doidx != 1 ) ) {
+	    got = gread( gio, ebuf, evsize, get );
+	}
+	else {
+	    /* indexed read */
+	    idxread( filter->idx, gio, header, ebuf, evsize, get, &got, &dofilt );
+	}
+	/* if we got what we asked for ... */
+	if ( got == get ) {
+	    /* if we are reading a set number of rows ... */
+	    if ( left > 0 ) {
+		/* subtract the number we just got */
+		left -= got;
+		/* just in case! */
+		if ( left < 0 )
+		    left = 0;
+	    }
+	}
+	/* didn't get what we asked for ... */
+	else {
+	    /* if we are reading a set number of rows ... */
+	    if ( left > 0 ) {
+		/* using an index => already filtering, so fewer rows are acceptable */
+		if ( ( filter == NOFILTER ) || ( filter->doidx != 1 ) ) {
+		    /* otherwise its unexpected */
+		    gerror( stderr, "unexpected EOF reading rows\n" );
+		}
+		/* ensure we stop after this iteration */
+		left = 0;
+	    }
+	    /* if we are reading til EOF, we just got there */
+	    else {
+		left = 0;
+	    }
+	}
+	/* filter the events through the co-process */
+	if ( ( filter == NOFILTER ) || ( filter->doidx != 1 ) ) {
+	    dofilt = FilterEvents( filter, ebuf, evsize, got, vbuf );
+	}
+	/* process each event in the pile */
+	for ( eptr = ebuf, i = 0; i < ( int ) got; i++, eptr += evsize ) {
+	    /* if its not a valid event, skip it */
+	    if ( dofilt && ( vbuf[i] == 0 ) )
+		continue;
+	    /* else increment the total events */
+	    ototal++;
+	    /* process this event */
+	    for ( j = 0; j < header->table->tfields; j++ ) {
+		switch ( header->table->col[j].type ) {
+		    case 'B':
+		    case 'L':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &bval );
+			fprintf( ofd, "%6d", ( int ) bval );
+			break;
+		    case 'I':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &sval );
+			fprintf( ofd, "%6d", ( int ) sval );
+			break;
+		    case 'U':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &usval );
+			fprintf( ofd, "%6d", ( int ) usval );
+			break;
+		    case 'J':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &ival );
+			fprintf( ofd, "%11d", ival );
+			break;
+		    case 'V':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &uival );
+			fprintf( ofd, "%11d", uival );
+			break;
+		    case 'K':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &lval );
+			fprintf( ofd, "%20lld", lval );
+			break;
+		    case 'E':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &fval );
+			fprintf( ofd, "%11.2f", fval );
+			break;
+		    case 'D':
+			ColumnLoad( eptr + header->table->col[j].offset,
+			            header->table->col[j].size, 1, convert, ( char * ) &dval );
+			fprintf( ofd, "%17.4f", dval );
+			break;
+		    default:
+			break;
+		}
+	    }
+	    fprintf( ofd, "\n" );
+	}
+    }
 
-	 /* free up allocated space */
-	 if ( ebuf )
-	     xfree( ebuf );
-	 if ( vbuf )
-	     xfree( vbuf );
+    /* free up allocated space */
+    if ( ebuf )
+	xfree( ebuf );
+    if ( vbuf )
+	xfree( vbuf );
 
-	 /* done with the filter process */
-	 if ( filter )
-	     FilterClose( filter );
+    /* done with the filter process */
+    if ( filter )
+	FilterClose( filter );
 
-	 /* final tally */
-	 fprintf( ofd, "\nTotal events: %d\n", ototal );
+    /* final tally */
+    fprintf( ofd, "\nTotal events: %d\n", ototal );
 
-	 /* that's good news */
-	 return ( ototal );
-     }
+    /* that's good news */
+    return ( ototal );
+}
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int type;
     int x, y, n;
@@ -378,9 +353,7 @@ main( argc, argv )
 	    case 'd':
 		dispim = 1;
 		strcpy( evsect, optarg );
-		if ( sscanf
-		     ( optarg, "%d %d %d %d %d", &x0, &x1, &y0, &y1,
-		       &block ) != 5 ) {
+		if ( sscanf( optarg, "%d %d %d %d %d", &x0, &x1, &y0, &y1, &block ) != 5 ) {
 		    fprintf( stderr, "-d requires x0, x1, y0, y1, block\n" );
 		    exit( 1 );
 		}
@@ -436,8 +409,7 @@ main( argc, argv )
     }
 
     /* open the binary table extension */
-    if ( ( gio =
-           ft_fitsheadopen( iname, &header, tail, SZ_LINE, "r" ) ) == NULL ) {
+    if ( ( gio = ft_fitsheadopen( iname, &header, tail, SZ_LINE, "r" ) ) == NULL ) {
 	fprintf( stderr, "ERROR: can't read FITS binary table: %s\n", iname );
 	exit( 1 );
     }
@@ -490,18 +462,14 @@ main( argc, argv )
 		    else if ( filter == NOFILTER )
 			fprintf( stderr, "No valid filter specified\n" );
 		    else {
-			nmask =
-			    FilterImage( filter, x0, x1, y0, y1, block,
-			                 &masks, NULL );
+			nmask = FilterImage( filter, x0, x1, y0, y1, block, &masks, NULL );
 			if ( nmask ) {
 			    /* loop through mask segments */
 			    y = 1;
 			    for ( n = 0; n < nmask; n++ ) {
 				/* process rows before the y row of this mask segment */
 				for ( ; y < masks[n].y; y++ ) {
-				    for ( x = 1;
-				          x <= ( x1 - x0 + block ) / block;
-				          x++ )
+				    for ( x = 1; x <= ( x1 - x0 + block ) / block; x++ )
 					fprintf( stdout, "*" );
 				    fprintf( stdout, "\n" );
 				}
@@ -513,8 +481,7 @@ main( argc, argv )
 					fprintf( stderr, "." );
 				    /* process columns in the mask */
 				    for ( ; x <= masks[n].xstop; x++ )
-					fprintf( stderr, "%d",
-				                 masks[n].region );
+					fprintf( stderr, "%d", masks[n].region );
 				    /* if we have another mask segment with the same y,
 				       we keep going */
 				    if ( ( ( n + 1 ) < nmask )
@@ -524,8 +491,7 @@ main( argc, argv )
 					break;
 				}
 				/* process the rest of the columns for this y row */
-				for ( ; x <= ( x1 - x0 + block ) / block;
-				      x++ )
+				for ( ; x <= ( x1 - x0 + block ) / block; x++ )
 				    fprintf( stderr, "." );
 				/* processed all mask segs in this y */
 				fprintf( stderr, "\n" );
@@ -535,8 +501,7 @@ main( argc, argv )
 			    /* process y rows after last row containing a mask segment */
 			    for ( y = masks[nmask - 1].y + 1;
 			          y <= ( y1 - y0 + block ) / block; y++ ) {
-				for ( x = 1; x <= ( x1 - x0 + block ) / block;
-				      x++ )
+				for ( x = 1; x <= ( x1 - x0 + block ) / block; x++ )
 				    fprintf( stdout, "*" );
 				fprintf( stdout, "\n" );
 			    }

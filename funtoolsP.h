@@ -39,7 +39,7 @@
 #include <getopt.h>
 #endif
 #include <sys/types.h>
-#include "prsetup.h"
+
 #define USE_XFILEIO 1
 #include "fitsy.h"
 #undef USE_XFILEIO
@@ -277,73 +277,78 @@ typedef struct funrec {
 
 #define FUNTOOLS_PRIVATE 1
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /* funopen.c */
-Fun  _FunFITSOpen _PRx((Fun ifun, char *fname, char *mode));
+Fun  _FunFITSOpen (Fun ifun, char *fname, char *mode);
 
 /* funim.c */
-void *_FunImageMask _PRx((Fun fun, void *buf, int rstart, int rstop,
-			  FilterMask masks, int nmask, char *mode));
-int _FunImagePutHeader _PRx((Fun fun, int dim1, int dim2, int bitpix));
+void *_FunImageMask (Fun fun, void *buf, int rstart, int rstop,
+			  FilterMask masks, int nmask, char *mode);
+int _FunImagePutHeader (Fun fun, int dim1, int dim2, int bitpix);
 
 /* funtab.c */
-void *_FunRead _PRx((Fun fun, char *buf, size_t size, size_t get, size_t *got));
-void _FunSaveNaxis2 _PRx((Fun fun));
-int  _FunFixNaxis2  _PRx((Fun fun));
-int _FunTablePutHeader _PRx((Fun fun));
+void *_FunRead (Fun fun, char *buf, size_t size, size_t get, size_t *got);
+void _FunSaveNaxis2 (Fun fun);
+int  _FunFixNaxis2  (Fun fun);
+int _FunTablePutHeader (Fun fun);
 
 /* funcol.c */
-void _FunColumnHeader _PRx((Fun fun, FunCol *cols, int ncol));
-void _FunColumnFree   _PRx((Fun fun));
+void _FunColumnHeader (Fun fun, FunCol *cols, int ncol);
+void _FunColumnFree   (Fun fun);
 
 /* funcopy.c */
-void _FunCopyBinDelete _PRx((FITSHead header, int n));
-int  _FunCopy2ImageHeader _PRx((Fun from, Fun to));
+void _FunCopyBinDelete (FITSHead header, int n);
+int  _FunCopy2ImageHeader (Fun from, Fun to);
 
 /* funutils.c */
-int _FunPrimaryExtension _PRx((Fun fun));
-void _FunParseSection _PRx((Fun fun, char *section,
+int _FunPrimaryExtension (Fun fun);
+void _FunParseSection (Fun fun, char *section,
 			    int *min1, int *max1, int *min2, int *max2,
-			    int *block, int *btype, char *tail, int maxlen));
-int _FunColumnDims _PRx((char *s, int type, double *tlmin, double *tlmax,
+			    int *block, int *btype, char *tail, int maxlen);
+int _FunColumnDims (char *s, int type, double *tlmin, double *tlmax,
 			 double *binsiz, int *dims,
-			 double *tscale, double *tzero, int *scaled));
-void _FunColumnType _PRx((char *s, int *type, int *n, 
+			 double *tscale, double *tzero, int *scaled);
+void _FunColumnType (char *s, int *type, int *n, 
 			  double *tlmin, double *tlmax, 
 			  double *binsiz, int *dims,
 			  double *tscale, double *tzero, int *scaled,
-			  int *ptype, int *poff));
-int _FunFile _PRx((char *lbuf, char *tbuf, int len, int *lptr));
-void * _FunSwap _PRx((void *obuf, void *ibuf, int width, int type));
+			  int *ptype, int *poff);
+int _FunFile (char *lbuf, char *tbuf, int len, int *lptr);
+void * _FunSwap (void *obuf, void *ibuf, int width, int type);
 
 /* funtext.c */
-Fun FunTextOpen _PRx((char *fname, char *mode, char *iline, GIO ifd));
-int FunTextParam _PRx((char *pdelims, char *lbuf, 
-		       char *kbuf, char *vbuf, char *cbuf, int maxlen));
-void FunTextParamHeader _PRx((FITSHead theader, char *lbuf, 
-			      char *key, char *val, char *com, int pgot));
+Fun FunTextOpen (char *fname, char *mode, char *iline, GIO ifd);
+int FunTextParam (char *pdelims, char *lbuf, 
+		       char *kbuf, char *vbuf, char *cbuf, int maxlen);
+void FunTextParamHeader (FITSHead theader, char *lbuf, 
+			      char *key, char *val, char *com, int pgot);
 
 /* funopenp.c */
-Fun _FunNew _PRx((void));
-int _FunSpecialFile _PRx((char *fname, char *type,
-			  char *name, char *tail, char *extn, int mlen));
-int _FunRowNum _PRx((Fun fun, char *tail, char *env));
-int _FunTableBinCols _PRx((Fun fun, char *tail, char *env));
-int _FunTableValCol _PRx((Fun fun, char *tail, char *env));
-FITSHead _FunRawEvHeader _PRx((Fun fun,
-			       char *iname, char *iext, char *eventdef));
-off_t _FunImageSkip _PRx((Fun fun, char *tail));
-Fun _FunValid _PRx((Fun fun));
-void _FunFree _PRx((Fun fun, int flag));
-int _FunImageSize _PRx((Fun fun));
-int _FunMaxBufSize _PRx((Fun fun, char *tail));
-int _FunOpenCommon _PRx((Fun fun));
+Fun _FunNew (void);
+int _FunSpecialFile (char *fname, char *type,
+			  char *name, char *tail, char *extn, int mlen);
+int _FunRowNum (Fun fun, char *tail, char *env);
+int _FunTableBinCols (Fun fun, char *tail, char *env);
+int _FunTableValCol (Fun fun, char *tail, char *env);
+FITSHead _FunRawEvHeader (Fun fun,
+			       char *iname, char *iext, char *eventdef);
+off_t _FunImageSkip (Fun fun, char *tail);
+Fun _FunValid (Fun fun);
+void _FunFree (Fun fun, int flag);
+int _FunImageSize (Fun fun);
+int _FunMaxBufSize (Fun fun, char *tail);
+int _FunOpenCommon (Fun fun);
 
 /* funvu.c */
-int FunView _PRx((Fun fun, char *view, char *vmode, char *fname, int fmax));
+int FunView (Fun fun, char *view, char *vmode, char *fname, int fmax);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #include "funtools.h"
 

@@ -29,22 +29,16 @@ extern char *filtinchar;
  *  FilterSymbolInit -- init the symbol table
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterSymbolInit( Filter filter )
-#else
-int
-FilterSymbolInit( filter )
-     Filter filter;
-#endif
-{
+FilterSymbolInit(
+    Filter filter
+ ) {
     /* make sure we are init'ed */
     if ( filter == NULL ) {
 	gerror( stderr, "symbol table not initialized\n" );
 	return ( 0 );
     }
-    filter->symtab =
-        ( FilterSymbols ) xcalloc( SYMINC, sizeof( FilterSymRec ) );
+    filter->symtab = ( FilterSymbols ) xcalloc( SYMINC, sizeof( FilterSymRec ) );
     filter->nsyms = 0;
     filter->maxsyms = SYMINC;
     return ( SYMINC );
@@ -58,17 +52,12 @@ FilterSymbolInit( filter )
  * a parameter in the primary header
  *
  */
-#ifdef ANSI_FUNC
 char *
-FilterSymbolEnter( Filter filter, char *s, int *got )
-#else
-char *
-FilterSymbolEnter( filter, s, got )
-     Filter filter;
-     char *s;
-     int *got;
-#endif
-{
+FilterSymbolEnter(
+    Filter filter,
+    char *s,
+    int *got
+ ) {
     int brack = 0;
     int i, j;
     char *t;
@@ -122,8 +111,7 @@ FilterSymbolEnter( filter, s, got )
     if ( i >= filter->maxsyms ) {
 	filter->maxsyms += SYMINC;
 	filter->symtab = ( FilterSymbols ) xrealloc( filter->symtab,
-	                                             filter->maxsyms *
-	                                             sizeof( FilterSymRec ) );
+	                                             filter->maxsyms * sizeof( FilterSymRec ) );
     }
 
     /* this is where the next symbol will be entered */
@@ -158,8 +146,7 @@ FilterSymbolEnter( filter, s, got )
 	return ( char * ) sp->name;
     }
     /* look for name in the primary header */
-    else if ( fhd->primary &&
-              ( t = ft_headgets( fhd->primary, name, 0, NULL, &card ) ) ) {
+    else if ( fhd->primary && ( t = ft_headgets( fhd->primary, name, 0, NULL, &card ) ) ) {
 	sp->type = SYM_PAR;
 	sp->name = xstrdup( name );
 	sp->value = t;
@@ -182,16 +169,11 @@ FilterSymbolEnter( filter, s, got )
  * FilterSymbolLookup -- lookup a symbol in the symbol table
  *
  */
-#ifdef ANSI_FUNC
 FilterSymbols
-FilterSymbolLookup( Filter filter, char *name )
-#else
-FilterSymbols
-FilterSymbolLookup( filter, name )
-     Filter filter;
-     char *s;
-#endif
-{
+FilterSymbolLookup(
+    Filter filter,
+    char *name
+ ) {
     int i;
 
     /* sanity check */
@@ -200,7 +182,7 @@ FilterSymbolLookup( filter, name )
     /* loop through the symbol table and look for existing symbol */
     for ( i = 0; i < filter->nsyms; i++ ) {
 	/* skip accidentally empty ones */
-	if ( ( filter->symtab[i].name == NULL )
+        if ( ( filter->symtab[i].name == NULL )
 	     || ( *filter->symtab[i].name == '\0' ) )
 	    continue;
 	/* look for name */
@@ -217,16 +199,11 @@ FilterSymbolLookup( filter, name )
  * FilterSymbolDefaults -- enter default symbols for X and Y columns
  *
  */
-#ifdef ANSI_FUNC
 int
-FilterSymbolDefaults( Filter filter, int enter )
-#else
-int
-FilterSymbolDefaults( filter, enter )
-     Filter filter;
-     int enter;
-#endif
-{
+FilterSymbolDefaults(
+    Filter filter,
+    int enter
+ ) {
     int ip = 0;
     char tbuf[SZ_LINE];
     char *mbuf;
@@ -272,8 +249,7 @@ FilterSymbolDefaults( filter, enter )
 
     /* enter symbols if necessary */
     if ( enter ) {
-	if ( !FilterSymbolEnter( filter, xbin, NULL ) ||
-	     !FilterSymbolEnter( filter, ybin, NULL ) )
+	if ( !FilterSymbolEnter( filter, xbin, NULL ) || !FilterSymbolEnter( filter, ybin, NULL ) )
 	    return 0;
     }
     return 1;
@@ -284,15 +260,10 @@ FilterSymbolDefaults( filter, enter )
  * FilterSymbolFree -- free space from symbol table
  *
  */
-#ifdef ANSI_FUNC
 void
-FilterSymbolFree( Filter filter )
-#else
-void
-FilterSymbolFree( filter )
-     Filter filter;
-#endif
-{
+FilterSymbolFree(
+    Filter filter
+ ) {
     int i;
     FilterSymbols sp;
 

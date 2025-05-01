@@ -41,7 +41,10 @@
 I hope it will never be used!
 */
 void
-qerror( char *msg1, char *msg2 ) {
+qerror(
+    char *msg1,
+    char *msg2
+ ) {
     fprintf( stderr, "\n> %s%s\n\n", msg1, msg2 );
     abort(  );
 }
@@ -60,8 +63,16 @@ AUTHOR  E. Bertin (IAP)
 VERSION 08/03/2003
  ***/
 polystruct *
-poly_init( int *group, int ndim, int *degree, int ngroup ) {
-    void qerror( char *msg1, char *msg2 );
+poly_init(
+    int *group,
+    int ndim,
+    int *degree,
+    int ngroup
+ ) {
+    void qerror(
+    char *msg1,
+    char *msg2
+     );
     polystruct *poly;
     char str[512];
     int nd[POLY_MAXDIM];
@@ -76,7 +87,9 @@ poly_init( int *group, int ndim, int *degree, int ngroup ) {
     }
 
     if ( ndim )
-	QMALLOC( poly->group, int, poly->ndim );
+	QMALLOC( poly->group, int,
+	         poly->ndim
+	 );
     for ( groupt = poly->group, d = ndim; d--; )
 	*( groupt++ ) = *( group++ ) - 1;
 
@@ -84,7 +97,9 @@ poly_init( int *group, int ndim, int *degree, int ngroup ) {
     if ( ngroup ) {
 	group = poly->group;    /* Forget the original *group */
 
-	QMALLOC( poly->degree, int, poly->ngroup );
+	QMALLOC( poly->degree, int,
+	         poly->ngroup
+	 );
 
 /*-- Compute the number of context parameters for each group */
 	memset( nd, 0, ngroup * sizeof( int ) );
@@ -110,8 +125,12 @@ poly_init( int *group, int ndim, int *degree, int ngroup ) {
 	poly->ncoeff *= num / den;
     }
 
-    QMALLOC( poly->basis, double, poly->ncoeff );
-    QCALLOC( poly->coeff, double, poly->ncoeff );
+    QMALLOC( poly->basis, double,
+             poly->ncoeff
+     );
+    QCALLOC( poly->coeff, double,
+             poly->ncoeff
+     );
 
     return poly;
 }
@@ -127,7 +146,9 @@ AUTHOR  E. Bertin (IAP, Leiden observatory & ESO)
 VERSION 09/04/2000
  ***/
 void
-poly_end( polystruct * poly ) {
+poly_end(
+    polystruct * poly
+ ) {
     if ( poly ) {
 	free( poly->coeff );
 	free( poly->basis );
@@ -149,7 +170,10 @@ AUTHOR  E. Bertin (IAP)
 VERSION 03/03/2004
  ***/
 double
-poly_func( polystruct * poly, double *pos ) {
+poly_func(
+    polystruct * poly,
+    double *pos
+ ) {
     double xpol[POLY_MAXDIM + 1];
     double *post, *xpolt, *basis, *coeff, xval;
     long double val;
@@ -229,9 +253,18 @@ AUTHOR  E. Bertin (IAP, Leiden observatory & ESO)
 VERSION 08/03/2005
  ***/
 void
-poly_fit( polystruct * poly, double *x, double *y, double *w, int ndata,
-          double *extbasis ) {
-    void qerror( char *msg1, char *msg2 );
+poly_fit(
+    polystruct * poly,
+    double *x,
+    double *y,
+    double *w,
+    int ndata,
+    double *extbasis
+ ) {
+    void qerror(
+    char *msg1,
+    char *msg2
+     );
     double /*offset[POLY_MAXDIM], */ x2[POLY_MAXDIM],
         *alpha, *alphat, *beta, *betat, *basis, *basis1, *basis2, *coeff,
         *extbasist, *xt, val, wval, yval;
@@ -245,8 +278,12 @@ poly_fit( polystruct * poly, double *x, double *y, double *w, int ndata,
     matsize = ncoeff * ncoeff;
     basis = poly->basis;
     extbasist = extbasis;
-    QCALLOC( alpha, double, matsize );
-    QCALLOC( beta, double, ncoeff );
+    QCALLOC( alpha, double,
+             matsize
+     );
+    QCALLOC( beta, double,
+             ncoeff
+     );
 
 /* Subtract an average offset to maintain precision (droped for now ) */
 /*
@@ -325,11 +362,13 @@ AUTHOR  E. Bertin (IAP)
 VERSION 03/03/2004
  ***/
 void
-poly_addcste( polystruct * poly, double *cste ) {
+poly_addcste(
+    polystruct * poly,
+    double *cste
+ ) {
     long double *acoeff;
     double *coeff, *mcoeff, *mcoefft, val;
-    int *mpowers, *powers, *powerst, *powerst2,
-        i, j, n, p, denum, flag, maxdegree, ncoeff, ndim;
+    int *mpowers, *powers, *powerst, *powerst2, i, j, n, p, denum, flag, maxdegree, ncoeff, ndim;
 
     ncoeff = poly->ncoeff;
     ndim = poly->ndim;
@@ -338,9 +377,15 @@ poly_addcste( polystruct * poly, double *cste ) {
 	if ( maxdegree < poly->degree[j] )
 	    maxdegree = poly->degree[j];
     maxdegree++;                /* Actually we need maxdegree+1 terms */
-    QCALLOC( acoeff, long double, ncoeff );
-    QCALLOC( mcoeff, double, ndim * maxdegree );
-    QCALLOC( mpowers, int, ndim );
+    QCALLOC( acoeff, long double,
+             ncoeff
+     );
+    QCALLOC( mcoeff, double,
+             ndim * maxdegree
+     );
+    QCALLOC( mpowers, int,
+             ndim
+     );
     mcoefft = mcoeff;           /* To avoid gcc -Wall warnings */
     powerst = powers = poly_powers( poly );
     coeff = poly->coeff;
@@ -409,12 +454,20 @@ AUTHOR  E. Bertin (IAP, Leiden observatory & ESO)
 VERSION 21/09/2004
  ***/
 void
-poly_solve( double *a, double *b, int n ) {
+poly_solve(
+    double *a,
+    double *b,
+    int n
+ ) {
     double *vmat, *wmat;
 
     if ( cholsolve( a, b, n ) ) {
-	QMALLOC( vmat, double, n * n );
-	QMALLOC( wmat, double, n );
+	QMALLOC( vmat, double,
+	         n * n
+	 );
+	QMALLOC( wmat, double,
+	         n
+	 );
 	svdsolve( a, b, n, n, vmat, wmat );
 	free( vmat );
 	free( wmat );
@@ -436,13 +489,22 @@ AUTHOR  E. Bertin (IAP, Leiden observatory & ESO)
 VERSION	28/10/2003
  ***/
 int
-cholsolve( double *a, double *b, int n ) {
-    void qerror( char *msg1, char *msg2 );
+cholsolve(
+    double *a,
+    double *b,
+    int n
+ ) {
+    void qerror(
+    char *msg1,
+    char *msg2
+     );
     double *p, *x, sum;
     int i, j, k;
 
 /* Allocate memory to store the diagonal elements */
-    QMALLOC( p, double, n );
+    QMALLOC( p, double,
+             n
+     );
 
 /* Cholesky decomposition */
     for ( i = 0; i < n; i++ )
@@ -499,7 +561,14 @@ AUTHOR  E. Bertin (IAP)
 VERSION 26/12/2003
  ***/
 void
-svdsolve( double *a, double *b, int m, int n, double *vmat, double *wmat ) {
+svdsolve(
+    double *a,
+    double *b,
+    int m,
+    int n,
+    double *vmat,
+    double *wmat
+ ) {
 #define MAX(a,b) (maxarg1=(a),maxarg2=(b),(maxarg1) > (maxarg2) ?\
         (maxarg1) : (maxarg2))
 #define PYTHAG(a,b)     ((at=fabs(a)) > (bt=fabs(b)) ? \
@@ -507,22 +576,27 @@ svdsolve( double *a, double *b, int m, int n, double *vmat, double *wmat ) {
                                 : (bt ? (ct=at/bt,bt*sqrt(1.0+ct*ct)): 0.0))
 #define SIGN(a,b) ((b) >= 0.0 ? fabs(a) : -fabs(a))
 #define TOL             1.0e-11
-    void qerror( char *msg1, char *msg2 );
+    void qerror(
+    char *msg1,
+    char *msg2
+     );
 
     int flag, i, its, j, jj, k, l, mmi, nm, nml;
     double *w, *ap, *ap0, *ap1, *ap10, *rv1p, *vp, *vp0, *vp1, *vp10,
         *bp, *tmpp, *rv1, *tmp, *sol,
-        c, f, h, s, x, y, z,
-        anorm, g, scale, at, bt, ct, maxarg1, maxarg2, thresh, wmax;
+        c, f, h, s, x, y, z, anorm, g, scale, at, bt, ct, maxarg1, maxarg2, thresh, wmax;
 
     anorm = g = scale = 0.0;
     if ( m < n )
-	qerror( "*Error*: Not enough rows for solving the system ",
-                "in svdfit()" );
+	qerror( "*Error*: Not enough rows for solving the system ", "in svdfit()" );
 
     sol = b;                    /* The solution overwrites the input column matrix */
-    QMALLOC( rv1, double, n );
-    QMALLOC( tmp, double, n );
+    QMALLOC( rv1, double,
+             n
+     );
+    QMALLOC( tmp, double,
+             n
+     );
     l = nm = nml = 0;           /* To avoid gcc -Wall warnings */
     for ( i = 0; i < n; i++ ) {
 	l = i + 1;
@@ -574,8 +648,7 @@ svdsolve( double *a, double *b, int m, int n, double *vmat, double *wmat ) {
 		    *( rv1p++ ) = *ap / h;
 		ap10 = a + l + m * l;
 		for ( j = m - l; j--; ap10++ ) {
-		    for ( s = 0.0, ap = ap0, ap1 = ap10, k = nml; k--;
-		          ap += m, ap1 += m )
+		    for ( s = 0.0, ap = ap0, ap1 = ap10, k = nml; k--; ap += m, ap1 += m )
 			s += *ap1 ** ap;
 		    rv1p = rv1 + l;
 		    for ( ap1 = ap10, k = nml; k--; ap1 += m )
@@ -598,8 +671,7 @@ svdsolve( double *a, double *b, int m, int n, double *vmat, double *wmat ) {
 		for ( ap = ap0, vp = vp0, j = nml; j--; ap += m )
 		    *( vp++ ) = *ap / g;
 		for ( j = nml; j--; vp10 += n ) {
-		    for ( s = 0.0, ap = ap0, vp1 = vp10, k = nml; k--;
-		          ap += m )
+		    for ( s = 0.0, ap = ap0, vp1 = vp10, k = nml; k--; ap += m )
 			s += *ap ** ( vp1++ );
 		    for ( vp = vp0, vp1 = vp10, k = nml; k--; )
 			*( vp1++ ) += s ** ( vp++ );
@@ -689,18 +761,15 @@ svdsolve( double *a, double *b, int m, int n, double *vmat, double *wmat ) {
 		break;
 	    }
 	    if ( its == 99 )
-		qerror( "*Error*: No convergence in 100 SVD iterations ",
-	                "in svdfit()" );
+		qerror( "*Error*: No convergence in 100 SVD iterations ", "in svdfit()" );
 	    x = wmat[l];
 	    nm = k - 1;
 	    y = wmat[nm];
 	    g = rv1[nm];
 	    h = rv1[k];
-	    f = ( ( y - z ) * ( y + z ) +
-	          ( g - h ) * ( g + h ) ) / ( 2.0 * h * y );
+	    f = ( ( y - z ) * ( y + z ) + ( g - h ) * ( g + h ) ) / ( 2.0 * h * y );
 	    g = PYTHAG( f, 1.0 );
-	    f = ( ( x - z ) * ( x + z ) +
-	          h * ( ( y / ( f + SIGN( g, f ) ) ) - h ) ) / x;
+	    f = ( ( x - z ) * ( x + z ) + h * ( ( y / ( f + SIGN( g, f ) ) ) - h ) ) / x;
 	    c = s = 1.0;
 	    ap10 = a + l * m;
 	    vp10 = vmat + l * n;
@@ -803,16 +872,19 @@ AUTHOR  E. Bertin (IAP)
 VERSION 23/10/2003
  ***/
 int *
-poly_powers( polystruct * poly ) {
+poly_powers(
+    polystruct * poly
+ ) {
     int expo[POLY_MAXDIM + 1], gexpo[POLY_MAXDIM + 1];
-    int *expot, *degree, *degreet, *group, *groupt, *gexpot,
-        *powers, *powerst, d, g, t, ndim;
+    int *expot, *degree, *degreet, *group, *groupt, *gexpot, *powers, *powerst, d, g, t, ndim;
 
 /* Prepare the vectors and counters */
     ndim = poly->ndim;
     group = poly->group;
     degree = poly->degree;
-    QMALLOC( powers, int, ndim * poly->ncoeff );
+    QMALLOC( powers, int,
+             ndim * poly->ncoeff
+     );
     if ( ndim ) {
 	for ( expot = expo, d = ndim; --d; )
 	    *( ++expot ) = 0;

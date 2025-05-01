@@ -20,7 +20,8 @@ typedef struct _hcstruct {
     char *expr;
     char mbuf[SZ_LINE];
     char tbuf[SZ_LINE];
-}  *HC, HCRec;
+}  *HC,
+    HCRec;
 
 /* parser characteristics struct */
 typedef struct _ptyperec {
@@ -33,7 +34,8 @@ typedef struct _ptyperec {
     int comeot;
     int lazyeot;
     char *hcolfmt;
-}  *PType, PTypeRec;
+}  *PType,
+    PTypeRec;
 
 static PTypeRec ptype[] = { {" \t,\n", "#\n", NULL, 0, 0, 0, 1, 1, NULL},       /* funtools */
 {" \t\n", "#\n", NULL, 0, 0, 0, 1, 1, NULL},    /* spaces */
@@ -51,25 +53,18 @@ static char macrobuf[SZ_LINE];
  * _HCCB -- callback for macro expansion
  *
  */
-#ifdef ANSI_FUNC
 static char *
-_HCCB( char *name, void *client_data )
-#else
-static char *
-_HCCB( name, client_data )
-     char *name;
-     void *client_data;
-#endif
-{
+_HCCB(
+    char *name,
+    void *client_data
+ ) {
     HC  hc = ( HC ) client_data;
 
     /* perform macro replacement */
     if ( !strcmp( name, "name" ) || !strcmp( name, "col" ) ) {
 	if ( strchr( hc->mbuf, 'n' ) ) {
 	    hc->eflag = 1;
-	    gerror( stderr,
-	            "$%s can only be specified once in headcol format\n",
-	            name );
+	    gerror( stderr, "$%s can only be specified once in headcol format\n", name );
 	    return NULL;
 	}
 	strncpy( macrobuf, "%s", SZ_LINE );
@@ -80,9 +75,7 @@ _HCCB( name, client_data )
     else if ( !strcmp( name, "format" ) || !strcmp( name, "fmt" ) ) {
 	if ( strchr( hc->mbuf, 'f' ) ) {
 	    hc->eflag = 1;
-	    gerror( stderr,
-	            "$%s can only be specified once in headcol format\n",
-	            name );
+	    gerror( stderr, "$%s can only be specified once in headcol format\n", name );
 	    return NULL;
 	}
 	strncpy( macrobuf, "%[a-zA-Z0-9.]", SZ_LINE );
@@ -112,15 +105,10 @@ _HCCB( name, client_data )
  * HCFree -- free up headercolumn struct
  *
  */
-#ifdef ANSI_FUNC
 static void
-HCFree( HC hc )
-#else
-static void
-HCFree( hc )
-     HC  hc;
-#endif
-{
+HCFree(
+    HC hc
+ ) {
     /* sanity check */
     if ( !hc ) return;
     if ( hc->fmt ) xfree( hc->fmt );
@@ -133,15 +121,10 @@ HCFree( hc )
  * HCNew -- allocate header/column struct and generate scanf expression
  *
  */
-#ifdef ANSI_FUNC
 static HC
-HCNew( char *s )
-#else
-static HC
-HCNew( s )
-     char *s;
-#endif
-{
+HCNew(
+    char *s
+ ) {
     HC  hc = NULL;
 
     /* sanity check */
@@ -150,8 +133,7 @@ HCNew( s )
     /* allocate record */
     if ( !( hc = xcalloc( 1, sizeof( HCRec ) ) ) ) return NULL;
     /* expand format specification to make a scanf format */
-    if ( !( hc->fmt = ExpandMacro( s, NULL, NULL, 0, _HCCB, hc ) ) ||
-         hc->eflag ) {
+    if ( !( hc->fmt = ExpandMacro( s, NULL, NULL, 0, _HCCB, hc ) ) || hc->eflag ) {
 	HCFree( hc );
 	return NULL;
     }
@@ -163,16 +145,11 @@ HCNew( s )
  * HCProcess -- process a header line to see if it contains column info
  *
  */
-#ifdef ANSI_FUNC
 static char *
-HCProcess( HC hc, char *s )
-#else
-static char *
-HCProcess( hc, s )
-     HC  hc;
-     char *s;
-#endif
-{
+HCProcess(
+    HC hc,
+    char *s
+ ) {
     int got;
     int len;
     char tbuf[SZ_LINE];
@@ -200,8 +177,7 @@ HCProcess( hc, s )
 	strncpy( tbuf, tbuf1, SZ_LINE );
     }
     else if ( !strcmp( hc->mbuf, "nf" ) ) {
-	if ( ( got =
-	       sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
+	if ( ( got = sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
 	switch ( *tbuf2 ) {
 	    case 'I':
 		snprintf( tbuf, SZ_LINE, "%s:J", tbuf1 );
@@ -210,8 +186,7 @@ HCProcess( hc, s )
 		snprintf( tbuf, SZ_LINE, "%s:D", tbuf1 );
 		break;
 	    case 'A':
-		snprintf( tbuf, SZ_LINE, "%s:%sA", tbuf1,
-		          &tbuf2[1] ? &tbuf2[1] : "" );
+		snprintf( tbuf, SZ_LINE, "%s:%sA", tbuf1, &tbuf2[1] ? &tbuf2[1] : "" );
 		break;
 	    default:
 		snprintf( tbuf, SZ_LINE, "%s:%s", tbuf1, tbuf2 );
@@ -219,8 +194,7 @@ HCProcess( hc, s )
 	}
     }
     else if ( !strcmp( hc->mbuf, "fn" ) ) {
-	if ( ( got =
-	       sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
+	if ( ( got = sscanf( s, hc->fmt, tbuf1, tbuf2 ) ) != hc->args ) return NULL;
 	switch ( *tbuf2 ) {
 	    case 'I':
 		snprintf( tbuf, SZ_LINE, "%s:J", tbuf2 );
@@ -229,8 +203,7 @@ HCProcess( hc, s )
 		snprintf( tbuf, SZ_LINE, "%s:D", tbuf2 );
 		break;
 	    case 'A':
-		snprintf( tbuf, SZ_LINE, "%s:%sA", tbuf2,
-		          &tbuf1[1] ? &tbuf1[1] : "" );
+		snprintf( tbuf, SZ_LINE, "%s:%sA", tbuf2, &tbuf1[1] ? &tbuf1[1] : "" );
 		break;
 	    default:
 		snprintf( tbuf, SZ_LINE, "%s:%s", tbuf2, tbuf1 );
@@ -269,18 +242,13 @@ HCProcess( hc, s )
  * _FunTextGetLine -- get a line of text (using existing line if possible)
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunTextGetLine( Fun fun, char *iline, char *lbuf, int llen )
-#else
-static int
-_FunTextGetLine( fun, iline, lbuf, llen )
-     Fun fun;
-     char *iline;
-     char *lbuf;
-     int llen;
-#endif
-{
+_FunTextGetLine(
+    Fun fun,
+    char *iline,
+    char *lbuf,
+    int llen
+ ) {
     int len;
     unsigned int i;
     char *lptr = NULL;
@@ -333,18 +301,15 @@ _FunTextGetLine( fun, iline, lbuf, llen )
  * FunTextParam -- parse a line, looking for a valid parameter
  *
  */
-#ifdef ANSI_FUNC
 int
-FunTextParam( char *pdelims,
-              char *lbuf, char *kbuf, char *vbuf, char *cbuf, int maxlen )
-#else
-int
-FunTextParam( pdelims, lbuf, kbuf, vbuf, cbuf, maxlen )
-     char *pdelims;
-     char *lbuf, *kbuf, *vbuf, *cbuf;
-     int maxlen;
-#endif
-{
+FunTextParam(
+    char *pdelims,
+    char *lbuf,
+    char *kbuf,
+    char *vbuf,
+    char *cbuf,
+    int maxlen
+ ) {
     int i;
     int hstate = 0;
     int got = 0;
@@ -531,8 +496,7 @@ FunTextParam( pdelims, lbuf, kbuf, vbuf, cbuf, maxlen )
 		if ( ++len >= maxlen ) goto done;
 		break;
 	    default:
-		gerror( stderr, "unknown state (%d) processing text header\n",
-		        hstate );
+		gerror( stderr, "unknown state (%d) processing text header\n", hstate );
 		break;
 	}
     }
@@ -559,18 +523,15 @@ FunTextParam( pdelims, lbuf, kbuf, vbuf, cbuf, maxlen )
  * FunTextParamHeader -- put param into header
  *
  */
-#ifdef ANSI_FUNC
 void
-FunTextParamHeader( FITSHead theader,
-                    char *lbuf, char *key, char *val, char *com, int pgot )
-#else
-void
-FunTextParamHeader( theader, lbuf, key, val, com, pgot )
-     FITSHead theader;
-     char *lbuf, *key, *val, *com;
-     int pgot;
-#endif
-{
+FunTextParamHeader(
+    FITSHead theader,
+    char *lbuf,
+    char *key,
+    char *val,
+    char *com,
+    int pgot
+ ) {
     char *lptr;
     longlong ival;
     int dtype;
@@ -578,8 +539,7 @@ FunTextParamHeader( theader, lbuf, key, val, com, pgot )
 
     switch ( pgot ) {
 	case -1:
-	    gerror( stderr,
-	            "internal text parser error: processing params\n" );
+	    gerror( stderr, "internal text parser error: processing params\n" );
 	    break;
 	case 0:
 	    break;
@@ -625,18 +585,13 @@ FunTextParamHeader( theader, lbuf, key, val, com, pgot )
  *	      	   set up binning and filtering parameters
  *
  */
-#ifdef ANSI_FUNC
 Fun
-FunTextOpen( char *fname, char *mode, char *iline, GIO ifd )
-#else
-Fun
-FunTextOpen( fname, mode, iline, ifd )
-     char *fname;
-     char *mode;
-     char *iline;
-     GIO ifd;
-#endif
-{
+FunTextOpen(
+    char *fname,
+    char *mode,
+    char *iline,
+    GIO ifd
+ ) {
     int i = 0, p = 0, q = 0, t = 0;
     int got;
     int state;
@@ -735,9 +690,7 @@ FunTextOpen( fname, mode, iline, ifd )
     }
 
     /* make sure CR is in the delim table */
-    if ( *tdelims
-         && !strstr( tdelims, "\\n" ) ) strncat( tdelims, "\\n",
-                                                 SZ_LINE - 1 );
+    if ( *tdelims && !strstr( tdelims, "\\n" ) ) strncat( tdelims, "\\n", SZ_LINE - 1 );
 
     /* create parsers */
     if ( *tdelims ) {
@@ -765,8 +718,7 @@ FunTextOpen( fname, mode, iline, ifd )
 	strncat( pmode, ",", SZ_LINE - 1 );
 	strncat( pmode, PARSE_DEFAULT_LAZYEOT, SZ_LINE - 1 );
 	if ( !( fun->parsers[0] = ParseNew( delim, comchars, eot, pmode ) ) ) {
-	    gwarning( stderr, "could not create parser #%d (%s)\n", p,
-	              delim );
+	    gwarning( stderr, "could not create parser #%d (%s)\n", p, delim );
 	    return NULL;
 	}
     }
@@ -819,11 +771,8 @@ FunTextOpen( fname, mode, iline, ifd )
 		snprintf( tbuf, SZ_LINE - 1, "debug=%d", atoi( tdebug ) );
 		strncat( pmode, tbuf, SZ_LINE - 1 );
 	    }
-	    if ( !
-	         ( fun->parsers[p] =
-	           ParseNew( delim, comchars, eot, pmode ) ) ) {
-		gwarning( stderr, "could not create text parser #%d (%s)\n",
-		          p, delim );
+	    if ( !( fun->parsers[p] = ParseNew( delim, comchars, eot, pmode ) ) ) {
+		gwarning( stderr, "could not create text parser #%d (%s)\n", p, delim );
 		goto error;
 	    }
 	}
@@ -859,8 +808,7 @@ FunTextOpen( fname, mode, iline, ifd )
 	}
 	/* analyze line and make sure one parser succeeded (even if its EOT) */
 	if ( !ParseAnalyze( fun->parsers, fun->nparser, lbuf ) ) {
-	    gwarning( stderr, "text parser failure analyzing line:\n%s",
-	              lbuf );
+	    gwarning( stderr, "text parser failure analyzing line:\n%s", lbuf );
 	    goto error;
 	}
 	/* look for that valid parser */
@@ -886,14 +834,11 @@ FunTextOpen( fname, mode, iline, ifd )
 	if ( parser ) {
 	    if ( *extn ) {
 		if ( parser->types[0] == PARSE_COMMENT ) {
-		    if ( FunTextParam
-		         ( pdelims, &lbuf[1], key, val, com,
-		           SZ_LINE ) >= 2 ) {
+		    if ( FunTextParam( pdelims, &lbuf[1], key, val, com, SZ_LINE ) >= 2 ) {
 			/* initialize fitsy header, if necessary */
 			if ( !theader ) theader = ft_headinit( NULL, 0 );
 			/* add to temp header */
-			FunTextParamHeader( theader, &lbuf[1], key, val, com,
-			                    pgot );
+			FunTextParamHeader( theader, &lbuf[1], key, val, com, pgot );
 			/* see if this is the right extension */
 			nowhite( val, val );
 			if ( !strcasecmp( key, "extname" )
@@ -918,9 +863,7 @@ FunTextOpen( fname, mode, iline, ifd )
 		    if ( fun->parsers[p]->state & PARSE_STATE_BAD ) continue;
 		    /* if we read and analyzed into the next table, back up a bit */
 		    if ( fun->parsers[p]->state & PARSE_STATE_NEXTLINE ) {
-			line =
-			    ParseLineDup( fun->parsers[p],
-			                  fun->parsers[p]->cur );
+			line = ParseLineDup( fun->parsers[p], fun->parsers[p]->cur );
 			state = fun->parsers[p]->state;
 			state &= ~( PARSE_STATE_NEXTLINE | PARSE_STATE_EOT );
 			ParseReset( fun->parsers[p], line, state );
@@ -939,9 +882,7 @@ FunTextOpen( fname, mode, iline, ifd )
 		goto ext;
 	    }
 	    else {
-		gwarning( stderr,
-		          "text parser failure looking for data table %d\n",
-		          indx );
+		gwarning( stderr, "text parser failure looking for data table %d\n", indx );
 		goto error;
 	    }
 	}
@@ -968,16 +909,14 @@ FunTextOpen( fname, mode, iline, ifd )
 		if ( fun->parsers[p]->types[0] == PARSE_STRING ) {
 		    for ( t = 0; t < fun->parsers[p]->ntoken; t++ ) {
 			if ( !fun->parsers[p]->tokens[t].sval ||
-			     !strchr( fun->parsers[p]->tokens[t].sval,
-			              ':' ) ) {
+			     !strchr( fun->parsers[p]->tokens[t].sval, ':' ) ) {
 			    nheader++;
 			    break;
 			}
 		    }
 		    /* flag that we are past the header and into the data */
 		    fun->parsers[p]->state = PARSE_STATE_DATA;
-		    fun->parsers[p]->header =
-		        ParseLineDup( fun->parsers[p], fun->parsers[p]->cur );
+		    fun->parsers[p]->header = ParseLineDup( fun->parsers[p], fun->parsers[p]->cur );
 		}
 		else {
 		    nheader++;
@@ -986,9 +925,7 @@ FunTextOpen( fname, mode, iline, ifd )
 	    }
 	    if ( !nheader ) goto headguess;
 	    /* give up */
-	    gwarning( stderr,
-	              "text parser failure looking for header (section %d)\n",
-	              indx );
+	    gwarning( stderr, "text parser failure looking for header (section %d)\n", indx );
 	    goto error;
 	}
     }
@@ -1007,13 +944,10 @@ FunTextOpen( fname, mode, iline, ifd )
 		if ( !hc[p] || !HCProcess( hc[p], &lbuf[1] ) ) {
 		    /* if not, process as an ordinary parameter (first time only) */
 		    if ( !ntheader ) {
-			pgot =
-			    FunTextParam( pdelims, &lbuf[1], key, val, com,
-			                  SZ_LINE );
+			pgot = FunTextParam( pdelims, &lbuf[1], key, val, com, SZ_LINE );
 			/* initialize fitsy header, if necessary */
 			if ( !theader ) theader = ft_headinit( NULL, 0 );
-			FunTextParamHeader( theader, &lbuf[1], key, val, com,
-			                    pgot );
+			FunTextParamHeader( theader, &lbuf[1], key, val, com, pgot );
 			ntheader++;
 		    }
 		}
@@ -1053,8 +987,7 @@ FunTextOpen( fname, mode, iline, ifd )
 			if ( ( fakep = ParseNew( ",\n", NULL, NULL, NULL ) ) ) {
 			    ParseLine( fakep, hc[p]->expr, NULL );
 			    if ( fakep->cur ) {
-				fun->parsers[p]->header =
-				    ParseLineDup( fakep, fakep->cur );
+				fun->parsers[p]->header = ParseLineDup( fakep, fakep->cur );
 			    }
 			    ParseFree( fakep );
 			}
@@ -1086,8 +1019,7 @@ FunTextOpen( fname, mode, iline, ifd )
 		    strncat( lbuf, " ", SZ_LINE - 1 );
 		strncat( lbuf, tbuf, SZ_LINE - 1 );
 	    }
-	    if ( !( fakep = ParseNew( " \n", NULL, NULL, NULL ) ) ) goto
-	            error;
+	    if ( !( fakep = ParseNew( " \n", NULL, NULL, NULL ) ) ) goto error;
 	    if ( !ParseAnalyze( &fakep, 1, lbuf ) ) goto error;
 	    header = fakep->cur;
 	}
@@ -1114,16 +1046,13 @@ FunTextOpen( fname, mode, iline, ifd )
 			break;
 		    case PARSE_STRING:
 			if ( alen <= 0 )
-			    alen =
-			        MAX( strlen( data1->tokens[t].sval ),
-			             PARSE_DEFAULT_ALEN );
+			    alen = MAX( strlen( data1->tokens[t].sval ), PARSE_DEFAULT_ALEN );
 			snprintf( tbuf2, SZ_LINE - 1, ":%dA", alen );
 			strncat( tbuf, tbuf2, SZ_LINE - 1 );
 			break;
 		    case PARSE_NULL:
 			if ( *tnull1 ) {
-			    snprintf( tbuf, SZ_LINE - 1, "%s:%s",
-			              header->tokens[t].sval, tnull1 );
+			    snprintf( tbuf, SZ_LINE - 1, "%s:%s", header->tokens[t].sval, tnull1 );
 			}
 			else {
 			    gwarning( stderr,

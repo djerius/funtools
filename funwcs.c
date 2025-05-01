@@ -13,16 +13,11 @@
  * the latter is used with events.
  *
  */
-#ifdef ANSI_FUNC
 struct WorldCoor *
-_FunWCS( Fun fun, int doimage )
-#else
-struct WorldCoor *
-_FunWCS( fun, doimage )
-     Fun fun;
-     int doimage;
-#endif
-{
+_FunWCS(
+    Fun fun,
+    int doimage
+ ) {
     int i, j;
     int ival;
     int simple = 1;
@@ -90,7 +85,7 @@ _FunWCS( fun, doimage )
 	/* transform WCS cards for the specified columns, if we have such */
 	for ( j = 1; j <= 2; j++ ) {
 	    if ( ( i = fun->bin[j - 1] + 1 ) >= 1 ) {
-		if ( ( s = ft_headgets( iheader, "TCTYP", i, NULL, &card ) )
+	        if ( ( s = ft_headgets( iheader, "TCTYP", i, NULL, &card ) )
 		     && card ) {
 		    ft_headapps( oheader, "CTYPE", j, s, NULL );
 		    xfree( s );
@@ -118,8 +113,7 @@ _FunWCS( fun, doimage )
 		    if ( doimage ) {
 			if ( fun->cols[i - 1] )
 			    dval = tlp2i( dval,
-			                  fun->cols[i - 1]->tlmin,
-			                  fun->cols[i - 1]->binsiz, 'D' );
+			                  fun->cols[i - 1]->tlmin, fun->cols[i - 1]->binsiz, 'D' );
 		    }
 		    ft_headsetr( oheader, "CRPIX", j, dval, 15, NULL, 1 );
 		}

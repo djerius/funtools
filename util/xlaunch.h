@@ -80,11 +80,16 @@
 #define LAUNCH_DEFAULT_WHICH 1
 #endif
 
-_PRbeg
 
-int Launch _PRx((char *cmdstring, int wait, char **stdfiles, int *pipes));
-pid_t LaunchPid _PRx((void));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-_PRend
+int Launch (char *cmdstring, int wait, char **stdfiles, int *pipes);
+pid_t LaunchPid (void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

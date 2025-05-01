@@ -26,7 +26,11 @@ typedef struct brec {
 } Binary;
 
 void
-fillb( Binary * b, int i, int dodouble ) {
+fillb(
+    Binary * b,
+    int i,
+    int dodouble
+ ) {
     int idiv;
     b->dval = ( double ) rand(  );
     b->fval = ( float ) rand(  );
@@ -46,7 +50,10 @@ fillb( Binary * b, int i, int dodouble ) {
 }
 
 int
-main( int argc, char **argv ) {
+main(
+    int argc,
+    char **argv
+ ) {
     int i;
     int c;
     int ival;
@@ -87,8 +94,7 @@ main( int argc, char **argv ) {
 
     /* generate sort parameters and start sort program */
     if ( doxeq ) {
-	snprintf( cmd, SZ_LINE - 1, "%s -B%d %s", prog, sizeof( Binary ),
-	          tbuf );
+	snprintf( cmd, SZ_LINE - 1, "%s -B%d %s", prog, sizeof( Binary ), tbuf );
 	rlen = SZ_LINE - strlen( cmd );
 	if ( !slist ) {
 	    slist = ( char * ) NewString( "d" );

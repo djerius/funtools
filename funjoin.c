@@ -43,7 +43,8 @@ typedef struct _colrec {
     char *name, *oname;
     int type, mode, offset, n, width;
     int coffset;
-}  *XCol, XColRec;
+}  *XCol,
+    XColRec;
 
 
 typedef struct _filerec {
@@ -74,60 +75,40 @@ typedef struct _filerec {
     int maxindex;
     int nindex;
     int *indexes;
-}  *XFile, XFileRec;
+}  *XFile,
+    XFileRec;
 
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
-    fprintf( stderr,
-             "usage: %s <switches> ifile1 ifile2 ... ifilen ofile\n", fname );
+usage(
+    char *fname
+ ) {
+    fprintf( stderr, "usage: %s <switches> ifile1 ifile2 ... ifilen ofile\n", fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -a  cols             # columns to activate in all files\n" );
-    fprintf( stderr,
-             "  -a1 cols ... an cols # columns to activate in each file\n" );
-    fprintf( stderr,
-             "  -b  'c1:bvl,c2:bv2'  # blank values for common columns in all files\n" );
-    fprintf( stderr,
-             "  -bn 'c1:bv1,c2:bv2'  # blank values for columns in specific files\n" );
-    fprintf( stderr,
-             "  -j  col              # column to join in all files\n" );
-    fprintf( stderr,
-             "  -j1 col ... jn col   # column to join in each file\n" );
-    fprintf( stderr,
-             "  -m min               # min matches to output a row\n" );
-    fprintf( stderr,
-             "  -M max               # max matches to output a row\n" );
-    fprintf( stderr,
-             "  -s                   # add 'jfiles' status column\n" );
+    fprintf( stderr, "  -a  cols             # columns to activate in all files\n" );
+    fprintf( stderr, "  -a1 cols ... an cols # columns to activate in each file\n" );
+    fprintf( stderr, "  -b  'c1:bvl,c2:bv2'  # blank values for common columns in all files\n" );
+    fprintf( stderr, "  -bn 'c1:bv1,c2:bv2'  # blank values for columns in specific files\n" );
+    fprintf( stderr, "  -j  col              # column to join in all files\n" );
+    fprintf( stderr, "  -j1 col ... jn col   # column to join in each file\n" );
+    fprintf( stderr, "  -m min               # min matches to output a row\n" );
+    fprintf( stderr, "  -M max               # max matches to output a row\n" );
+    fprintf( stderr, "  -s                   # add 'jfiles' status column\n" );
     fprintf( stderr, "  -S col               # add col as status column\n" );
     fprintf( stderr,
              "  -t tol               # tolerance for joining numeric cols [2 files only]\n" );
-    fprintf( stderr, "Between 2 and %d input files are allowed.\n",
-             MAXIFILE );
+    fprintf( stderr, "Between 2 and %d input files are allowed.\n", MAXIFILE );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 static void
-JoinMakeBlank( XFile file, char *defblank )
-#else
-static void
-JoinMakeBlank( file, defblank )
-     XFile file;
-     char *defblank;
-#endif
-{
+JoinMakeBlank(
+    XFile file,
+    char *defblank
+ ) {
     int i, j;
     int ip = 0;
     char tbuf[SZ_LINE];
@@ -176,13 +157,11 @@ JoinMakeBlank( file, defblank )
 				memcpy( b, &bval, sizeof( unsigned char ) );
 				break;
 			    case 'X':
-				switch ( file->cols[i].width /
-					 file->cols[i].n ) {
+				switch ( file->cols[i].width / file->cols[i].n ) {
 				    case 0:
 				    case 1:
 					bval = atoi( v );
-					memcpy( b, &bval,
-					        sizeof( unsigned char ) );
+					memcpy( b, &bval, sizeof( unsigned char ) );
 					break;
 				    case 2:
 					sval = atoi( v );
@@ -264,24 +243,18 @@ JoinMakeBlank( file, defblank )
     }
 }
 
-#ifdef ANSI_FUNC
 static int
-JoinAddCol( XFile file, char *name, char *oname,
-            int type, int mode, int offset, int n, int width, int coffset )
-#else
-static int
-JoinAddCol( file, name, oname, type, mode, offset, n, width, coffset )
-     XFile file;
-     char *name;
-     char *oname;
-     int type;
-     int mode;
-     int offset;
-     int n;
-     int width;
-     int coffset;
-#endif
-{
+JoinAddCol(
+    XFile file,
+    char *name,
+    char *oname,
+    int type,
+    int mode,
+    int offset,
+    int n,
+    int width,
+    int coffset
+ ) {
     if ( !file->maxcol ) {
 	file->maxcol = 1;
 	file->cols = xcalloc( file->maxcol, sizeof( XColRec ) );
@@ -302,16 +275,11 @@ JoinAddCol( file, name, oname, type, mode, offset, n, width, coffset )
     return file->ncol;
 }
 
-#ifdef ANSI_FUNC
 static int
-JoinFilesLeft( XFile ifiles, int nfile )
-#else
-static int
-JoinFilesLeft( ifiles, nfile )
-     XFile ifiles;
-     int nfile;
-#endif
-{
+JoinFilesLeft(
+    XFile ifiles,
+    int nfile
+ ) {
     int i;
     int left = 0;
 
@@ -323,17 +291,12 @@ JoinFilesLeft( ifiles, nfile )
     return left;
 }
 
-#ifdef ANSI_FUNC
 static int
-JoinReadNext( XFile ifiles, int nfile, int which )
-#else
-static int
-JoinReadNext( ifiles, nfile, which )
-     XFile ifiles;
-     int nfile;
-     int which;
-#endif
-{
+JoinReadNext(
+    XFile ifiles,
+    int nfile,
+    int which
+ ) {
     int i;
     int got;
     int lo, hi;
@@ -350,8 +313,7 @@ JoinReadNext( ifiles, nfile, which )
     if ( hi > nfile ) return 0;
     for ( i = lo; i <= hi; i++ ) {
 	if ( ifiles[i].eof ) continue;
-	FunTableRowGet( ifiles[i].fun, ( void * ) &( ifiles[i] ), 1, NULL,
-	                &got );
+	FunTableRowGet( ifiles[i].fun, ( void * ) &( ifiles[i] ), 1, NULL, &got );
 	if ( !got ) {
 	    ifiles[i].eof = 1;
 	}
@@ -362,20 +324,14 @@ JoinReadNext( ifiles, nfile, which )
     return nrec;
 }
 
-#ifdef ANSI_FUNC
 static int
-JoinGetMatches( XFile ifiles, int nfile, int ktype, double tol,
-                char *matches )
-#else
-static int
-JoinGetMatches( ifiles, nfile, ktype, tol, matches )
-     XFile ifiles;
-     int nfile;
-     int ktype;
-     double tol;
-     char *matches;
-#endif
-{
+JoinGetMatches(
+    XFile ifiles,
+    int nfile,
+    int ktype,
+    double tol,
+    char *matches
+ ) {
     int i;
     int m = 0;
     int ibase = -1;
@@ -452,126 +408,107 @@ JoinGetMatches( ifiles, nfile, ktype, tol, matches )
     return m;
 }
 
-#ifdef ANSI_FUNC
 static int
-JoinAddIndex( XFile ifile, int idx )
-#else
-static int
-JoinAddIndex( ifile, idx )
-     XFile ifile;
-     int idx;
-#endif
-{
+JoinAddIndex(
+    XFile ifile,
+    int idx
+ ) {
     if ( !ifile->maxindex ) {
 	ifile->maxindex = 1;
 	ifile->indexes = xcalloc( ifile->maxindex, sizeof( int ) );
     }
     else if ( ifile->nindex >= ifile->maxindex ) {
 	ifile->maxindex *= 2;
-	ifile->indexes =
-	    xrealloc( ifile->indexes, ifile->maxindex * sizeof( int ) );
+	ifile->indexes = xrealloc( ifile->indexes, ifile->maxindex * sizeof( int ) );
     }
     ifile->indexes[ifile->nindex++] = idx;
     return ifile->nindex;
 }
 
-#ifdef ANSI_FUNC
 static void
-JoinGatherRows( XFile ifiles, int nfile, int ktype, double tol,
-                char *matches, int nmatch, int *resetflag )
-#else
-static void
-JoinGatherRows( ifiles, nfile, ktype, tol, matches, nmatch, resetflag )
-     XFile ifiles;
-     int nfile;
-     int ktype;
-     double tol;
-     char *matches;
-     int nmatch;
-     int *resetflag
-#endif
-     {
-	 int i, j;
-	 int ibase = -1;
-	 char *sval = NULL;
-	 double dval;
-	 double mval;
+JoinGatherRows(
+    XFile ifiles,
+    int nfile,
+    int ktype,
+    double tol,
+    char *matches,
+    int nmatch,
+    int *resetflag
+ ) {
+    int i, j;
+    int ibase = -1;
+    char *sval = NULL;
+    double dval;
+    double mval;
 
-	 /* no need to reset rows yet */
-	    *resetflag = -1;
-	 /* make sure we have matches to process */
-	 if  ( !nmatch ) return;
-	 /* find base value */
-	 for ( j = 0; j < nmatch; j++ ) {
-i = matches[j];
-if ( ifiles[i].ibase ) {
-    ibase = i;
-    break;
+    /* no need to reset rows yet */
+    *resetflag = -1;
+    /* make sure we have matches to process */
+    if ( !nmatch ) return;
+    /* find base value */
+    for ( j = 0; j < nmatch; j++ ) {
+	i = matches[j];
+	if ( ifiles[i].ibase ) {
+	    ibase = i;
+	    break;
+	}
+    }
+    /* should never happen */
+    if ( ibase < 0 ) return;
+    /* for each match file, look for successive rows that also match */
+    for ( j = 0; j < nmatch; j++ ) {
+	i = matches[j];
+	ifiles[i].nindex = 0;
+	JoinAddIndex( &ifiles[i], ifiles[i].idx );
+	switch ( ktype ) {
+	    case KEY_STRING:
+		sval = ifiles[i].sval;
+		while ( JoinReadNext( ifiles, nfile, i ) ) {
+		    if ( !strcmp( sval, ifiles[i].sval ) ) {
+			JoinAddIndex( &ifiles[i], ifiles[i].idx );
+		    }
+		    else {
+			break;
+		    }
+		}
+		break;
+	    case KEY_NUMERIC:
+		dval = ifiles[i].dval;
+		mval = ifiles[i].mval;
+		while ( JoinReadNext( ifiles, nfile, i ) ) {
+		    if ( ( tol > 0.0 ) && ( i != ibase )
+		         && ftol( ifiles[i].dval, mval, tol ) ) {
+			JoinAddIndex( &ifiles[i], ifiles[i].idx );
+		    }
+		    else if ( feq( ifiles[i].dval, dval ) ) {
+			JoinAddIndex( &ifiles[i], ifiles[i].idx );
+		    }
+		    else {
+			/* If this is the base file and we are using a tolerance, and the
+			   difference between the last base and this base value is less than
+			   twice the tolerance, we have to reset all other file positions
+			   and re-check those values against this new base value. */
+		        if ( ( tol > 0.0 ) && ( i == ibase )
+			     && ftol( ifiles[i].dval, dval, ( 2 * tol ) ) ) {
+			    *resetflag = ibase;
+			}
+			break;
+		    }
+		}
+	}
+    }
 }
-	 }
-	 /* should never happen */
-	 if  ( ibase < 0 ) return;
-	 /* for each match file, look for successive rows that also match */
-	 for ( j = 0; j < nmatch; j++ ) {
-	     i = matches[j];
-	     ifiles[i].nindex = 0;
-	     JoinAddIndex( &ifiles[i], ifiles[i].idx );
-	     switch ( ktype ) {
-		 case KEY_STRING:
-		     sval = ifiles[i].sval;
-		     while ( JoinReadNext( ifiles, nfile, i ) ) {
-			 if ( !strcmp( sval, ifiles[i].sval ) ) {
-			     JoinAddIndex( &ifiles[i], ifiles[i].idx );
-			 }
-			 else {
-			     break;
-			 }
-		     }
-		     break;
-		 case KEY_NUMERIC:
-		     dval = ifiles[i].dval;
-		     mval = ifiles[i].mval;
-		     while ( JoinReadNext( ifiles, nfile, i ) ) {
-			 if ( ( tol > 0.0 ) && ( i != ibase )
-			      && ftol( ifiles[i].dval, mval, tol ) ) {
-			     JoinAddIndex( &ifiles[i], ifiles[i].idx );
-			 }
-			 else if ( feq( ifiles[i].dval, dval ) ) {
-			     JoinAddIndex( &ifiles[i], ifiles[i].idx );
-			 }
-			 else {
-			     /* If this is the base file and we are using a tolerance, and the
-			        difference between the last base and this base value is less than
-			        twice the tolerance, we have to reset all other file positions
-			        and re-check those values against this new base value. */
-			     if ( ( tol > 0.0 ) && ( i == ibase )
-			          && ftol( ifiles[i].dval, dval,
-			                   ( 2 * tol ) ) ) {
-				 *resetflag = ibase;
-			     }
-			     break;
-			 }
-		     }
-	     }
-	 }
-     }
 
-#ifdef ANSI_FUNC
 static int
-JoinWriteRows( XFile files, XFile ifiles, int nfile, char *matches,
-               int nmatch, int jbits, XFile ofiles )
-#else
-static int
-JoinWriteRows( files, ifiles, nfile, matches, nmatch, jbits, ofiles )
-     XFile files;
-     XFile ifiles;
-     int nfile;
-     char *matches;
-     int nmatch;
-     int jbits;
-     XFile ofiles;
-#endif
-{
+JoinWriteRows(
+    XFile files,
+    XFile ifiles,
+    int nfile,
+    char *matches,
+    int nmatch,
+    int jbits,
+    XFile ofiles
+ ) {
     int i, j, k;
     int ii;
     int got;
@@ -609,29 +546,24 @@ JoinWriteRows( files, ifiles, nfile, matches, nmatch, jbits, ofiles )
 	    if ( !flags[j] ) {
 		/* move blanks into output record for this row */
 		IPRINTF( ( stderr, "blank " ) );
-		memcpy( ofiles[0].rowbuf + files[j].rowoffset,
-		        files[j].blank, files[j].rowsize );
+		memcpy( ofiles[0].rowbuf + files[j].rowoffset, files[j].blank, files[j].rowsize );
 	    }
 	    /* retrieve data and transfer active columns to output */
 	    else {
 		ii = ifiles[j].counter;
 		IPRINTF( ( stderr, "%d ", ifiles[j].indexes[ii] ) );
-		if ( FunTableRowSeek
-		     ( files[j].fun, ifiles[j].indexes[ii], NULL ) < 0 ) {
+		if ( FunTableRowSeek( files[j].fun, ifiles[j].indexes[ii], NULL ) < 0 ) {
 		    gerror( stderr, "can't seek to row %d: %s\n",
 		            ifiles[j].indexes[ii], ifiles[j].fname );
 		}
-		if ( !
-		     ( buf =
-		       FunTableRowGet( files[j].fun, NULL, 1, NULL, &got ) )
+		if ( !( buf = FunTableRowGet( files[j].fun, NULL, 1, NULL, &got ) )
 		     || !got ) {
 		    gerror( stderr, "can't read row %d: %s\n",
 		            ifiles[j].indexes[ii], ifiles[j].fname );
 		}
 		rowptr = ofiles[0].rowbuf + files[j].rowoffset;
 		for ( k = 0; k < files[j].ncol; k++ ) {
-		    memcpy( rowptr, buf + files[j].cols[k].offset,
-		            files[j].cols[k].width );
+		    memcpy( rowptr, buf + files[j].cols[k].offset, files[j].cols[k].width );
 		    rowptr += files[j].cols[k].width;
 		}
 		if ( jbits ) jfiles[j / JBITSIZE] |= 1 << ( j % JBITSIZE );
@@ -666,18 +598,13 @@ JoinWriteRows( files, ifiles, nfile, matches, nmatch, jbits, ofiles )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static void
-JoinResetRows( XFile ifiles, char *matches, int nmatch, int resetflag )
-#else
-static void
-JoinResetRows( ifiles, matches, nmatch, resetflag )
-     XFile ifiles;
-     char *matches;
-     int nmatch;
-     int resetflag;
-#endif
-{
+JoinResetRows(
+    XFile ifiles,
+    char *matches,
+    int nmatch,
+    int resetflag
+ ) {
     int i, j;
     /* reset index positions so that we re-check tolerances */
     if ( resetflag >= 0 ) {
@@ -692,16 +619,11 @@ JoinResetRows( ifiles, matches, nmatch, resetflag )
     }
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int i, j, k;
     int type, mode, offset, n, width;
     int namei;
@@ -749,8 +671,7 @@ main( argc, argv )
 
     /* allocate input and output file arrays (we'll do the index array later) */
     if ( !( files = xcalloc( MAXIFILE, sizeof( XFileRec ) ) ) ) {
-	gerror( stderr,
-	        "can't allocate primary record structure for join\n" );
+	gerror( stderr, "can't allocate primary record structure for join\n" );
     }
     if ( !( ofiles = xcalloc( MAXOFILE, sizeof( XFileRec ) ) ) ) {
 	gerror( stderr, "can't allocate output record structure for join\n" );
@@ -768,9 +689,7 @@ main( argc, argv )
 			    files[j].actstr = argv[++i];
 			}
 			else {
-			    gerror( stderr,
-			            "invalid index for column activate: %d\n",
-			            j + 1 );
+			    gerror( stderr, "invalid index for column activate: %d\n", j + 1 );
 			}
 		    }
 		    else {
@@ -785,9 +704,7 @@ main( argc, argv )
 			    files[j].bstr = argv[++i];
 			}
 			else {
-			    gerror( stderr,
-			            "invalid index for join column: %d\n",
-			            j + 1 );
+			    gerror( stderr, "invalid index for join column: %d\n", j + 1 );
 			}
 		    }
 		    else {
@@ -802,9 +719,7 @@ main( argc, argv )
 			    files[j].jname = argv[++i];
 			}
 			else {
-			    gerror( stderr,
-			            "invalid index for join column: %d\n",
-			            j + 1 );
+			    gerror( stderr, "invalid index for join column: %d\n", j + 1 );
 			}
 		    }
 		    else {
@@ -838,8 +753,7 @@ main( argc, argv )
 			tol = atof( argv[++i] );
 		    }
 		    if ( tol <= 0 ) {
-			gerror( stderr,
-			        "tolerance value must be positive\n" );
+			gerror( stderr, "tolerance value must be positive\n" );
 		    }
 		    break;
 	    }
@@ -869,8 +783,7 @@ main( argc, argv )
 
     /* reallocate input files */
     if ( !( files = xrealloc( files, nfile * sizeof( XFileRec ) ) ) ) {
-	gerror( stderr,
-	        "can't re-allocate primary record structure for join\n" );
+	gerror( stderr, "can't re-allocate primary record structure for join\n" );
     }
 
     /* make sure we have a join column name for each file */
@@ -880,17 +793,14 @@ main( argc, argv )
 		files[i].jname = defcol;
 	    }
 	    else {
-		gerror( stderr,
-		        "no join column specified for file: %s\n",
-		        files[i].fname );
+		gerror( stderr, "no join column specified for file: %s\n", files[i].fname );
 	    }
 	}
     }
 
     /* allocate exact number of index file records */
     if ( !( ifiles = xcalloc( nfile, sizeof( XFileRec ) ) ) ) {
-	gerror( stderr,
-	        "can't allocate primary record structure for join\n" );
+	gerror( stderr, "can't allocate primary record structure for join\n" );
     }
     if ( !( matches = ( char * ) xcalloc( nfile, sizeof( char ) ) ) ) {
 	gerror( stderr, "can't allocate key result buffer\n" );
@@ -900,16 +810,13 @@ main( argc, argv )
     for ( i = 0; i < nfile; i++ ) {
 	/* open the input data file */
 	if ( !( files[i].fun = FunOpen( files[i].fname, "r", NULL ) ) ) {
-	    gerror( stderr,
-	            "can't FunOpen input file (or find extension): %s\n",
-	            files[i].fname );
+	    gerror( stderr, "can't FunOpen input file (or find extension): %s\n", files[i].fname );
 	}
 	/* make sure the join column is in this file */
 	if ( !FunColumnLookup( files[i].fun, files[i].jname, 0, NULL,
 	                       &files[i].jtype,
 	                       &files[i].jmode,
-	                       &files[i].joffset,
-	                       &files[i].jn, &files[i].jwidth ) ) {
+	                       &files[i].joffset, &files[i].jn, &files[i].jwidth ) ) {
 	    gerror( stderr, "can't find column %s in input file: %s\n",
 	            files[i].jname, files[i].fname );
 	}
@@ -917,8 +824,7 @@ main( argc, argv )
 	filtstr = NULL;
 	FunInfoGet( files[i].fun, FUN_FILTER, &filtstr, 0 );
 	if ( filtstr && *filtstr ) {
-	    gerror( stderr, "row filters are not permitted: %s\n",
-	            files[i].fname );
+	    gerror( stderr, "row filters are not permitted: %s\n", files[i].fname );
 	}
 	/* activate specified columns */
 	if ( files[i].actstr )
@@ -941,8 +847,7 @@ main( argc, argv )
 	            files[i].jname, files[i].fname );
 	}
 	if ( !( ifiles[i].fun = FunOpen( s, "r", NULL ) ) ) {
-	    gerror( stderr,
-	            "can't FunOpen index file (or find extension): %s\n", s );
+	    gerror( stderr, "can't FunOpen index file (or find extension): %s\n", s );
 	}
 	/* get gio handle for seeking and sving */
 	FunInfoGet( ifiles[i].fun, FUN_GIO, &ifiles[i].igio, 0 );
@@ -952,8 +857,7 @@ main( argc, argv )
 	if ( !FunColumnLookup( ifiles[i].fun, ifiles[i].jname, 0, NULL,
 	                       &ifiles[i].jtype,
 	                       &ifiles[i].jmode,
-	                       &ifiles[i].joffset,
-	                       &ifiles[i].jn, &ifiles[i].jwidth ) ) {
+	                       &ifiles[i].joffset, &ifiles[i].jn, &ifiles[i].jwidth ) ) {
 	    gerror( stderr, "can't find column %s in index file: %s\n",
 	            ifiles[i].jname, ifiles[i].fname );
 	}
@@ -969,9 +873,7 @@ main( argc, argv )
 	    case 'X':
 		FunColumnSelect( ifiles[i].fun, sizeof( XFileRec ), NULL,
 		                 "n", "J", "r", FUN_OFFSET( XFile, idx ),
-		                 ifiles[i].jname, "D", "r", FUN_OFFSET( XFile,
-		                                                        dval ),
-		                 NULL );
+		                 ifiles[i].jname, "D", "r", FUN_OFFSET( XFile, dval ), NULL );
 		ifiles[i].dtype = 'D';
 		ktype |= KEY_NUMERIC;
 		break;
@@ -979,9 +881,7 @@ main( argc, argv )
 	    case 'E':
 		FunColumnSelect( ifiles[i].fun, sizeof( XFileRec ), NULL,
 		                 "n", "J", "r", FUN_OFFSET( XFile, idx ),
-		                 ifiles[i].jname, "D", "r", FUN_OFFSET( XFile,
-		                                                        dval ),
-		                 NULL );
+		                 ifiles[i].jname, "D", "r", FUN_OFFSET( XFile, dval ), NULL );
 		ifiles[i].dtype = 'D';
 		ktype |= KEY_NUMERIC;
 		break;
@@ -989,15 +889,13 @@ main( argc, argv )
 		snprintf( tbuf, SZ_LINE - 1, "@%dA", ifiles[i].jn );
 		FunColumnSelect( ifiles[i].fun, sizeof( XFileRec ), NULL,
 		                 "n", "J", "r", FUN_OFFSET( XFile, idx ),
-		                 ifiles[i].jname, tbuf, "r",
-		                 FUN_OFFSET( XFile, sval ), NULL );
+		                 ifiles[i].jname, tbuf, "r", FUN_OFFSET( XFile, sval ), NULL );
 		ifiles[i].dtype = 'A';
 		ifiles[i].sval = xcalloc( ifiles[i].jn + 1, sizeof( char ) );
 		ktype |= KEY_STRING;
 		break;
 	    default:
-		gerror( stderr, "bad datatype for join column: %c\n",
-		        ifiles[i].jtype );
+		gerror( stderr, "bad datatype for join column: %c\n", ifiles[i].jtype );
 	}
 	/* free up temp space */
 	if ( s ) xfree( s );
@@ -1023,10 +921,8 @@ main( argc, argv )
 	coffset = 0;
 	for ( j = 0; j < files[i].tcol; j++ ) {
 	    if ( !FunColumnLookup( files[i].fun, NULL, j,
-	                           &name, &type, &mode, &offset, &n,
-	                           &width ) ) {
-		gerror( stderr, "can't find column %d in input file: %s\n", j,
-		        files[i].fname );
+	                           &name, &type, &mode, &offset, &n, &width ) ) {
+		gerror( stderr, "can't find column %d in input file: %s\n", j, files[i].fname );
 	    }
 	    if ( mode & COL_ACTIVE ) {
 		/* save original name in case of duplicate */
@@ -1042,18 +938,14 @@ main( argc, argv )
 		}
 		/* append a file number to duplicate names */
 		if ( k < 0 ) {
-		    snprintf( namebuf, SZ_LINE - 1, "%s_%d", basename,
-		              namei );
+		    snprintf( namebuf, SZ_LINE - 1, "%s_%d", basename, namei );
 		    name = namebuf;
 		    namei++;
-		    IPRINTF( ( stderr,
-		               "trying new col name for file %d: %s\n", i,
-		               name ) );
+		    IPRINTF( ( stderr, "trying new col name for file %d: %s\n", i, name ) );
 		    goto again;
 		}
 		/* add column */
-		JoinAddCol( &files[i], name, basename, type, mode, offset, n,
-		            width, coffset );
+		JoinAddCol( &files[i], name, basename, type, mode, offset, n, width, coffset );
 		/* bump offset into current row */
 		coffset += width;
 		/* size of active columns for this file only -- save in index rec */
@@ -1061,8 +953,7 @@ main( argc, argv )
 		/* offset into output where this file's contribution starts */
 		if ( files[i].rowoffset < 0 ) files[i].rowoffset = osize;
 		/* get auxiliary info */
-		FunColumnLookup2( files[i].fun, NULL, j,
-		                  &tlmin, &tlmax, &binsiz, &tscale, &tzero );
+		FunColumnLookup2( files[i].fun, NULL, j, &tlmin, &tlmax, &binsiz, &tscale, &tzero );
 		/* generate type string */
 		snprintf( tbuf, SZ_LINE - 1, "%d%c", n, type );
 		if ( !feq( tlmin, tlmax ) ) {
@@ -1098,8 +989,7 @@ main( argc, argv )
 	/* create blank line for this file */
 	JoinMakeBlank( &files[i], defblank );
 	/* add filename to header */
-	FunParamPuts( ofiles[0].fun, "JFILE", i + 1, files[i].fname,
-	              "join file", 1 );
+	FunParamPuts( ofiles[0].fun, "JFILE", i + 1, files[i].fname, "join file", 1 );
     }
 
     /* and one more for joinfiles, if needed */
@@ -1126,8 +1016,7 @@ main( argc, argv )
     ooffsets = ( int * ) xrealloc( ooffsets, oncol * sizeof( int ) );
 
     /* set up the output columns */
-    FunColumnSelectArr( ofiles[0].fun, osize, NULL,
-                        onames, otypes, omodes, ooffsets, oncol );
+    FunColumnSelectArr( ofiles[0].fun, osize, NULL, onames, otypes, omodes, ooffsets, oncol );
 
     /* this tells us the size of the output buffer */
     FunInfoGet( ofiles[0].fun, FUN_ROWSIZE, &( ofiles[0].rowsize ), 0 );
@@ -1142,19 +1031,16 @@ main( argc, argv )
 	/* yikes ... when we reset rows to check against the next base,
 	   we don't want to write out anything if there is no match, since this
 	   was already done with the last base ... its confusing */
-	if ( ( tol > 0.0 ) && ( nmatch == 1 ) && ( resetflag >= 0 ) &&
-	     ( resetflag != matches[0] ) ) {
+	if ( ( tol > 0.0 ) && ( nmatch == 1 ) && ( resetflag >= 0 ) && ( resetflag != matches[0] ) ) {
 	    for ( i = 0; i < nmatch; i++ ) {
 		JoinReadNext( ifiles, nfile, matches[i] );
 	    }
 	}
 	/* this is the normal output of matched rows */
 	else if ( ( nmatch >= minmatch ) && ( nmatch <= maxmatch ) ) {
-	    JoinGatherRows( ifiles, nfile, ktype, tol, matches, nmatch,
-	                    &resetflag );
+	    JoinGatherRows( ifiles, nfile, ktype, tol, matches, nmatch, &resetflag );
 	    /* write all matched rows */
-	    if ( !JoinWriteRows
-	         ( files, ifiles, nfile, matches, nmatch, jbits, ofiles ) ) {
+	    if ( !JoinWriteRows( files, ifiles, nfile, matches, nmatch, jbits, ofiles ) ) {
 		gerror( stderr, "can't write rows for join\n" );
 	    }
 	    /* might have to reset the rows when using tolerance values */
@@ -1191,10 +1077,8 @@ main( argc, argv )
 	    if ( files[i].blank ) xfree( files[i].blank );
 	    if ( files[i].cols ) {
 		for ( j = 0; j < files[i].ncol; j++ ) {
-		    if ( files[i].cols[j].name ) xfree( files[i].cols[j].
-		                                        name );
-		    if ( files[i].cols[j].oname ) xfree( files[i].cols[j].
-		                                         oname );
+		    if ( files[i].cols[j].name ) xfree( files[i].cols[j].name );
+		    if ( files[i].cols[j].oname ) xfree( files[i].cols[j].oname );
 		}
 		xfree( files[i].cols );
 	    }

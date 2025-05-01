@@ -10,14 +10,10 @@
  * getnanf() -- return a float NaN
  *
  */
-#ifdef ANSI_FUNC
 float
-getnanf( void )
-#else
-float
-getnanf(  )
-#endif
-{
+getnanf(
+    void
+ ) {
     unsigned char nan[4];
     int i;
 
@@ -41,14 +37,10 @@ getnanf(  )
  * getnand() -- return a double NaN
  *
  */
-#ifdef ANSI_FUNC
 double
-getnand( void )
-#else
-double
-getnand(  )
-#endif
-{
+getnand(
+    void
+ ) {
     unsigned char nan[8];
     int i;
 

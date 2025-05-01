@@ -29,15 +29,19 @@
 
 #if defined(HAVE_CYGWIN) || defined(WIN32)
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-int WinProcessOpen _PRx((char *cmd, void **ichan, void **ochan, void **pid));
-void *WinProcessRead _PRx((void *fd, void *buf, int maxbytes, int *got));
-int WinProcessWrite _PRx((void *fd, void *buf, int nbytes));
-int WinProcessClose _PRx((void *pid, int *exit_status));
-int WinProcessGetChan _PRx((void *pid, void **ichan, void **ochan));
+int WinProcessOpen (char *cmd, void **ichan, void **ochan, void **pid);
+void *WinProcessRead (void *fd, void *buf, int maxbytes, int *got);
+int WinProcessWrite (void *fd, void *buf, int nbytes);
+int WinProcessClose (void *pid, int *exit_status);
+int WinProcessGetChan (void *pid, void **ichan, void **ochan);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

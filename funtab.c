@@ -11,18 +11,13 @@
  *
  */
 
-#ifdef ANSI_FUNC
 static void *
-swap( void *obuf, void *ibuf, int width, int type )
-#else
-static void *
-swap( obuf, ibuf, width, type )
-     void *obuf;
-     void *ibuf;
-     int width;
-     int type;
-#endif
-{
+swap(
+    void *obuf,
+    void *ibuf,
+    int width,
+    int type
+ ) {
     switch ( type ) {
 	case 'A':
 	case 'B':
@@ -50,18 +45,13 @@ swap( obuf, ibuf, width, type )
     return obuf;
 }
 
-#ifdef ANSI_FUNC
 static void
-_FunTableSave( Fun fun, char *rows, char *ebuf, int nrow )
-#else
-static void
-_FunTableSave( fun, rows, ebuf, nrow )
-     Fun fun;
-     char *rows;
-     char *ebuf;
-     int nrow;
-#endif
-{
+_FunTableSave(
+    Fun fun,
+    char *rows,
+    char *ebuf,
+    int nrow
+ ) {
     SaveBuf new, cur;
     int n;
 
@@ -111,17 +101,12 @@ _FunTableSave( fun, rows, ebuf, nrow )
     }
 }
 
-#ifdef ANSI_FUNC
 static char *
-_FunTableRestore( Fun fun, char *rows, int *nrow )
-#else
-static char *
-_FunTableRestore( fun, rows, nrow )
-     Fun fun;
-     char *rows;
-     int *nrow;
-#endif
-{
+_FunTableRestore(
+    Fun fun,
+    char *rows,
+    int *nrow
+ ) {
     SaveBuf cur;
     char *ebuf = NULL;
     unsigned char *rbuf;
@@ -182,17 +167,12 @@ _FunTableRestore( fun, rows, nrow )
     return ebuf;
 }
 
-#ifdef ANSI_FUNC
 static void
-_FunBlank( Fun fun, int type, char *buf )
-#else
-static void
-_FunBlank( fun, type, buf )
-     Fun fun;
-     int type;
-     char *buf;
-#endif
-{
+_FunBlank(
+    Fun fun,
+    int type,
+    char *buf
+ ) {
     unsigned char bval;
     short sval;
     int ival;
@@ -217,8 +197,7 @@ _FunBlank( fun, type, buf )
 	    break;
 	case 'K':
 #if HAVE_LONG_LONG == 0
-	    gerror( stderr,
-	            "long long support was not built into this program\n" );
+	    gerror( stderr, "long long support was not built into this program\n" );
 	    exit( 1 );
 #endif
 	    lval = fun->blank;
@@ -238,20 +217,14 @@ _FunBlank( fun, type, buf )
     }
 }
 
-#ifdef ANSI_FUNC
 static void *
-_FunTextRead( Fun fun, char *buf, size_t UNUSED( size ), size_t get,
-              size_t *got )
-#else
-static void *
-_FunTextRead( fun, buf, size, get, got )
-     Fun fun;
-     char *buf;
-     size_t size;
-     size_t get;
-     size_t *got;
-#endif
-{
+_FunTextRead(
+    Fun fun,
+    char *buf,
+    size_t UNUSED( size ),
+    size_t get,
+    size_t *got
+ ) {
     int p, t;
     int len;
     int dodata1;
@@ -279,8 +252,7 @@ _FunTextRead( fun, buf, size, get, got )
 	if ( dodata1 ) {
 	    /* look for the parser with data1 that has the most tokens */
 	    for ( parser = NULL, ntoken = 0, p = 0; p < fun->nparser; p++ ) {
-		if ( !( fun->parsers[p]->state & PARSE_STATE_BAD ) &&
-		     fun->parsers[p]->data1 ) {
+		if ( !( fun->parsers[p]->state & PARSE_STATE_BAD ) && fun->parsers[p]->data1 ) {
 		    if ( fun->parsers[p]->ntoken > ntoken ) {
 			parser = fun->parsers[p];
 			ntoken = parser->ntoken;
@@ -301,14 +273,11 @@ _FunTextRead( fun, buf, size, get, got )
 				len = strlen( line->tokens[t].sval );
 				if ( len >= fun->header->table->col[t].width ) {
 				    memmove( bp, line->tokens[t].sval,
-				             fun->header->table->col[t].
-				             width );
+				             fun->header->table->col[t].width );
 				}
 				else {
 				    memmove( bp, line->tokens[t].sval, len );
-				    memset( bp + len, 0,
-				            fun->header->table->col[t].width -
-				            len );
+				    memset( bp + len, 0, fun->header->table->col[t].width - len );
 				}
 			    }
 			    /* handle bit-field processing specially */
@@ -329,33 +298,24 @@ _FunTextRead( fun, buf, size, get, got )
 					break;
 				}
 				if ( ( line->tokens[t].type == PARSE_INTEGER )
-				     || ( line->tokens[t].type ==
-				          PARSE_HEXINT ) )
-				    ft_acht2( xtype, bp, 'K',
-				              &line->tokens[t].lval, 1, 0,
-				              0 );
+				     || ( line->tokens[t].type == PARSE_HEXINT ) )
+				    ft_acht2( xtype, bp, 'K', &line->tokens[t].lval, 1, 0, 0 );
 				else
-				    ft_acht2( xtype, bp, 'D',
-				              &line->tokens[t].dval, 1, 0,
-				              0 );
+				    ft_acht2( xtype, bp, 'D', &line->tokens[t].dval, 1, 0, 0 );
 			    }
 			    else {
-				if ( ( line->tokens[t].type == PARSE_INTEGER )
-				     || ( line->tokens[t].type ==
-				          PARSE_HEXINT ) )
+		                if ( ( line->tokens[t].type == PARSE_INTEGER )
+				     || ( line->tokens[t].type == PARSE_HEXINT ) )
 				    ft_acht2( fun->header->table->col[t].type,
-				              bp, 'K', &line->tokens[t].lval,
-				              1, 0, 0 );
+				              bp, 'K', &line->tokens[t].lval, 1, 0, 0 );
 				else
 				    ft_acht2( fun->header->table->col[t].type,
-				              bp, 'D', &line->tokens[t].dval,
-				              1, 0, 0 );
+				              bp, 'D', &line->tokens[t].dval, 1, 0, 0 );
 			    }
 			    bp += fun->header->table->col[t].width;
 			    break;
 			case PARSE_NULL:
-			    _FunBlank( fun, fun->header->table->col[t].type,
-			               bp );
+			    _FunBlank( fun, fun->header->table->col[t].type, bp );
 			    bp += fun->header->table->col[t].width;
 			    break;
 			case PARSE_STRING:
@@ -366,9 +326,7 @@ _FunTextRead( fun, buf, size, get, got )
 			    }
 			    else {
 				memmove( bp, line->tokens[t].sval, len );
-				memset( bp + len, 0,
-				        fun->header->table->col[t].width -
-				        len );
+				memset( bp + len, 0, fun->header->table->col[t].width - len );
 			    }
 			    bp += fun->header->table->col[t].width;
 			    break;
@@ -389,13 +347,11 @@ _FunTextRead( fun, buf, size, get, got )
 		break;
 	    /* analyze line and make sure one parser succeeded (even if its EOT) */
 	    if ( !ParseAnalyze( fun->parsers, fun->nparser, lbuf ) ) {
-		gerror( stderr, "text parser failure analyzing line: %s\n",
-		        lbuf );
+		gerror( stderr, "text parser failure analyzing line: %s\n", lbuf );
 		break;
 	    }
 	    /* look for valid parser with the most tokens */
-	    for ( parser = NULL, ntoken = 0, parser = NULL, p = 0;
-	          p < fun->nparser; p++ ) {
+	    for ( parser = NULL, ntoken = 0, parser = NULL, p = 0; p < fun->nparser; p++ ) {
 		if ( fun->parsers[p]->state & PARSE_STATE_BAD )
 		    continue;
 		else if ( fun->parsers[p]->ntoken > ntoken ) {
@@ -423,9 +379,7 @@ _FunTextRead( fun, buf, size, get, got )
 			    }
 			    else {
 				memmove( bp, line->tokens[t].sval, len );
-				memset( bp + len, 0,
-				        fun->header->table->col[t].width -
-				        len );
+				memset( bp + len, 0, fun->header->table->col[t].width - len );
 			    }
 			}
 			/* handle bit-field processing specially */
@@ -447,22 +401,18 @@ _FunTextRead( fun, buf, size, get, got )
 			    }
 			    if ( ( line->tokens[t].type == PARSE_INTEGER ) ||
 			         ( line->tokens[t].type == PARSE_HEXINT ) )
-				ft_acht2( xtype, bp, 'K',
-			                  &line->tokens[t].lval, 1, 0, 0 );
+				ft_acht2( xtype, bp, 'K', &line->tokens[t].lval, 1, 0, 0 );
 			    else
-				ft_acht2( xtype, bp, 'D',
-			                  &line->tokens[t].dval, 1, 0, 0 );
+				ft_acht2( xtype, bp, 'D', &line->tokens[t].dval, 1, 0, 0 );
 			}
 			else {
 			    if ( ( line->tokens[t].type == PARSE_INTEGER ) ||
 			         ( line->tokens[t].type == PARSE_HEXINT ) )
 				ft_acht2( fun->header->table->col[t].type, bp,
-			                  'K', &line->tokens[t].lval, 1, 0,
-			                  0 );
+			                  'K', &line->tokens[t].lval, 1, 0, 0 );
 			    else
 				ft_acht2( fun->header->table->col[t].type, bp,
-			                  'D', &line->tokens[t].dval, 1, 0,
-			                  0 );
+			                  'D', &line->tokens[t].dval, 1, 0, 0 );
 			}
 			bp += fun->header->table->col[t].width;
 			break;
@@ -476,9 +426,7 @@ _FunTextRead( fun, buf, size, get, got )
 			    }
 			    else {
 				memmove( bp, line->tokens[t].sval, len );
-				memset( bp + len, 0,
-				        fun->header->table->col[t].width -
-				        len );
+				memset( bp + len, 0, fun->header->table->col[t].width - len );
 			    }
 			}
 			bp += fun->header->table->col[t].width;
@@ -505,19 +453,14 @@ _FunTextRead( fun, buf, size, get, got )
  *
  */
 
-#ifdef ANSI_FUNC
 void *
-_FunRead( Fun fun, char *buf, size_t size, size_t get, size_t *got )
-#else
-void *
-_FunRead( fun, buf, size, get, got )
-     Fun fun;
-     char *buf;
-     size_t size;
-     size_t get;
-     size_t *got;
-#endif
-{
+_FunRead(
+    Fun fun,
+    char *buf,
+    size_t size,
+    size_t get,
+    size_t *got
+ ) {
     /* initialize */
     *got = 0;
 
@@ -548,19 +491,12 @@ _FunRead( fun, buf, size, get, got )
  * used to correct a copied binary table after we filter
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunFixNaxis2( Fun fun )
-#else
-int
-_FunFixNaxis2( fun )
-     Fun fun;
-#endif
-{
+_FunFixNaxis2(
+    Fun fun
+ ) {
     if ( ( fun->ops & OP_WRHEAD ) && ( fun->headpos >= 0 ) ) {
-	return FunParamPuti( fun,
-	                     "NAXIS", 2, fun->io,
-	                     "Number of entries in table", 0 );
+	return FunParamPuti( fun, "NAXIS", 2, fun->io, "Number of entries in table", 0 );
     }
     else {
 	return ( 0 );
@@ -573,15 +509,10 @@ _FunFixNaxis2( fun )
  * used by FunTablePut and sometimes FunFlush (if no Put was done)
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunTablePutHeader( Fun fun )
-#else
-int
-_FunTablePutHeader( fun )
-     Fun fun;
-#endif
-{
+_FunTablePutHeader(
+    Fun fun
+ ) {
     /* write table header, if necessary */
     if ( !fun->ops ) {
 	/* if we have no columns yet, try to get some from the assoc. input file */
@@ -622,19 +553,14 @@ _FunTablePutHeader( fun )
  * _FunTableRowGet -- get rows from a table
  *
 */
-#ifdef ANSI_FUNC
 void *
-_FunTableRowGet( Fun fun, void *rows, int maxrow, char *plist, int *nrow )
-#else
-void *
-_FunTableRowGet( fun, rows, maxrow, plist, nrow )
-     Fun fun;
-     void *rows;
-     int maxrow;
-     char *plist;
-     int *nrow;
-#endif
-{
+_FunTableRowGet(
+    Fun fun,
+    void *rows,
+    int maxrow,
+    char *plist,
+    int *nrow
+ ) {
     int i, j, k, l;             /* counters */
     int tival;                  /* temp int value */
     int dofilt;                 /* true if we can filter */
@@ -716,7 +642,7 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
     /* check for no more row to read in this file */
     if ( !fun->left ) {
 	/* if possible, set up to read next file in list */
-	if ( ( fun->head ) && ( fun->head->ltype != LIST_NONE )
+        if ( ( fun->head ) && ( fun->head->ltype != LIST_NONE )
 	     && fun->head->current ) {
 	    fun->head->current = fun->next;
 	    /* if there is a next file, set it up */
@@ -810,10 +736,7 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 	if ( maxrow <= 0 ) maxrow = 1;
 	/* don't call xcalloc (which has internal error checking) but instead
 	   call system calloc and handle failure by halving the row number */
-	while ( !
-	        ( rowbase =
-	          ( unsigned char * ) malloc( maxrow * rowbufsize +
-	                                      pad ) ) ) {
+	while ( !( rowbase = ( unsigned char * ) malloc( maxrow * rowbufsize + pad ) ) ) {
 	    maxrow /= 2;
 	    if ( maxrow <= 0 ) {
 		gerror( stderr, "can't allocate row buffer\n" );
@@ -831,17 +754,10 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 	    if ( fun->cols[j]->mode & COL_PTR ) {
 		for ( i = 0; i < maxrow; i++ ) {
 		    rowptr = rowbase + ( i * fun->rowsize );
-		    *( ( unsigned char ** ) ( rowptr +
-		                              fun->cols[j]->offset ) ) =
-		        vheap;
-		    vheap +=
-		        fun->cols[j]->width + ( pad -
-		                                ( fun->cols[j]->width %
-		                                  pad ) );
-		    if ( vheap >=
-		         ( rowbase + ( maxrow * rowbufsize + pad ) ) ) {
-			gerror( stderr,
-			        "internal funtools error: vheap too small\n" );
+		    *( ( unsigned char ** ) ( rowptr + fun->cols[j]->offset ) ) = vheap;
+		    vheap += fun->cols[j]->width + ( pad - ( fun->cols[j]->width % pad ) );
+		    if ( vheap >= ( rowbase + ( maxrow * rowbufsize + pad ) ) ) {
+			gerror( stderr, "internal funtools error: vheap too small\n" );
 			return NULL;
 		    }
 		}
@@ -857,11 +773,8 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
     /* this is the case where we read til EOF */
     else
 	fun->rawbufsize = maxrow;
-    if ( !
-	 ( fun->rawbuf =
-	   ( unsigned char * ) xmalloc( fun->rawsize * fun->rawbufsize ) )
-	 || !( rbuf =
-	       ( int * ) xmalloc( sizeof( int ) * fun->rawbufsize ) ) ) {
+    if ( !( fun->rawbuf = ( unsigned char * ) xmalloc( fun->rawsize * fun->rawbufsize ) )
+         || !( rbuf = ( int * ) xmalloc( sizeof( int ) * fun->rawbufsize ) ) ) {
 	gerror( stderr, "can't allocate row buffer\n" );
 	return NULL;
     }
@@ -932,8 +845,7 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 	}
 
 	/* process each row in this batch */
-	for ( rawptr = rawbase, i = 0; ( size_t ) i < got;
-	      i++, rawptr += fun->rawsize ) {
+	for ( rawptr = rawbase, i = 0; ( size_t ) i < got; i++, rawptr += fun->rawsize ) {
 	    /* if its not a valid row, skip it */
 	    if ( dofilt && !fun->transparent && !rbuf[i] ) {
 		continue;
@@ -943,15 +855,12 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 		/* if this column is not active, or is not to be read, or if its
 		   to be taken from the input data, skip it */
 		if ( !( fun->cols[j]->mode & COL_ACTIVE ) ||
-		     !( fun->cols[j]->mode & COL_READ ) ||
-		     ( fun->cols[j]->mode & COL_IBUF ) )
+		     !( fun->cols[j]->mode & COL_READ ) || ( fun->cols[j]->mode & COL_IBUF ) )
 		    continue;
 		/* this is the (input) fitsy column number */
 		k = fun->cols[j]->tcol;
 		if ( fun->cols[j]->mode & COL_PTR )
-		    rowoff =
-		        *( ( char ** ) ( ( ( char * ) rowptr ) +
-		                         fun->cols[j]->offset ) );
+		    rowoff = *( ( char ** ) ( ( ( char * ) rowptr ) + fun->cols[j]->offset ) );
 		else
 		    rowoff = ( char * ) rowptr + fun->cols[j]->offset;
 		rowoff += fun->cols[j]->poff;
@@ -980,8 +889,7 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 			/* common code */
 			/* if source and dest type diff, we must do full type convert */
 			if ( fun->cols[j]->type != 'J' ) {
-			    ft_acht2( fun->cols[j]->type, rowoff, 'J', &tival,
-			              1, rconvert, 0 );
+			    ft_acht2( fun->cols[j]->type, rowoff, 'J', &tival, 1, rconvert, 0 );
 			}
 			/* for same types, we might have to swap bytes */
 			else if ( rconvert ) {
@@ -995,19 +903,15 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 			/* data column */
 		    default:
 			/* this is the offset into the input record */
-			rawoff =
-			    ( char * ) rawptr +
-			    fun->header->table->col[k].offset;
+			rawoff = ( char * ) rawptr + fun->header->table->col[k].offset;
 			/* if source and dest type diff or we are scaling the column,
 			   we must do full type convert */
-			if ( ( fun->cols[j]->type !=
-			       fun->header->table->col[k].type )
+			if ( ( fun->cols[j]->type != fun->header->table->col[k].type )
 			     || fun->header->table->col[k].scaled ) {
 			    /* handle bit-field processing specially */
 			    if ( fun->header->table->col[k].type == 'X' ) {
 				int xtype;
-				switch ( fun->header->table->col[k].width /
-					 fun->cols[j]->n ) {
+				switch ( fun->header->table->col[k].width / fun->cols[j]->n ) {
 				    case 0:
 				    case 1:
 					xtype = 'B';
@@ -1023,16 +927,14 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 					break;
 				}
 				ft_acht2( fun->cols[j]->type, rowoff,
-				          xtype, rawoff,
-				          fun->cols[j]->n, fun->iconvert, 0 );
+				          xtype, rawoff, fun->cols[j]->n, fun->iconvert, 0 );
 			    }
 			    /* handle scaled input data */
 			    else if ( fun->header->table->col[k].scaled ) {
 				/* convert raw to double */
 				ft_acht2( 'D', sbuf,
 				          fun->header->table->col[k].type,
-				          rawoff, fun->cols[j]->n,
-				          fun->iconvert, 0 );
+				          rawoff, fun->cols[j]->n, fun->iconvert, 0 );
 				/* calculate scaled value */
 				for ( l = 0; l < fun->cols[j]->n; l++ ) {
 				    sbuf[l] =
@@ -1050,40 +952,32 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 			    else {
 				ft_acht2( fun->cols[j]->type, rowoff,
 				          fun->header->table->col[k].type,
-				          rawoff, fun->cols[j]->n,
-				          fun->iconvert, 0 );
+				          rawoff, fun->cols[j]->n, fun->iconvert, 0 );
 			    }
 			}
 			/* for same types, we might have to swap bytes */
 			else if ( fun->iconvert ) {
-			    if ( fun->header->table->col[k].width >=
-			         fun->cols[j]->width ) {
-				swap( rowoff, rawoff, fun->cols[j]->width,
-				      fun->cols[j]->type );
+			    if ( fun->header->table->col[k].width >= fun->cols[j]->width ) {
+				swap( rowoff, rawoff, fun->cols[j]->width, fun->cols[j]->type );
 			    }
 			    else {
 				swap( rowoff, rawoff,
-				      fun->header->table->col[k].width,
-				      fun->cols[j]->type );
+				      fun->header->table->col[k].width, fun->cols[j]->type );
 				memset( rowoff +
 				        fun->header->table->col[k].width, 0,
-				        fun->cols[j]->width -
-				        fun->header->table->col[k].width );
+				        fun->cols[j]->width - fun->header->table->col[k].width );
 			    }
 			}
 			/* otherwise its an easy copy */
 			else {
-			    if ( fun->header->table->col[k].width >=
-			         fun->cols[j]->width ) {
+			    if ( fun->header->table->col[k].width >= fun->cols[j]->width ) {
 				memcpy( rowoff, rawoff, fun->cols[j]->width );
 			    }
 			    else {
-				memcpy( rowoff, rawoff,
-				        fun->header->table->col[k].width );
+				memcpy( rowoff, rawoff, fun->header->table->col[k].width );
 				memset( rowoff +
 				        fun->header->table->col[k].width, 0,
-				        fun->cols[j]->width -
-				        fun->header->table->col[k].width );
+				        fun->cols[j]->width - fun->header->table->col[k].width );
 			    }
 			}
 			break;
@@ -1091,8 +985,7 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
 	    }
 	    /* save the input data in rawbuf */
 	    if ( ( fun->rawbuf + ( *nrow * fun->rawsize ) ) != rawptr )
-		memcpy( ( fun->rawbuf + ( *nrow * fun->rawsize ) ), rawptr,
-	                fun->rawsize );
+		memcpy( ( fun->rawbuf + ( *nrow * fun->rawsize ) ), rawptr, fun->rawsize );
 	    /* got another row */
 	    *nrow += 1;
 	    /* bump to next output pointer */
@@ -1153,19 +1046,14 @@ _FunTableRowGet( fun, rows, maxrow, plist, nrow )
  * FunTableRowGet -- get rows from a table
  *
 */
-#ifdef ANSI_FUNC
 void *
-FunTableRowGet( Fun fun, void *rows, int maxrow, char *plist, int *nrow )
-#else
-void *
-FunTableRowGet( fun, rows, maxrow, plist, nrow )
-     Fun fun;
-     void *rows;
-     int maxrow;
-     char *plist;
-     int *nrow;
-#endif
-{
+FunTableRowGet(
+    Fun fun,
+    void *rows,
+    int maxrow,
+    char *plist,
+    int *nrow
+ ) {
     int got;
     fd_set readfds;             /* read fds for select() */
     char *obuf;
@@ -1266,19 +1154,14 @@ FunTableRowGet( fun, rows, maxrow, plist, nrow )
  * FunTableRowPut -- put rows to a table
  *
 */
-#ifdef ANSI_FUNC
 int
-FunTableRowPut( Fun fun, void *rows, int nrow, int idx, char *plist )
-#else
-int
-FunTableRowPut( fun, rows, nrow, idx, plist )
-     Fun fun;
-     void *rows;
-     int nrow;
-     int idx;
-     char *plist;
-#endif
-{
+FunTableRowPut(
+    Fun fun,
+    void *rows,
+    int nrow,
+    int idx,
+    char *plist
+ ) {
     int i;
     int ieoff1, ieoff2;
     int to, from;
@@ -1331,8 +1214,7 @@ FunTableRowPut( fun, rows, nrow, idx, plist )
     shortcut = 1;
     for ( width = 0, i = 0; i < fun->ncol; i++ ) {
 	if ( ( fun->cols[i]->mode & COL_ACTIVE ) &&
-	     ( fun->cols[i]->mode & COL_WRITE ) &&
-	     !( fun->cols[i]->mode & COL_REPLACEME ) ) {
+	     ( fun->cols[i]->mode & COL_WRITE ) && !( fun->cols[i]->mode & COL_REPLACEME ) ) {
 	    /* if we are writing anything from the user buffer, no shortcuts */
 	    if ( !( fun->cols[i]->mode & COL_IBUF )
 	         || ( i != fun->cols[i]->from ) )
@@ -1387,9 +1269,7 @@ FunTableRowPut( fun, rows, nrow, idx, plist )
 		    convert = fun->oconvert;
 		}
 		if ( fun->cols[from]->mode & COL_PTR ) {
-		    rawptr =
-		        *( ( char ** ) ( ( ( char * ) rawptr ) +
-		                         fun->cols[from]->offset ) );
+		    rawptr = *( ( char ** ) ( ( ( char * ) rawptr ) + fun->cols[from]->offset ) );
 		}
 		else {
 		    rawptr = rawptr + fun->cols[from]->offset;
@@ -1419,19 +1299,16 @@ FunTableRowPut( fun, rows, nrow, idx, plist )
 				break;
 			}
 			ft_acht2( xtype, rowptr,
-			          fun->cols[from]->type, rawptr,
-			          fun->cols[from]->n, convert, 1 );
+			          fun->cols[from]->type, rawptr, fun->cols[from]->n, convert, 1 );
 		    }
 		    else {
 			ft_acht2( fun->cols[to]->type, rowptr,
-			          fun->cols[from]->type, rawptr,
-			          fun->cols[from]->n, convert, 1 );
+			          fun->cols[from]->type, rawptr, fun->cols[from]->n, convert, 1 );
 		    }
 		}
 		/* for same types, we might have to swap bytes */
 		else if ( convert ) {
-		    swap( rowptr, rawptr, fun->cols[to]->width,
-		          fun->cols[to]->type );
+		    swap( rowptr, rawptr, fun->cols[to]->width, fun->cols[to]->type );
 		}
 		/* otherwise its an easy copy */
 		else {
@@ -1472,17 +1349,12 @@ FunTableRowPut( fun, rows, nrow, idx, plist )
  * FunTableRowSeek -- seek to a specified rows in a table
  *
 */
-#ifdef ANSI_FUNC
 off_t
-FunTableRowSeek( Fun fun, int nrow, char *UNUSED( plist ) )
-#else
-off_t
-FunTableRowSeek( fun, nrow, plist )
-     Fun fun;
-     int nrow;
-     char *plist;
-#endif
-{
+FunTableRowSeek(
+    Fun fun,
+    int nrow,
+    char *UNUSED( plist )
+ ) {
     off_t ipos, opos;
 
     /* gotta have it */

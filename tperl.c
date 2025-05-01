@@ -9,7 +9,11 @@
 static PerlInterpreter *my_perl;  /***    The Perl interpreter    ***/
 
 int
-main( int argc, char **argv, char **env ) {
+main(
+    int argc,
+    char **argv,
+    char **env
+ ) {
     STRLEN n_a;
     char *embedding[] = { "", "-e", "0" };
 

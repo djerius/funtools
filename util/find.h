@@ -28,13 +28,17 @@
 #include "xalloc.h"
 #include "prsetup.h"
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-char *ResolvePath _PRx((char *ibuf, char *obuf, int maxlen));
-void ExpandEnv _PRx((char *name, char *fullname, int maxlen));
-char *Access _PRx((char *name, char *mode));
-char *Find _PRx((char *name, char *mode, char *extn, char *path));
+char *ResolvePath (char *ibuf, char *obuf, int maxlen);
+void ExpandEnv (char *name, char *fullname, int maxlen);
+char *Access (char *name, char *mode);
+char *Find (char *name, char *mode, char *extn, char *path);
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -12,18 +12,20 @@
 #include "longlong.h"
 #include "generic.h"
 
-typedef void *( *copy )( void *, const void *, size_t );
-typedef void ( *vector )( void *, void *, int, copy, int );
+/* *INDENT-OFF* */
+typedef void *(*copy)  (void *, const void *, size_t);
+typedef void (*vector)  (void *, void *, int, copy, int);
+/* *INDENT-ON* */
 
-#ifdef __STDC__
 #define cht2xx(ch1, type1, ch2, type2)					\
 									\
-void cht2##ch1##ch2(v1, v2, npix, rtn, direction)			\
-			void	*v1;					\
-			void	*v2;					\
-			int	npix;					\
-			copy    rtn;					\
-			int	direction;				\
+void cht2##ch1##ch2(                                                    \
+			void	*v1,					\
+			void	*v2,					\
+			int	npix,					\
+			copy    rtn,					\
+			int	direction				\
+)                                                                       \
 {									\
   type1 tval1;								\
   type2 tval2;								\
@@ -42,39 +44,13 @@ void cht2##ch1##ch2(v1, v2, npix, rtn, direction)			\
     }									\
   }									\
 }
-#else
-#define cht2xx(ch1, type1, ch2, type2)					\
-									\
-void cht2/**/ch1/**/ch2(v1, v2, npix, rtn, direction)			\
-			void    *v1;					\
-			void	*v2;					\
-			int	npix;					\
-			copy    rtn;					\
-			int	direction;				\
-{									\
-  type1 tval1;								\
-  type2 tval2;								\
-  if( direction == 0 ){							\
-    while ( npix-- ) {							\
-      (rtn)(&tval2, (char *)v2+(npix*sizeof(type2)), sizeof(type2));	\
-      tval1 = tval2;							\
-      memcpy((char *)v1+(npix*sizeof(type1)), &tval1, sizeof(type1));	\
-    }									\
-  }									\
-  else{									\
-    while ( npix-- ) {							\
-      memcpy(&tval2, (char *)v2+(npix*sizeof(type2)), sizeof(type2));	\
-      tval1 = tval2;							\
-      (rtn)((char *)v1+(npix*sizeof(type1)), &tval1, sizeof(type1));	\
-    }									\
-  }									\
-}
-#endif
 
 DOUBLE_GENERIC( cht2xx )
-     static int pixtype2( type )
-     int type;
-{
+
+static int
+pixtype2(
+    int type
+ ) {
     switch ( type ) {
 	case 'A':
 	    return TY_UCHAR;
@@ -104,38 +80,31 @@ DOUBLE_GENERIC( cht2xx )
 }
 
 void
-ft_acht2( type1, v1, type2, v2, npix, swap, direction )
-     int type1;
-     void *v1;
-     int type2;
-     void *v2;
-     int npix;
-     int swap;
-     int direction;
-{
+ft_acht2(
+    int type1,
+    void *v1,
+    int type2,
+    void *v2,
+    int npix,
+    int swap,
+    int direction
+ ) {
     copy rtn = NULL;
     int offset1, offset2, type;
 
+    /* *INDENT-OFF* */
     static vector matrix[10][10] = {
-	{cht2cc, cht2cs, cht2ci, cht2cl, cht2cr, cht2cd, cht2ct, cht2cu,
-	 cht2cv}
-	, {cht2sc, cht2ss, cht2si, cht2sl, cht2sr, cht2sd, cht2st, cht2su,
-	   cht2sv}
-	, {cht2ic, cht2is, cht2ii, cht2il, cht2ir, cht2id, cht2it, cht2iu,
-	   cht2iv}
-	, {cht2lc, cht2ls, cht2li, cht2ll, cht2lr, cht2ld, cht2lt, cht2lu,
-	   cht2lv}
-	, {cht2rc, cht2rs, cht2ri, cht2rl, cht2rr, cht2rd, cht2rt, cht2ru,
-	   cht2rv}
-	, {cht2dc, cht2ds, cht2di, cht2dl, cht2dr, cht2dd, cht2dt, cht2du,
-	   cht2dv}
-	, {cht2tc, cht2ts, cht2ti, cht2tl, cht2tr, cht2td, cht2tt, cht2tu,
-	   cht2tv}
-	, {cht2uc, cht2us, cht2ui, cht2ul, cht2ur, cht2ud, cht2ut, cht2uu,
-	   cht2uv}
-	, {cht2vc, cht2vs, cht2vi, cht2vl, cht2vr, cht2vd, cht2vt, cht2vu,
-	   cht2vv}
+	  {cht2cc, cht2cs, cht2ci, cht2cl, cht2cr, cht2cd, cht2ct, cht2cu, cht2cv}
+	, {cht2sc, cht2ss, cht2si, cht2sl, cht2sr, cht2sd, cht2st, cht2su, cht2sv}
+	, {cht2ic, cht2is, cht2ii, cht2il, cht2ir, cht2id, cht2it, cht2iu, cht2iv}
+	, {cht2lc, cht2ls, cht2li, cht2ll, cht2lr, cht2ld, cht2lt, cht2lu, cht2lv}
+	, {cht2rc, cht2rs, cht2ri, cht2rl, cht2rr, cht2rd, cht2rt, cht2ru, cht2rv}
+	, {cht2dc, cht2ds, cht2di, cht2dl, cht2dr, cht2dd, cht2dt, cht2du, cht2dv}
+	, {cht2tc, cht2ts, cht2ti, cht2tl, cht2tr, cht2td, cht2tt, cht2tu, cht2tv}
+	, {cht2uc, cht2us, cht2ui, cht2ul, cht2ur, cht2ud, cht2ut, cht2uu, cht2uv}
+	, {cht2vc, cht2vs, cht2vi, cht2vl, cht2vr, cht2vd, cht2vt, cht2vu, cht2vv}
     };
+    /* *INDENT-ON* */
 
     offset1 = pixtype2( type1 );
     offset2 = pixtype2( type2 );

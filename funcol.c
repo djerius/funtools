@@ -15,16 +15,11 @@
  * _FunColCmp -- compare routine for qsort
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunColCmp( const void *s1, const void *s2 )
-#else
-static int
-_FunColCmp( s1, s2 )
-     const void *s1;
-     const void *s2;
-#endif
-{
+_FunColCmp(
+    const void *s1,
+    const void *s2
+ ) {
     FunCol *f1 = ( FunCol * ) s1;
     FunCol *f2 = ( FunCol * ) s2;
 
@@ -37,15 +32,10 @@ _FunColCmp( s1, s2 )
 	return 0;
 }
 
-#ifdef ANSI_FUNC
 static int
-mparse( char *mode )
-#else
-static int
-mparse( mode )
-     char *mode;
-#endif
-{
+mparse(
+    char *mode
+ ) {
     int xmode = 0;
     xmode |= ( strpbrk( mode, "a" ) != NULL ? COL_ACTIVE : 0 );
     xmode |= ( strpbrk( mode, "i" ) != NULL ? COL_IBUF : 0 );
@@ -55,17 +45,12 @@ mparse( mode )
     return xmode;
 }
 
-#ifdef ANSI_FUNC
 static void
-_FunGetAlias( Fun fun, char *iname, char *oname )
-#else
-static void
-_FunGetAlias( fun, iname, oname )
-     Fun fun;
-     char *iname;
-     char *oname;
-#endif
-{
+_FunGetAlias(
+    Fun fun,
+    char *iname,
+    char *oname
+ ) {
     strcpy( oname, iname );
     if ( !strcasecmp( iname, "$x" ) ) {
 	if ( fun->bin[0] >= 0 ) {
@@ -85,31 +70,22 @@ _FunGetAlias( fun, iname, oname )
  * _FunColumnAddRegion -- primitive to add region to a list of columns
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunColumnAddRegion( Fun fun, int dopad, char *mode, int *rgot,
-                     size_t *rsize )
-#else
-static int
-_FunColumnAddRegion( fun, dopad, mode, rgot, rsize )
-     Fun fun;
-     int dopad;
-     char *mode;
-     int *rgot;
-     size_t *rsize;
-#endif
-{
+_FunColumnAddRegion(
+    Fun fun,
+    int dopad,
+    char *mode,
+    int *rgot,
+    size_t *rsize
+ ) {
     int got = *rgot;
     size_t tsize = *rsize;
     size_t pad;
 
     /* only add region if we do not have it already, but don't activate it */
-    if ( !FunColumnLookup( fun, COL_REGION_NAME, 0,
-                           NULL, NULL, NULL, NULL, NULL, NULL ) ) {
+    if ( !FunColumnLookup( fun, COL_REGION_NAME, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
 	/* allocate a new column struct */
-	if ( !
-	     ( fun->cols[got] =
-	       ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
+	if ( !( fun->cols[got] = ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
 	    gerror( stderr, "can't allocate FunCol struct\n" );
 	    return 0;
 	}
@@ -147,30 +123,22 @@ _FunColumnAddRegion( fun, dopad, mode, rgot, rsize )
  * _FunColumnAddNum -- primitive to add num to a list of columns
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunColumnAddNum( Fun fun, int dopad, char *mode, int *rgot, size_t *rsize )
-#else
-static int
-_FunColumnAddNum( fun, dopad, mode, rgot, rsize )
-     Fun fun;
-     int dopad;
-     char *mode;
-     int *rgot;
-     size_t *rsize;
-#endif
-{
+_FunColumnAddNum(
+    Fun fun,
+    int dopad,
+    char *mode,
+    int *rgot,
+    size_t *rsize
+ ) {
     int got = *rgot;
     size_t tsize = *rsize;
     size_t pad;
 
     /* only add num if we do not have it already, but don't activate it */
-    if ( !FunColumnLookup( fun, COL_NUM_NAME, 0,
-                           NULL, NULL, NULL, NULL, NULL, NULL ) ) {
+    if ( !FunColumnLookup( fun, COL_NUM_NAME, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
 	/* allocate a new column struct */
-	if ( !
-	     ( fun->cols[got] =
-	       ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
+	if ( !( fun->cols[got] = ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
 	    gerror( stderr, "can't allocate FunCol struct\n" );
 	    return 0;
 	}
@@ -208,28 +176,21 @@ _FunColumnAddNum( fun, dopad, mode, rgot, rsize )
  * _FunColumnAddTable -- primitive to add entries from a binary table to list
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunColumnAddTable( Fun fun, FITSHead header, char *mode,
-                    int dopad, int *got, size_t *size )
-#else
-static int
-_FunColumnAddTable( fun, header, mode, dopad, got, size )
-     Fun fun;
-     FITSHead header;
-     char *mode;
-     int dopad;
-     int *got;
-     size_t *size;
-#endif
-{
+_FunColumnAddTable(
+    Fun fun,
+    FITSHead header,
+    char *mode,
+    int dopad,
+    int *got,
+    size_t *size
+ ) {
     int i;
     int pad;
     int fsize;
     FITSCard card1, card2, card3;
 
-    for ( i = 0; ( i < header->table->tfields ) && ( *got < FUN_MAXCOL );
-          i++ ) {
+    for ( i = 0; ( i < header->table->tfields ) && ( *got < FUN_MAXCOL ); i++ ) {
 	/* sanity check */
 	if ( !ft_sizeof( header->table->col[i].type ) ) {
 	    gwarning( stderr,
@@ -238,9 +199,7 @@ _FunColumnAddTable( fun, header, mode, dopad, got, size )
 	    continue;
 	}
 	/* allocate a new column struct */
-	if ( !
-	     ( fun->cols[*got] =
-	       ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
+	if ( !( fun->cols[*got] = ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
 	    gerror( stderr, "can't allocate FunCol struct\n" );
 	    return 0;
 	}
@@ -253,15 +212,11 @@ _FunColumnAddTable( fun, header, mode, dopad, got, size )
 	fun->cols[*got]->n = header->table->col[i].n;
 	fun->cols[*got]->tblank = header->table->col[i].dblank;
 	fun->cols[*got]->doblank = header->table->col[i].has_blank;
-	fun->cols[*got]->tlmin =
-	    ft_headgetr( header, "TLMIN", i + 1, 0.0, &card1 );
-	fun->cols[*got]->tlmax =
-	    ft_headgetr( header, "TLMAX", i + 1, 0.0, &card2 );
-	fun->cols[*got]->binsiz =
-	    ft_headgetr( header, "TDBIN", i + 1, 0.0, &card3 );
+	fun->cols[*got]->tlmin = ft_headgetr( header, "TLMIN", i + 1, 0.0, &card1 );
+	fun->cols[*got]->tlmax = ft_headgetr( header, "TLMAX", i + 1, 0.0, &card2 );
+	fun->cols[*got]->binsiz = ft_headgetr( header, "TDBIN", i + 1, 0.0, &card3 );
 	fun->cols[*got]->type = header->table->col[i].type;
-	if ( header->table->col[i].scaled
-	     && ( header->table->col[i].type != 'X' ) ) {
+	if ( header->table->col[i].scaled && ( header->table->col[i].type != 'X' ) ) {
 	    /* for input data, just set the scale values */
 	    if ( fun->cols[*got]->mode & COL_IBUF ) {
 		fun->cols[*got]->tzero = header->table->col[i].zero;
@@ -285,18 +240,12 @@ _FunColumnAddTable( fun, header, mode, dopad, got, size )
 	    }
 	}
 	/* save wcs keywords */
-	fun->cols[*got]->tctyp = ft_headgets( header, "TCTYP",
-	                                      i + 1, NULL, &card1 );
-	fun->cols[*got]->tcrvl = ft_headgets( header, "TCRVL",
-	                                      i + 1, NULL, &card1 );
-	fun->cols[*got]->tcdlt = ft_headgets( header, "TCDLT",
-	                                      i + 1, NULL, &card1 );
-	fun->cols[*got]->tcrpx = ft_headgets( header, "TCRPX",
-	                                      i + 1, NULL, &card1 );
-	fun->cols[*got]->tcrot = ft_headgets( header, "TCROT",
-	                                      i + 1, NULL, &card1 );
-	fun->cols[*got]->tunit = ft_headgets( header, "TUNIT",
-	                                      i + 1, NULL, &card1 );
+	fun->cols[*got]->tctyp = ft_headgets( header, "TCTYP", i + 1, NULL, &card1 );
+	fun->cols[*got]->tcrvl = ft_headgets( header, "TCRVL", i + 1, NULL, &card1 );
+	fun->cols[*got]->tcdlt = ft_headgets( header, "TCDLT", i + 1, NULL, &card1 );
+	fun->cols[*got]->tcrpx = ft_headgets( header, "TCRPX", i + 1, NULL, &card1 );
+	fun->cols[*got]->tcrot = ft_headgets( header, "TCROT", i + 1, NULL, &card1 );
+	fun->cols[*got]->tunit = ft_headgets( header, "TUNIT", i + 1, NULL, &card1 );
 	fun->cols[*got]->vla = xstrdup( header->table->col[i].vla );
 	/* now that we have the type, calculate offset, width, etc. */
 	fsize = ft_sizeof( fun->cols[*got]->type );
@@ -326,23 +275,17 @@ _FunColumnAddTable( fun, header, mode, dopad, got, size )
  * _FunColumnSelect -- primitive to add columns to the selected column list
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunColumnSelect( Fun fun, size_t size, char *mode, char **names,
-                  char **types, char **modes, int *offsets, int nargs )
-#else
-static int
-_FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
-     Fun fun;
-     size_t size;
-     char *mode;
-     char **names;
-     char **types;
-     char **modes;
-     int *offsets;
-     int nargs;
-#endif
-{
+_FunColumnSelect(
+    Fun fun,
+    size_t size,
+    char *mode,
+    char **names,
+    char **types,
+    char **modes,
+    int *offsets,
+    int nargs
+ ) {
     int i;
     int got;
     int flag;
@@ -410,12 +353,11 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
     else
 	dopad = 1;
     if ( _FunKeyword( mbuf, "copy", NULL, tbuf, SZ_LINE ) ) {
-	doselect = !strcasecmp( tbuf, "select" ) && ( fun->ifun
-	                                              && fun->ifun->ncol );
+	doselect = !strcasecmp( tbuf, "select" ) && ( fun->ifun && fun->ifun->ncol );
 	doref = !strcasecmp( tbuf, "reference" );
     }
     if ( _FunKeyword( mbuf, "org", NULL, tbuf, SZ_LINE ) ) {
-	if ( !strcasecmp( tbuf, "soa" )
+        if ( !strcasecmp( tbuf, "soa" )
 	     || !strcasecmp( tbuf, "structofarrays" ) )
 	    fun->org = FUN_ORG_SOA;
 	else if ( !strcasecmp( tbuf, "aos" )
@@ -426,8 +368,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 
     /* process the argument list */
     tsize = 0;
-    for ( narg = 0, got = fun->ncol; ( narg < nargs ) && ( got < FUN_MAXCOL );
-          narg++ ) {
+    for ( narg = 0, got = fun->ncol; ( narg < nargs ) && ( got < FUN_MAXCOL ); narg++ ) {
 	/* we got info from the routine call, not from the FITS file */
 	flag = 1;
 	/* get name, type, and mode, and make sure they are valid */
@@ -441,9 +382,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 	_FunColumnType( t, &type, &n, &tlmin, &tlmax, &binsiz, &dims,
 	                &tscale, &tzero, &scaled, &ptype, &poff );
 	/* allocate a new column struct */
-	if ( !
-	     ( fun->cols[got] =
-	       ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
+	if ( !( fun->cols[got] = ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
 	    gerror( stderr, "can't allocate FunCol struct\n" );
 	    return 0;
 	}
@@ -453,8 +392,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 		if ( !header->table->col[i].name ) continue;
 		if ( !strcasecmp( header->table->col[i].name, name ) ) {
 		    fun->cols[got]->tcol = i;
-		    fun->cols[got]->name =
-		        xstrdup( header->table->col[i].name );
+		    fun->cols[got]->name = xstrdup( header->table->col[i].name );
 		    break;
 		}
 	    }
@@ -475,9 +413,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 		fun->cols[got]->name = xstrdup( name );
 	    }
 	    else {
-		gerror( stderr,
-		        "selected column '%s' does not exist in table\n",
-		        name );
+		gerror( stderr, "selected column '%s' does not exist in table\n", name );
 		return 0;
 	    }
 
@@ -502,8 +438,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 	fun->cols[got]->tscale = tscale;
 	fun->cols[got]->tzero = tzero;
 	fun->cols[got]->scaled = scaled;
-	fun->cols[got]->width =
-	    fun->cols[got]->n * ft_sizeof( fun->cols[got]->type );
+	fun->cols[got]->width = fun->cols[got]->n * ft_sizeof( fun->cols[got]->type );
 	/* size of bitfield adjusted specially */
 	if ( fun->cols[got]->type == 'X' )
 	    fun->cols[got]->width = ( fun->cols[got]->width + 7 ) / 8;
@@ -519,8 +454,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 		if ( fun->cols[got]->mode & COL_WRITE ) {
 		    if ( ( idx =
 		           FunColumnLookup( fun, fun->cols[got]->name, 0,
-		                            NULL, NULL, NULL, NULL, NULL,
-		                            NULL ) ) ) {
+		                            NULL, NULL, NULL, NULL, NULL, NULL ) ) ) {
 			idx--;
 			/* we don't write the updating column */
 			fun->cols[got]->mode &= ~COL_WRITE;
@@ -535,20 +469,16 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 		if ( fun->cols[got]->mode & COL_WRITE ) {
 		    if ( ( idx =
 		           FunColumnLookup( fun, fun->cols[got]->name, 0,
-		                            NULL, NULL, NULL, NULL, NULL,
-		                            NULL ) ) ) {
+		                            NULL, NULL, NULL, NULL, NULL, NULL ) ) ) {
 			idx--;
 			fun->cols[idx]->mode |= COL_REPLACEME;
 			/* if the replacing column has no tlmin,tlmax, but the replaced
 			   column does, we use the replaced column's values */
-			if ( !fun->cols[got]->tlmin
-			     && !fun->cols[got]->tlmax ) {
-			    if ( fun->cols[idx]->tlmin
-			         || fun->cols[idx]->tlmax ) {
+			if ( !fun->cols[got]->tlmin && !fun->cols[got]->tlmax ) {
+			    if ( fun->cols[idx]->tlmin || fun->cols[idx]->tlmax ) {
 				fun->cols[got]->tlmin = fun->cols[idx]->tlmin;
 				fun->cols[got]->tlmax = fun->cols[idx]->tlmax;
-				fun->cols[got]->binsiz =
-				    fun->cols[idx]->binsiz;
+				fun->cols[got]->binsiz = fun->cols[idx]->binsiz;
 			    }
 			}
 
@@ -575,30 +505,20 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 	    /* flag input from columns */
 	    flag = 1;
 	    /* copy column records */
-	    memcpy( fun->cols, fun->ifun->cols,
-	            fun->ifun->ncol * sizeof( FunCol ) );
+	    memcpy( fun->cols, fun->ifun->cols, fun->ifun->ncol * sizeof( FunCol ) );
 	    for ( got = 0; got < fun->ifun->ncol; got++ ) {
-		if ( !
-		     ( fun->cols[got] =
-		       ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
+		if ( !( fun->cols[got] = ( FunCol ) xcalloc( 1, sizeof( FunColRec ) ) ) ) {
 		    gerror( stderr, "can't allocate FunCol struct\n" );
 		    return 0;
 		}
-		memcpy( fun->cols[got], fun->ifun->cols[got],
-		        sizeof( FunColRec ) );
+		memcpy( fun->cols[got], fun->ifun->cols[got], sizeof( FunColRec ) );
 		fun->cols[got]->name = xstrdup( fun->ifun->cols[got]->name );
-		fun->cols[got]->tctyp =
-		    xstrdup( fun->ifun->cols[got]->tctyp );
-		fun->cols[got]->tcrvl =
-		    xstrdup( fun->ifun->cols[got]->tcrvl );
-		fun->cols[got]->tcdlt =
-		    xstrdup( fun->ifun->cols[got]->tcdlt );
-		fun->cols[got]->tcrpx =
-		    xstrdup( fun->ifun->cols[got]->tcrpx );
-		fun->cols[got]->tcrot =
-		    xstrdup( fun->ifun->cols[got]->tcrot );
-		fun->cols[got]->tunit =
-		    xstrdup( fun->ifun->cols[got]->tunit );
+		fun->cols[got]->tctyp = xstrdup( fun->ifun->cols[got]->tctyp );
+		fun->cols[got]->tcrvl = xstrdup( fun->ifun->cols[got]->tcrvl );
+		fun->cols[got]->tcdlt = xstrdup( fun->ifun->cols[got]->tcdlt );
+		fun->cols[got]->tcrpx = xstrdup( fun->ifun->cols[got]->tcrpx );
+		fun->cols[got]->tcrot = xstrdup( fun->ifun->cols[got]->tcrot );
+		fun->cols[got]->tunit = xstrdup( fun->ifun->cols[got]->tunit );
 		fun->cols[got]->vla = xstrdup( fun->ifun->cols[got]->vla );
 	    }
 	    size = fun->ifun->rowsize;
@@ -611,16 +531,14 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 		/* flag that we got info from FITS file, not from the routine call */
 		flag = 0;
 		/* add columns from table */
-		if ( !_FunColumnAddTable
-		     ( fun, header, "rw", dopad, &got, &tsize ) )
+		if ( !_FunColumnAddTable( fun, header, "rw", dopad, &got, &tsize ) )
 		    return 0;
 		/* if we are copying raw columns from a reference file,
 		   we have to call the reference activate routine */
 		if ( activate ) FunColumnActivate( fun, activate, NULL );
 	    }
 	    else {
-		gerror( stderr,
-		        "no reference header passed to FunColumnSelect()\n" );
+		gerror( stderr, "no reference header passed to FunColumnSelect()\n" );
 		return 0;
 	    }
 	}
@@ -642,8 +560,7 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
 	fun->rowsize = tsize;
     }
     if ( fun->rowsize < 0 ) {
-	gerror( stderr, "invalid event record size in FunColumnSelect (%d)\n",
-	        fun->rowsize );
+	gerror( stderr, "invalid event record size in FunColumnSelect (%d)\n", fun->rowsize );
 	return 0;
     }
 
@@ -662,17 +579,12 @@ _FunColumnSelect( fun, size, mode, names, types, modes, offsets, nargs )
  * _FunColumnHeader -- generate a fitsy header from the col array
  *
  */
-#ifdef ANSI_FUNC
 void
-_FunColumnHeader( Fun fun, FunCol * cols, int ncol )
-#else
-void
-_FunColumnHeader( fun, cols, ncol )
-     Fun fun;
-     FunCol *cols;
-     int ncol;
-#endif
-{
+_FunColumnHeader(
+    Fun fun,
+    FunCol * cols,
+    int ncol
+ ) {
     int i, j, k;
     int width;
     int acol;
@@ -696,8 +608,7 @@ _FunColumnHeader( fun, cols, ncol )
     /* get width of each row */
     for ( acol = 0, width = 0, i = 0; i < ncol; i++ ) {
 	if ( ( cols[i]->mode & COL_ACTIVE ) &&
-	     ( cols[i]->mode & COL_WRITE ) &&
-	     !( cols[i]->mode & COL_REPLACEME ) ) {
+	     ( cols[i]->mode & COL_WRITE ) && !( cols[i]->mode & COL_REPLACEME ) ) {
 	    width += cols[i]->width;
 	    acol++;
 	}
@@ -711,18 +622,14 @@ _FunColumnHeader( fun, cols, ncol )
     }
 
     /* fill in the header to this binary table */
-    ft_headsets( fun->header, "XTENSION", 0, "BINTABLE", "FITS BINARY TABLE",
-                 1 );
+    ft_headsets( fun->header, "XTENSION", 0, "BINTABLE", "FITS BINARY TABLE", 1 );
     ft_headseti( fun->header, "BITPIX", 0, 8, "Binary data", 1 );
     ft_headseti( fun->header, "NAXIS", 0, 2, "Table is a matrix", 1 );
-    ft_headseti( fun->header, "NAXIS", 1, width, "Width of table in bytes",
-                 1 );
-    ft_headseti( fun->header, "NAXIS", 2, -1, "Number of entries in table",
-                 1 );
+    ft_headseti( fun->header, "NAXIS", 1, width, "Width of table in bytes", 1 );
+    ft_headseti( fun->header, "NAXIS", 2, -1, "Number of entries in table", 1 );
     ft_headseti( fun->header, "PCOUNT", 0, 0, "Random parameter count", 1 );
     ft_headseti( fun->header, "GCOUNT", 0, 1, "Group count", 1 );
-    ft_headseti( fun->header, "TFIELDS", 0, acol, "Number of fields in row",
-                 1 );
+    ft_headseti( fun->header, "TFIELDS", 0, acol, "Number of fields in row", 1 );
     if ( !ft_headfind( fun->header, "EXTNAME", 0, 0 ) )
 	ft_headsets( fun->header, "EXTNAME", 0, extname, "Ext. name", 1 );
     if ( !ft_headfind( fun->header, "EXTVER", 0, 0 ) )
@@ -732,18 +639,14 @@ _FunColumnHeader( fun, cols, ncol )
     /* now add the info for each active column */
     for ( i = 0, j = 1; i < ncol; i++ ) {
 	if ( !( cols[i]->mode & COL_ACTIVE ) ||
-	     !( cols[i]->mode & COL_WRITE ) ||
-	     ( cols[i]->mode & COL_REPLACEME ) )
+	     !( cols[i]->mode & COL_WRITE ) || ( cols[i]->mode & COL_REPLACEME ) )
 	    continue;
 	if ( cols[i]->vla ) {
-	    ft_headsets( fun->header, "TFORM", j, cols[i]->vla,
-	                 "Data type for field", 1 );
+	    ft_headsets( fun->header, "TFORM", j, cols[i]->vla, "Data type for field", 1 );
 	}
 	else {
-	    snprintf( tbuf, SZ_LINE - 1, "%d%c", cols[i]->n,
-	              toupper( cols[i]->type ) );
-	    ft_headsets( fun->header, "TFORM", j, tbuf, "Data type for field",
-	                 1 );
+	    snprintf( tbuf, SZ_LINE - 1, "%d%c", cols[i]->n, toupper( cols[i]->type ) );
+	    ft_headsets( fun->header, "TFORM", j, tbuf, "Data type for field", 1 );
 	}
 	/* name of column */
 	if ( fun->cols[i]->name ) {
@@ -752,19 +655,13 @@ _FunColumnHeader( fun, cols, ncol )
 		/* best to use "region", if its not already used */
 		if ( !FunColumnLookup( fun, COL_REGION_ONAME, 0,
 		                       NULL, NULL, NULL, NULL, NULL, NULL ) )
-		    ft_headsets( fun->header,
-		                 "TTYPE", j, COL_REGION_ONAME,
-		                 "Label for field", 1 );
+		    ft_headsets( fun->header, "TTYPE", j, COL_REGION_ONAME, "Label for field", 1 );
 		/* otherwise use region[n], using the first free value for n */
 		else {
 		    for ( k = 1;; k++ ) {
-			snprintf( tbuf, SZ_LINE - 1, "%s%d", COL_REGION_ONAME,
-			          k );
-			if ( !FunColumnLookup
-			     ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL,
-			       NULL ) ) {
-			    ft_headsets( fun->header, "TTYPE", j, tbuf,
-			                 "Label for field", 1 );
+			snprintf( tbuf, SZ_LINE - 1, "%s%d", COL_REGION_ONAME, k );
+			if ( !FunColumnLookup( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
+			    ft_headsets( fun->header, "TTYPE", j, tbuf, "Label for field", 1 );
 			    break;
 			}
 		    }
@@ -773,21 +670,14 @@ _FunColumnHeader( fun, cols, ncol )
 	    /* might have to change "$n" to something else */
 	    else if ( !strcasecmp( cols[i]->name, COL_NUM_NAME ) ) {
 		/* best to use "n", if its not already used */
-		if ( !FunColumnLookup( fun, COL_NUM_ONAME, 0,
-		                       NULL, NULL, NULL, NULL, NULL, NULL ) )
-		    ft_headsets( fun->header,
-		                 "TTYPE", j, COL_NUM_ONAME, "Label for field",
-		                 1 );
+		if ( !FunColumnLookup( fun, COL_NUM_ONAME, 0, NULL, NULL, NULL, NULL, NULL, NULL ) )
+		    ft_headsets( fun->header, "TTYPE", j, COL_NUM_ONAME, "Label for field", 1 );
 		/* otherwise use n[n], using the first free value for n */
 		else {
 		    for ( k = 1;; k++ ) {
-			snprintf( tbuf, SZ_LINE - 1, "%s%d", COL_NUM_ONAME,
-			          k );
-			if ( !FunColumnLookup
-			     ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL,
-			       NULL ) ) {
-			    ft_headsets( fun->header, "TTYPE", j, tbuf,
-			                 "Label for field", 1 );
+			snprintf( tbuf, SZ_LINE - 1, "%s%d", COL_NUM_ONAME, k );
+			if ( !FunColumnLookup( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
+			    ft_headsets( fun->header, "TTYPE", j, tbuf, "Label for field", 1 );
 			    break;
 			}
 		    }
@@ -795,9 +685,7 @@ _FunColumnHeader( fun, cols, ncol )
 	    }
 	    /* not a special name, just use as is */
 	    else {
-		ft_headsets( fun->header,
-		             "TTYPE", j, cols[i]->name, "Label for field",
-		             1 );
+		ft_headsets( fun->header, "TTYPE", j, cols[i]->name, "Label for field", 1 );
 	    }
 	}
 	/* write out tlmin/tlmax values if either is set */
@@ -821,12 +709,10 @@ _FunColumnHeader( fun, cols, ncol )
 		default:
 		    if ( !ft_headfind( fun->header, "TLMIN", j, 0 ) )
 			ft_headseti( fun->header, "TLMIN", j,
-		                     ( int ) cols[i]->tlmin,
-		                     "Min. axis value", 1 );
+		                     ( int ) cols[i]->tlmin, "Min. axis value", 1 );
 		    if ( !ft_headfind( fun->header, "TLMAX", j, 0 ) )
 			ft_headseti( fun->header, "TLMAX", j,
-		                     ( int ) cols[i]->tlmax,
-		                     "Max. axis value", 1 );
+		                     ( int ) cols[i]->tlmax, "Max. axis value", 1 );
 		    if ( cols[i]->binsiz != 0.0 ) {
 			if ( !ft_headfind( fun->header, "TDBIN", j, 0 ) )
 			    ft_headsetr( fun->header, "TDBIN", j,
@@ -837,26 +723,17 @@ _FunColumnHeader( fun, cols, ncol )
 	}
 	/* add wcs info */
 	if ( cols[i]->tctyp && !ft_headfind( fun->header, "TCTYP", j, 0 ) )
-	    ft_headsets( fun->header,
-	                 "TCTYP", j, cols[i]->tctyp,
-	                 "axis type (e.g. RA---TAN)", 1 );
+	    ft_headsets( fun->header, "TCTYP", j, cols[i]->tctyp, "axis type (e.g. RA---TAN)", 1 );
 	if ( cols[i]->tcrvl && !ft_headfind( fun->header, "TCRVL", j, 0 ) )
-	    ft_headappv( fun->header,
-	                 "TCRVL", j, cols[i]->tcrvl, "sky coord (deg.)" );
+	    ft_headappv( fun->header, "TCRVL", j, cols[i]->tcrvl, "sky coord (deg.)" );
 	if ( cols[i]->tcdlt && !ft_headfind( fun->header, "TCDLT", j, 0 ) )
-	    ft_headappv( fun->header,
-	                 "TCDLT", j, cols[i]->tcdlt, "degrees per pixel" );
+	    ft_headappv( fun->header, "TCDLT", j, cols[i]->tcdlt, "degrees per pixel" );
 	if ( cols[i]->tcrpx && !ft_headfind( fun->header, "TCRPX", j, 0 ) )
-	    ft_headappv( fun->header,
-	                 "TCRPX", j, cols[i]->tcrpx,
-	                 "pixel of tangent plane direc." );
+	    ft_headappv( fun->header, "TCRPX", j, cols[i]->tcrpx, "pixel of tangent plane direc." );
 	if ( cols[i]->tcrot && !ft_headfind( fun->header, "TCROT", j, 0 ) )
-	    ft_headappv( fun->header,
-	                 "TCROT", j, cols[i]->tcrot,
-	                 "rotation angle (degrees)" );
+	    ft_headappv( fun->header, "TCROT", j, cols[i]->tcrot, "rotation angle (degrees)" );
 	if ( cols[i]->tunit && !ft_headfind( fun->header, "TUNIT", j, 0 ) )
-	    ft_headsets( fun->header,
-	                 "TUNIT", j, cols[i]->tunit, "axis units", 1 );
+	    ft_headsets( fun->header, "TUNIT", j, cols[i]->tunit, "axis units", 1 );
 	if ( cols[i]->tblank && !ft_headfind( fun->header, "TNULL", j, 0 ) )
 	    ft_headsetr( fun->header, "TNULL", j, ( double ) cols[i]->tblank,
 	                 7, "undefined value", 1 );
@@ -905,22 +782,16 @@ _FunColumnHeader( fun, cols, ncol )
  * _FunColumnReplace -- replace values from one set of columns into another
  *
  */
-#ifdef ANSI_FUNC
 int
-_FunColumnReplace( Fun fund, char *d, Fun funs, char *s,
-                   int convert, int direction, int n )
-#else
-int
-_FunColumnReplace( fund, d, funs, s, convert, direction, n )
-     Fun fund;
-     char *d;
-     Fun funs;
-     char *s;
-     int convert;
-     int direction;
-     int n;
-#endif
-{
+_FunColumnReplace(
+    Fun fund,
+    char *d,
+    Fun funs,
+    char *s,
+    int convert,
+    int direction,
+    int n
+ ) {
     int i, j;
     int got = 0;
     char *ss, *dd;
@@ -934,20 +805,17 @@ _FunColumnReplace( fund, d, funs, s, convert, direction, n )
 		    if ( !( funs->cols[i]->mode & COL_PTR ) )
 			ss = s + funs->cols[i]->offset;
 		    else
-			ss = *( ( char ** ) ( ( ( char * ) s ) +
-		                              funs->cols[i]->offset ) );
+			ss = *( ( char ** ) ( ( ( char * ) s ) + funs->cols[i]->offset ) );
 		    ss += funs->cols[i]->poff;
 		    if ( !( fund->cols[j]->mode & COL_PTR ) )
 			dd = d + fund->cols[j]->offset;
 		    else
-			dd = *( ( char ** ) ( ( ( char * ) d ) +
-		                              fund->cols[j]->offset ) );
+			dd = *( ( char ** ) ( ( ( char * ) d ) + fund->cols[j]->offset ) );
 		    dd += fund->cols[i]->poff;
 		    /* convert dest to source type and replace */
 		    ft_acht2( fund->cols[j]->offset, dd,
 		              funs->cols[i]->offset, ss,
-		              MIN( funs->cols[i]->n, fund->cols[j]->n ),
-		              convert, direction );
+		              MIN( funs->cols[i]->n, fund->cols[j]->n ), convert, direction );
 		    got++;
 		    break;
 		}
@@ -959,15 +827,10 @@ _FunColumnReplace( fund, d, funs, s, convert, direction, n )
     return got;
 }
 
-#ifdef ANSI_FUNC
 void
-_FunColumnFree( Fun fun )
-#else
-void
-_FunColumnFree( fun )
-     Fun fun;
-#endif
-{
+_FunColumnFree(
+    Fun fun
+ ) {
     int i;
 
     if ( !_FunValid( fun ) )
@@ -1005,17 +868,12 @@ _FunColumnFree( fun )
  * FunColumnActivate -- activate/de-activate a list of columns
  *
  */
-#ifdef ANSI_FUNC
 void
-FunColumnActivate( Fun fun, char *s, char *mode )
-#else
-void
-FunColumnActivate( fun, s, mode )
-     Fun fun;
-     char *s;
-     char *mode;
-#endif
-{
+FunColumnActivate(
+    Fun fun,
+    char *s,
+    char *mode
+ ) {
     int i, j;
     int xmode;
     int dosort;
@@ -1150,8 +1008,7 @@ FunColumnActivate( fun, s, mode )
 			if ( !fun->cols[i]->name ) continue;
 			/* all except the special columns, that is! */
 			if ( strcasecmp( fun->cols[i]->name, COL_REGION_NAME )
-			     && strcasecmp( fun->cols[i]->name,
-			                    COL_NUM_NAME ) )
+			     && strcasecmp( fun->cols[i]->name, COL_NUM_NAME ) )
 			    fun->cols[i]->mode |= COL_ACTIVE;
 		    }
 		    else {
@@ -1247,24 +1104,17 @@ FunColumnActivate( fun, s, mode )
  * FunColumnSelectArr -- non-varargs add columns to the selected column list
  *
  */
-#ifdef ANSI_FUNC
 int
-FunColumnSelectArr( Fun fun, size_t size, char *mode,
-                    char **names, char **types,
-                    char **modes, int *offsets, int nargs )
-#else
-int
-FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, nargs )
-     Fun fun;
-     size_t size;
-     char *mode;
-     char **names;
-     char **types;
-     char **modes;
-     int *offsets;
-     int nargs;
-#endif
-{
+FunColumnSelectArr(
+    Fun fun,
+    size_t size,
+    char *mode,
+    char **names,
+    char **types,
+    char **modes,
+    int *offsets,
+    int nargs
+ ) {
     int got, goterr;
     int domerge;
     size_t tsize;
@@ -1312,9 +1162,7 @@ FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, nargs )
 	/* free previous -- this is a new start */
 	_FunColumnFree( fun );
 	/* allocate space for these new columns */
-	if ( !
-	     ( fun->cols =
-	       ( FunCol * ) xcalloc( FUN_MAXCOL, sizeof( FunCol ) ) ) ) {
+	if ( !( fun->cols = ( FunCol * ) xcalloc( FUN_MAXCOL, sizeof( FunCol ) ) ) ) {
 	    gerror( stderr, "can't allocate FunCol array\n" );
 	    goterr = 1;
 	    goto done;
@@ -1327,8 +1175,7 @@ FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, nargs )
 		activate = NULL;
 	    }
 	    /* if not, we can use the input fun handle's table */
-	    else if ( fun->ifun && fun->ifun->header
-	              && fun->ifun->header->table ) {
+	    else if ( fun->ifun && fun->ifun->header && fun->ifun->header->table ) {
 		header = fun->ifun->header;
 		activate = fun->ifun->activate;
 	    }
@@ -1339,8 +1186,7 @@ FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, nargs )
 	    }
 	    /* set flag for writing, also flag this as input data, not user data */
 	    tsize = 0;
-	    if ( !_FunColumnAddTable
-	         ( fun, header, "iw", 0, &( fun->ncol ), &tsize ) ) {
+	    if ( !_FunColumnAddTable( fun, header, "iw", 0, &( fun->ncol ), &tsize ) ) {
 		goterr = 1;
 		goto done;
 	    }
@@ -1351,15 +1197,13 @@ FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, nargs )
 
 	/* we can't have no columns and no mode */
 	if ( !got && !mode ) {
-	    gerror( stderr,
-	            "FunColumnSelect requires valid column(s) or mode\n" );
+	    gerror( stderr, "FunColumnSelect requires valid column(s) or mode\n" );
 	    goterr = 1;
 	    goto done;
 	}
 
 	/* add columns (or add default columns if none were specified) */
-	_FunColumnSelect( fun, size, mode, names, types, modes, offsets,
-	                  got );
+	_FunColumnSelect( fun, size, mode, names, types, modes, offsets, got );
     }
 
   done:
@@ -1374,9 +1218,13 @@ FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, nargs )
  * FunColumnSelect -- select columns for extraction
  *
  */
-#ifdef __STDC__
 int
-FunColumnSelect( Fun fun, size_t size, char *mode, ... ) {
+FunColumnSelect(
+    Fun fun,
+    size_t size,
+    char *mode,
+    ...
+ ) {
     int i;
     int got, got2;
     char *s;
@@ -1386,43 +1234,22 @@ FunColumnSelect( Fun fun, size_t size, char *mode, ... ) {
     int offsets[FUN_MAXCOL];
     va_list args;
     va_start( args, mode );
-#else
-int
-FunColumnSelect( va_alist )
-     va_dcl {
-    Fun fun;
-    size_t size;
-    int i;
-    int got, got2;
-    char *s;
-    char *mode;
-    char *names[FUN_MAXCOL];
-    char *types[FUN_MAXCOL];
-    char *modes[FUN_MAXCOL];
-    int offsets[FUN_MAXCOL];
-    va_list args;
-    va_start( args );
-    fun = va_arg( args, Fun );
-    size = va_arg( args, size_t );
-    mode = va_arg( args, char * );
-#endif
 
     /* collect variable arguments */
-    for ( got = 0;
-	  ( s = va_arg( args, char * ) ) && *s && ( got < FUN_MAXCOL );
-	  got++ ) {
+    for ( got = 0; ( s = va_arg( args, char * ) ) && *s && ( got < FUN_MAXCOL ); got++ ) {
 	names[got] = xstrdup( s );
-	s = va_arg( args, char * );
+	s = va_arg( args, char *
+	 );
 	types[got] = xstrdup( s );
-	s = va_arg( args, char * );
+	s = va_arg( args, char *
+	 );
 	modes[got] = xstrdup( s );
-	offsets[got] = va_arg( args, int );
+	offsets[got] = va_arg( args, int
+	 );
     }
 
     /* call non-varargs version */
-    got2 =
-        FunColumnSelectArr( fun, size, mode, names, types, modes, offsets,
-                            got );
+    got2 = FunColumnSelectArr( fun, size, mode, names, types, modes, offsets, got );
 
     /* clean up */
     for ( i = 0; i < got; i++ ) {
@@ -1433,113 +1260,102 @@ FunColumnSelect( va_alist )
 
     /* return the news */
     return got2;
-     }
+}
 
-#ifdef ANSI_FUNC
-     int FunColumnLookup( Fun fun, char *s, int which, char **name,
-                          int *type, int *mode, int *offset, int *n,
-                          int *width )
-#else
-     int FunColumnLookup( fun, s, which, name, type, mode, offset, n, width )
-     Fun fun;
-     char *s;
-     int which;
-     char **name;
-     int *type;
-     int *mode;
-     int *offset;
-     int *n;
-     int *width;
-#endif
-     {
-	 int i;
-	 int got = 0;
+int
+FunColumnLookup(
+    Fun fun,
+    char *s,
+    int which,
+    char **name,
+    int *type,
+    int *mode,
+    int *offset,
+    int *n,
+    int *width
+ ) {
+    int i;
+    int got = 0;
 
-	 /* make sure we have something */
-	 if ( !_FunValid( fun ) )
-	     return 0;
+    /* make sure we have something */
+    if ( !_FunValid( fun ) )
+	return 0;
 
-	 /* if we delayed the open for reading before, we have to open now */
-	 if ( !fun->header && strchr( fun->mode, 'r' ) )
-	     _FunFITSOpen( fun, fun->fname, "r" );
+    /* if we delayed the open for reading before, we have to open now */
+    if ( !fun->header && strchr( fun->mode, 'r' ) )
+	_FunFITSOpen( fun, fun->fname, "r" );
 
-	 /* if we were passed a string, use that as the name for the lookup */
-	 if ( s ) {
-	     for ( i = 0; i < fun->ncol; i++ ) {
-		 if ( !fun->cols[i]->name ) continue;
-		 if ( !strcasecmp( s, fun->cols[i]->name ) ) {
-		     got = i + 1;
-		     break;
-		 }
-	     }
-	 }
-	 /* otherwise, we got the zero-based index to lookup */
-	 else
-	     got = which + 1;
+    /* if we were passed a string, use that as the name for the lookup */
+    if ( s ) {
+	for ( i = 0; i < fun->ncol; i++ ) {
+	    if ( !fun->cols[i]->name ) continue;
+	    if ( !strcasecmp( s, fun->cols[i]->name ) ) {
+		got = i + 1;
+		break;
+	    }
+	}
+    }
+    /* otherwise, we got the zero-based index to lookup */
+    else
+	got = which + 1;
 
-	 /* if we have something to look up, do it */
-	 if ( got ) {
-	     i = got - 1;
-	     if ( name ) *name = fun->cols[i]->name;
-	     if ( type ) *type = fun->cols[i]->type;
-	     if ( mode ) *mode = fun->cols[i]->mode;
-	     if ( offset ) *offset = fun->cols[i]->offset;
-	     if ( n ) *n = fun->cols[i]->n;
-	     if ( width ) *width = fun->cols[i]->width;
-	 }
-	 return got;
-     }
+    /* if we have something to look up, do it */
+    if ( got ) {
+	i = got - 1;
+	if ( name ) *name = fun->cols[i]->name;
+	if ( type ) *type = fun->cols[i]->type;
+	if ( mode ) *mode = fun->cols[i]->mode;
+	if ( offset ) *offset = fun->cols[i]->offset;
+	if ( n ) *n = fun->cols[i]->n;
+	if ( width ) *width = fun->cols[i]->width;
+    }
+    return got;
+}
 
-#ifdef ANSI_FUNC
-     int FunColumnLookup2( Fun fun, char *s, int which, double *tlmin,
-                           double *tlmax, double *binsize, double *tscale,
-                           double *tzero )
-#else
-     int FunColumnLookup2( fun, s, which, tlmin, tlmax, binsize, tscale,
-                           tzero )
-     Fun fun;
-     char *s;
-     int which;
-     double *tlmin;
-     double *tlmax;
-     double *binsize;
-     double *tscale;
-     double *tzero;
-#endif
-     {
-	 int i;
-	 int got = 0;
+int
+FunColumnLookup2(
+    Fun fun,
+    char *s,
+    int which,
+    double *tlmin,
+    double *tlmax,
+    double *binsize,
+    double *tscale,
+    double *tzero
+ ) {
+    int i;
+    int got = 0;
 
-	 /* make sure we have something */
-	 if ( !_FunValid( fun ) )
-	     return 0;
+    /* make sure we have something */
+    if ( !_FunValid( fun ) )
+	return 0;
 
-	 /* if we delayed the open for reading before, we have to open now */
-	 if ( !fun->header && strchr( fun->mode, 'r' ) )
-	     _FunFITSOpen( fun, fun->fname, "r" );
+    /* if we delayed the open for reading before, we have to open now */
+    if ( !fun->header && strchr( fun->mode, 'r' ) )
+	_FunFITSOpen( fun, fun->fname, "r" );
 
-	 /* if we were passed a string, use that as the name for the lookup */
-	 if ( s ) {
-	     for ( i = 0; i < fun->ncol; i++ ) {
-		 if ( !fun->cols[i]->name ) continue;
-		 if ( !strcasecmp( s, fun->cols[i]->name ) ) {
-		     got = i + 1;
-		     break;
-		 }
-	     }
-	 }
-	 /* otherwise, we got the zero-based index to lookup */
-	 else
-	     got = which + 1;
+    /* if we were passed a string, use that as the name for the lookup */
+    if ( s ) {
+	for ( i = 0; i < fun->ncol; i++ ) {
+	    if ( !fun->cols[i]->name ) continue;
+	    if ( !strcasecmp( s, fun->cols[i]->name ) ) {
+		got = i + 1;
+		break;
+	    }
+	}
+    }
+    /* otherwise, we got the zero-based index to lookup */
+    else
+	got = which + 1;
 
-	 /* if we have something to look up, do it */
-	 if ( got ) {
-	     i = got - 1;
-	     if ( tlmin ) *tlmin = fun->cols[i]->tlmin;
-	     if ( tlmax ) *tlmax = fun->cols[i]->tlmax;
-	     if ( binsize ) *binsize = fun->cols[i]->binsiz;
-	     if ( tscale ) *tscale = fun->cols[i]->tscale;
-	     if ( tzero ) *tzero = fun->cols[i]->tzero;
-	 }
-	 return got;
-     }
+    /* if we have something to look up, do it */
+    if ( got ) {
+	i = got - 1;
+	if ( tlmin ) *tlmin = fun->cols[i]->tlmin;
+	if ( tlmax ) *tlmax = fun->cols[i]->tlmax;
+	if ( binsize ) *binsize = fun->cols[i]->binsiz;
+	if ( tscale ) *tscale = fun->cols[i]->tscale;
+	if ( tzero ) *tzero = fun->cols[i]->tzero;
+    }
+    return got;
+}

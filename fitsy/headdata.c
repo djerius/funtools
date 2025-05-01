@@ -16,12 +16,12 @@
 #define NBLOCK	500
 
 long
-ft_dataskip( ifile, fits, ofiles, nofile )
-     File ifile;                /* File pointer to read FITS data from. */
-     FITSHead fits;             /* FITS header associated with data.    */
-     File *ofiles;              /* File pointers to write data to.      */
-     int nofile;                /* number of files */
-{
+ft_dataskip(
+    File ifile,                 /* File pointer to read FITS data from. */
+    FITSHead fits,              /* FITS header associated with data.    */
+    File * ofiles,              /* File pointers to write data to.      */
+    int nofile                  /* number of files */
+ ) {
     int i;
     int blocks;
     char block[FT_BLOCK * NBLOCK];
@@ -38,8 +38,7 @@ ft_dataskip( ifile, fits, ofiles, nofile )
     }
 
     if ( ft_databytes( fits ) ) {
-	for ( blocks = ft_databloks( fits );
-	      blocks > NBLOCK; blocks -= NBLOCK ) {
+	for ( blocks = ft_databloks( fits ); blocks > NBLOCK; blocks -= NBLOCK ) {
 	    ftRead( ifile, block, 1, FT_BLOCK * NBLOCK );
 	    for ( i = 0; i < nofile; i++ )
 		ftWrite( ofiles[i], block, 1, FT_BLOCK * NBLOCK );
@@ -56,10 +55,10 @@ ft_dataskip( ifile, fits, ofiles, nofile )
 /* Seek to the data portion of prevoiusly read fits header data unit.
  */
 long
-ft_dataseek( sfile, fits )
-     File sfile;                /* File pointer to seek.        */
-     FITSHead fits;
-{
+ft_dataseek(
+    File sfile,                 /* File pointer to seek.        */
+    FITSHead fits
+ ) {
     if ( sfile == NULL ) return -1;
     if ( fits == NULL ) return -1;
 

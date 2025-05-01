@@ -65,7 +65,8 @@ typedef struct evstruct {
     double ra, dec, rad;
     int key;
     char *row;
-}  *Ev, EvRec;
+}  *Ev,
+    EvRec;
 
 typedef struct Value {
     char *colname;
@@ -93,17 +94,12 @@ typedef struct List {
     int ncol;
 } List;
 
-#ifdef ANSI_FUNC
 static void
-slaDcs2c( double a, double b, double v[3] )
-#else
-static void
-slaDcs2c( a, b, v )
-     double a;
-     double b;
-     double v[3];
-#endif
-{
+slaDcs2c(
+    double a,
+    double b,
+    double v[3]
+ ) {
     double cosb;
     cosb = cos( b );
     v[0] = cos( a ) * cosb;
@@ -111,18 +107,13 @@ slaDcs2c( a, b, v )
     v[2] = sin( b );
 }
 
-#ifdef ANSI_FUNC
 static double
-slaDsep( double a1, double b1, double a2, double b2 )
-#else
-static double
-slaDsep( a1, b1, a2, b2 )
-     double a1;
-     double b1;
-     double a2;
-     double b2;
-#endif
-{
+slaDsep(
+    double a1,
+    double b1,
+    double a2,
+    double b2
+ ) {
     int i;
     double d, v1[3], v2[3], s2, c2;
 
@@ -140,17 +131,12 @@ slaDsep( a1, b1, a2, b2 )
     return 2.0 * atan2( sqrt( s2 ), sqrt( Max( 0.0, c2 ) ) );
 }
 
-#ifdef ANSI_FUNC
 static int
-ConeFilter( Csys * csys, double val0, double val1 )
-#else
-static int
-ConeFilter( csys, val0, val1 )
-     Csys *csys;
-     double val0;
-     double val1;
-#endif
-{
+ConeFilter(
+    Csys * csys,
+    double val0,
+    double val1
+ ) {
     double r1 = 0.0, r2 = 0.0, d1 = 0.0, d2 = 0.0;
     double radius = 0.0;
 
@@ -207,19 +193,16 @@ ConeFilter( csys, val0, val1 )
 	return 0;
 }
 
-#ifdef ANSI_FUNC
 static void
-radecbox( double ra, double dec, double width,
-          double *r1, double *r2, double *d1, double *d2 )
-#else
-static void
-radecbox( ra, dec, width, r1, r2, d1, d2 )
-     double ra;
-     double dec;
-     double width;
-     double *r1, *r2, *d1, *d2;
-#endif
-{
+radecbox(
+    double ra,
+    double dec,
+    double width,
+    double *r1,
+    double *r2,
+    double *d1,
+    double *d2
+ ) {
     double cosdec;
 
     *d1 = dec - width / 2.0;
@@ -250,18 +233,13 @@ radecbox( ra, dec, width, r1, r2, d1, d2 )
     }
 }
 
-#ifdef ANSI_FUNC
 static void
-ConeLimits( Csys * csys, char *rastr, char *decstr, char *radstr )
-#else
-static void
-ConeLimits( csys, rastr, decstr, radstr )
-     Csys *csys;
-     char *rastr;
-     char *decstr;
-     char *radstr;
-#endif
-{
+ConeLimits(
+    Csys * csys,
+    char *rastr,
+    char *decstr,
+    char *radstr
+ ) {
     int xtype = 0;
     char *p = NULL;
     double dval = 0.0;
@@ -272,8 +250,7 @@ ConeLimits( csys, rastr, decstr, radstr )
     /* process input ra */
     dval = SAOstrtod( rastr, &p );
     if ( rastr == p )
-	gerror( stderr, "invalid RA value: '%s' (columns go with -l list)\n",
-                rastr );
+	gerror( stderr, "invalid RA value: '%s' (columns go with -l list)\n", rastr );
     xtype = *p;
     if ( ( xtype != 'h' ) && ( xtype != 'd' ) && ( xtype != 'r' ) ) {
 	if ( SAOdtype == 'd' )
@@ -296,8 +273,7 @@ ConeLimits( csys, rastr, decstr, radstr )
     /* process input dec */
     dval = SAOstrtod( decstr, &p );
     if ( decstr == p )
-	gerror( stderr, "invalid Dec value: '%s' (columns go with -l list)\n",
-                decstr );
+	gerror( stderr, "invalid Dec value: '%s' (columns go with -l list)\n", decstr );
     xtype = *p;
     if ( ( xtype != 'h' ) && ( xtype != 'd' ) && ( xtype != 'r' ) ) {
 	if ( SAOdtype == 'h' )
@@ -320,9 +296,7 @@ ConeLimits( csys, rastr, decstr, radstr )
     /* process input radius */
     dval = SAOstrtod( radstr, &p );
     if ( radstr == p )
-	gerror( stderr,
-                "invalid radius value: '%s'(columns go with -l list)\n",
-                radstr );
+	gerror( stderr, "invalid radius value: '%s'(columns go with -l list)\n", radstr );
     xtype = *p;
     if ( ( xtype != 'h' ) && ( xtype != 'd' ) && ( xtype != 'r' ) &&
          ( xtype != '\'' ) && ( xtype != '"' ) ) {
@@ -399,16 +373,11 @@ ConeLimits( csys, rastr, decstr, radstr )
 #endif
 }
 
-#ifdef ANSI_FUNC
 static char *
-ColumnName( Fun fun, char *def )
-#else
-static char *
-ColumnName( fun, def )
-     Fun fun;
-     char *def;
-#endif
-{
+ColumnName(
+    Fun fun,
+    char *def
+ ) {
     int i;
     char tbuf[SZ_LINE];
 
@@ -424,25 +393,19 @@ ColumnName( fun, def )
 	i = 2;
 	while ( 1 ) {
 	    snprintf( tbuf, SZ_LINE - 1, "%s_%d", def, i );
-	    if ( !FunColumnLookup
-	         ( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
+	    if ( !FunColumnLookup( fun, tbuf, 0, NULL, NULL, NULL, NULL, NULL, NULL ) ) {
 		return xstrdup( tbuf );
 	    }
 	}
     }
 }
 
-#ifdef ANSI_FUNC
 static int
-ColumnInfo( Csys * csys, char *colstr[], int flag )
-#else
-static int
-ColumnInfo( csys, colstr, flag )
-     Csys *csys;
-     char *colstr[];
-     int flag;
-#endif
-{
+ColumnInfo(
+    Csys * csys,
+    char *colstr[],
+    int flag
+ ) {
     int i;
     int ip;
     int got = 0;
@@ -472,8 +435,7 @@ ColumnInfo( csys, colstr, flag )
 		    strcpy( tbuf2, RAD_DEFAULT_UNITS );
 		    break;
 		default:
-		    gerror( stderr, "internal funcone error: bad iter %d\n",
-		            i );
+		    gerror( stderr, "internal funcone error: bad iter %d\n", i );
 		    break;
 	    }
 	}
@@ -512,15 +474,12 @@ ColumnInfo( csys, colstr, flag )
 			    break;
 			default:
 			    gerror( stderr,
-			            "invalid units specification '%s' for %s\n",
-			            tbuf2, tbuf );
+			            "invalid units specification '%s' for %s\n", tbuf2, tbuf );
 			    goto done;
 		    }
 		}
 		else {
-		    gerror( stderr,
-		            "invalid units specification '%s' for %s\n",
-		            tbuf2, tbuf );
+		    gerror( stderr, "invalid units specification '%s' for %s\n", tbuf2, tbuf );
 		    goto done;
 		}
 	}
@@ -532,18 +491,13 @@ ColumnInfo( csys, colstr, flag )
     return got;
 }
 
-#ifdef ANSI_FUNC
 static double
-DConvert( char *buf, int type, int offset, int n )
-#else
-static double
-DConvert( buf, type, offset, n )
-     char *buf;
-     int type;
-     int offset;
-     int n;
-#endif
-{
+DConvert(
+    char *buf,
+    int type,
+    int offset,
+    int n
+ ) {
     int ival;
     double dval;
 
@@ -570,8 +524,7 @@ DConvert( buf, type, offset, n )
 	    break;
 	case 'K':
 #if HAVE_LONG_LONG == 0
-	    gerror( stderr,
-	            "64-bit data support not built (long long not available)\n" );
+	    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 	    dval = ( double ) *( longlong * ) ( buf + offset );
 	    break;
@@ -598,15 +551,10 @@ DConvert( buf, type, offset, n )
     return dval;
 }
 
-#ifdef ANSI_FUNC
 static void
-CloseList( List * list )
-#else
-static void
-CloseList( List * list )
-     char *s;
-#endif
-{
+CloseList(
+    List * list
+ ) {
     int i;
     /* sanity check */
     if ( !list ) return;
@@ -621,26 +569,20 @@ CloseList( List * list )
     }
     if ( list->csys ) {
 	for ( i = 0; i < 3; i++ ) {
-	    if ( list->csys->value[i].colname ) xfree( list->csys->value[i].
-	                                               colname );
+	    if ( list->csys->value[i].colname ) xfree( list->csys->value[i].colname );
 	}
 	xfree( list->csys );
     }
     xfree( list );
 }
 
-#ifdef ANSI_FUNC
 static List *
-OpenList( char *lname, char *rastr, char *decstr, char *radstr )
-#else
-static List *
-OpenList( lname, rastr, decstr, radstr )
-     char *lname;
-     char *rastr;
-     char *decstr;
-     char *radstr;
-#endif
-{
+OpenList(
+    char *lname,
+    char *rastr,
+    char *decstr,
+    char *radstr
+ ) {
     char *colstr[3];
     char tbuf[SZ_LINE];
     char *p;
@@ -698,10 +640,8 @@ OpenList( lname, rastr, decstr, radstr )
 		if ( !FunColumnLookup
 		     ( list->fun, list->csys->value[0].colname, 0, NULL,
 		       &( list->csys->value[0].dtype ), NULL,
-		       &( list->csys->value[0].offset ),
-		       &( list->csys->value[0].n ), NULL ) ) {
-		    strncpy( tbuf, list->csys->value[0].colname,
-		             SZ_LINE - 1 );
+		       &( list->csys->value[0].offset ), &( list->csys->value[0].n ), NULL ) ) {
+		    strncpy( tbuf, list->csys->value[0].colname, SZ_LINE - 1 );
 		    CloseList( list );
 		    gerror( stderr, "can't get column info for: %s\n", tbuf );
 		    return NULL;
@@ -711,10 +651,8 @@ OpenList( lname, rastr, decstr, radstr )
 		if ( !FunColumnLookup
 		     ( list->fun, list->csys->value[1].colname, 0, NULL,
 		       &( list->csys->value[1].dtype ), NULL,
-		       &( list->csys->value[1].offset ),
-		       &( list->csys->value[1].n ), NULL ) ) {
-		    strncpy( tbuf, list->csys->value[0].colname,
-		             SZ_LINE - 1 );
+		       &( list->csys->value[1].offset ), &( list->csys->value[1].n ), NULL ) ) {
+		    strncpy( tbuf, list->csys->value[0].colname, SZ_LINE - 1 );
 		    CloseList( list );
 		    gerror( stderr, "can't get column info for: %s\n", tbuf );
 		    return NULL;
@@ -724,10 +662,8 @@ OpenList( lname, rastr, decstr, radstr )
 		if ( !FunColumnLookup
 		     ( list->fun, list->csys->value[2].colname, 0, NULL,
 		       &( list->csys->value[2].dtype ), NULL,
-		       &( list->csys->value[2].offset ),
-		       &( list->csys->value[2].n ), NULL ) ) {
-		    strncpy( tbuf, list->csys->value[0].colname,
-		             SZ_LINE - 1 );
+		       &( list->csys->value[2].offset ), &( list->csys->value[2].n ), NULL ) ) {
+		    strncpy( tbuf, list->csys->value[0].colname, SZ_LINE - 1 );
 		    CloseList( list );
 		    gerror( stderr, "can't get column info for: %s\n", tbuf );
 		    return NULL;
@@ -736,27 +672,21 @@ OpenList( lname, rastr, decstr, radstr )
 	}
 	else {
 	    CloseList( list );
-	    gerror( stderr, "can't get column info for list: %s %s\n",
-	            colstr[0], colstr[1] );
+	    gerror( stderr, "can't get column info for list: %s %s\n", colstr[0], colstr[1] );
 	    return NULL;
 	}
     }
     return list;
 }
 
-#ifdef ANSI_FUNC
 static int
-NextList( List * list, char *rastr, char *decstr, char *radstr, int maxlen )
-#else
-static int
-NextList( list, rastr, decstr, radstr, maxlen )
-     List *list;
-     char *rastr;
-     char *decstr;
-     char *radstr;
-     int maxlen;
-#endif
-{
+NextList(
+    List * list,
+    char *rastr,
+    char *decstr,
+    char *radstr,
+    int maxlen
+ ) {
     int got;
 
     /* sanity check */
@@ -810,17 +740,12 @@ NextList( list, rastr, decstr, radstr, maxlen )
     return list->nline;
 }
 
-#ifdef ANSI_FUNC
 static int
-FilterSpec( Csys * csys, char *filter, int maxlen )
-#else
-static int
-FilterSpec( csys, filter, maxlen )
-     Csys *csys;
-     char *filter;
-     int maxlen;
-#endif
-{
+FilterSpec(
+    Csys * csys,
+    char *filter,
+    int maxlen
+ ) {
     int i, j;
     char tbuf[SZ_LINE];
 
@@ -830,8 +755,7 @@ FilterSpec( csys, filter, maxlen )
     /* this is the indexed filter */
     if ( csys->value[0].lo < csys->value[0].hi ) {
 	snprintf( filter, maxlen - 1, "%s=%15.10f:%15.10f&&",
-	          csys->value[0].colname, csys->value[0].lo,
-	          csys->value[0].hi );
+	          csys->value[0].colname, csys->value[0].lo, csys->value[0].hi );
     }
     else {
 	snprintf( filter, maxlen - 1, "(%s>=%15.10f||%s<=%15.10f)&&",
@@ -840,8 +764,7 @@ FilterSpec( csys, filter, maxlen )
     }
     if ( csys->value[1].lo < csys->value[1].hi ) {
 	snprintf( tbuf, SZ_LINE - 1, "%s=%15.10f:%15.10f",
-	          csys->value[1].colname, csys->value[1].lo,
-	          csys->value[1].hi );
+	          csys->value[1].colname, csys->value[1].lo, csys->value[1].hi );
     }
     else {
 	snprintf( tbuf, SZ_LINE - 1, "(%s>=%15.10f||%s<=%15.10f)",
@@ -861,46 +784,32 @@ FilterSpec( csys, filter, maxlen )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *pname )
-#else
-static void
-usage( pname )
-     char *pname;
-#endif
-{
+usage(
+    char *pname
+ ) {
     fprintf( stderr,
              "usage: %s <switches> iname oname ra[hdr] dec[hdr] radius[dr\"'] [columns [listcols]]\n",
              pname );
     fprintf( stderr, "\n" );
     fprintf( stderr, "  iname:  input FITS file name\n" );
     fprintf( stderr, "  oname:  output FITS file name\n" );
-    fprintf( stderr,
-             "  ra:     RA center position, optional units (def: hours)\n" );
-    fprintf( stderr,
-             "  dec:    Dec center position, optional units (def: degrees)\n" );
-    fprintf( stderr,
-             "  radius: Search radius, optional units (def: degrees)\n" );
+    fprintf( stderr, "  ra:     RA center position, optional units (def: hours)\n" );
+    fprintf( stderr, "  dec:    Dec center position, optional units (def: degrees)\n" );
+    fprintf( stderr, "  radius: Search radius, optional units (def: degrees)\n" );
     fprintf( stderr, "  columns: optional columns to output\n" );
     fprintf( stderr, "\n" );
     fprintf( stderr, "optional switches:\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "  -d deccol:[hdr]  # Dec column name, units (def: DEC:d)\n" );
+    fprintf( stderr, "  -d deccol:[hdr]  # Dec column name, units (def: DEC:d)\n" );
     fprintf( stderr, "  -j               # join columns from list file\n" );
-    fprintf( stderr,
-             "  -J               # join columns from list file, output all rows\n" );
-    fprintf( stderr,
-             "  -l listfile      # read centers and radii from a list\n" );
+    fprintf( stderr, "  -J               # join columns from list file, output all rows\n" );
+    fprintf( stderr, "  -l listfile      # read centers and radii from a list\n" );
     fprintf( stderr,
              "  -L listfile      # read centers and radii from a list, output list rows\n" );
-    fprintf( stderr,
-             "  -n               # don't use cone limits as a filter\n" );
-    fprintf( stderr,
-             "  -r  racol:[hdr]  # RA column name, units (def: RA:h)\n" );
-    fprintf( stderr,
-             "  -x               # append RA_CEN, DEC_CEN, RAD_CEN, KEY cols\n" );
+    fprintf( stderr, "  -n               # don't use cone limits as a filter\n" );
+    fprintf( stderr, "  -r  racol:[hdr]  # RA column name, units (def: RA:h)\n" );
+    fprintf( stderr, "  -x               # append RA_CEN, DEC_CEN, RAD_CEN, KEY cols\n" );
     fprintf( stderr,
              "  -X               # append RA_CEN, DEC_CEN, RAD_CEN, KEY cols, output all rows\n" );
     fprintf( stderr, "\n" );
@@ -908,51 +817,36 @@ usage( pname )
     fprintf( stderr, " ra:hours, dec:degrees, radius: degrees.\n" );
     fprintf( stderr, "Sexagesimal notation is supported.\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "If a list is specified, then the ra, dec, and radius\n" );
-    fprintf( stderr,
-             "can be a list column name or numeric value. Col name\n" );
+    fprintf( stderr, "If a list is specified, then the ra, dec, and radius\n" );
+    fprintf( stderr, "can be a list column name or numeric value. Col name\n" );
     fprintf( stderr, "specifiers support the :hdr suffix.\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "The -n switch can speed up processing of small tables\n" );
-    fprintf( stderr,
-             "by skipping the overhead associated with filtering on\n" );
+    fprintf( stderr, "The -n switch can speed up processing of small tables\n" );
+    fprintf( stderr, "by skipping the overhead associated with filtering on\n" );
     fprintf( stderr, "the cone limits.\n" );
     fprintf( stderr, "\n" );
     fprintf( stderr, "examples:\n" );
     fprintf( stderr, "\n" );
     fprintf( stderr, "# defaults: RA col in hours, DEC col in degrees\n" );
-    fprintf( stderr,
-             "#           RA pos in hours, DEC pos and radius in degrees\n" );
+    fprintf( stderr, "#           RA pos in hours, DEC pos and radius in degrees\n" );
     fprintf( stderr, "%s in.fits out.fits 23.45 34.56 0.01\n", pname );
     fprintf( stderr, "# defaults, but with RA position in degrees:\n" );
     fprintf( stderr, "%s in.fits out.fits 23.45d 34.56 0.01\n", pname );
     fprintf( stderr, "# user specified columns in degrees\n" );
     fprintf( stderr, "# RA pos in hms, DEC pos in dms, radius in arcmin:\n" );
-    fprintf( stderr,
-             "%s -r myRa:d -d myDec in.fits out.fits 12:30:15.5 30:12 15'\n",
-             pname );
-    fprintf( stderr,
-             "# take positions from rax and decx columns in a FITS table\n" );
+    fprintf( stderr, "%s -r myRa:d -d myDec in.fits out.fits 12:30:15.5 30:12 15'\n", pname );
+    fprintf( stderr, "# take positions from rax and decx columns in a FITS table\n" );
     fprintf( stderr, "# and join columns from list to output\n" );
-    fprintf( stderr,
-             "%s -j -l lst.fits in.fits out.fits 'rax:d' 'decx:d' '0.003:d'\n",
-             pname );
+    fprintf( stderr, "%s -j -l lst.fits in.fits out.fits 'rax:d' 'decx:d' '0.003:d'\n", pname );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i;
     int got;
@@ -1083,8 +977,7 @@ main( argc, argv )
 	if ( doall & ALL_LIST ) {
 	    FunInfoGet( list->fun, FUN_NROWS, &nrow, 0 );
 	    if ( !( albuf = xcalloc( nrow + 1, sizeof( char ) ) ) ) {
-		gerror( stderr, "can't allocate all (-L) buffer of size %d\n",
-		        nrow );
+		gerror( stderr, "can't allocate all (-L) buffer of size %d\n", nrow );
 	    }
 	}
     }
@@ -1097,15 +990,13 @@ main( argc, argv )
 
     /* get information for the ra, dec columns */
     if ( !ColumnInfo( csys, colstr, ( RA_FLAG | DEC_FLAG ) ) ) {
-	gerror( stderr, "can't get column info for: %s %s\n",
-	        colstr[0], colstr[1] );
+	gerror( stderr, "can't get column info for: %s %s\n", colstr[0], colstr[1] );
 	exit( 1 );
     }
 
     /* open input file */
     if ( !( fun = FunOpen( iname, "rc", NULL ) ) ) {
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-	        iname );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
     }
 
     /* consistency checks */
@@ -1113,8 +1004,7 @@ main( argc, argv )
 	gerror( stderr, "join (-j) requires a list (-l listfile)\n" );
     }
     if ( dojoin && xmode ) {
-	gerror( stderr,
-	        "join (-j) and column output (-x) together are redundant\n" );
+	gerror( stderr, "join (-j) and column output (-x) together are redundant\n" );
     }
 
     /* get fitsy header */
@@ -1124,8 +1014,7 @@ main( argc, argv )
     if ( doall ) {
 	FunInfoGet( fun, FUN_NROWS, &nrow, 0 );
 	if ( !( adbuf = xcalloc( nrow + 1, sizeof( char ) ) ) ) {
-	    gerror( stderr, "can't allocate all (-J|-X) buffer of size %d\n",
-	            nrow );
+	    gerror( stderr, "can't allocate all (-J|-X) buffer of size %d\n", nrow );
 	}
 	/* must read one event at a time, or else we can't tell the event num */
 	maxrow = 1;
@@ -1143,8 +1032,7 @@ main( argc, argv )
     for ( i = 0; i < 2; i++ ) {
 	if ( !FunColumnLookup( fun, csys->value[i].colname, 0,
 	                       NULL, NULL, NULL, NULL, NULL, NULL ) ) {
-	    gerror( stderr, "column '%s' not found in data file\n",
-	            csys->value[i].colname );
+	    gerror( stderr, "column '%s' not found in data file\n", csys->value[i].colname );
 	}
     }
 
@@ -1170,19 +1058,14 @@ main( argc, argv )
 
     /* get list info needed for join */
     if ( dojoin ) {
-	FunInfoGet( list->fun,
-	            FUN_ROWSIZE, &( list->rowsize ), FUN_NCOL,
-	            &( list->ncol ), 0 );
+	FunInfoGet( list->fun, FUN_ROWSIZE, &( list->rowsize ), FUN_NCOL, &( list->ncol ), 0 );
     }
 
     /* allocate space for the max number of columns we can have */
     if ( dojoin ) {
-	names =
-	    ( char ** ) xcalloc( list->ncol + MIN_COLS, sizeof( char * ) );
-	types =
-	    ( char ** ) xcalloc( list->ncol + MIN_COLS, sizeof( char * ) );
-	modes =
-	    ( char ** ) xcalloc( list->ncol + MIN_COLS, sizeof( char * ) );
+	names = ( char ** ) xcalloc( list->ncol + MIN_COLS, sizeof( char * ) );
+	types = ( char ** ) xcalloc( list->ncol + MIN_COLS, sizeof( char * ) );
+	modes = ( char ** ) xcalloc( list->ncol + MIN_COLS, sizeof( char * ) );
 	offsets = ( int * ) xcalloc( list->ncol + MIN_COLS, sizeof( int ) );
     }
     else {
@@ -1211,9 +1094,7 @@ main( argc, argv )
     if ( dojoin ) {
 	for ( i = 0; i < list->ncol; i++ ) {
 	    if ( !FunColumnLookup( list->fun, NULL, i,
-	                           &lcol,
-	                           &ltype,
-	                           &lmode, &loffset, &ln, &lwidth ) ) {
+	                           &lcol, &ltype, &lmode, &loffset, &ln, &lwidth ) ) {
 		gerror( stderr, "can't find column %d in list file\n", i );
 	    }
 	    /* skip columns that are not active */
@@ -1268,14 +1149,12 @@ main( argc, argv )
     offsets = ( int * ) xrealloc( offsets, ncol * sizeof( int ) );
 
     /* set up the output columns */
-    FunColumnSelectArr( fun, tsize, params, names, types, modes, offsets,
-                        ncol );
+    FunColumnSelectArr( fun, tsize, params, names, types, modes, offsets, ncol );
 
     /* loop starts here. get next ra, dec, rad value and process events */
   loop:
     iter++;
-    if ( dolist
-         && !NextList( list, rastr, decstr, radstr, SZ_LINE ) ) goto done;
+    if ( dolist && !NextList( list, rastr, decstr, radstr, SZ_LINE ) ) goto done;
 
     /* calculate limits from ra, dec, and radius */
     ConeLimits( csys, rastr, decstr, radstr );
@@ -1340,9 +1219,7 @@ main( argc, argv )
     total = 0;
     while ( 1 ) {
 	if ( doall ) FunInfoGet( fun, FUN_ROW, &irow, 0 );
-	if ( !
-	     ( ebuf =
-	       ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) )
+	if ( !( ebuf = ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) )
 	    break;
 	/* perform explicit cone limit filter, if necessary */
 	if ( havefilt == 2 ) {
@@ -1417,8 +1294,7 @@ main( argc, argv )
 	    list->row = xcalloc( list->rowsize, sizeof( char ) );
 	}
 	/* redo the read loop */
-	while ( ( ebuf =
-	          ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) ) {
+	while ( ( ebuf = ( Ev ) FunTableRowGet( fun, NULL, maxrow, NULL, &got ) ) ) {
 	    /* if we have a filter, then we don't know the row number til after
 	       we read the event, i.e. now */
 	    FunInfoGet( fun, FUN_ROW, &irow, 0 );

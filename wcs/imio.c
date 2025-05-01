@@ -76,9 +76,9 @@
 
 static int scale = 1;           /* If 0, skip scaling step */
 void
-setscale( scale0 )
-     int scale0;
-{
+setscale(
+    int scale0
+ ) {
     scale = scale0;
     return;
 }
@@ -86,19 +86,16 @@ setscale( scale0 )
 /* GETPIX1 -- Get pixel from 2D FITS image of any numeric type */
 
 double
-getpix1( image, bitpix, w, h, bzero, bscale, x, y )
-     char *image;               /* Image array as 1-D vector */
-     int bitpix;                /* FITS bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w;                     /* Image width in pixels */
-     int h;                     /* Image height in pixels */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int x;                     /* One-based horizontal pixel number */
-     int y;                     /* One-based vertical pixel number */
-
-{
+getpix1(
+    char *image,                /* Image array as 1-D vector */
+    int bitpix,                 /* FITS bits per pixel */
+    int w,                      /* Image width in pixels */
+    int h,                      /* Image height in pixels */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int x,                      /* One-based horizontal pixel number */
+    int y                       /* One-based vertical pixel number */
+ ) {
     return ( getpix( image, bitpix, w, h, bzero, bscale, x - 1, y - 1 ) );
 }
 
@@ -106,19 +103,16 @@ getpix1( image, bitpix, w, h, bzero, bscale, x, y )
 /* GETPIX -- Get pixel from 2D image of any numeric type */
 
 double
-getpix( image, bitpix, w, h, bzero, bscale, x, y )
-     char *image;               /* Image array as 1-D vector */
-     int bitpix;                /* FITS bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w;                     /* Image width in pixels */
-     int h;                     /* Image height in pixels */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int x;                     /* Zero-based horizontal pixel number */
-     int y;                     /* Zero-based vertical pixel number */
-
-{
+getpix(
+    char *image,                /* Image array as 1-D vector */
+    int bitpix,                 /* FITS bits per pixel */
+    int w,                      /* Image width in pixels */
+    int h,                      /* Image height in pixels */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int x,                      /* Zero-based horizontal pixel number */
+    int y                       /* Zero-based vertical pixel number */
+ ) {
     short *im2;
     int *im4;
     unsigned char *im1;
@@ -179,20 +173,17 @@ getpix( image, bitpix, w, h, bzero, bscale, x, y )
 /* PUTPIX1 -- Copy pixel into 2D FITS image of any numeric type */
 
 void
-putpix1( image, bitpix, w, h, bzero, bscale, x, y, dpix )
-     char *image;
-     int bitpix;                /* Number of bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w;                     /* Image width in pixels */
-     int h;                     /* Image height in pixels */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int x;                     /* One-based horizontal pixel number */
-     int y;                     /* One-based vertical pixel number */
-     double dpix;
-
-{
+putpix1(
+    char *image,
+    int bitpix,                 /* Number of bits per pixel */
+    int w,                      /* Image width in pixels */
+    int h,                      /* Image height in pixels */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int x,                      /* One-based horizontal pixel number */
+    int y,                      /* One-based vertical pixel number */
+    double dpix
+ ) {
     putpix( image, bitpix, w, h, bzero, bscale, x - 1, y - 1, dpix );
     return;
 }
@@ -201,20 +192,17 @@ putpix1( image, bitpix, w, h, bzero, bscale, x, y, dpix )
 /* PUTPIX -- Copy pixel into 2D image of any numeric type */
 
 void
-putpix( image, bitpix, w, h, bzero, bscale, x, y, dpix )
-     char *image;
-     int bitpix;                /* Number of bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w;                     /* Image width in pixels */
-     int h;                     /* Image height in pixels */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int x;
-     int y;
-     double dpix;
-
-{
+putpix(
+    char *image,
+    int bitpix,                 /* Number of bits per pixel */
+    int w,                      /* Image width in pixels */
+    int h,                      /* Image height in pixels */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int x,
+    int y,
+    double dpix
+ ) {
     double *imd;
     float *imr;
     int *im4;
@@ -283,20 +271,17 @@ putpix( image, bitpix, w, h, bzero, bscale, x, y, dpix )
 /* ADDPIX1 -- Add pixel value into 2D FITS image of any numeric type */
 
 void
-addpix1( image, bitpix, w, h, bzero, bscale, x, y, dpix )
-     char *image;
-     int bitpix;                /* Number of bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w;                     /* Image width in pixels */
-     int h;                     /* Image height in pixels */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int x;                     /* One-based horizontal pixel number */
-     int y;                     /* One-based vertical pixel number */
-     double dpix;               /* Value to add to pixel */
-
-{
+addpix1(
+    char *image,
+    int bitpix,                 /* Number of bits per pixel */
+    int w,                      /* Image width in pixels */
+    int h,                      /* Image height in pixels */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int x,                      /* One-based horizontal pixel number */
+    int y,                      /* One-based vertical pixel number */
+    double dpix                 /* Value to add to pixel */
+ ) {
     addpix( image, bitpix, w, h, bzero, bscale, x - 1, y - 1, dpix );
     return;
 }
@@ -305,20 +290,17 @@ addpix1( image, bitpix, w, h, bzero, bscale, x, y, dpix )
 /* ADDPIX -- Add constant to pixel values in 2D image of any numeric type */
 
 void
-addpix( image, bitpix, w, h, bzero, bscale, x, y, dpix )
-     char *image;
-     int bitpix;                /* Number of bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w;                     /* Image width in pixels */
-     int h;                     /* Image height in pixels */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int x;                     /* Zero-based horizontal pixel number */
-     int y;                     /* Zero-based vertical pixel number */
-     double dpix;               /* Value to add to pixel */
-
-{
+addpix(
+    char *image,
+    int bitpix,                 /* Number of bits per pixel */
+    int w,                      /* Image width in pixels */
+    int h,                      /* Image height in pixels */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int x,                      /* Zero-based horizontal pixel number */
+    int y,                      /* Zero-based vertical pixel number */
+    double dpix                 /* Value to add to pixel */
+ ) {
     double *imd;
     float *imr;
     int *im4;
@@ -387,22 +369,18 @@ addpix( image, bitpix, w, h, bzero, bscale, x, y, dpix )
 /* MOVEPIX -- Copy pixel between images */
 
 void
-movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
-     char *image1;              /* Pointer to first pixel in input image */
-     int bitpix1;               /* Bits per input pixel (FITS codes) */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w1;                    /* Number of horizontal pixels in input image */
-     int x1, y1;                /* Row and column for input pixel */
-
-     char *image2;              /* Pointer to first pixel in output image */
-     int bitpix2;               /* Bits per output pixel (FITS codes) */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     int w2;                    /* Number of horizontal pixels in output image */
-     int x2, y2;                /* Row and column for output pixel */
-
-{
+movepix(
+    char *image1,               /* Pointer to first pixel in input image */
+    int bitpix1,                /* Bits per input pixel (FITS codes) */
+    int w1,                     /* Number of horizontal pixels in input image */
+    int x1,
+    int y1,                     /* Row and column for input pixel */
+    char *image2,               /* Pointer to first pixel in output image */
+    int bitpix2,                /* Bits per output pixel (FITS codes) */
+    int w2,                     /* Number of horizontal pixels in output image */
+    int x2,
+    int y2                      /* Row and column for output pixel */
+ ) {
     double dpix, *imd1, *imd2;
     float rpix, *imr1, *imr2;
     int *imi1, *imi2;
@@ -434,8 +412,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -16:
 		    imu2 = ( unsigned short * ) image2;
-		    imu2[( y2 * w2 ) + x2] =
-		        ( unsigned short ) imc1[( y1 * w1 ) + x1];
+		    imu2[( y2 * w2 ) + x2] = ( unsigned short ) imc1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
 		    imr2 = ( float * ) image2;
@@ -443,8 +420,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -64:
 		    imd2 = ( double * ) image2;
-		    imd2[( y2 * w2 ) + x2] =
-		        ( double ) imc1[( y1 * w1 ) + x1];
+		    imd2[( y2 * w2 ) + x2] = ( double ) imc1[( y1 * w1 ) + x1];
 		    break;
 	    }
 	    break;
@@ -454,8 +430,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 	    switch ( bitpix2 ) {
 		case 8:
 		    imc2 = ( unsigned char * ) image1;
-		    imc2[( y2 * w2 ) + x2] =
-		        ( unsigned char ) ims1[( y1 * w1 ) + x1];
+		    imc2[( y2 * w2 ) + x2] = ( unsigned char ) ims1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
 		    ims2 = ( short * ) image2;
@@ -467,8 +442,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -16:
 		    imu2 = ( unsigned short * ) image2;
-		    imu2[( y2 * w2 ) + x2] =
-		        ( unsigned short ) ims1[( y1 * w1 ) + x1];
+		    imu2[( y2 * w2 ) + x2] = ( unsigned short ) ims1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
 		    imr2 = ( float * ) image2;
@@ -476,8 +450,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -64:
 		    imd2 = ( double * ) image2;
-		    imd2[( y2 * w2 ) + x2] =
-		        ( double ) ims1[( y1 * w1 ) + x1];
+		    imd2[( y2 * w2 ) + x2] = ( double ) ims1[( y1 * w1 ) + x1];
 		    break;
 	    }
 	    break;
@@ -487,8 +460,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 	    switch ( bitpix2 ) {
 		case 8:
 		    imc2 = ( unsigned char * ) image2;
-		    imc2[( y2 * w2 ) + x2] =
-		        ( unsigned char ) imi1[( y1 * w1 ) + x1];
+		    imc2[( y2 * w2 ) + x2] = ( unsigned char ) imi1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
 		    ims2 = ( short * ) image2;
@@ -500,8 +472,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -16:
 		    imu2 = ( unsigned short * ) image2;
-		    imu2[( y2 * w2 ) + x2] =
-		        ( unsigned short ) imi1[( y1 * w1 ) + x1];
+		    imu2[( y2 * w2 ) + x2] = ( unsigned short ) imi1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
 		    imr2 = ( float * ) image2;
@@ -509,8 +480,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -64:
 		    imd2 = ( double * ) image2;
-		    imd2[( y2 * w2 ) + x2] =
-		        ( double ) imi1[( y1 * w1 ) + x1];
+		    imd2[( y2 * w2 ) + x2] = ( double ) imi1[( y1 * w1 ) + x1];
 		    break;
 	    }
 	    break;
@@ -520,8 +490,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 	    switch ( bitpix2 ) {
 		case 8:
 		    imc2 = ( unsigned char * ) image2;
-		    imc2[( y2 * w2 ) + x2] =
-		        ( unsigned char ) imu1[( y1 * w1 ) + x1];
+		    imc2[( y2 * w2 ) + x2] = ( unsigned char ) imu1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
 		    ims2 = ( short * ) image2;
@@ -541,8 +510,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    break;
 		case -64:
 		    imd2 = ( double * ) image2;
-		    imd2[( y2 * w2 ) + x2] =
-		        ( double ) imu1[( y1 * w1 ) + x1];
+		    imd2[( y2 * w2 ) + x2] = ( double ) imu1[( y1 * w1 ) + x1];
 		    break;
 	    }
 	    break;
@@ -556,8 +524,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    if ( rpix < 0.0 )
 			imc2[( y2 * w2 ) + x2] = ( unsigned char ) 0;
 		    else
-			imc2[( y2 * w2 ) + x2] =
-		            ( unsigned char ) ( rpix + 0.5 );
+			imc2[( y2 * w2 ) + x2] = ( unsigned char ) ( rpix + 0.5 );
 		    break;
 		case 16:
 		    ims2 = ( short * ) image2;
@@ -578,8 +545,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    if ( rpix < 0.0 )
 			imu2[( y2 * w2 ) + x2] = ( unsigned short ) 0;
 		    else
-			imu2[( y2 * w2 ) + x2] =
-		            ( unsigned short ) ( rpix + 0.5 );
+			imu2[( y2 * w2 ) + x2] = ( unsigned short ) ( rpix + 0.5 );
 		    break;
 		case -32:
 		    imr2 = ( float * ) image2;
@@ -601,8 +567,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    if ( dpix < 0.0 )
 			imc2[( y2 * w2 ) + x2] = ( unsigned char ) 0;
 		    else
-			imc2[( y2 * w2 ) + x2] =
-		            ( unsigned char ) ( dpix + 0.5 );
+			imc2[( y2 * w2 ) + x2] = ( unsigned char ) ( dpix + 0.5 );
 		    break;
 		case 16:
 		    ims2 = ( short * ) image2;
@@ -623,8 +588,7 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 		    if ( dpix < 0.0 )
 			imu2[( y2 * w2 ) + x2] = ( unsigned short ) 0;
 		    else
-			imu2[( y2 * w2 ) + x2] =
-		            ( unsigned short ) ( dpix + 0.5 );
+			imu2[( y2 * w2 ) + x2] = ( unsigned short ) ( dpix + 0.5 );
 		    break;
 		case -32:
 		    imr2 = ( float * ) image2;
@@ -644,17 +608,14 @@ movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
 /* MAXVEC -- Get maximum value in vector from 2D image of any numeric type */
 
 double
-maxvec( image, bitpix, bzero, bscale, pix1, npix )
-     char *image;               /* Image array from which to read vector */
-     int bitpix;                /* Number of bits per pixel in image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* Offset of first pixel to check */
-     int npix;                  /* Number of pixels to check */
-
-{
+maxvec(
+    char *image,                /* Image array from which to read vector */
+    int bitpix,                 /* Number of bits per pixel in image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* Offset of first pixel to check */
+    int npix                    /* Number of pixels to check */
+ ) {
     short *im2, imax2, ip2;
     int *im4, imax4, ip4;
     unsigned short *imu, imaxu, ipu;
@@ -747,17 +708,14 @@ maxvec( image, bitpix, bzero, bscale, pix1, npix )
 /* MINVEC -- Get minimum value in vector from 2D image of any numeric type */
 
 double
-minvec( image, bitpix, bzero, bscale, pix1, npix )
-     char *image;               /* Image array from which to read vector */
-     int bitpix;                /* Number of bits per pixel in image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* Offset of first pixel to check */
-     int npix;                  /* Number of pixels to check */
-
-{
+minvec(
+    char *image,                /* Image array from which to read vector */
+    int bitpix,                 /* Number of bits per pixel in image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* Offset of first pixel to check */
+    int npix                    /* Number of pixels to check */
+ ) {
     short *im2, imin2, ip2;
     int *im4, imin4, ip4;
     unsigned short *imu, iminu, ipu;
@@ -849,18 +807,15 @@ minvec( image, bitpix, bzero, bscale, pix1, npix )
 /* ADDVEC -- Add constant to pixel values in 2D image of any numeric type */
 
 void
-addvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
-     char *image;               /* Image array from which to extract vector */
-     int bitpix;                /* Number of bits per pixel in image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* Offset of first pixel to extract */
-     int npix;                  /* Number of pixels to extract */
-     double dpix;               /* Value to add to pixels */
-
-{
+addvec(
+    char *image,                /* Image array from which to extract vector */
+    int bitpix,                 /* Number of bits per pixel in image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* Offset of first pixel to extract */
+    int npix,                   /* Number of pixels to extract */
+    double dpix                 /* Value to add to pixels */
+ ) {
     unsigned char *imc, ccon;
     short *im2, jcon;
     int *im4, icon;
@@ -944,18 +899,15 @@ addvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
 /* MULTVEC -- Multiply pixel values in place in 2D image of any numeric type */
 
 void
-multvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
-     char *image;               /* Image array from which to extract vector */
-     int bitpix;                /* Number of bits per pixel in image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* Offset of first pixel to extract */
-     int npix;                  /* Number of pixels to extract */
-     double dpix;               /* Value by which to multiply pixels */
-
-{
+multvec(
+    char *image,                /* Image array from which to extract vector */
+    int bitpix,                 /* Number of bits per pixel in image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* Offset of first pixel to extract */
+    int npix,                   /* Number of pixels to extract */
+    double dpix                 /* Value by which to multiply pixels */
+ ) {
     char *imc, ccon;
     short *im2, jcon;
     int *im4, icon, isint;
@@ -1072,18 +1024,15 @@ multvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
 /* GETVEC -- Get vector from 2D image of any numeric type */
 
 void
-getvec( image, bitpix, bzero, bscale, pix1, npix, dvec0 )
-     char *image;               /* Image array from which to extract vector */
-     int bitpix;                /* Number of bits per pixel in image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* Offset of first pixel to extract */
-     int npix;                  /* Number of pixels to extract */
-     double *dvec0;             /* Vector of pixels (returned) */
-
-{
+getvec(
+    char *image,                /* Image array from which to extract vector */
+    int bitpix,                 /* Number of bits per pixel in image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* Offset of first pixel to extract */
+    int npix,                   /* Number of pixels to extract */
+    double *dvec0               /* Vector of pixels (returned) */
+ ) {
     short *im2;
     int *im4;
     unsigned short *imu;
@@ -1150,18 +1099,15 @@ getvec( image, bitpix, bzero, bscale, pix1, npix, dvec0 )
 /* PUTVEC -- Copy pixel vector into 2D image of any numeric type */
 
 void
-putvec( image, bitpix, bzero, bscale, pix1, npix, dvec )
-     char *image;               /* Image into which to copy vector */
-     int bitpix;                /* Number of bits per pixel im image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* Offset of first pixel of vector in image */
-     int npix;                  /* Number of pixels to copy */
-     double *dvec;              /* Vector of pixels to copy */
-
-{
+putvec(
+    char *image,                /* Image into which to copy vector */
+    int bitpix,                 /* Number of bits per pixel im image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* Offset of first pixel of vector in image */
+    int npix,                   /* Number of pixels to copy */
+    double *dvec                /* Vector of pixels to copy */
+ ) {
     short *im2;
     int *im4;
     unsigned short *imu;
@@ -1237,17 +1183,15 @@ putvec( image, bitpix, bzero, bscale, pix1, npix, dvec )
 /* FILLVEC1 -- Copy single value into a vector of any numeric type */
 
 void
-fillvec1( image, bitpix, bzero, bscale, pix1, npix, dpix )
-     char *image;               /* Vector to fill */
-     int bitpix;                /* Number of bits per pixel im image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* First pixel to fill */
-     int npix;                  /* Number of pixels to fill */
-     double dpix;               /* Value with which to fill pixels */
-{
+fillvec1(
+    char *image,                /* Vector to fill */
+    int bitpix,                 /* Number of bits per pixel im image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* First pixel to fill */
+    int npix,                   /* Number of pixels to fill */
+    double dpix                 /* Value with which to fill pixels */
+ ) {
     fillvec( image, bitpix, bzero, bscale, pix1 - 1, npix, dpix );
     return;
 }
@@ -1256,17 +1200,15 @@ fillvec1( image, bitpix, bzero, bscale, pix1, npix, dpix )
 /* FILLVEC -- Copy single value into a vector of any numeric type */
 
 void
-fillvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
-     char *image;               /* Vector to fill */
-     int bitpix;                /* Number of bits per pixel im image */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     double bzero;              /* Zero point for pixel scaling */
-     double bscale;             /* Scale factor for pixel scaling */
-     int pix1;                  /* First pixel to fill */
-     int npix;                  /* Number of pixels to fill */
-     double dpix;               /* Value with which to fill pixels */
-{
+fillvec(
+    char *image,                /* Vector to fill */
+    int bitpix,                 /* Number of bits per pixel im image */
+    double bzero,               /* Zero point for pixel scaling */
+    double bscale,              /* Scale factor for pixel scaling */
+    int pix1,                   /* First pixel to fill */
+    int npix,                   /* Number of pixels to fill */
+    double dpix                 /* Value with which to fill pixels */
+ ) {
     char ipc;
     short *im2, ip2;
     int *im4, ip4;
@@ -1344,14 +1286,11 @@ fillvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
 /* IMSWAP -- Reverse bytes of any type of vector in place */
 
 void
-imswap( bitpix, string, nbytes )
-     int bitpix;                /* Number of bits per pixel */
-                        /*  16 = short, -16 = unsigned short, 32 = int */
-                        /* -32 = float, -64 = double */
-     char *string;              /* Address of starting point of bytes to swap */
-     int nbytes;                /* Number of bytes to swap */
-
-{
+imswap(
+    int bitpix,                 /* Number of bits per pixel */
+    char *string,               /* Address of starting point of bytes to swap */
+    int nbytes                  /* Number of bytes to swap */
+ ) {
     switch ( bitpix ) {
 
 	case 8:
@@ -1390,11 +1329,10 @@ imswap( bitpix, string, nbytes )
 /* IMSWAP2 -- Swap bytes in string in place */
 
 void
-imswap2( string, nbytes )
-     char *string;              /* Address of starting point of bytes to swap */
-     int nbytes;                /* Number of bytes to swap */
-
-{
+imswap2(
+    char *string,               /* Address of starting point of bytes to swap */
+    int nbytes                  /* Number of bytes to swap */
+ ) {
     char *sbyte, temp, *slast;
 
     slast = string + nbytes;
@@ -1412,11 +1350,10 @@ imswap2( string, nbytes )
 /* IMSWAP4 -- Reverse bytes of Integer*4 or Real*4 vector in place */
 
 void
-imswap4( string, nbytes )
-     char *string;              /* Address of Integer*4 or Real*4 vector */
-     int nbytes;                /* Number of bytes to reverse */
-
-{
+imswap4(
+    char *string,               /* Address of Integer*4 or Real*4 vector */
+    int nbytes                  /* Number of bytes to reverse */
+ ) {
     char *sbyte, *slast;
     char temp0, temp1, temp2, temp3;
 
@@ -1441,11 +1378,10 @@ imswap4( string, nbytes )
 /* IMSWAP8 -- Reverse bytes of Real*8 vector in place */
 
 void
-imswap8( string, nbytes )
-     char *string;              /* Address of Real*8 vector */
-     int nbytes;                /* Number of bytes to reverse */
-
-{
+imswap8(
+    char *string,               /* Address of Real*8 vector */
+    int nbytes                  /* Number of bytes to reverse */
+ ) {
     char *sbyte, *slast;
     char temp[8];
 
@@ -1477,7 +1413,9 @@ imswap8( string, nbytes )
 		1 if little-endian(PC,Alpha) */
 
 int
-imswapped(  ) {
+imswapped(
+    void
+ ) {
     char *ctest;
     int itest;
 

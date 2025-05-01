@@ -9,11 +9,11 @@ static int ncopy_file = 0;
 static File copy_files[MAX_COPY];
 
 static int
-GetWordType( fptr, tbuf, cflag )
-     char **fptr;
-     char *tbuf;
-     int *cflag;
-{
+GetWordType(
+    char **fptr,
+    char *tbuf,
+    int *cflag
+ ) {
     int alpha, digit, other, got;
     char *f, *t;
 
@@ -22,8 +22,7 @@ GetWordType( fptr, tbuf, cflag )
 
     /* gather up characters until we have a delim */
     for ( got = 0, alpha = 0, digit = 0, other = 0, f = *fptr, *tbuf =
-          '\0', t = tbuf; ( *f != '\0' ) && ( *f != ',' ) && ( *f != ']' );
-          got++ ) {
+          '\0', t = tbuf; ( *f != '\0' ) && ( *f != ',' ) && ( *f != ']' ); got++ ) {
 	if ( isdigit( ( unsigned int ) *f ) ) {
 	    digit++;
 	    *t++ = *f++;
@@ -86,15 +85,15 @@ GetWordType( fptr, tbuf, cflag )
  *
  */
 int
-ft_parsefilename( filename, name, extn, nmaxlen, indx, tail, tmaxlen )
-     char *filename;
-     char *name;
-     char *extn;
-     int nmaxlen;
-     int *indx;
-     char *tail;
-     int tmaxlen;
-{
+ft_parsefilename(
+    char *filename,
+    char *name,
+    char *extn,
+    int nmaxlen,
+    int *indx,
+    char *tail,
+    int tmaxlen
+ ) {
     char *f, *t;
     char *tbuf, *tbuf2;
     int i, len;
@@ -129,8 +128,7 @@ ft_parsefilename( filename, name, extn, nmaxlen, indx, tail, tmaxlen )
     tmaxlen--;
 
     /* gather up the name */
-    for ( *tbuf = '\0', t = tbuf;
-          ( *f != '\0' ) && ( *f != '[' ) && ( *f != ',' ); )
+    for ( *tbuf = '\0', t = tbuf; ( *f != '\0' ) && ( *f != '[' ) && ( *f != ',' ); )
 	*t++ = *f++;
     /* null terminate working string */
     *t = '\0';
@@ -223,9 +221,9 @@ ft_parsefilename( filename, name, extn, nmaxlen, indx, tail, tmaxlen )
  *
  */
 int
-ft_cfile( cfile )
-     File cfile;
-{
+ft_cfile(
+    File cfile
+ ) {
     if ( cfile ) {
 	if ( ncopy_file >= MAX_COPY ) return -1;
 	copy_files[ncopy_file++] = cfile;
@@ -239,14 +237,14 @@ ft_cfile( cfile )
 /* Read a FITS header from the named file -- primitive of ft_fitsheadopen()
  */
 File
-ft_fitsheadread( file, filename, header, mode, iline, ifd )
-     File file;
-     char *filename;            /* FITS image file name.                */
-     FITSHead *header;
-     char *mode;
-     char iline[FT_CARDLEN];
-     File *ifd;
-{
+ft_fitsheadread(
+    File file,
+    char *filename,             /* FITS image file name.                */
+    FITSHead * header,
+    char *mode,
+    char iline[FT_CARDLEN],
+    File * ifd
+ ) {
     FITSHead prim = NULL;
     FITSHead head = NULL;
     char name[FT_FILENAME];
@@ -275,9 +273,8 @@ ft_fitsheadread( file, filename, header, mode, iline, ifd )
 
     /* make sure this is a FITS file by looking at the first card */
     tptr = ( iline ? iline : tbuf );
-    if ( ( !ftGets( file, tptr, 10 ) ) ||
-         ( strncmp( tptr, "SIMPLE  =", 9 )
-           && strncmp( tptr, "XTENSION=", 9 ) ) ) {
+    if ( ( !ftGets( file, tptr, 10 ) ) || ( strncmp( tptr, "SIMPLE  =", 9 )
+                                            && strncmp( tptr, "XTENSION=", 9 ) ) ) {
 	/* pass back opened file so someone else can make an attempt */
 	if ( !ifd ) ftClose( file );
 	return NULL;
@@ -395,8 +392,7 @@ ft_fitsheadread( file, filename, header, mode, iline, ifd )
 	    if ( head->table->col[n - 1].vla ) {
 		fprintf( stderr,
 		         "WARNING: The 'variable length array' is not part of the FITS Bintable standard. " );
-		fprintf( stderr,
-		         "Funtools will pass it along, but will not process it.\n" );
+		fprintf( stderr, "Funtools will pass it along, but will not process it.\n" );
 		vlaerr++;
 		break;
 	    }
@@ -413,30 +409,29 @@ ft_fitsheadread( file, filename, header, mode, iline, ifd )
 /* Read a FITS header from the named file.
  */
 File
-ft_fitsheadopen( filename, header, tail, len, mode )
-     char *filename;            /* FITS image file name.                */
-     FITSHead *header;
-     char *tail;
-     int len;
-     char *mode;
-{
-    return ft_fitsheadopenfd( filename, header, tail, len, mode, NULL,
-                              NULL, NULL );
+ft_fitsheadopen(
+    char *filename,             /* FITS image file name.                */
+    FITSHead * header,
+    char *tail,
+    int len,
+    char *mode
+ ) {
+    return ft_fitsheadopenfd( filename, header, tail, len, mode, NULL, NULL, NULL );
 }
 
 /* Read a FITS header from the named file.
  */
 File
-ft_fitsheadopenfd( filename, header, tail, len, mode, file, iline, ifd )
-     char *filename;            /* FITS image file name.                */
-     FITSHead *header;
-     char *tail;
-     int len;
-     char *mode;
-     File file;
-     char iline[FT_CARDLEN];
-     File *ifd;
-{
+ft_fitsheadopenfd(
+    char *filename,             /* FITS image file name.                */
+    FITSHead * header,
+    char *tail,
+    int len,
+    char *mode,
+    File file,
+    char iline[FT_CARDLEN],
+    File * ifd
+ ) {
     char *xmode;
     char name[FT_FILENAME];
     char extn[FT_FILENAME];
@@ -448,8 +443,7 @@ ft_fitsheadopenfd( filename, header, tail, len, mode, file, iline, ifd )
     if ( ifd ) *ifd = NULL;
 
     /* parse filename into extension, index, and tail */
-    cflag = ft_parsefilename( filename, name, extn, FT_FILENAME, &indx,
-                              tail, len );
+    cflag = ft_parsefilename( filename, name, extn, FT_FILENAME, &indx, tail, len );
 
     /* set mode or use 'r' as default */
     if ( mode ) {

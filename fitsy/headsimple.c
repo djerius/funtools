@@ -5,13 +5,13 @@
 #include <fitsy.h>
 
 FITSHead
-ft_headsimple( mem, bytes, naxis, naxes, bitpix )
-     void *mem;
-     int bytes;
-     int bitpix;
-     int naxis;
-     int *naxes;
-{
+ft_headsimple(
+    void *mem,
+    int bytes,
+    int naxis,
+    int *naxes,
+    int bitpix
+ ) {
     FITSHead fits;
     int i;
 

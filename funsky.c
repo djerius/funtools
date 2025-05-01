@@ -37,7 +37,8 @@ extern int optind;
 
 typedef struct evstruct {
     double val1, val2;
-}  *Ev, EvRec;
+}  *Ev,
+    EvRec;
 
 typedef struct List {
     Fun fun;
@@ -45,17 +46,12 @@ typedef struct List {
     char *colname[2];
 } List;
 
-#ifdef ANSI_FUNC
 static int
-ColInfo( List * list, char *colstr[], int flag )
-#else
-static int
-ColInfo( list, colstr, flag )
-     List *list;
-     char *colstr[];
-     int flag;
-#endif
-{
+ColInfo(
+    List * list,
+    char *colstr[],
+    int flag
+ ) {
     int i;
     int ip;
     char tbuf[SZ_LINE];
@@ -69,8 +65,7 @@ ColInfo( list, colstr, flag )
 	    switch ( i ) {
 		case 0:
 		    if ( FunColumnLookup( list->fun, COL1_DEFAULT, 0,
-		                          NULL, NULL, NULL, NULL, NULL,
-		                          NULL ) )
+		                          NULL, NULL, NULL, NULL, NULL, NULL ) )
 			strcpy( tbuf, COL1_DEFAULT );
 		    else {
 			if ( flag ) {
@@ -83,8 +78,7 @@ ColInfo( list, colstr, flag )
 		    break;
 		case 1:
 		    if ( FunColumnLookup( list->fun, COL2_DEFAULT, 0,
-		                          NULL, NULL, NULL, NULL, NULL,
-		                          NULL ) )
+		                          NULL, NULL, NULL, NULL, NULL, NULL ) )
 			strcpy( tbuf, COL2_DEFAULT );
 		    else {
 			if ( flag ) {
@@ -116,15 +110,10 @@ ColInfo( list, colstr, flag )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static void
-CloseList( List * list )
-#else
-static void
-CloseList( list )
-     List *list;
-#endif
-{
+CloseList(
+    List * list
+ ) {
     int i;
     /* sanity check */
     if ( !list ) return;
@@ -136,18 +125,13 @@ CloseList( list )
     xfree( list );
 }
 
-#ifdef ANSI_FUNC
 static List *
-OpenList( char *lname, char *pos1str, char *pos2str, int flag )
-#else
-static List *
-OpenList( lname, pos1str, pos2str, flag )
-     char *lname;
-     char *pos1str;
-     char *pos2str;
-     int flag;
-#endif
-{
+OpenList(
+    char *lname,
+    char *pos1str,
+    char *pos2str,
+    int flag
+ ) {
     char *colstr[2];
     List *list;
 
@@ -167,30 +151,23 @@ OpenList( lname, pos1str, pos2str, flag )
     colstr[1] = pos2str;
     if ( !ColInfo( list, colstr, flag ) ) {
 	CloseList( list );
-	gerror( stderr, "can't get column info for list: %s %s\n",
-	        colstr[0], colstr[1] );
+	gerror( stderr, "can't get column info for list: %s %s\n", colstr[0], colstr[1] );
 	return NULL;
     }
     /* set up to read the specified columns */
     FunColumnSelect( list->fun, sizeof( EvRec ), NULL,
                      list->colname[0], "D", "r", FUN_OFFSET( Ev, val1 ),
-                     list->colname[1], "D", "r", FUN_OFFSET( Ev, val2 ),
-                     NULL );
+                     list->colname[1], "D", "r", FUN_OFFSET( Ev, val2 ), NULL );
     return list;
 }
 
-#ifdef ANSI_FUNC
 static int
-NextFromList( List * list, double *dval1, double *dval2, int flag )
-#else
-static int
-NextFromList( list, dval1, dval2, flag )
-     List *list;
-     double *dval1;
-     double *dval2;
-     int flag;
-#endif
-{
+NextFromList(
+    List * list,
+    double *dval1,
+    double *dval2,
+    int flag
+ ) {
     int got;
     EvRec evrec;
 
@@ -236,63 +213,36 @@ NextFromList( list, dval1, dval2, flag )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
+usage(
+    char *fname
+ ) {
     fprintf( stderr, "usage:\n" );
-    fprintf( stderr,
-             "%s iname[ext]\t\t\t# RA,Dec (deg) or image pix from stdin\n",
-             fname );
-    fprintf( stderr,
-             "%s iname[ext] [lname]\t\t# RA,Dec (deg) or image pix from list\n",
-             fname );
-    fprintf( stderr,
-             "%s iname[ext] [col1] [col2]\t# named cols:units from stdin\n",
-             fname );
-    fprintf( stderr,
-             "%s iname[ext] [lname] [col1] [col2] # named cols:units from list\n",
-             fname );
+    fprintf( stderr, "%s iname[ext]\t\t\t# RA,Dec (deg) or image pix from stdin\n", fname );
+    fprintf( stderr, "%s iname[ext] [lname]\t\t# RA,Dec (deg) or image pix from list\n", fname );
+    fprintf( stderr, "%s iname[ext] [col1] [col2]\t# named cols:units from stdin\n", fname );
+    fprintf( stderr, "%s iname[ext] [lname] [col1] [col2] # named cols:units from list\n", fname );
     fprintf( stderr, "\n" );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "-d\t# always use integer tlmin conversion (as ds9 does)\n" );
-    fprintf( stderr,
-             "-r\t# convert x,y to RA,Dec (default: convert RA,Dec to x,y)\n" );
-    fprintf( stderr,
-             "-v\t# display input values also (default: display output only)\n" );
-    fprintf( stderr,
-             "-o\t# include offset from the nominal target position (in arcsec)\n" );
-    fprintf( stderr,
-             "-T\t# output display in rdb format (w/header,tab delimiters)\n" );
+    fprintf( stderr, "-d\t# always use integer tlmin conversion (as ds9 does)\n" );
+    fprintf( stderr, "-r\t# convert x,y to RA,Dec (default: convert RA,Dec to x,y)\n" );
+    fprintf( stderr, "-v\t# display input values also (default: display output only)\n" );
+    fprintf( stderr, "-o\t# include offset from the nominal target position (in arcsec)\n" );
+    fprintf( stderr, "-T\t# output display in rdb format (w/header,tab delimiters)\n" );
     fprintf( stderr, "\n" );
-    fprintf( stderr,
-             "The coord. system is taken from the header (might differ from ds9).\n" );
-    fprintf( stderr,
-             "By default, input RA and Dec are converted into x and y (use the\n" );
-    fprintf( stderr,
-             "-r to convert from x,y to RA,Dec.) Output x,y values are physical\n" );
-    fprintf( stderr,
-             "coords for event data, image coords for image data.\n" );
+    fprintf( stderr, "The coord. system is taken from the header (might differ from ds9).\n" );
+    fprintf( stderr, "By default, input RA and Dec are converted into x and y (use the\n" );
+    fprintf( stderr, "-r to convert from x,y to RA,Dec.) Output x,y values are physical\n" );
+    fprintf( stderr, "coords for event data, image coords for image data.\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i;
     int type;
@@ -403,8 +353,7 @@ main( argc, argv )
 
     /* open input file */
     if ( !( fun = FunOpen( iname, "r", NULL ) ) ) {
-	gerror( stderr, "can't FunOpen input file (or find extension): %s\n",
-	        iname );
+	gerror( stderr, "can't FunOpen input file (or find extension): %s\n", iname );
     }
 
     /* if offaxis is set, read the aimpoint information from the header */
@@ -413,8 +362,7 @@ main( argc, argv )
 	ra_target = FunParamGetd( fun, "RA_TARG ", 1, -1.0, &got );
 	dec_target = FunParamGetd( fun, "DEC_TARG", 1, -2.0, &got );
 	if ( ( ra_target == -1.0 ) || ( dec_target == -2.0 ) ) {
-	    gerror( stderr, "no aim point information in header: %s\n",
-	            iname );
+	    gerror( stderr, "no aim point information in header: %s\n", iname );
 	}
     }
 
@@ -422,8 +370,7 @@ main( argc, argv )
     /* make sure we have wcs info */
     FunInfoGet( fun, FUN_WCS, &wcs, FUN_TYPE, &type, 0 );
     if ( !iswcs( wcs ) ) {
-	gerror( stderr, "could not load WCS information from header: %s\n",
-	        iname );
+	gerror( stderr, "could not load WCS information from header: %s\n", iname );
     }
 
     /* open list to read positions from somewhere (list or stdin) */
@@ -438,10 +385,8 @@ main( argc, argv )
 	    s0 = fun->header->table->col[fun->bin[0]].name;
 	    s1 = fun->header->table->col[fun->bin[1]].name;
 	    if ( s0 ) {
-		FunColumnLookup( fun, s0, 0, NULL, &tltyp[0], NULL, NULL,
-		                 NULL, NULL );
-		FunColumnLookup2( fun, s0, 0, &tlmin[0], NULL, &binsiz[0],
-		                  NULL, NULL );
+		FunColumnLookup( fun, s0, 0, NULL, &tltyp[0], NULL, NULL, NULL, NULL );
+		FunColumnLookup2( fun, s0, 0, &tlmin[0], NULL, &binsiz[0], NULL, NULL );
 	    }
 	    else {
 		tlmin[0] = 0;
@@ -449,10 +394,8 @@ main( argc, argv )
 		tltyp[0] = 'I';
 	    }
 	    if ( s1 ) {
-		FunColumnLookup( fun, s1, 0, NULL, &tltyp[1], NULL, NULL,
-		                 NULL, NULL );
-		FunColumnLookup2( fun, s1, 0, &tlmin[1], NULL, &binsiz[1],
-		                  NULL, NULL );
+		FunColumnLookup( fun, s1, 0, NULL, &tltyp[1], NULL, NULL, NULL, NULL );
+		FunColumnLookup2( fun, s1, 0, &tlmin[1], NULL, &binsiz[1], NULL, NULL );
 	    }
 	    else {
 		tlmin[1] = 0;
@@ -478,68 +421,54 @@ main( argc, argv )
 	if ( ( sky2im ) && ( !offaxis ) ) {
 	    if ( verbose ) {
 		for ( i = 0; i < 2; i++ ) {
-		    fprintf( stdout, "# ICOL%d = %s\n", i + 1,
-		             list->colname[i] );
+		    fprintf( stdout, "# ICOL%d = %s\n", i + 1, list->colname[i] );
 		}
 		for ( i = 0; i < 2; i++ ) {
-		    fprintf( stdout, "# IUNITS%d = %c\n", i + 1,
-		             list->type[i] );
+		    fprintf( stdout, "# IUNITS%d = %c\n", i + 1, list->type[i] );
 		}
 		fprintf( stdout, "# OCOL1 = X\n" );
 		fprintf( stdout, "# OCOL2 = Y\n" );
 		fprintf( stdout, "\n" );
-		fprintf( stdout, "%12.12s%c%12.12s%c",
-		         list->colname[0], sp, list->colname[1], sp );
+		fprintf( stdout, "%12.12s%c%12.12s%c", list->colname[0], sp, list->colname[1], sp );
 	    }
 	    fprintf( stdout, "%12.12s%c%12.12s\n", "X", sp, "Y" );
-	    if ( verbose ) fprintf( stdout, "------------%c------------%c",
-	                            sp, sp );
+	    if ( verbose ) fprintf( stdout, "------------%c------------%c", sp, sp );
 	    fprintf( stdout, "------------%c------------\n", sp );
 	}
 	else if ( ( sky2im ) && ( offaxis ) ) {
 	    if ( verbose ) {
 		for ( i = 0; i < 2; i++ ) {
-		    fprintf( stdout, "# ICOL%d = %s\n", i + 1,
-		             list->colname[i] );
+		    fprintf( stdout, "# ICOL%d = %s\n", i + 1, list->colname[i] );
 		}
 		for ( i = 0; i < 2; i++ ) {
-		    fprintf( stdout, "# IUNITS%d = %c\n", i + 1,
-		             list->type[i] );
+		    fprintf( stdout, "# IUNITS%d = %c\n", i + 1, list->type[i] );
 		}
 		fprintf( stdout, "# OCOL1 = X\n" );
 		fprintf( stdout, "# OCOL2 = Y\n" );
 		fprintf( stdout, "# OFF_AXIS = OFF_AXIS\n" );
 		fprintf( stdout, "\n" );
-		fprintf( stdout, "%12.12s%c%12.12s%c",
-		         list->colname[0], sp, list->colname[1], sp );
+		fprintf( stdout, "%12.12s%c%12.12s%c", list->colname[0], sp, list->colname[1], sp );
 	    }
-	    fprintf( stdout, "%12.12s%c%12.12s%c%12.12s\n", "X", sp, "Y", sp,
-	             "OFF_AXIS" );
-	    if ( verbose ) fprintf( stdout, "------------%c------------%c",
-	                            sp, sp );
-	    fprintf( stdout, "------------%c------------%c------------\n", sp,
-	             sp );
+	    fprintf( stdout, "%12.12s%c%12.12s%c%12.12s\n", "X", sp, "Y", sp, "OFF_AXIS" );
+	    if ( verbose ) fprintf( stdout, "------------%c------------%c", sp, sp );
+	    fprintf( stdout, "------------%c------------%c------------\n", sp, sp );
 	}
 	else {
 	    if ( verbose ) {
 		for ( i = 0; i < 2; i++ ) {
-		    fprintf( stdout, "# ICOL%d = %s\n", i + 1,
-		             list->colname[i] );
+		    fprintf( stdout, "# ICOL%d = %s\n", i + 1, list->colname[i] );
 		}
 		fprintf( stdout, "# OCOL1 = RA\n" );
 		fprintf( stdout, "# OCOL2 = DEC\n" );
 		for ( i = 0; i < 2; i++ ) {
-		    fprintf( stdout, "# OUNITS%d = %c\n", i + 1,
-		             list->type[i] );
+		    fprintf( stdout, "# OUNITS%d = %c\n", i + 1, list->type[i] );
 		}
 		fprintf( stdout, "\n" );
 		if ( verbose ) fprintf( stdout, "%12.12s%c%12.12s%c",
-		                        list->colname[0], sp,
-		                        list->colname[1], sp );
+		                        list->colname[0], sp, list->colname[1], sp );
 	    }
 	    fprintf( stdout, "          RA%c         DEC\n", sp );
-	    if ( verbose ) fprintf( stdout, "------------%c------------%c",
-	                            sp, sp );
+	    if ( verbose ) fprintf( stdout, "------------%c------------%c", sp, sp );
 	    fprintf( stdout, "------------%c------------\n", sp );
 	}
 	fflush( stdout );
@@ -550,8 +479,7 @@ main( argc, argv )
 	/* convert the aim point to image pixels */
 	wcs2pix( wcs, ra_target, dec_target, &dval3, &dval4, &offscl );
 	if ( verbose ) {
-	    fprintf( stdout, "%12.6f%c%12.6f%c", ra_target, sp, dec_target,
-	             sp );
+	    fprintf( stdout, "%12.6f%c%12.6f%c", ra_target, sp, dec_target, sp );
 	}
 	switch ( type ) {
 	    case FUN_IMAGE:
@@ -569,8 +497,7 @@ main( argc, argv )
 		break;
 	}
 	if ( verbose ) {
-	    fprintf( stdout, "%12.2f%c%12.2f%c%10.3f\n",
-	             x_target, sp, y_target, sp, zero );
+	    fprintf( stdout, "%12.2f%c%12.2f%c%10.3f\n", x_target, sp, y_target, sp, zero );
 	}
 	fflush( stdout );
     }
@@ -581,20 +508,17 @@ main( argc, argv )
 	if ( sky2im ) {
 	    /* convert sky coordinates to image pixels */
 	    wcs2pix( wcs, dval1, dval2, &dval3, &dval4, &offscl );
-	    if ( verbose ) fprintf( stdout, "%12.6f%c%12.6f%c", dval1, sp,
-	                            dval2, sp );
+	    if ( verbose ) fprintf( stdout, "%12.6f%c%12.6f%c", dval1, sp, dval2, sp );
 	    switch ( type ) {
 		case FUN_IMAGE:
 		case FUN_ARRAY:
-		    fprintf( stdout, "%12.2f%c%12.2f%c", dval3, sp, dval4,
-		             sp );
+		    fprintf( stdout, "%12.2f%c%12.2f%c", dval3, sp, dval4, sp );
 		    break;
 		case FUN_TABLE:
 		case FUN_EVENTS:
 		    dval3 = tli2p( dval3, tlmin[0], binsiz[0], tltyp[0] );
 		    dval4 = tli2p( dval4, tlmin[1], binsiz[1], tltyp[1] );
-		    fprintf( stdout, "%12.2f%c%12.2f%c", dval3, sp, dval4,
-		             sp );
+		    fprintf( stdout, "%12.2f%c%12.2f%c", dval3, sp, dval4, sp );
 		    break;
 		default:
 		    gerror( stderr, "unknown FITS data type\n" );
@@ -627,8 +551,7 @@ main( argc, argv )
 		    break;
 	    }
 	    /* convert image pixels to sky coordinates */
-	    pix2wcs( wcs, ( double ) dval1, ( double ) dval2, &dval3,
-	             &dval4 );
+	    pix2wcs( wcs, ( double ) dval1, ( double ) dval2, &dval3, &dval4 );
 	    if ( list ) {
 		/* units */
 		switch ( list->type[0] ) {
@@ -653,8 +576,7 @@ main( argc, argv )
 			break;
 		}
 	    }
-	    if ( verbose ) fprintf( stdout, "%12.2f%c%12.2f%c", dval1, sp,
-	                            dval2, sp );
+	    if ( verbose ) fprintf( stdout, "%12.2f%c%12.2f%c", dval1, sp, dval2, sp );
 	    fprintf( stdout, "%12.6f%c%12.6f\n", dval3, sp, dval4 );
 	    fflush( stdout );
 	}

@@ -54,29 +54,19 @@ static char *idxsort = NULL;
 
 static char fmt[SZ_LINE];
 
-#ifdef ANSI_FUNC
 static void *
-_swap( void *ibuf, int isize )
-#else
-static void *
-_swap( ibuf, isize )
-     void *ibuf;
-     int isize;
-#endif
-{
+_swap(
+    void *ibuf,
+    int isize
+ ) {
     return ft_dataswap( _swapped, ibuf, isize, isize * 8 );
 }
 
 #if IDX_DEBUG
-#ifdef ANSI_FUNC
 static char *
-rowdisp( idxrowrec * row )
-#else
-static char *
-rowdisp( row )
-     idxrowrec *row;
-#endif
-{
+rowdisp(
+    idxrowrec * row
+ ) {
     int i;
     char tbuf[SZ_LINE];
 
@@ -92,8 +82,7 @@ rowdisp( row )
 	    }
 	    for ( i = 0; i < row->nrow; i++ ) {
 		strncat( dbuf[nd], " ", SZ_LINE - 1 );
-		snprintf( tbuf, SZ_LINE - 1, "%d:%d", row->startrow[i],
-		          row->stoprow[i] );
+		snprintf( tbuf, SZ_LINE - 1, "%d:%d", row->startrow[i], row->stoprow[i] );
 		strncat( dbuf[nd], tbuf, SZ_LINE - 1 );
 	    }
 	    strncat( dbuf[nd], "]", SZ_LINE - 1 );
@@ -118,15 +107,10 @@ rowdisp( row )
 }
 #endif
 
-#ifdef ANSI_FUNC
 static int
-_idxvalfree( idxvalrec * v )
-#else
-static int
-_idxvalfree( v )
-     idxvalrec *v;
-#endif
-{
+_idxvalfree(
+    idxvalrec * v
+ ) {
     if ( !v ) return 0;
     if ( v->s ) xfree( v->s );
 #ifdef HAVE_SYS_MMAN_H
@@ -142,15 +126,10 @@ _idxvalfree( v )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static int
-_idxrowfree( idxrowrec * r )
-#else
-static int
-_idxrowfree( r )
-     idxrowrec *r;
-#endif
-{
+_idxrowfree(
+    idxrowrec * r
+ ) {
     int tries = 0;
     int exit_status;
 
@@ -166,7 +145,7 @@ _idxrowfree( r )
 	close( r->ochan );
 #if HAVE_MINGW32==0
     if ( r->pid ) {
-	while ( ( waitpid( r->pid, &exit_status, WNOHANG ) == 0 )
+        while ( ( waitpid( r->pid, &exit_status, WNOHANG ) == 0 )
 	        && ( tries < 10 ) ) {
 	    gsleep( 10 );
 	    tries++;
@@ -184,18 +163,13 @@ _idxrowfree( r )
 }
 
 
-#ifdef ANSI_FUNC
 static int
-_idxstartsort( int type, int *ichan, int *ochan, int *pid )
-#else
-static int
-_idxstartsort( type, ichan, ochan, pid )
-     int type;
-     int *ichan;
-     int *ochan;
-     int *pid;
-#endif
-{
+_idxstartsort(
+    int type,
+    int *ichan,
+    int *ochan,
+    int *pid
+ ) {
     char *s;
     char cmd[SZ_LINE];
 
@@ -233,16 +207,11 @@ _idxstartsort( type, ichan, ochan, pid )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static int
-_idxwritesort( idxrowrec * x, idxrowrec * row )
-#else
-static int
-_idxwritesort( x, row )
-     idxrowrec *x;
-     idxrowrec *row;
-#endif
-{
+_idxwritesort(
+    idxrowrec * x,
+    idxrowrec * row
+ ) {
     int i, j, k = 0;
     int rowsize;
     int ioffset;
@@ -290,8 +259,7 @@ _idxwritesort( x, row )
 		    obuf[k++] = ( int ) *( short * ) _swap( nbuf, 2 );
 		    break;
 		case 'U':
-		    obuf[k++] =
-		        ( int ) *( unsigned short * ) _swap( nbuf, 2 );
+		    obuf[k++] = ( int ) *( unsigned short * ) _swap( nbuf, 2 );
 		    break;
 		case 'J':
 		    obuf[k++] = ( int ) *( int * ) _swap( nbuf, 4 );
@@ -306,8 +274,7 @@ _idxwritesort( x, row )
 		    idxerror( "illegal index data type" );
 	    }
 	    if ( k == SZ_LINE ) {
-		if ( write( x->ochan, obuf, k * sizeof( int ) ) !=
-		     ( int ) ( k * sizeof( int ) ) ) {
+		if ( write( x->ochan, obuf, k * sizeof( int ) ) != ( int ) ( k * sizeof( int ) ) ) {
 		    idxerror( "can't write index value to sort" );
 		    return 0;
 		}
@@ -316,8 +283,7 @@ _idxwritesort( x, row )
 	}
     }
     if ( k ) {
-	if ( write( x->ochan, obuf, k * sizeof( int ) ) !=
-	     ( int ) ( k * sizeof( int ) ) ) {
+	if ( write( x->ochan, obuf, k * sizeof( int ) ) != ( int ) ( k * sizeof( int ) ) ) {
 	    idxerror( "can't write index value to sort" );
 	    return 0;
 	}
@@ -325,22 +291,16 @@ _idxwritesort( x, row )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 static int
-_idxcompare( char *buf, int type, int offset, int n,
-             double d, longlong l, int t )
-#else
-static int
-_idxcompare( buf, type, offset, n, d, l, t )
-     char *buf;
-     int type;
-     int offset;
-     int n;
-     double d;
-     longlong l;
-     int t;
-#endif
-{
+_idxcompare(
+    char *buf,
+    int type,
+    int offset,
+    int n,
+    double d,
+    longlong l,
+    int t
+ ) {
     unsigned short sval;
     unsigned int xval;
     int xn;
@@ -369,27 +329,22 @@ _idxcompare( buf, type, offset, n, d, l, t )
 	    }
 	    switch ( xn ) {
 		case 1:
-		    memcpy( &sval, _swap( buf + offset, 2 ),
-		            sizeof( unsigned short ) );
+		    memcpy( &sval, _swap( buf + offset, 2 ), sizeof( unsigned short ) );
 		    dval = ( double ) sval;
 		    lval = ( longlong ) sval;
 		    break;
 		case 2:
-		    memcpy( &xval, _swap( buf + offset, 4 ),
-		            sizeof( unsigned int ) );
+		    memcpy( &xval, _swap( buf + offset, 4 ), sizeof( unsigned int ) );
 		    dval = ( double ) xval;
 		    lval = ( longlong ) xval;
 		    break;
 		case 3:
-		    memcpy( &lval, _swap( buf + offset, 8 ),
-		            sizeof( unsigned int ) );
+		    memcpy( &lval, _swap( buf + offset, 8 ), sizeof( unsigned int ) );
 		    dval = ( double ) lval;
 		    break;
 		case 0:
 		default:
-		    xval =
-		        ( unsigned int ) *( unsigned char * ) ( buf +
-		                                                offset );
+		    xval = ( unsigned int ) *( unsigned char * ) ( buf + offset );
 		    dval = ( double ) xval;
 		    lval = ( longlong ) xval;
 		    break;
@@ -407,8 +362,7 @@ _idxcompare( buf, type, offset, n, d, l, t )
 	case 'U':
 	    isint = 1;
 	    dval = ( double ) *( unsigned short * ) _swap( buf + offset, 2 );
-	    lval =
-	        ( longlong ) * ( unsigned short * ) _swap( buf + offset, 2 );
+	    lval = ( longlong ) * ( unsigned short * ) _swap( buf + offset, 2 );
 	    break;
 	case 'J':
 	    isint = 1;
@@ -483,25 +437,19 @@ _idxcompare( buf, type, offset, n, d, l, t )
     }
 }
 
-#ifdef ANSI_FUNC
 static int
-_idxbsearch( GIO gio, FITSHead fits, int type, int offset, int n,
-             int exact, int edge, double d, longlong l, int t )
-#else
-static int
-_idxbsearch( gio, fits, type, offset, n, exact, edge, d, l, t )
-     GIO gio;
-     FITSHead fits;
-     int type;
-     int offset;
-     int n;
-     int exact;
-     int edge;
-     double d;
-     longlong l;
-     int t;
-#endif
-{
+_idxbsearch(
+    GIO gio,
+    FITSHead fits,
+    int type,
+    int offset,
+    int n,
+    int exact,
+    int edge,
+    double d,
+    longlong l,
+    int t
+ ) {
     int high, low, try;
     int cmp;
     int rowsize;
@@ -585,69 +533,58 @@ _idxbsearch( gio, fits, type, offset, n, exact, edge, d, l, t )
 	return -1;
 }
 
-#ifdef ANSI_FUNC
 static int
-_idxrowcommon( idxvalrec * val1, idxvalrec * val2, int exact, int which,
-               idxrowrec ** x, int *start, int *stop, int *nrow )
-#else
-static int
-_idxrowcommon( val1, val2, exact, which, x, start, stop, nrow )
-     idxvalrec *val1, *val2;
-     int exact;
-     int which;
-     idxrowrec **x;
-     int *start, *stop;
-     int *nrow
-#endif
-     {
-	 idxvalrec *v1 = NULL, *v2 = NULL;
+_idxrowcommon(
+    idxvalrec * val1,
+    idxvalrec * val2,
+    int exact,
+    int which,
+    idxrowrec ** x,
+    int *start,
+    int *stop,
+    int *nrow
+ ) {
+    idxvalrec *v1 = NULL, *v2 = NULL;
 
-	    *start = -1;
-	    *stop = -1;
-	    *nrow = -1;
-	    *x = idxrownew(  );
-	 if  ( ( val1->type == COL ) && ( val2->type == NUM ) ) {
-v1 = val1;
-v2 = val2;
-	 }
-	 if  ( v1 && v2 ) {
-	     ( *x )->type = COL;
-	     ( *x )->rtype = IDX_ROW_LIST;
-	     ( *x )->dofilt = 0;
-	     ( *x )->s = xstrdup( v1->s );
-	     ( *x )->v = v1;
-	     *nrow = v1->nrow;
-	     if ( which & IDX_EDGE_LEFT )
-		 *start =
-	             _idxbsearch( v1->igio, v1->ifits, v1->vtype, v1->voffset,
-	                          v1->vn, exact, -1, v2->dval, v2->ival,
-	                          v2->ntype );
-	     if ( which & IDX_EDGE_RIGHT )
-		 *stop =
-	             _idxbsearch( v1->igio, v1->ifits, v1->vtype, v1->voffset,
-	                          v1->vn, exact, 1, v2->dval, v2->ival,
-	                          v2->ntype );
-	     return 1;
-	 }
-	 else {
-	     ( *x )->type = IDX_INDEF;
-	     ( *x )->rtype = IDX_INDEF;
-	     ( *x )->dofilt = 1;
-	     return 0;
-	 }
-     }
+    *start = -1;
+    *stop = -1;
+    *nrow = -1;
+    *x = idxrownew(  );
+    if ( ( val1->type == COL ) && ( val2->type == NUM ) ) {
+	v1 = val1;
+	v2 = val2;
+    }
+    if ( v1 && v2 ) {
+	( *x )->type = COL;
+	( *x )->rtype = IDX_ROW_LIST;
+	( *x )->dofilt = 0;
+	( *x )->s = xstrdup( v1->s );
+	( *x )->v = v1;
+	*nrow = v1->nrow;
+	if ( which & IDX_EDGE_LEFT )
+	    *start =
+	        _idxbsearch( v1->igio, v1->ifits, v1->vtype, v1->voffset,
+	                     v1->vn, exact, -1, v2->dval, v2->ival, v2->ntype );
+	if ( which & IDX_EDGE_RIGHT )
+	    *stop =
+	        _idxbsearch( v1->igio, v1->ifits, v1->vtype, v1->voffset,
+	                     v1->vn, exact, 1, v2->dval, v2->ival, v2->ntype );
+	return 1;
+    }
+    else {
+	( *x )->type = IDX_INDEF;
+	( *x )->rtype = IDX_INDEF;
+	( *x )->dofilt = 1;
+	return 0;
+    }
+}
 
-#ifdef ANSI_FUNC
 static int
-_idxrowaddrow( idxrowrec * r, int start, int stop )
-#else
-static int
-_idxrowaddrow( r, start, stop )
-     idxrowrec *r;
-     int start;
-     int stop;
-#endif
-{
+_idxrowaddrow(
+    idxrowrec * r,
+    int start,
+    int stop
+ ) {
     if ( !r ) return 0;
     if ( r->nrow >= r->maxrow ) {
 	r->maxrow += IDX_ROW_INC;
@@ -660,17 +597,13 @@ _idxrowaddrow( r, start, stop )
     return r->nrow;
 }
 
-#ifdef ANSI_FUNC
 static void
-idxrowmark( idxrowrec * row1, idxrowrec * row2, char **mbuf, int *nm )
-#else
-static void
-idxrowmark( row1, row2, mbuf, nm )
-     idxrowrec *row1, *row2;
-     char **mbuf;
-     int *nm;
-#endif
-{
+idxrowmark(
+    idxrowrec * row1,
+    idxrowrec * row2,
+    char **mbuf,
+    int *nm
+ ) {
     int i, j;
 
     *nm = 0;
@@ -696,17 +629,13 @@ idxrowmark( row1, row2, mbuf, nm )
     }
 }
 
-#ifdef ANSI_FUNC
 static idxrowrec *
-_idxrowmerge( idxrowrec * x, idxrowrec * row1, idxrowrec * row2, int type )
-#else
-static idxrowrec *
-_idxrowmerge( x, row1, row2, type )
-     idxrowrec *x;
-     idxrowrec *row1;
-     idxrowrec *row2 int type;
-#endif
-{
+_idxrowmerge(
+    idxrowrec * x,
+    idxrowrec * row1,
+    idxrowrec * row2,
+    int type
+ ) {
     int last = -1;
     int in1 = -1, in2 = -1, on = 0;
     int igot1 = -1, igot2 = -1;
@@ -733,8 +662,7 @@ _idxrowmerge( x, row1, row2, type )
 	return x;
     }
     else if ( x->pid != 0 ) {   /* parent */
-	IPRINTF( ( stderr, "idxmerge(%d): %s %s\n",
-	           type, rowdisp( row1 ), rowdisp( row2 ) ) );
+	IPRINTF( ( stderr, "idxmerge(%d): %s %s\n", type, rowdisp( row1 ), rowdisp( row2 ) ) );
 	close( fd[1] );
 	x->ichan = fd[0];
 	close( row1->ichan );
@@ -746,8 +674,7 @@ _idxrowmerge( x, row1, row2, type )
     else {                      /* child */
 	close( fd[0] );
 	if ( !( ifd1 = fdopen( row1->ichan, "r" ) ) ||
-	     !( ifd2 = fdopen( row2->ichan, "r" ) ) ||
-	     !( ofd = fdopen( fd[1], "w" ) ) ) {
+	     !( ifd2 = fdopen( row2->ichan, "r" ) ) || !( ofd = fdopen( fd[1], "w" ) ) ) {
 	    _exit( 1 );
 	}
 	while ( 1 ) {
@@ -855,15 +782,10 @@ _idxrowmerge( x, row1, row2, type )
  *
  */
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxall( idxrowrec * row )
-#else
-idxrowrec *
-idxall( row )
-     idxrowrec *row;
-#endif
-{
+idxall(
+    idxrowrec * row
+ ) {
     Filter filt;
     idxrowrec *x;
 
@@ -899,23 +821,17 @@ idxall( row )
     return x;
 }
 
-#ifdef ANSI_FUNC
 void *
-idxread( idxrowrec * row, GIO gio, FITSHead fits,
-         void *buf, size_t size, size_t get, size_t *got, int *dofilt )
-#else
-void *
-idxread( row, gio, fits, buf, size, get, got, dofilt )
-     idxrowrec *row;
-     GIO gio;
-     FITSHead fits;
-     void *buf;
-     size_t size;
-     size_t get;
-     size_t *got;
-     int *dofilt;
-#endif
-{
+idxread(
+    idxrowrec * row,
+    GIO gio,
+    FITSHead fits,
+    void *buf,
+    size_t size,
+    size_t get,
+    size_t *got,
+    int *dofilt
+ ) {
     int j, k = 0;
     int left;
     int nrow;
@@ -974,9 +890,8 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 	    ioffset = row->v->ioffset;
 	    itype = row->v->itype;
 	    isize = ft_sizeof( row->v->itype );
-	    for ( left = get, i = 0;
-		  ( left > 0 ) && ( i < ( size_t ) row->nrow ); i++ ) {
-		if ( ( row->startrow[i] < 0 )
+	    for ( left = get, i = 0; ( left > 0 ) && ( i < ( size_t ) row->nrow ); i++ ) {
+	        if ( ( row->startrow[i] < 0 )
 		     && ( row->stoprow[i] < 0 ) ) continue;
 		nrow = row->stoprow[i] - row->startrow[i] + 1;
 		if ( left > nrow ) {
@@ -1003,24 +918,19 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 		    left = 0;
 		}
 		for ( j = start; j <= stop; j++ ) {
-		    ipos =
-		        row->v->ifits->data + ( ( j - 1 ) * rowsize ) +
-		        ioffset;
+		    ipos = row->v->ifits->data + ( ( j - 1 ) * rowsize ) + ioffset;
 		    switch ( idx_io ) {
 			case IDX_IO_MMAP:
 			    if ( row->v->idata ) {
 #ifdef HAVE_SYS_MMAN_H
-				memcpy( nbuf, &( row->v->idata[ipos] ),
-				        isize );
+				memcpy( nbuf, &( row->v->idata[ipos] ), isize );
 #else
-				idxerror
-				    ( "mmap not supported on this system" );
+				idxerror( "mmap not supported on this system" );
 #endif
 				break;
 			    }
 			case IDX_IO_LSEEK:
-			    if ( gseek( row->v->igio, ( off_t ) ipos, 0 ) <
-			         0 ) {
+			    if ( gseek( row->v->igio, ( off_t ) ipos, 0 ) < 0 ) {
 				*got = 0;
 				idxerror( "can't seek into index file" );
 				goto done;
@@ -1040,20 +950,16 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 			    ibuf[k++] = ( int ) *( short * ) _swap( nbuf, 2 );
 			    break;
 			case 'U':
-			    ibuf[k++] =
-			        ( int ) *( unsigned short * ) _swap( nbuf,
-			                                             2 );
+			    ibuf[k++] = ( int ) *( unsigned short * ) _swap( nbuf, 2 );
 			    break;
 			case 'J':
 			    ibuf[k++] = ( int ) *( int * ) _swap( nbuf, 4 );
 			    break;
 			case 'V':
-			    ibuf[k++] =
-			        ( int ) *( unsigned int * ) _swap( nbuf, 4 );
+			    ibuf[k++] = ( int ) *( unsigned int * ) _swap( nbuf, 4 );
 			    break;
 			case 'K':
-			    idxerror
-			        ( "64-bit integer not supported for index" );
+			    idxerror( "64-bit integer not supported for index" );
 			    break;
 			default:
 			    *got = 0;
@@ -1069,8 +975,7 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 		switch ( idx_io ) {
 		    case IDX_IO_MMAP:
 #ifdef HAVE_SYS_MMAN_H
-			memcpy( ( char * ) buf + ( i * size ),
-			        &( row->fdata[ipos] ), size );
+			memcpy( ( char * ) buf + ( i * size ), &( row->fdata[ipos] ), size );
 #else
 			idxerror( "mmap not supported on this system" );
 #endif
@@ -1079,9 +984,7 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 			if ( gseek( gio, ( off_t ) ipos, 0 ) < 0 ) {
 			    return 0;
 			}
-			if ( !gread
-			     ( gio, ( char * ) buf + ( i * size ), size,
-			       1 ) ) {
+			if ( !gread( gio, ( char * ) buf + ( i * size ), size, 1 ) ) {
 			    *got = i;
 			}
 			break;
@@ -1110,8 +1013,7 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 		switch ( idx_io ) {
 		    case IDX_IO_MMAP:
 #ifdef HAVE_SYS_MMAN_H
-			memcpy( ( char * ) buf + ( i * size ),
-			        &( row->fdata[ipos] ), size );
+			memcpy( ( char * ) buf + ( i * size ), &( row->fdata[ipos] ), size );
 #else
 			idxerror( "mmap not supported on this system" );
 #endif
@@ -1120,9 +1022,7 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
 			if ( gseek( gio, ( off_t ) ipos, 0 ) < 0 ) {
 			    return 0;
 			}
-			if ( !gread
-			     ( gio, ( char * ) buf + ( i * size ), size,
-			       1 ) ) {
+			if ( !gread( gio, ( char * ) buf + ( i * size ), size, 1 ) ) {
 			    *got = i;
 			}
 			break;
@@ -1141,15 +1041,11 @@ idxread( row, gio, fits, buf, size, get, got, dofilt )
     return ( void * ) buf;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxor( idxrowrec * row1, idxrowrec * row2 )
-#else
-idxrowrec *
-idxor( row1, row2 )
-     idxrowrec *row1, *row2;
-#endif
-{
+idxor(
+    idxrowrec * row1,
+    idxrowrec * row2
+ ) {
     int i;
     int nm = 0;
     int start = 0, stop = 0;
@@ -1163,15 +1059,13 @@ idxor( row1, row2 )
 	x->type = IDX_INDEF;
 	x->rtype = IDX_INDEF;
 	x->dofilt = 1;
-	IPRINTF( ( stderr, "idxor(%d): INDEF %s\n", x->dofilt,
-	           rowdisp( x ) ) );
+	IPRINTF( ( stderr, "idxor(%d): INDEF %s\n", x->dofilt, rowdisp( x ) ) );
 	return x;
     }
     if ( ( row1->type == COL ) && ( row2->type == COL ) &&
          ( row1->rtype == IDX_ROW_LIST ) && ( row2->rtype == IDX_ROW_LIST ) &&
          row1->s && row2->s && !strcmp( row1->s, row2->s ) ) {
-	IPRINTF( ( stderr, "idxor: %s %s", rowdisp( row1 ),
-	           rowdisp( row2 ) ) );
+	IPRINTF( ( stderr, "idxor: %s %s", rowdisp( row1 ), rowdisp( row2 ) ) );
 	x->type = COL;
 	x->rtype = IDX_ROW_LIST;
 	x->dofilt = 0;
@@ -1230,11 +1124,9 @@ idxor( row1, row2 )
 	/* two row lists: we sort both at once */
 	if ( ( row1->rtype == IDX_ROW_LIST )
 	     && ( row2->rtype == IDX_ROW_LIST ) ) {
-	    IPRINTF( ( stderr, "idxor sort: %s %s\n", rowdisp( row1 ),
-	               rowdisp( row2 ) ) );
+	    IPRINTF( ( stderr, "idxor sort: %s %s\n", rowdisp( row1 ), rowdisp( row2 ) ) );
 	    /* open sort program and return only unique records */
-	    if ( !_idxstartsort
-	         ( IDX_OR_SORT, &( x->ichan ), &( x->ochan ), &( x->pid ) )
+	    if ( !_idxstartsort( IDX_OR_SORT, &( x->ichan ), &( x->ochan ), &( x->pid ) )
 	         || !_idxwritesort( x, row1 ) || !_idxwritesort( x, row2 ) ) {
 		x->type = IDX_INDEF;
 		x->rtype = IDX_INDEF;
@@ -1249,8 +1141,7 @@ idxor( row1, row2 )
 	}
 	/* at least one sorted process: we set up a merge (and maybe a sort) */
 	else if ( row1->rtype == IDX_ROW_LIST ) {
-	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n",
-	               rowdisp( row1 ), rowdisp( row2 ) ) );
+	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n", rowdisp( row1 ), rowdisp( row2 ) ) );
 	    r1 = row2;
 	    r2 = idxrownew(  );
 	    r2->type = row1->type;
@@ -1258,8 +1149,7 @@ idxor( row1, row2 )
 	    r2->s = xstrdup( row1->s );
 	    r2->dofilt = row1->dofilt;
 	    /* open sort program to return all records */
-	    if ( !_idxstartsort
-	         ( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
+	    if ( !_idxstartsort( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
 	         || !_idxwritesort( r2, row1 ) ) {
 		x->type = IDX_INDEF;
 		x->rtype = IDX_INDEF;
@@ -1275,16 +1165,14 @@ idxor( row1, row2 )
 	/* at least one sorted process: we set up a merge (and maybe a sort) */
 	else if ( row2->rtype == IDX_ROW_LIST ) {
 	    r1 = row1;
-	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n",
-	               rowdisp( row1 ), rowdisp( row2 ) ) );
+	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n", rowdisp( row1 ), rowdisp( row2 ) ) );
 	    r2 = idxrownew(  );
 	    r2->type = row2->type;
 	    r2->rtype = row2->rtype;
 	    r2->s = xstrdup( row2->s );
 	    r2->dofilt = row2->dofilt;
 	    /* open sort program to return all records */
-	    if ( !_idxstartsort
-	         ( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
+	    if ( !_idxstartsort( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
 	         || !_idxwritesort( r2, row2 ) ) {
 		x->type = IDX_INDEF;
 		x->rtype = IDX_INDEF;
@@ -1303,15 +1191,11 @@ idxor( row1, row2 )
     }
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxand( idxrowrec * row1, idxrowrec * row2 )
-#else
-idxrowrec *
-idxand( row1, row2 )
-     idxrowrec *row1, *row2;
-#endif
-{
+idxand(
+    idxrowrec * row1,
+    idxrowrec * row2
+ ) {
     int i;
     int nm = 0;
     int start = 0, stop = 0;
@@ -1337,16 +1221,14 @@ idxand( row1, row2 )
 	    x->rtype = IDX_INDEF;
 	    x->dofilt = 1;
 	}
-	IPRINTF( ( stderr, "idxand(%d): INDEF %s\n", x->dofilt,
-	           rowdisp( x ) ) );
+	IPRINTF( ( stderr, "idxand(%d): INDEF %s\n", x->dofilt, rowdisp( x ) ) );
 	return x;
     }
     x = idxrownew(  );
     if ( ( row1->type == COL ) && ( row2->type == COL ) &&
          ( row1->rtype == IDX_ROW_LIST ) && ( row2->rtype == IDX_ROW_LIST ) &&
          row1->s && row2->s && !strcmp( row1->s, row2->s ) ) {
-	IPRINTF( ( stderr, "idxand: %s %s", rowdisp( row1 ),
-	           rowdisp( row2 ) ) );
+	IPRINTF( ( stderr, "idxand: %s %s", rowdisp( row1 ), rowdisp( row2 ) ) );
 	x->type = COL;
 	x->rtype = IDX_ROW_LIST;
 	x->dofilt = 0;
@@ -1400,11 +1282,9 @@ idxand( row1, row2 )
 	/* two row lists: we sort both at once */
 	if ( ( row1->rtype == IDX_ROW_LIST )
 	     && ( row2->rtype == IDX_ROW_LIST ) ) {
-	    IPRINTF( ( stderr, "idxand sort: %s %s\n", rowdisp( row1 ),
-	               rowdisp( row2 ) ) );
+	    IPRINTF( ( stderr, "idxand sort: %s %s\n", rowdisp( row1 ), rowdisp( row2 ) ) );
 	    /* open sort program and return only dup records */
-	    if ( !_idxstartsort
-	         ( IDX_AND_SORT, &( x->ichan ), &( x->ochan ), &( x->pid ) )
+	    if ( !_idxstartsort( IDX_AND_SORT, &( x->ichan ), &( x->ochan ), &( x->pid ) )
 	         || !_idxwritesort( x, row1 ) || !_idxwritesort( x, row2 ) ) {
 		x->type = IDX_INDEF;
 		x->rtype = IDX_INDEF;
@@ -1419,8 +1299,7 @@ idxand( row1, row2 )
 	}
 	/* at least one sorted process: we set up a merge (and maybe a sort) */
 	else if ( row1->rtype == IDX_ROW_LIST ) {
-	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n",
-	               rowdisp( row1 ), rowdisp( row2 ) ) );
+	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n", rowdisp( row1 ), rowdisp( row2 ) ) );
 	    r1 = row2;
 	    r2 = idxrownew(  );
 	    r2->type = row1->type;
@@ -1428,8 +1307,7 @@ idxand( row1, row2 )
 	    r2->s = xstrdup( row1->s );
 	    r2->dofilt = row1->dofilt;
 	    /* open sort program to return all records */
-	    if ( !_idxstartsort
-	         ( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
+	    if ( !_idxstartsort( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
 	         || !_idxwritesort( r2, row1 ) ) {
 		x->type = IDX_INDEF;
 		x->rtype = IDX_INDEF;
@@ -1445,16 +1323,14 @@ idxand( row1, row2 )
 	/* at least one sorted process: we set up a merge (and maybe a sort) */
 	else if ( row2->rtype == IDX_ROW_LIST ) {
 	    r1 = row1;
-	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n",
-	               rowdisp( row1 ), rowdisp( row2 ) ) );
+	    IPRINTF( ( stderr, "idxor sort/merge: %s %s\n", rowdisp( row1 ), rowdisp( row2 ) ) );
 	    r2 = idxrownew(  );
 	    r2->type = row2->type;
 	    r2->rtype = row2->rtype;
 	    r2->s = xstrdup( row2->s );
 	    r2->dofilt = row2->dofilt;
 	    /* open sort program to return all records */
-	    if ( !_idxstartsort
-	         ( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
+	    if ( !_idxstartsort( 0, &( r2->ichan ), &( r2->ochan ), &( r2->pid ) )
 	         || !_idxwritesort( r2, row2 ) ) {
 		x->type = IDX_INDEF;
 		x->rtype = IDX_INDEF;
@@ -1473,24 +1349,18 @@ idxand( row1, row2 )
     }
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowreg( idxvalrec * val )
-#else
-idxrowrec *
-idxrowreg( idxvalrec * val )
-     idxvalrec *val;
-#endif
-{
+idxrowreg(
+    idxvalrec * val
+ ) {
     int i = 0, j = 0;
     idxrowrec *x = NULL;
     idxrowrec *r[2];
     int start[2], stop[2];
 
     x = idxrownew(  );
-    if ( ( val->type == INDEF ) ||
-         ( ( val->rv[0]->type == INDEF )
-           && ( val->rv[1]->type == INDEF ) ) ) {
+    if ( ( val->type == INDEF ) || ( ( val->rv[0]->type == INDEF )
+                                     && ( val->rv[1]->type == INDEF ) ) ) {
 	x->type = IDX_INDEF;
 	x->rtype = IDX_INDEF;
 	x->dofilt = 1;
@@ -1514,13 +1384,11 @@ idxrowreg( idxvalrec * val )
 	start[i] = _idxbsearch( val->rv[i]->igio,
 	                        val->rv[i]->ifits, val->rv[i]->vtype,
 	                        val->rv[i]->voffset, val->rv[i]->vn,
-	                        0, -1, val->rlo[i], ( longlong ) 0,
-	                        PARSE_FLOAT );
+	                        0, -1, val->rlo[i], ( longlong ) 0, PARSE_FLOAT );
 	stop[i] =
 	    _idxbsearch( val->rv[i]->igio, val->rv[i]->ifits,
 	                 val->rv[i]->vtype, val->rv[i]->voffset,
-	                 val->rv[i]->vn, 0, 1, val->rhi[i], ( longlong ) 0,
-	                 PARSE_FLOAT );
+	                 val->rv[i]->vn, 0, 1, val->rhi[i], ( longlong ) 0, PARSE_FLOAT );
 	if ( ( start[i] > 0 ) && ( stop[i] > 0 ) ) {
 	    _idxrowaddrow( r[i], start[i], stop[i] );
 	}
@@ -1532,15 +1400,10 @@ idxrowreg( idxvalrec * val )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowfun( idxvalrec * UNUSED( val ) )
-#else
-idxrowrec *
-idxrowfun( idxvalrec * val )
-     idxvalrec *val;
-#endif
-{
+idxrowfun(
+    idxvalrec * UNUSED( val )
+ ) {
     idxrowrec *x = NULL;
 
     x = idxrownew(  );
@@ -1550,15 +1413,11 @@ idxrowfun( idxvalrec * val )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxroweq( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxrowrec *
-idxroweq( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxroweq(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     int start, stop;
     int nrow;
     idxrowrec *x = NULL;
@@ -1567,8 +1426,7 @@ idxroweq( val1, val2 )
 	return idxroweq( val2, val1 );
     }
     IPRINTF( ( stderr, "idxeq: " ) );
-    if ( _idxrowcommon
-         ( val1, val2, 1, IDX_EDGE_BOTH, &x, &start, &stop, &nrow ) ) {
+    if ( _idxrowcommon( val1, val2, 1, IDX_EDGE_BOTH, &x, &start, &stop, &nrow ) ) {
 	IPRINTF( ( stderr, "%s start=%d,stop=%d", x->s, start, stop ) );
 	if ( ( start > 0 ) && ( stop > 0 ) ) {
 	    _idxrowaddrow( x, start, stop );
@@ -1581,15 +1439,11 @@ idxroweq( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowne( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxrowrec *
-idxrowne( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxrowne(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     int start, stop;
     int nrow;
     int i = 0;
@@ -1599,8 +1453,7 @@ idxrowne( val1, val2 )
 	return idxrowne( val2, val1 );
     }
     IPRINTF( ( stderr, "idxne: " ) );
-    if ( _idxrowcommon
-         ( val1, val2, 0, IDX_EDGE_BOTH, &x, &start, &stop, &nrow ) ) {
+    if ( _idxrowcommon( val1, val2, 0, IDX_EDGE_BOTH, &x, &start, &stop, &nrow ) ) {
 	IPRINTF( ( stderr, "%s start=%d,stop=%d", x->s, start, stop ) );
 	if ( start > 1 ) {
 	    _idxrowaddrow( x, 1, start - 1 );
@@ -1608,8 +1461,7 @@ idxrowne( val1, val2 )
 	}
 	if ( stop && ( stop < nrow ) ) {
 	    _idxrowaddrow( x, stop + 1, nrow );
-	    IPRINTF( ( stderr, " start=%d,stop=%d", x->startrow[i],
-	               x->stoprow[i] ) );
+	    IPRINTF( ( stderr, " start=%d,stop=%d", x->startrow[i], x->stoprow[i] ) );
 	}
 	IPRINTF( ( stderr, " => " ) );
     }
@@ -1617,15 +1469,11 @@ idxrowne( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowlt( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxrowrec *
-idxrowlt( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxrowlt(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     int start, stop;
     int nrow;
     int i = 0;
@@ -1635,8 +1483,7 @@ idxrowlt( val1, val2 )
 	return idxrowgt( val2, val1 );
     }
     IPRINTF( ( stderr, "idxlt: " ) );
-    if ( _idxrowcommon
-         ( val1, val2, 0, IDX_EDGE_LEFT, &x, &start, &stop, &nrow ) ) {
+    if ( _idxrowcommon( val1, val2, 0, IDX_EDGE_LEFT, &x, &start, &stop, &nrow ) ) {
 	IPRINTF( ( stderr, "%s start=%d,stop=%d", x->s, start, stop ) );
 	if ( start > 1 ) {
 	    _idxrowaddrow( x, 1, start - 1 );
@@ -1648,15 +1495,11 @@ idxrowlt( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowle( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxrowrec *
-idxrowle( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxrowle(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     int start, stop;
     int nrow;
     idxrowrec *x = NULL;
@@ -1665,8 +1508,7 @@ idxrowle( val1, val2 )
 	return idxrowge( val2, val1 );
     }
     IPRINTF( ( stderr, "idxle: " ) );
-    if ( _idxrowcommon
-         ( val1, val2, 0, IDX_EDGE_RIGHT, &x, &start, &stop, &nrow ) ) {
+    if ( _idxrowcommon( val1, val2, 0, IDX_EDGE_RIGHT, &x, &start, &stop, &nrow ) ) {
 	IPRINTF( ( stderr, "%s start=%d,stop=%d", x->s, start, stop ) );
 	if ( stop > 0 ) {
 	    _idxrowaddrow( x, 1, stop );
@@ -1677,15 +1519,11 @@ idxrowle( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowgt( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxrowrec *
-idxrowgt( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxrowgt(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     int start, stop;
     int nrow;
     int i = 0;
@@ -1695,8 +1533,7 @@ idxrowgt( val1, val2 )
 	return idxrowlt( val2, val1 );
     }
     IPRINTF( ( stderr, "idxgt: " ) );
-    if ( _idxrowcommon
-         ( val1, val2, 0, IDX_EDGE_RIGHT, &x, &start, &stop, &nrow ) ) {
+    if ( _idxrowcommon( val1, val2, 0, IDX_EDGE_RIGHT, &x, &start, &stop, &nrow ) ) {
 	IPRINTF( ( stderr, "%s start=%d,stop=%d ", x->s, start, stop ) );
 	if ( ( stop >= 0 ) && ( stop < nrow ) ) {
 	    _idxrowaddrow( x, stop + 1, nrow );
@@ -1708,15 +1545,11 @@ idxrowgt( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrowge( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxrowrec *
-idxrowge( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxrowge(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     int start, stop;
     int nrow;
     int i = 0;
@@ -1726,8 +1559,7 @@ idxrowge( val1, val2 )
 	return idxrowle( val2, val1 );
     }
     IPRINTF( ( stderr, "idxge: " ) );
-    if ( _idxrowcommon
-         ( val1, val2, 0, IDX_EDGE_LEFT, &x, &start, &stop, &nrow ) ) {
+    if ( _idxrowcommon( val1, val2, 0, IDX_EDGE_LEFT, &x, &start, &stop, &nrow ) ) {
 	IPRINTF( ( stderr, "%s start=%d,stop=%d ", x->s, start, stop ) );
 	if ( ( start > 0 ) && ( start <= nrow ) ) {
 	    _idxrowaddrow( x, start, nrow );
@@ -1739,15 +1571,11 @@ idxrowge( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvaladd( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvaladd( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvaladd(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1757,15 +1585,13 @@ idxvaladd( val1, val2 )
 	     || ( val2->ntype == PARSE_FLOAT ) ) {
 	    x->ntype = PARSE_FLOAT;
 	    x->dval = val1->dval + val2->dval;
-	    IPRINTF( ( stderr, "valadd: %f + %f => %f\n",
-	               val1->dval, val2->dval, x->dval ) );
+	    IPRINTF( ( stderr, "valadd: %f + %f => %f\n", val1->dval, val2->dval, x->dval ) );
 	}
 	else {
 	    x->ntype = PARSE_INTEGER;
 	    x->ival = val1->ival + val2->ival;
 	    x->dval = x->ival;
-	    snprintf( fmt, SZ_LINE, "valadd: %s + %s => %s\n", LFMT, LFMT,
-	              LFMT );
+	    snprintf( fmt, SZ_LINE, "valadd: %s + %s => %s\n", LFMT, LFMT, LFMT );
 	    IPRINTF( ( stderr, fmt, val1->ival, val2->ival, x->ival ) );
 	}
     }
@@ -1775,15 +1601,11 @@ idxvaladd( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalsub( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvalsub( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvalsub(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1793,15 +1615,13 @@ idxvalsub( val1, val2 )
 	     || ( val2->ntype == PARSE_FLOAT ) ) {
 	    x->ntype = PARSE_FLOAT;
 	    x->dval = val1->dval - val2->dval;
-	    IPRINTF( ( stderr, "valsub: %f - %f => %f\n",
-	               val1->dval, val2->dval, x->dval ) );
+	    IPRINTF( ( stderr, "valsub: %f - %f => %f\n", val1->dval, val2->dval, x->dval ) );
 	}
 	else {
 	    x->ntype = PARSE_INTEGER;
 	    x->ival = val1->ival - val2->ival;
 	    x->dval = x->ival;
-	    snprintf( fmt, SZ_LINE, "valsub: %s - %s => %s\n", LFMT, LFMT,
-	              LFMT );
+	    snprintf( fmt, SZ_LINE, "valsub: %s - %s => %s\n", LFMT, LFMT, LFMT );
 	    IPRINTF( ( stderr, fmt, val1->ival, val2->ival, x->ival ) );
 	}
     }
@@ -1811,15 +1631,11 @@ idxvalsub( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalmul( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvalmul( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvalmul(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1829,15 +1645,13 @@ idxvalmul( val1, val2 )
 	     || ( val2->ntype == PARSE_FLOAT ) ) {
 	    x->ntype = PARSE_FLOAT;
 	    x->dval = val1->dval * val2->dval;
-	    IPRINTF( ( stderr, "valmul: %f * %f => %f\n",
-	               val1->dval, val2->dval, x->dval ) );
+	    IPRINTF( ( stderr, "valmul: %f * %f => %f\n", val1->dval, val2->dval, x->dval ) );
 	}
 	else {
 	    x->ntype = PARSE_INTEGER;
 	    x->ival = val1->ival * val2->ival;
 	    x->dval = x->ival;
-	    snprintf( fmt, SZ_LINE, "valmul: %s * %s => %s\n", LFMT, LFMT,
-	              LFMT );
+	    snprintf( fmt, SZ_LINE, "valmul: %s * %s => %s\n", LFMT, LFMT, LFMT );
 	    IPRINTF( ( stderr, fmt, val1->ival, val2->ival, x->ival ) );
 	}
     }
@@ -1847,15 +1661,11 @@ idxvalmul( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvaldiv( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvaldiv( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvaldiv(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1872,8 +1682,7 @@ idxvaldiv( val1, val2 )
 	    x->ival = val1->ival / val2->ival;
 	    x->ntype = PARSE_INTEGER;
 	}
-	IPRINTF( ( stderr, "valdiv: %f / %f => %f\n",
-	           val1->dval, val2->dval, x->dval ) );
+	IPRINTF( ( stderr, "valdiv: %f / %f => %f\n", val1->dval, val2->dval, x->dval ) );
     }
     else {
 	x->type = INDEF;
@@ -1881,15 +1690,11 @@ idxvaldiv( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalmod( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvalmod( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvalmod(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1903,8 +1708,7 @@ idxvalmod( val1, val2 )
 	    x->ntype = PARSE_INTEGER;
 	    x->ival = val1->ival % val2->ival;
 	    x->dval = x->ival;
-	    snprintf( fmt, SZ_LINE, "valmod: %s mod %s => %s\n", LFMT, LFMT,
-	              LFMT );
+	    snprintf( fmt, SZ_LINE, "valmod: %s mod %s => %s\n", LFMT, LFMT, LFMT );
 	    IPRINTF( ( stderr, fmt, val1->ival, val2->ival, x->ival ) );
 	}
     }
@@ -1914,15 +1718,11 @@ idxvalmod( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvaland( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvaland( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvaland(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1944,15 +1744,11 @@ idxvaland( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalor( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvalor( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvalor(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -1974,15 +1770,11 @@ idxvalor( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalxor( idxvalrec * val1, idxvalrec * val2 )
-#else
-idxvalrec *
-idxvalxor( val1, val2 )
-     idxvalrec *val1, *val2;
-#endif
-{
+idxvalxor(
+    idxvalrec * val1,
+    idxvalrec * val2
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -2004,15 +1796,10 @@ idxvalxor( val1, val2 )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalnot( idxvalrec * val )
-#else
-idxvalrec *
-idxvalnot( val )
-     idxvalrec *val;
-#endif
-{
+idxvalnot(
+    idxvalrec * val
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -2028,15 +1815,10 @@ idxvalnot( val )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalcom( idxvalrec * val )
-#else
-idxvalrec *
-idxvalcom( val )
-     idxvalrec *val;
-#endif
-{
+idxvalcom(
+    idxvalrec * val
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -2052,15 +1834,10 @@ idxvalcom( val )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalmin( idxvalrec * val )
-#else
-idxvalrec *
-idxvalmin( val )
-     idxvalrec *val;
-#endif
-{
+idxvalmin(
+    idxvalrec * val
+ ) {
     idxvalrec *x = NULL;
 
     x = idxvalnew( NULL );
@@ -2078,15 +1855,10 @@ idxvalmin( val )
     return x;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxvalnew( char *s )
-#else
-idxvalrec *
-idxvalnew( s )
-     char *s;
-#endif
-{
+idxvalnew(
+    char *s
+ ) {
     idxvalrec *v = NULL;
     Filter filt;
 
@@ -2101,15 +1873,10 @@ idxvalnew( s )
 }
 
 
-#ifdef ANSI_FUNC
 int
-idxvalfree( idxvalrec * v )
-#else
-int
-idxvalfree( v )
-     idxvalrec *v;
-#endif
-{
+idxvalfree(
+    idxvalrec * v
+ ) {
     idxvalrec *t;
     int n = 0;
     Filter filt;
@@ -2142,36 +1909,27 @@ idxvalfree( v )
     return n;
 }
 
-#ifdef ANSI_FUNC
 idxvalrec *
-idxlookupfilename( char *iname )
-#else
-idxvalrec *
-idxlookupfilename( iname )
-     char *iname
-#endif
-     {
-	 idxvalrec *t;
-	 Filter filt;
+idxlookupfilename(
+    char *iname
+ ) {
+    idxvalrec *t;
+    Filter filt;
 
-	 if  ( !( filt = FilterDefault(  ) ) )
-	     return NULL;
-	 for ( t = filt->valhead; t; t = t->next ) {
-if ( t->iname && !strcmp( t->iname, iname ) ) {
-    return t;
+    if ( !( filt = FilterDefault(  ) ) )
+	return NULL;
+    for ( t = filt->valhead; t; t = t->next ) {
+	if ( t->iname && !strcmp( t->iname, iname ) ) {
+	    return t;
+	}
+    }
+    return NULL;
 }
-	 }
-	 return NULL;
-     }
 
-#ifdef ANSI_FUNC
 idxrowrec *
-idxrownew( void )
-#else
-idxrowrec *
-idxrownew(  )
-#endif
-{
+idxrownew(
+    void
+ ) {
     idxrowrec *r = NULL;
     Filter filt;
 
@@ -2189,15 +1947,10 @@ idxrownew(  )
     return r;
 }
 
-#ifdef ANSI_FUNC
 int
-idxrowfree( idxrowrec * r )
-#else
-int
-idxrowfree( r )
-     idxrowrec *r;
-#endif
-{
+idxrowfree(
+    idxrowrec * r
+ ) {
     idxrowrec *t;
     int n = 0;
     Filter filt;
@@ -2230,16 +1983,11 @@ idxrowfree( r )
     return n;
 }
 
-#ifdef ANSI_FUNC
 int
-idxinitfilenames( char *t, int *flag )
-#else
-int
-idxinitfilenames( t, flag )
-     char *t;
-     int *flag;
-#endif
-{
+idxinitfilenames(
+    char *t,
+    int *flag
+ ) {
     char *u = NULL;
     int havegz = 0;
 
@@ -2252,10 +2000,10 @@ idxinitfilenames( t, flag )
     if ( !t || !*t ) return 0;
 
     if ( ( u = strchr( t, ':' ) ) ) {
-	if ( !strncasecmp( t, "pipe:", 5 ) || !strncasecmp( t, "mmap:", 5 ) ||
-	     !strncasecmp( t, "shm:", 4 ) || !strncasecmp( t, "mem:", 4 ) ||
-	     !strncasecmp( t, "buf:", 4 ) || !strncasecmp( t, "file:", 5 ) ||
-	     !strncasecmp( t, "gzip:", 5 )
+        if ( !strncasecmp( t, "pipe:", 5 ) || !strncasecmp( t, "mmap:", 5 ) ||
+             !strncasecmp( t, "shm:", 4 ) || !strncasecmp( t, "mem:", 4 ) ||
+             !strncasecmp( t, "buf:", 4 ) || !strncasecmp( t, "file:", 5 ) ||
+             !strncasecmp( t, "gzip:", 5 )
 	     || !strncasecmp( t, "unfile:", 7 ) ) {
 	    t = u + 1;
 	}
@@ -2285,14 +2033,10 @@ idxinitfilenames( t, flag )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 void
-idxfreefilenames( void )
-#else
-void
-idxfreefilenames(  )
-#endif
-{
+idxfreefilenames(
+    void
+ ) {
     if ( idxfilename ) {
 	xfree( idxfilename );
 	idxfilename = NULL;
@@ -2307,14 +2051,10 @@ idxfreefilenames(  )
     }
 }
 
-#ifdef ANSI_FUNC
 void
-idxfreeglobals( void )
-#else
-void
-idxfreeglobals(  )
-#endif
-{
+idxfreeglobals(
+    void
+ ) {
     if ( idxcolname ) {
 	xfree( idxcolname );
 	idxcolname = NULL;
@@ -2330,16 +2070,11 @@ idxfreeglobals(  )
     idxfreefilenames(  );
 }
 
-#ifdef ANSI_FUNC
 char *
-idxindexfilename( char *col, int *size )
-#else
-char *
-idxindexfilename( col, size )
-     char *col;
-     int *size;
-#endif
-{
+idxindexfilename(
+    char *col,
+    int *size
+ ) {
     int i;
     char *iname = NULL;
     char *fname = NULL;
@@ -2382,19 +2117,15 @@ idxindexfilename( col, size )
 		suffix = ".gz";
 		break;
 	}
-	snprintf( tbuf1, SZ_LINE - 1, "%s_%s.idx%s", idxinfo( IDX_FILEROOT1 ),
-	          colbuf, suffix );
-	snprintf( tbuf2, SZ_LINE - 1, "%s_%s.idx%s", idxinfo( IDX_FILEROOT2 ),
-	          colbuf, suffix );
+	snprintf( tbuf1, SZ_LINE - 1, "%s_%s.idx%s", idxinfo( IDX_FILEROOT1 ), colbuf, suffix );
+	snprintf( tbuf2, SZ_LINE - 1, "%s_%s.idx%s", idxinfo( IDX_FILEROOT2 ), colbuf, suffix );
 	if ( ( iname = Find( tbuf1, "r", NULL, "." ) ) ||
 	     ( iname = Find( tbuf1, "r", NULL, FilterPath(  ) ) ) ||
 	     ( iname = Find( tbuf2, "r", NULL, "." ) ) ||
 	     ( iname = Find( tbuf2, "r", NULL, FilterPath(  ) ) ) ) {
 	    if ( ( fname = Find( idxinfo( IDX_FILENAME ), "r", NULL, "." ) )
-	         || ( fname =
-	              Find( idxinfo( IDX_FILENAME ), "r", NULL,
-	                    FilterPath(  ) ) ) ) {
-		if ( ( stat( fname, &fbuf ) < 0 )
+	         || ( fname = Find( idxinfo( IDX_FILENAME ), "r", NULL, FilterPath(  ) ) ) ) {
+	        if ( ( stat( fname, &fbuf ) < 0 )
 		     || ( stat( iname, &ibuf ) < 0 ) ) {
 		    goto done;
 		}
@@ -2415,15 +2146,10 @@ idxindexfilename( col, size )
     return idxname;
 }
 
-#ifdef ANSI_FUNC
 int
-idxinitparser( char *s )
-#else
-int
-idxinitparser( s )
-     char *s;
-#endif
-{
+idxinitparser(
+    char *s
+ ) {
     char *t;
     int havegz = 0;
     Filter filt;
@@ -2465,28 +2191,19 @@ idxinitparser( s )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 void
-idxendparser( void )
-#else
-void
-idxendparser(  )
-#endif
-{
+idxendparser(
+    void
+ ) {
     idxvalfree( NULL );
     idxrowfree( NULL );
     idxfreeglobals(  );
 }
 
-#ifdef ANSI_FUNC
 char *
-idxinfo( int which )
-#else
-char *
-idxinfo( which )
-     int which;
-#endif
-{
+idxinfo(
+    int which
+ ) {
     switch ( which ) {
 	case IDX_COLNAME:
 	    return idxcolname;
@@ -2505,15 +2222,10 @@ idxinfo( which )
     }
 }
 
-#ifdef ANSI_FUNC
 int
-idxdebug( int debug )
-#else
-int
-idxdebug( debug )
-     int debug;
-#endif
-{
+idxdebug(
+    int debug
+ ) {
     int odebug;
 
     odebug = idx_debug;

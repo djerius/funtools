@@ -36,14 +36,23 @@ static fpu_control_t _cw;
 /* add this to FilterOpen to cause this module to be loaded for dynamic linking */
 static int evregno = 0;
 void
-initevregions( void ) {
+initevregions(
+    void
+ ) {
     evregno++;
     return;
 }
 
 static int
-polypt( double x, double y, double *poly, int count,
-        double UNUSED( xstart ), double ystart, int flag ) {
+polypt(
+    double x,
+    double y,
+    double *poly,
+    int count,
+    double UNUSED( xstart ),
+    double ystart,
+    int flag
+ ) {
     /*    x-- x value of point being tested */
     /* y-- y value of point being tested */
     /* poly-- bounding polygon, array of length (count*2) */
@@ -85,8 +94,7 @@ polypt( double x, double y, double *poly, int count,
 
 	/* horiz line */
 	if ( ( y1 == 0 ) && ( y2 == 0 ) ) {
-	    if ( ( ( x2 >= 0 ) && ( x1 <= 0 ) )
-	         || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) {
+	    if ( ( ( x2 >= 0 ) && ( x1 <= 0 ) ) || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) {
 		/* we always return true for ystart horiz lines */
 		if ( y == ystart )
 		    return 1;
@@ -96,28 +104,21 @@ polypt( double x, double y, double *poly, int count,
 	}
 	/* vertical line */
 	else if ( ( x1 == 0 ) && ( x2 == 0 ) ) {
-	    if ( ( ( y2 >= 0 ) && ( y1 <= 0 ) )
-	         || ( ( y1 >= 0 ) && ( y2 <= 0 ) ) ) {
+	    if ( ( ( y2 >= 0 ) && ( y1 <= 0 ) ) || ( ( y1 >= 0 ) && ( y2 <= 0 ) ) ) {
 		return fmod( ( double ) crossings + 1, 2.0 ) ? 1 : 0;
 	    }
 	}
 	/* point on line */
 	else if ( feq( ( y1 * ( x2 - x1 ) ), ( x1 * ( y2 - y1 ) ) ) ) {
-	    if ( ( ( ( x2 >= 0 ) && ( x1 <= 0 ) )
-	           || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) && ( ( ( y2 >= 0 )
-	                                                      && ( y1 <= 0 ) )
-	                                                    || ( ( y1 >= 0 )
-	                                                         && ( y2 <=
-	                                                              0 ) ) ) )
-	    {
+	    if ( ( ( ( x2 >= 0 ) && ( x1 <= 0 ) ) || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) &&
+	         ( ( ( y2 >= 0 ) && ( y1 <= 0 ) ) || ( ( y1 >= 0 ) && ( y2 <= 0 ) ) ) ) {
 		return fmod( ( double ) crossings + 1, 2.0 ) ? 1 : 0;
 	    }
 	}
 #if 0
 	/* horiz line */
 	if ( ( y1 == 0 ) && ( y2 == 0 ) ) {
-	    if ( ( ( x2 >= 0 ) && ( x1 <= 0 ) )
-	         || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) {
+	    if ( ( ( x2 >= 0 ) && ( x1 <= 0 ) ) || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) {
 		if ( y == ystart ) {
 		    return 1;
 		}
@@ -125,8 +126,7 @@ polypt( double x, double y, double *poly, int count,
 	}
 	/* vertical line */
 	else if ( ( x1 == 0 ) && ( x2 == 0 ) ) {
-	    if ( ( ( y2 >= 0 ) && ( y1 <= 0 ) )
-	         || ( ( y1 >= 0 ) && ( y2 <= 0 ) ) ) {
+	    if ( ( ( y2 >= 0 ) && ( y1 <= 0 ) ) || ( ( y1 >= 0 ) && ( y2 <= 0 ) ) ) {
 		if ( x == xstart ) {
 		    return 1;
 		}
@@ -134,13 +134,8 @@ polypt( double x, double y, double *poly, int count,
 	}
 	/* point on line */
 	else if ( feq( ( y1 * ( x2 - x1 ) ), ( x1 * ( y2 - y1 ) ) ) ) {
-	    if ( ( ( ( x2 >= 0 ) && ( x1 <= 0 ) )
-	           || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) && ( ( ( y2 >= 0 )
-	                                                      && ( y1 <= 0 ) )
-	                                                    || ( ( y1 >= 0 )
-	                                                         && ( y2 <=
-	                                                              0 ) ) ) )
-	    {
+	    if ( ( ( ( x2 >= 0 ) && ( x1 <= 0 ) ) || ( ( x1 >= 0 ) && ( x2 <= 0 ) ) ) &&
+	         ( ( ( y2 >= 0 ) && ( y1 <= 0 ) ) || ( ( y1 >= 0 ) && ( y2 <= 0 ) ) ) ) {
 		return 0;
 	    }
 	}
@@ -160,8 +155,15 @@ polypt( double x, double y, double *poly, int count,
 }
 
 static void
-quadeq( double a, double b, double c,
-        double *x1, double *x2, int *nr, int *nc ) {
+quadeq(
+    double a,
+    double b,
+    double c,
+    double *x1,
+    double *x2,
+    int *nr,
+    int *nc
+ ) {
     double dis, q;
     if ( feq( a, 0.0 ) ) {
 	*nc = 0;
@@ -207,7 +209,13 @@ quadeq( double a, double b, double c,
 }
 
 static int
-corner_vertex( int index, int width, int height, double *x, double *y ) {
+corner_vertex(
+    int index,
+    int width,
+    int height,
+    double *x,
+    double *y
+ ) {
     switch ( index ) {
 	case 1:
 	    *x = 0.0;
@@ -233,8 +241,15 @@ corner_vertex( int index, int width, int height, double *x, double *y ) {
 }
 
 static int
-pie_intercept( double width, double height, double xcen, double ycen,
-               double angle, double *xcept, double *ycept ) {
+pie_intercept(
+    double width,
+    double height,
+    double xcen,
+    double ycen,
+    double angle,
+    double *xcept,
+    double *ycept
+ ) {
     double angl, slope;         /* l: angle and slope of ray */
     angl = angle;
     /* put angles in normal range */
@@ -310,9 +325,19 @@ pie_intercept( double width, double height, double xcen, double ycen,
 /* ***************************** shapes ********************************** */
 
 int
-evannulus( GFilt g, int rno, int sno, int flag, int type,
-           double x, double y,
-           double xcen, double ycen, double ri, double ro ) {
+evannulus(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double ri,
+    double ro
+ ) {
     /* use circle if possible */
     if ( ri == 0 ) {
 	return ( evcircle( g, rno, sno, flag, type, x, y, xcen, ycen, ro ) );
@@ -326,12 +351,11 @@ evannulus( GFilt g, int rno, int sno, int flag, int type,
 	g->shapes[sno].r2sq = ro * ro;
     }
 
-    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && ( ( ( xcen - x ) * ( xcen - x ) ) +
-                ( ( ycen - y ) * ( ycen - y ) ) <= g->shapes[sno].r2sq )
-           && ( ( ( xcen - x ) * ( xcen - x ) ) +
-                ( ( ycen - y ) * ( ycen - y ) ) > g->shapes[sno].r1sq ) ) ==
-         flag ) {
+    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           ( ( ( xcen - x ) * ( xcen - x ) ) + ( ( ycen - y ) * ( ycen - y ) ) <=
+             g->shapes[sno].r2sq )
+           && ( ( ( xcen - x ) * ( xcen - x ) ) + ( ( ycen - y ) * ( ycen - y ) ) >
+                g->shapes[sno].r1sq ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -341,10 +365,20 @@ evannulus( GFilt g, int rno, int sno, int flag, int type,
 }
 
 int
-evbox( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-       double x, double y,
-       double xcen, double ycen, double xwidth, double yheight,
-       double angle ) {
+evbox(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double xwidth,
+    double yheight,
+    double angle
+ ) {
     int i;
     double angl;                /* l: Cartesian angle in radians */
     double half_width, half_height;     /* l: radii (1/2 width and height) */
@@ -419,9 +453,9 @@ evbox( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 	    }
 	}
     }
-    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && polypt( x, y, g->shapes[sno].pts, g->shapes[sno].npt / 2,
-                      xstart, g->shapes[sno].ystart, 0 ) ) == flag ) {
+    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           polypt( x, y, g->shapes[sno].pts, g->shapes[sno].npt / 2,
+                   xstart, g->shapes[sno].ystart, 0 ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -430,8 +464,18 @@ evbox( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 }
 
 int
-evcircle( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-          double x, double y, double xcen, double ycen, double radius ) {
+evcircle(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double radius
+ ) {
     if ( radius == 0 ) {
 	return ( !flag );
     }
@@ -441,10 +485,9 @@ evcircle( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 	g->shapes[sno].ystop = ycen + radius;
 	g->shapes[sno].r1sq = radius * radius;
     }
-    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && ( ( ( xcen - x ) * ( xcen - x ) ) +
-                ( ( ycen - y ) * ( ycen - y ) ) <= g->shapes[sno].r1sq ) ) ==
-         flag ) {
+    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           ( ( ( xcen - x ) * ( xcen - x ) ) + ( ( ycen - y ) * ( ycen - y ) ) <=
+             g->shapes[sno].r1sq ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -453,10 +496,20 @@ evcircle( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 }
 
 int
-evellipse( GFilt g, int rno, int sno, int flag, int type,
-           double x, double y,
-           double xcen, double ycen, double xrad, double yrad, double angle ) 
-{
+evellipse(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double xrad,
+    double yrad,
+    double angle
+ ) {
     double yhi, yoff;
     double b, c;
     double b_partial, c_partial;
@@ -465,8 +518,7 @@ evellipse( GFilt g, int rno, int sno, int flag, int type,
 
     /* use circle if possible */
     if ( xrad == yrad ) {
-	return ( evcircle
-	         ( g, rno, sno, flag, type, x, y, xcen, ycen, xrad ) );
+	return ( evcircle( g, rno, sno, flag, type, x, y, xcen, ycen, xrad ) );
     }
 
     if ( !g->shapes[sno].init ) {
@@ -487,20 +539,16 @@ evellipse( GFilt g, int rno, int sno, int flag, int type,
 	/* calculate approximate y limits */
 	/* choose lesser of containing rotbox and circle */
 #if USE_ASTRO_ANGLE
-	yhi = fabs( g->shapes[sno].sinangl * yrad ) +
-	    fabs( g->shapes[sno].cosangl * xrad );
+	yhi = fabs( g->shapes[sno].sinangl * yrad ) + fabs( g->shapes[sno].cosangl * xrad );
 #else
-	yhi = fabs( g->shapes[sno].sinangl * xrad ) +
-	    fabs( g->shapes[sno].cosangl * yrad );
+	yhi = fabs( g->shapes[sno].sinangl * xrad ) + fabs( g->shapes[sno].cosangl * yrad );
 #endif
 	yhi = min( yhi, max( yrad, xrad ) );
 	g->shapes[sno].ystart = ycen - yhi;
 	g->shapes[sno].ystop = ycen + yhi;
 	/* prepare partials for quadratic equation solutions to coordinates */
-	g->shapes[sno].cossq =
-	    g->shapes[sno].cosangl * g->shapes[sno].cosangl;
-	g->shapes[sno].sinsq =
-	    g->shapes[sno].sinangl * g->shapes[sno].sinangl;
+	g->shapes[sno].cossq = g->shapes[sno].cosangl * g->shapes[sno].cosangl;
+	g->shapes[sno].sinsq = g->shapes[sno].sinangl * g->shapes[sno].sinangl;
 #if USE_ASTRO_ANGLE
 	/* because we rotate by 90.0 degrees to get from astro angle to */
 	/* cartesian, we also need to switch the x and y axes. we do this */
@@ -532,11 +580,9 @@ evellipse( GFilt g, int rno, int sno, int flag, int type,
 	    FPU_DOUBLE
 #if USE_FLOAT_COMPARE
 	        if ( ( ( ( float ) x >= ( float ) ( xcen + xboff ) ) &&
-		       ( ( float ) x <= ( float ) ( xcen + xfoff ) ) ) ==
-		     flag ) {
+		       ( ( float ) x <= ( float ) ( xcen + xfoff ) ) ) == flag ) {
 #else
-	        if ( ( ( x >= ( xcen + xboff ) )
-	               && ( x <= ( xcen + xfoff ) ) ) == flag ) {
+	        if ( ( ( x >= ( xcen + xboff ) ) && ( x <= ( xcen + xfoff ) ) ) == flag ) {
 #endif
 		if ( rno && flag ) g->rid = rno;
 		FPU_RESTORE return 1;
@@ -552,8 +598,15 @@ evellipse( GFilt g, int rno, int sno, int flag, int type,
 }
 
 int
-evfield( GFilt g, int rno, int UNUSED( sno ), int flag, int UNUSED( type ),
-         double UNUSED( x ), double UNUSED( y ) ) {
+evfield(
+    GFilt g,
+    int rno,
+    int UNUSED( sno ),
+    int flag,
+    int UNUSED( type ),
+    double UNUSED( x ),
+    double UNUSED( y )
+ ) {
     if ( flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
@@ -563,8 +616,19 @@ evfield( GFilt g, int rno, int UNUSED( sno ), int flag, int UNUSED( type ),
 }
 
 int
-evline( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-        double x, double y, double x1, double y1, double x2, double y2 ) {
+evline(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double x1,
+    double y1,
+    double x2,
+    double y2
+ ) {
     if ( !g->shapes[sno].init ) {
 	g->shapes[sno].init = 1;
 	g->shapes[sno].ystart = min( y1, y2 );
@@ -581,19 +645,11 @@ evline( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 	    g->shapes[sno].invslope = ( x1 - x2 ) / ( y1 - y2 );
 	}
     }
-    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           &&
-           ( ( !g->shapes[sno].xonly
-               &&
-               feq( ( ( ( y -
-                          g->shapes[sno].y1 ) * g->shapes[sno].invslope ) +
-                      g->shapes[sno].x1 ), x ) ) || ( g->shapes[sno].xonly
-                                                      &&
-                                                      ( ( x >=
-                                                          g->shapes[sno].x1 )
-                                                        && ( x <=
-                                                             g->shapes[sno].
-                                                             x2 ) ) ) ) ) ==
+    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           ( ( !g->shapes[sno].xonly &&
+               feq( ( ( ( y - g->shapes[sno].y1 ) * g->shapes[sno].invslope ) + g->shapes[sno].x1 ),
+                    x ) ) || ( g->shapes[sno].xonly && ( ( x >= g->shapes[sno].x1 )
+                                                         && ( x <= g->shapes[sno].x2 ) ) ) ) ) ==
          flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
@@ -603,9 +659,19 @@ evline( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 }
 
 int
-evpie( GFilt g, int rno, int sno, int flag, int type,
-       double x, double y,
-       double xcen, double ycen, double angle1, double angle2 ) {
+evpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double angle1,
+    double angle2
+ ) {
     int i;
     int width, height;          /* l: image mask width and height */
     double sweep;               /* l: sweep between cut angles */
@@ -632,23 +698,18 @@ evpie( GFilt g, int rno, int sno, int flag, int type,
 	if ( fabs( sweep ) < SMALL_NUMBER )
 	    return !flag;
 	if ( sweep < 0.0 ) sweep = sweep + 360.0;
-	intrcpt1 =
-	    pie_intercept( ( double ) width, ( double ) height, xcen, ycen,
-	                   angle1, &( g->shapes[sno].pts[2] ),
-	                   &( g->shapes[sno].pts[3] ) );
-	intrcpt2 =
-	    pie_intercept( ( double ) width, ( double ) height, xcen, ycen,
-	                   angle2, &x2, &y2 );
+	intrcpt1 = pie_intercept( ( double ) width, ( double ) height, xcen, ycen, angle1,
+	                          &( g->shapes[sno].pts[2] ), &( g->shapes[sno].pts[3] ) );
+	intrcpt2 = pie_intercept( ( double ) width, ( double ) height, xcen, ycen, angle2,
+	                          &x2, &y2 );
 	g->shapes[sno].npt = 4;
 	/* if angles intercept same side and slice is between them, no corners */
 	/* else, mark corners until reaching side with second angle intercept */
 	if ( ( intrcpt1 != intrcpt2 ) || ( sweep > 180.0 ) ) {
 	    do {
 		intrcpt1 = corner_vertex( intrcpt1, width, height,
-		                          &( g->shapes[sno].
-		                             pts[g->shapes[sno].npt] ),
-		                          &( g->shapes[sno].
-		                             pts[g->shapes[sno].npt + 1] ) );
+		                          &( g->shapes[sno].pts[g->shapes[sno].npt] ),
+		                          &( g->shapes[sno].pts[g->shapes[sno].npt + 1] ) );
 		g->shapes[sno].npt = g->shapes[sno].npt + 2;
 	    } while ( intrcpt1 != intrcpt2 );
 	}
@@ -670,9 +731,9 @@ evpie( GFilt g, int rno, int sno, int flag, int type,
 	    }
 	}
     }
-    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && polypt( x, y, g->shapes[sno].pts, g->shapes[sno].npt / 2,
-                      xstart, g->shapes[sno].ystart, 1 ) ) == flag ) {
+    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           polypt( x, y, g->shapes[sno].pts, g->shapes[sno].npt / 2,
+                   xstart, g->shapes[sno].ystart, 1 ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -682,15 +743,34 @@ evpie( GFilt g, int rno, int sno, int flag, int type,
 }
 
 int
-evqtpie( GFilt g, int rno, int sno, int flag, int type,
-         double x, double y,
-         double xcen, double ycen, double angle1, double angle2 ) {
+evqtpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double angle1,
+    double angle2
+ ) {
     return evpie( g, rno, sno, flag, type, x, y, xcen, ycen, angle1, angle2 );
 }
 
 int
-evpoint( GFilt g, int rno, int UNUSED( sno ), int flag, int UNUSED( type ),
-         double x, double y, double xcen, double ycen ) {
+evpoint(
+    GFilt g,
+    int rno,
+    int UNUSED( sno ),
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double xcen,
+    double ycen
+ ) {
     if ( ( ( x == xcen ) && ( y == ycen ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
@@ -701,15 +781,25 @@ evpoint( GFilt g, int rno, int UNUSED( sno ), int flag, int UNUSED( type ),
 
 #ifdef __STDC__
 int
-evpolygon( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-           double x, double y, ... ) {
+evpolygon(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    ...
+ ) {
     int i, maxpts;
     double xstart = 0.0;
     va_list args;
     va_start( args, y );
 #else
 int
-evpolygon( va_alist )
+evpolygon(
+    va_alist
+ )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -719,12 +809,18 @@ evpolygon( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
 #endif
     if ( !g->shapes[sno].init ) {
 	g->shapes[sno].init = 1;
@@ -737,10 +833,10 @@ evpolygon( va_alist )
 	    if ( g->shapes[sno].npt >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[sno].pts = ( double * ) realloc( g->shapes[sno].pts,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[sno].pts[g->shapes[sno].npt] = va_arg( args, double );
+	    g->shapes[sno].pts[g->shapes[sno].npt] = va_arg( args, double
+	     );
 	    /* two negatives in a row means we are at end of args */
 	    if ( feq( g->shapes[sno].pts[g->shapes[sno].npt], PSTOP ) &&
 	         feq( g->shapes[sno].pts[g->shapes[sno].npt - 1], PSTOP ) ) {
@@ -752,8 +848,7 @@ evpolygon( va_alist )
 	va_end( args );
 	/* realloc to actual size */
 	g->shapes[sno].pts = ( double * ) realloc( g->shapes[sno].pts,
-	                                           g->shapes[sno].npt *
-	                                           sizeof( double ) );
+	                                           g->shapes[sno].npt * sizeof( double ) );
 	/* now find the y limits */
 	if ( g->shapes[sno].npt ) {
 	    xstart = g->shapes[sno].pts[0];
@@ -769,9 +864,9 @@ evpolygon( va_alist )
 	    }
 	}
     }
-    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && polypt( x, y, g->shapes[sno].pts, g->shapes[sno].npt / 2,
-                      xstart, g->shapes[sno].ystart, 0 ) ) == flag ) {
+    if ( ( ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           polypt( x, y, g->shapes[sno].pts, g->shapes[sno].npt / 2,
+                   xstart, g->shapes[sno].ystart, 0 ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -781,9 +876,20 @@ evpolygon( va_alist )
 
 /* accelerator regions -- lower and upper limits are given for n regions */
 
-     int evnannulus( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen,
-	             double lo, double hi, int n ) {
+     int evnannulus(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lo,
+    double hi,
+    int n
+      ) {
 	 int i;
 	 int xsno;
 	 double dinc;
@@ -793,15 +899,13 @@ evpolygon( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !evannulus
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, lo, hi ) ) {
+	     if ( !evannulus( g, 0, xsno, flag, type, x, y, xcen, ycen, lo, hi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( i = 0; i < n; i++ ) {
 		 if ( evannulus( g, rno + i, sno + i, flag, type, x, y,
-		                 xcen, ycen, lo + ( i * dinc ),
-		                 lo + ( ( i + 1 ) * dinc ) ) ) {
+		                 xcen, ycen, lo + ( i * dinc ), lo + ( ( i + 1 ) * dinc ) ) ) {
 		     return ( 1 );
 		 }
 	     }
@@ -809,18 +913,30 @@ evpolygon( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !evannulus
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, lo, hi ) ) {
+	     if ( !evannulus( g, 0, xsno, 1, type, x, y, xcen, ycen, lo, hi ) ) {
 		 return ( 1 );
 	     }
 	     return ( 0 );
 	 }
      }
 
-     int evnbox( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen,
-	         double lox, double loy, double hix, double hiy, int n,
-	         double ang ) {
+     int evnbox(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lox,
+    double loy,
+    double hix,
+    double hiy,
+    int n,
+    double ang
+      ) {
 	 int i;
 	 int xsno;
 	 double dincx;
@@ -832,22 +948,18 @@ evpolygon( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !evbox
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy,
-	            ang ) ) {
+	     if ( !evbox( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* if its in the inner region we lose */
-	     if ( evbox
-	          ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( evbox( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( i = 0; i < n; i++ ) {
 		 if ( evbox( g, rno + i, sno + i, flag, type, x, y,
-		             xcen, ycen, lox + ( ( i + 1 ) * dincx ),
-		             loy + ( ( i + 1 ) * dincy ), ang ) ) {
+		             xcen, ycen, lox + ( ( i + 1 ) * dincx ), loy + ( ( i + 1 ) * dincy ),
+		             ang ) ) {
 		     return ( 1 );
 		 }
 	     }
@@ -856,24 +968,34 @@ evpolygon( va_alist )
 	 /* for excludes, we have to check that we are not in any of them */
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !evbox
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
+	     if ( !evbox( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 1 );
 	     }
 	     /* if its in the inner region we win */
-	     if ( evbox
-	          ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( evbox( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 1 );
 	     }
 	     return ( 0 );
 	 }
      }
 
-     int evnellipse( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen,
-	             double lox, double loy, double hix, double hiy, int n,
-	             double ang ) {
+     int evnellipse(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lox,
+    double loy,
+    double hix,
+    double hiy,
+    int n,
+    double ang
+      ) {
 	 int i;
 	 int xsno;
 	 double dincx;
@@ -885,15 +1007,11 @@ evpolygon( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !evellipse
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy,
-	            ang ) ) {
+	     if ( !evellipse( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* if its in the inner region we lose */
-	     if ( evellipse
-	          ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( evellipse( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
@@ -909,23 +1027,31 @@ evpolygon( va_alist )
 	 /* for excludes, we have to check that we are not in any of them */
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !evellipse
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
+	     if ( !evellipse( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 1 );
 	     }
 	     /* if its in the inner region we win */
-	     if ( evellipse
-	          ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( evellipse( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 1 );
 	     }
 	     return ( 0 );
 	 }
      }
 
-     int evnpie( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen,
-	         double lo, double hi, int n ) {
+     int evnpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lo,
+    double hi,
+    int n
+      ) {
 	 int i;
 	 int xsno;
 	 double dinc;
@@ -942,8 +1068,7 @@ evpolygon( va_alist )
 	     /* look through all of them to find the right one */
 	     for ( i = 0; i < n; i++ ) {
 		 if ( evpie( g, rno + i, sno + i, flag, type, x, y,
-		             xcen, ycen, lo + ( i * dinc ),
-		             lo + ( ( i + 1 ) * dinc ) ) ) {
+		             xcen, ycen, lo + ( i * dinc ), lo + ( ( i + 1 ) * dinc ) ) ) {
 		     return ( 1 );
 		 }
 	     }
@@ -958,11 +1083,23 @@ evpolygon( va_alist )
 	 }
      }
 
-     int evpanda( GFilt g, int rno, int sno, int flag, int type,
-	          double x, double y,
-	          double xcen, double ycen,
-	          double anglo, double anghi, double angn,
-	          double radlo, double radhi, double radn ) {
+     int evpanda(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double radlo,
+    double radhi,
+    double radn
+      ) {
 
 	 int a, r;
 	 int ahi, rhi;
@@ -978,23 +1115,18 @@ evpolygon( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !evannulus
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, radlo, radhi )
-	          || !evpie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen,
-	                     anglo, anghi ) ) {
+	     if ( !evannulus( g, 0, xsno, flag, type, x, y, xcen, ycen, radlo, radhi ) ||
+	          !evpie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( a = 1; a <= ahi; a++ ) {
 		 for ( r = 1; r <= rhi; r++ ) {
-		     if ( evannulus
-		          ( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		            xcen, ycen, radlo + ( ( r - 1 ) * rinc ),
-		            radlo + ( r * rinc ) )
-		          && evpie( g, rno + n, sno + ( 2 * n + 1 ), flag,
-		                    type, x, y, xcen, ycen,
-		                    anglo + ( ( a - 1 ) * ainc ),
-		                    anglo + ( a * ainc ) ) ) {
+		     if ( evannulus( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
+		                     xcen, ycen, radlo + ( ( r - 1 ) * rinc ),
+		                     radlo + ( r * rinc ) )
+		          && evpie( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y, xcen, ycen,
+		                    anglo + ( ( a - 1 ) * ainc ), anglo + ( a * ainc ) ) ) {
 			 return ( 1 );
 		     }
 		     n++;
@@ -1004,12 +1136,9 @@ evpolygon( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !evannulus
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, radlo, radhi ) )
+	     if ( !evannulus( g, 0, xsno, 1, type, x, y, xcen, ycen, radlo, radhi ) )
 		 return ( 1 );
-	     else if ( !evpie
-	               ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !evpie( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 1 );
 	     }
 	     else {
@@ -1018,12 +1147,26 @@ evpolygon( va_alist )
 	 }
      }
 
-     int evbpanda( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y,
-	           double xcen, double ycen,
-	           double anglo, double anghi, double angn,
-	           double xlo, double ylo, double xhi, double yhi,
-	           double radn, double ang ) {
+     int evbpanda(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double xlo,
+    double ylo,
+    double xhi,
+    double yhi,
+    double radn,
+    double ang
+      ) {
 
 	 int a, r;
 	 int ahi, rhi;
@@ -1042,33 +1185,25 @@ evpolygon( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !evbox( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi,
-	                  ang ) ) {
+	     if ( !evbox( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* but if its in the inner region we lose */
-	     else if ( evbox
-	               ( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo,
-	                 ylo, ang ) ) {
+	     else if ( evbox( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* its in the box .. must also be in the pie */
-	     else if ( !evpie
-	               ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !evpie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( a = 0; a < ahi; a++ ) {
 		 for ( r = 1; r <= rhi; r++ ) {
-		     if ( evbox
-		          ( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		            xcen, ycen, xlo + ( r * xinc ),
-		            ylo + ( r * yinc ), ang )
-		          && evqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag,
-		                      type, x, y, xcen, ycen,
-		                      anglo + ( a * ainc ),
-		                      anglo + ( ( a + 1 ) * ainc ) ) ) {
+		     if ( evbox( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
+		                 xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ), ang ) &&
+		          evqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
+		                   xcen, ycen, anglo + ( a * ainc ),
+		                   anglo + ( ( a + 1 ) * ainc ) ) ) {
 			 return ( 1 );
 		     }
 		     n++;
@@ -1078,18 +1213,13 @@ evpolygon( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !evbox
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
+	     if ( !evbox( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
 		 return ( 1 );
 	     /* if its in the inner region we win */
-	     else if ( !evbox
-	               ( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo,
-	                 ang ) )
+	     else if ( !evbox( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo, ang ) )
 		 return ( 1 );
 	     /* if its not in the pie, we win */
-	     else if ( !evpie
-	               ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !evpie( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 1 );
 	     }
 	     else {
@@ -1098,12 +1228,26 @@ evpolygon( va_alist )
 	 }
      }
 
-     int evepanda( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y,
-	           double xcen, double ycen,
-	           double anglo, double anghi, double angn,
-	           double xlo, double ylo, double xhi, double yhi,
-	           double radn, double ang ) {
+     int evepanda(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double xlo,
+    double ylo,
+    double xhi,
+    double yhi,
+    double radn,
+    double ang
+      ) {
 
 	 int a, r;
 	 int ahi, rhi;
@@ -1122,34 +1266,25 @@ evpolygon( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !evellipse
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi,
-	            ang ) ) {
+	     if ( !evellipse( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* but if its in the inner region we lose */
-	     else if ( evellipse
-	               ( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo,
-	                 ylo, ang ) ) {
+	     else if ( evellipse( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* its in the ellipse .. must also be in the pie */
-	     else if ( !evpie
-	               ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !evpie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( a = 0; a < ahi; a++ ) {
 		 for ( r = 1; r <= rhi; r++ ) {
-		     if ( evellipse
-		          ( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		            xcen, ycen, xlo + ( r * xinc ),
-		            ylo + ( r * yinc ), ang )
-		          && evqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag,
-		                      type, x, y, xcen, ycen,
-		                      anglo + ( a * ainc ),
-		                      anglo + ( ( a + 1 ) * ainc ) ) ) {
+		     if ( evellipse( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
+		                     xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ), ang ) &&
+		          evqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
+		                   xcen, ycen, anglo + ( a * ainc ),
+		                   anglo + ( ( a + 1 ) * ainc ) ) ) {
 			 return ( 1 );
 		     }
 		     n++;
@@ -1159,18 +1294,13 @@ evpolygon( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !evellipse
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
+	     if ( !evellipse( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
 		 return ( 1 );
 	     /* if its in the inner region we win */
-	     else if ( !evellipse
-	               ( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo,
-	                 ang ) )
+	     else if ( !evellipse( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo, ang ) )
 		 return ( 1 );
 	     /* if its not in the pie, we win */
-	     else if ( !evpie
-	               ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !evpie( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 1 );
 	     }
 	     else {
@@ -1182,8 +1312,18 @@ evpolygon( va_alist )
 /* varargs regions -- a series of lower and upper limits is specified */
 
 #ifdef __STDC__
-     int evvannulus( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen, ... ) {
+     int evvannulus(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, n;
 	 int maxpts;
 	 int xsno;
@@ -1191,7 +1331,9 @@ evpolygon( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int evvannulus( va_alist )
+     int evvannulus(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1204,14 +1346,22 @@ evpolygon( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1222,10 +1372,10 @@ evpolygon( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1235,28 +1385,22 @@ evpolygon( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( evannulus
-	         ( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0],
-	           xv[1] ) );
+	return ( evannulus( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1] ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !evannulus
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0],
-	       xv[n - 1] ) ) {
+	if ( !evannulus( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
 	for ( i = 0; i < n; i++ ) {
-	    if ( evannulus( g, rno + i, sno + i, flag, type, x, y, xcen, ycen,
-	                    xv[i], xv[i + 1] ) ) {
+	    if ( evannulus( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1] ) ) {
 		return ( 1 );
 	    }
 	}
@@ -1265,8 +1409,7 @@ evpolygon( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we win ... */
-	if ( !evannulus
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
+	if ( !evannulus( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 1 );
 	}
 	return ( 0 );
@@ -1274,8 +1417,18 @@ evpolygon( va_alist )
      }
 
 #ifdef __STDC__
-     int evvbox( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen, ... ) {
+     int evvbox(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -1284,7 +1437,9 @@ evpolygon( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int evvbox( va_alist )
+     int evvbox(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1298,14 +1453,22 @@ evpolygon( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1316,10 +1479,10 @@ evpolygon( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1329,34 +1492,27 @@ evpolygon( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     ang = xv[--n];
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( evbox( g, rno, sno, flag, type, x, y,
-	                xcen, ycen, xv[0], xv[1], ang ) );
+	return ( evbox( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !evbox
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !evbox( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 0 );
 	}
 	/* if its in the inner region we lose */
-	if ( evbox
-	     ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-	       ang ) ) {
+	if ( evbox( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
 	for ( i = 2, j = 0; i < n; i += 2, j++ ) {
-	    if ( evbox( g, rno + j, sno + j, flag, type, x, y, xcen, ycen,
-	                xv[i], xv[i + 1], ang ) ) {
+	    if ( evbox( g, rno + j, sno + j, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1], ang ) ) {
 		return ( 1 );
 	    }
 	}
@@ -1365,15 +1521,11 @@ evpolygon( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we win ... */
-	if ( !evbox
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !evbox( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 1 );
 	}
 	/* if its in the inner region we win */
-	else if ( evbox
-	          ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1],
-	            ang ) ) {
+	else if ( evbox( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 1 );
 	}
 	return ( 0 );
@@ -1382,8 +1534,18 @@ evpolygon( va_alist )
 
 
 #ifdef __STDC__
-     int evvellipse( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen, ... ) {
+     int evvellipse(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -1392,7 +1554,9 @@ evpolygon( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int evvellipse( va_alist )
+     int evvellipse(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1406,14 +1570,22 @@ evpolygon( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1424,10 +1596,10 @@ evpolygon( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1437,28 +1609,22 @@ evpolygon( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     ang = xv[--n];
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( evellipse( g, rno, sno, flag, type, x, y,
-	                    xcen, ycen, xv[0], xv[1], ang ) );
+	return ( evellipse( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !evellipse
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !evellipse( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 0 );
 	}
 	/* if its in the inner region we lose */
-	if ( evellipse
-	     ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-	       ang ) ) {
+	if ( evellipse( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
@@ -1473,15 +1639,11 @@ evpolygon( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !evellipse
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !evellipse( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 1 );
 	}
 	/* if its in the inner region we win */
-	if ( evellipse
-	     ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1],
-	       ang ) ) {
+	if ( evellipse( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 1 );
 	}
 	return ( 0 );
@@ -1489,8 +1651,18 @@ evpolygon( va_alist )
      }
 
 #ifdef __STDC__
-     int evvpie( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen, ... ) {
+     int evvpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, n;
 	 int maxpts;
 	 int xsno;
@@ -1498,7 +1670,9 @@ evpolygon( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int evvpie( va_alist )
+     int evvpie(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1511,14 +1685,22 @@ evpolygon( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1529,10 +1711,10 @@ evpolygon( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1542,28 +1724,22 @@ evpolygon( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( evpie( g, rno, sno, flag, type, x, y,
-	                xcen, ycen, xv[0], xv[1] ) );
+	return ( evpie( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1] ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !evpie
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0],
-	       xv[n - 1] ) ) {
+	if ( !evpie( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
 	for ( i = 0; i < n; i++ ) {
-	    if ( evpie
-	         ( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i],
-	           xv[i + 1] ) ) {
+	    if ( evpie( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1] ) ) {
 		return ( 1 );
 	    }
 	}
@@ -1572,8 +1748,7 @@ evpolygon( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !evpie
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
+	if ( !evpie( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 1 );
 	}
 	return ( 1 );
@@ -1581,8 +1756,16 @@ evpolygon( va_alist )
      }
 
 #ifdef __STDC__
-     int evvpoint( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y, ... ) {
+     int evvpoint(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -1590,7 +1773,9 @@ evpolygon( va_alist )
 	 va_list args;
 	 va_start( args, y );
 #else
-     int evvpoint( va_alist )
+     int evvpoint(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1602,12 +1787,18 @@ evpolygon( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1618,10 +1809,10 @@ evpolygon( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1631,15 +1822,13 @@ evpolygon( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     /* look through all of them to find the right one */
     for ( i = 0, j = 0; i < n; i += 2, j++ ) {
-	if ( evpoint
-	     ( g, rno + j, sno + j, flag, type, x, y, xv[i], xv[i + 1] ) ) {
+	if ( evpoint( g, rno + j, sno + j, flag, type, x, y, xv[i], xv[i + 1] ) ) {
 	    return ( 1 );
 	}
     }

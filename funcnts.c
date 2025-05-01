@@ -44,56 +44,37 @@ static int maxrow = MAXROW;
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
-    fprintf( stderr,
-             "usage: %s <switches> sname [sreg] [bname breg|breg|cnts]\n",
-             fname );
+usage(
+    char *fname
+ ) {
+    fprintf( stderr, "usage: %s <switches> sname [sreg] [bname breg|breg|cnts]\n", fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -e \"source_exposure[;bkgd_exposure]\" # exp matches data\n" );
-    fprintf( stderr,
-             "  -w \"source_exposure[;bkgd_exposure]\" # WCS method\n" );
+    fprintf( stderr, "  -e \"source_exposure[;bkgd_exposure]\" # exp matches data\n" );
+    fprintf( stderr, "  -w \"source_exposure[;bkgd_exposure]\" # WCS method\n" );
     fprintf( stderr, "\t\t# source (bkgd) FITS exposure image\n" );
     fprintf( stderr, "  -t \"source_timecorr[;bkgd_timecorr]\"\n" );
-    fprintf( stderr,
-             "\t\t# source (bkgd) time correction value or header parameter name\n" );
+    fprintf( stderr, "\t\t# source (bkgd) time correction value or header parameter name\n" );
     fprintf( stderr, "  -g\t\t# output using nice g format\n" );
-    fprintf( stderr,
-             "  -G\t\t# output using %%.14g format (maximum precision)\n" );
-    fprintf( stderr,
-             "  -i \"[column;]int1;int2...\" # column-based intervals\n" );
+    fprintf( stderr, "  -G\t\t# output using %%.14g format (maximum precision)\n" );
+    fprintf( stderr, "  -i \"[column;]int1;int2...\" # column-based intervals\n" );
     fprintf( stderr, "  -m\t\t# match individual source and bkgd regions\n" );
     fprintf( stderr, "  -p\t\t# output in pixels, even if wcs is present\n" );
-    fprintf( stderr,
-             "  -r\t\t# output inner/outer radii (and angles) for annuli (and pandas)\n" );
+    fprintf( stderr, "  -r\t\t# output inner/outer radii (and angles) for annuli (and pandas)\n" );
     fprintf( stderr, "  -s\t\t# output summed values\n" );
-    fprintf( stderr,
-             "  -v \"scol[;bcol]\" # src and bkgd value columns for tables\n" );
+    fprintf( stderr, "  -v \"scol[;bcol]\" # src and bkgd value columns for tables\n" );
     fprintf( stderr, "  -T\t\t# output in starbase/rdb table format\n" );
     fprintf( stderr, "  -z\t\t# include regions with zero area in output\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 static double
-DConvert( char *buf, int type, int n )
-#else
-static double
-DConvert( buf, type, n )
-     char *buf;
-     int type;
-     int n;
-#endif
-{
+DConvert(
+    char *buf,
+    int type,
+    int n
+ ) {
     int ival;
     double dval = 0.0;
 
@@ -120,8 +101,7 @@ DConvert( buf, type, n )
 	    break;
 	case 'K':
 #if HAVE_LONG_LONG == 0
-	    gerror( stderr,
-	            "64-bit data support not built (long long not available)\n" );
+	    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 	    break;
 	case 'V':
@@ -147,16 +127,11 @@ DConvert( buf, type, n )
     return ( dval );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int c;
     int i, j, k, v;
     int args;
@@ -358,8 +333,7 @@ main( argc, argv )
 
     /* open the source FITS file */
     if ( !( fun[SRC] = FunOpen( name[SRC], "r", NULL ) ) )
-	gerror( stderr, "can't FunOpen source file (or find extension): %s\n",
-                name[SRC] );
+	gerror( stderr, "can't FunOpen source file (or find extension): %s\n", name[SRC] );
     /* get required information from funtools structure */
     FunInfoGet( fun[SRC], FUN_ENDIAN, &endian[SRC],
                 FUN_TYPE, &type[SRC], FUN_HEADER, &header[SRC],
@@ -421,8 +395,7 @@ main( argc, argv )
 	    }
 	    else {
 		if ( nintv >= MAXINTV ) {
-		    gwarning( stderr, "Too many intervals; ignoring: %s\n",
-		              tbuf );
+		    gwarning( stderr, "Too many intervals; ignoring: %s\n", tbuf );
 		    continue;
 		}
 		intvs[nintv] = ( char * ) calloc( SZ_LINE, sizeof( char ) );
@@ -438,19 +411,15 @@ main( argc, argv )
     /* if a value name was specified, make sure its a calid column */
     if ( valname[SRC] && ( *valname[SRC] != '-' ) ) {
 	if ( !FunColumnLookup( fun[SRC], valname[SRC], 0, NULL,
-	                       &valtypes[SRC], NULL,
-	                       &valoffsets[SRC], NULL, NULL ) ) {
-	    gerror( stderr, "value column does not exist: %s\n",
-	            valname[SRC] );
+	                       &valtypes[SRC], NULL, &valoffsets[SRC], NULL, NULL ) ) {
+	    gerror( stderr, "value column does not exist: %s\n", valname[SRC] );
 	}
     }
 
     /* allocate space for results */
     for ( i = 0; i < nintv; i++ ) {
-	cnts[i][SRC] =
-	    ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
-	savecnts[i][SRC] =
-	    ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
+	cnts[i][SRC] = ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
+	savecnts[i][SRC] = ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
 	bncnts[i] = ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
 	bnerr[i] = ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
 	bscnts[i] = ( double * ) xcalloc( nreg[SRC] + 1, sizeof( double ) );
@@ -472,8 +441,7 @@ main( argc, argv )
 	if ( name[BKG] ) {
 	    if ( !( fun[BKG] = FunOpen( name[BKG], "r", NULL ) ) )
 		gerror( stderr,
-	                "can't FunOpen background file (or find extension): %s\n",
-	                name[BKG] );
+	                "can't FunOpen background file (or find extension): %s\n", name[BKG] );
 	    /* get required information from funtools structure */
 	    FunInfoGet( fun[BKG], FUN_ENDIAN, &endian[BKG],
 	                FUN_TYPE, &type[BKG], FUN_HEADER, &header[BKG],
@@ -532,8 +500,7 @@ main( argc, argv )
 		    *u++ = ' ';
 		}
 	    }
-	    filtstr[BKG] =
-	        realloc( filtstr[BKG], strlen( filtstr[BKG] ) + 1 );
+	    filtstr[BKG] = realloc( filtstr[BKG], strlen( filtstr[BKG] ) + 1 );
 	}
 	if ( filter[BKG] ) FilterClose( filter[BKG] );
 
@@ -541,10 +508,8 @@ main( argc, argv )
 	if ( valname[BKG] ) {
 	    if ( *valname[BKG] != '-' ) {
 		if ( !FunColumnLookup( fun[BKG], valname[BKG], 0, NULL,
-		                       &valtypes[BKG], NULL,
-		                       &valoffsets[BKG], NULL, NULL ) ) {
-		    gerror( stderr, "value column does not exist: %s\n",
-		            valname[BKG] );
+		                       &valtypes[BKG], NULL, &valoffsets[BKG], NULL, NULL ) ) {
+		    gerror( stderr, "value column does not exist: %s\n", valname[BKG] );
 		}
 	    }
 	}
@@ -558,16 +523,13 @@ main( argc, argv )
 
 	/* allocate space for results */
 	for ( i = 0; i < nintv; i++ ) {
-	    cnts[i][BKG] =
-	        ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
-	    savecnts[i][BKG] =
-	        ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
+	    cnts[i][BKG] = ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
+	    savecnts[i][BKG] = ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
 	}
 	area[BKG] = ( int * ) xcalloc( nreg[BKG] + 1, sizeof( int ) );
 	exp[BKG] = ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
 	savearea[BKG] = ( int * ) xcalloc( nreg[BKG] + 1, sizeof( int ) );
-	saveexp[BKG] =
-	    ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
+	saveexp[BKG] = ( double * ) xcalloc( nreg[BKG] + 1, sizeof( double ) );
     }
 
     /* look for degrees/pixel in source and background files -- we will
@@ -604,11 +566,8 @@ main( argc, argv )
 	for ( i = 0; i < NTYPE; i++ ) {
 	    if ( word( expstr, tbuf, &ip ) && *tbuf ) {
 		name[NTYPE + i] = xstrdup( tbuf );
-		if ( !
-		     ( fun[NTYPE + i] =
-		       FunOpen( name[NTYPE + i], "r", NULL ) ) )
-		    gerror( stderr, "can't FunOpen exp file: %s\n",
-		            name[NTYPE + i] );
+		if ( !( fun[NTYPE + i] = FunOpen( name[NTYPE + i], "r", NULL ) ) )
+		    gerror( stderr, "can't FunOpen exp file: %s\n", name[NTYPE + i] );
 		FunInfoGet( fun[NTYPE + i], FUN_SECT_DIM1, &dim1[NTYPE + i],
 		            FUN_SECT_DIM2, &dim2[NTYPE + i], FUN_SECT_BLOCK,
 		            &block[NTYPE + i], FUN_WCS, &wcs[NTYPE + i], 0 );
@@ -626,9 +585,7 @@ main( argc, argv )
 		if ( wcs[i] && wcs[NTYPE + i] )
 		    exptrans[i] = EXP_WCS;
 		else
-		    gerror( stderr,
-		            "no WCS present for WCS-based exposure",
-		            name[NTYPE + i] );
+		    gerror( stderr, "no WCS present for WCS-based exposure", name[NTYPE + i] );
 	    }
 	}
     }
@@ -663,12 +620,9 @@ main( argc, argv )
 		    if ( !got ) {
 			/* try pure upper case */
 			cluc( tbuf );
-			timecorr[i] =
-			    FunParamGetd( fun[i], tbuf, 0, 1.0, &got );
+			timecorr[i] = FunParamGetd( fun[i], tbuf, 0, 1.0, &got );
 			if ( !got ) {
-			    gerror( stderr,
-			            "can't find time correction parameter: %s\n",
-			            tbuf );
+			    gerror( stderr, "can't find time correction parameter: %s\n", tbuf );
 			}
 		    }
 		}
@@ -702,20 +656,15 @@ main( argc, argv )
 			for ( i = 0; i < nmask[k]; i++ ) {
 			    y = masks[k][i].y;
 			    if ( y != lasty ) {
-				if ( !FunImageRowGet
-				     ( fun[k], dbuf, y, y, "bitpix=-64" ) )
-				    gerror( stderr,
-				            "can't FunImageRowGet: %d %s\n",
-				            y, name[k] );
+				if ( !FunImageRowGet( fun[k], dbuf, y, y, "bitpix=-64" ) )
+				    gerror( stderr, "can't FunImageRowGet: %d %s\n", y, name[k] );
 				lasty = y;
 			    }
 			    area[k][masks[k][i].region - 1] +=
 			        masks[k][i].xstop - masks[k][i].xstart + 1;
-			    for ( j = masks[k][i].xstart - 1;
-			          j <= masks[k][i].xstop - 1; j++ ) {
+			    for ( j = masks[k][i].xstart - 1; j <= masks[k][i].xstop - 1; j++ ) {
 				if ( !isnand( dbuf[j] ) ) {
-				    cnts[0][k][masks[k][i].region - 1] +=
-				        dbuf[j];
+				    cnts[0][k][masks[k][i].region - 1] += dbuf[j];
 				}
 			    }
 			}
@@ -729,16 +678,12 @@ main( argc, argv )
 			int *iptr;
 			int *ibuf = NULL;
 			/* read data as ints */
-			if ( !
-			     ( ibuf =
-			       FunImageGet( fun[k], NULL, "bitpix=32" ) ) )
-			    gerror( stderr, "can't FunImageGet: %s\n",
-			            name[k] );
+			if ( !( ibuf = FunImageGet( fun[k], NULL, "bitpix=32" ) ) )
+			    gerror( stderr, "can't FunImageGet: %s\n", name[k] );
 			/* get source counts */
 			for ( i = 0; i < nmask[k]; i++ ) {
 			    iptr = &( ibuf[( masks[k][i].y - 1 ) * dim1[k]] );
-			    for ( j = masks[k][i].xstart - 1;
-			          j <= masks[k][i].xstop - 1; j++ ) {
+			    for ( j = masks[k][i].xstart - 1; j <= masks[k][i].xstop - 1; j++ ) {
 				cnts[0][k][masks[k][i].region - 1] += iptr[j];
 			    }
 			}
@@ -755,8 +700,7 @@ main( argc, argv )
 			     || ( y1[k] - y0[k] <= 0 ) )
 			    gerror( stderr,
 			            "invalid or zero image dimensions(s) for table (%s)\n",
-			            bincols[k] ? bincols[k] :
-			            "invalid bincols?" );
+			            bincols[k] ? bincols[k] : "invalid bincols?" );
 			/* make up the mode string */
 			snprintf( mode, SZ_LINE,
 			          "type=events,convert=%s,evsect=\"%d %d %d %d %d\"",
@@ -781,31 +725,24 @@ main( argc, argv )
 			/* allocate region value buffer */
 			rbuf = xmalloc( maxrow * sizeof( int ) );
 			/* extract events */
-			while ( ( ebuf =
-			          FunTableRowGet( fun[k], NULL, maxrow, NULL,
-			                          &got ) ) ) {
+			while ( ( ebuf = FunTableRowGet( fun[k], NULL, maxrow, NULL, &got ) ) ) {
 			    /* get pointer to raw buffer */
 			    FunInfoGet( fun[k], FUN_RAWBUF, &rawbuf, 0 );
 			    /* process all intervals in one pass through this data */
 			    for ( v = 0; v < nintv; v++ ) {
 				/* get events which pass the region filter */
-				if ( efilter[v] && ( efilter[v] != NOFILTER )
-				     && FilterEvents( efilter[v], rawbuf,
-				                      rawsize[k], got,
-				                      rbuf ) ) {
+			        if ( efilter[v] && ( efilter[v] != NOFILTER )
+				     && FilterEvents( efilter[v], rawbuf, rawsize[k], got, rbuf ) ) {
 				    /* loop through events, process those which are in a region */
 				    for ( i = 0; i < got; i++ ) {
 					eptr =
 					    ( char * ) ( ebuf +
-					                 ( rowsize[k] * i ) +
-					                 valoffsets[k] );
+					                 ( rowsize[k] * i ) + valoffsets[k] );
 					if ( rbuf[i] > 0 ) {
 					    if ( valname[k]
 					         && ( *valname[k] != '-' ) )
 						cnts[v][k][rbuf[i] - 1] +=
-					            DConvert( eptr,
-					                      valtypes[k],
-					                      valns[k] );
+					            DConvert( eptr, valtypes[k], valns[k] );
 					    else
 						cnts[v][k][rbuf[i] - 1] += 1;
 					}
@@ -850,7 +787,7 @@ main( argc, argv )
 		    /* seed with impossible value so we load first line */
 		    lasty = -1;
 		    for ( i = 0, j = 0; i < nmask[SRC] || j < nmask[BKG]; ) {
-			if ( ( i < nmask[SRC] )
+		        if ( ( i < nmask[SRC] )
 			     && ( j < nmask[BKG] ) ) state = 3;
 			else if ( i < nmask[SRC] ) state = 1;
 			else if ( j < nmask[BKG] ) state = 2;
@@ -860,22 +797,17 @@ main( argc, argv )
 			      sline:
 				y = masks[SRC][i].y;
 				if ( y != lasty ) {
-				    if ( !FunImageRowGet
-				         ( fun[SRC], dbuf, y, y,
-				           "bitpix=-64" ) )
+				    if ( !FunImageRowGet( fun[SRC], dbuf, y, y, "bitpix=-64" ) )
 					gerror( stderr,
-				                "can't FunImageRowGet: %d %s\n",
-				                y, name[SRC] );
+				                "can't FunImageRowGet: %d %s\n", y, name[SRC] );
 				    lasty = y;
 				}
 				area[SRC][masks[SRC][i].region - 1] +=
-				    masks[SRC][i].xstop -
-				    masks[SRC][i].xstart + 1;
+				    masks[SRC][i].xstop - masks[SRC][i].xstart + 1;
 				for ( k = masks[SRC][i].xstart - 1;
 				      k <= masks[SRC][i].xstop - 1; k++ ) {
 				    if ( !isnand( dbuf[k] ) ) {
-					cnts[0][SRC][masks[SRC][i].region -
-					             1] += dbuf[k];
+					cnts[0][SRC][masks[SRC][i].region - 1] += dbuf[k];
 				    }
 				}
 				i++;
@@ -884,22 +816,17 @@ main( argc, argv )
 			      bline:
 				y = masks[BKG][j].y;
 				if ( y != lasty ) {
-				    if ( !FunImageRowGet
-				         ( fun[SRC], dbuf, y, y,
-				           "bitpix=-64" ) )
+				    if ( !FunImageRowGet( fun[SRC], dbuf, y, y, "bitpix=-64" ) )
 					gerror( stderr,
-				                "can't FunImageRowGet: %d %s\n",
-				                y, name[SRC] );
+				                "can't FunImageRowGet: %d %s\n", y, name[SRC] );
 				    lasty = y;
 				}
 				area[BKG][masks[BKG][j].region - 1] +=
-				    masks[BKG][j].xstop -
-				    masks[BKG][j].xstart + 1;
+				    masks[BKG][j].xstop - masks[BKG][j].xstart + 1;
 				for ( k = masks[BKG][j].xstart - 1;
 				      k <= masks[BKG][j].xstop - 1; k++ ) {
 				    if ( !isnand( dbuf[k] ) ) {
-					cnts[0][BKG][masks[BKG][j].region -
-					             1] += dbuf[k];
+					cnts[0][BKG][masks[BKG][j].region - 1] += dbuf[k];
 				    }
 				}
 				j++;
@@ -920,29 +847,21 @@ main( argc, argv )
 		    int *iptr;
 		    int *ibuf = NULL;
 		    /* read data as ints */
-		    if ( !
-		         ( ibuf =
-		           FunImageGet( fun[SRC], NULL, "bitpix=32" ) ) )
-			gerror( stderr, "can't FunImageGet: %s\n",
-		                name[SRC] );
+		    if ( !( ibuf = FunImageGet( fun[SRC], NULL, "bitpix=32" ) ) )
+			gerror( stderr, "can't FunImageGet: %s\n", name[SRC] );
 		    /* get source counts */
 		    for ( i = 0; i < nmask[SRC]; i++ ) {
 			iptr = &( ibuf[( masks[SRC][i].y - 1 ) * dim1[SRC]] );
-			for ( j = masks[SRC][i].xstart - 1;
-			      j <= masks[SRC][i].xstop - 1; j++ ) {
+			for ( j = masks[SRC][i].xstart - 1; j <= masks[SRC][i].xstop - 1; j++ ) {
 			    cnts[0][SRC][masks[SRC][i].region - 1] += iptr[j];
 			}
 		    }
 		    /* get background counts and area, if necessary */
 		    if ( bktype != BKG_VAL ) {
 			for ( i = 0; i < nmask[BKG]; i++ ) {
-			    iptr =
-			        &( ibuf
-			           [( masks[BKG][i].y - 1 ) * dim1[SRC]] );
-			    for ( j = masks[BKG][i].xstart - 1;
-			          j <= masks[BKG][i].xstop - 1; j++ ) {
-				cnts[0][BKG][masks[BKG][i].region - 1] +=
-				    iptr[j];
+			    iptr = &( ibuf[( masks[BKG][i].y - 1 ) * dim1[SRC]] );
+			    for ( j = masks[BKG][i].xstart - 1; j <= masks[BKG][i].xstop - 1; j++ ) {
+				cnts[0][BKG][masks[BKG][i].region - 1] += iptr[j];
 			    }
 			}
 		    }
@@ -959,8 +878,7 @@ main( argc, argv )
 		         || ( y1[SRC] - y0[SRC] <= 0 ) )
 			gerror( stderr,
 		                "invalid or zero image dimensions(s) for table (%s)\n",
-		                bincols[SRC] ? bincols[SRC] :
-		                "invalid bincols?" );
+		                bincols[SRC] ? bincols[SRC] : "invalid bincols?" );
 		    /* open new filters to filter events through regions */
 		    snprintf( mode, SZ_LINE,
 		              "type=events,convert=%s,evsect=\"%d %d %d %d %d\"",
@@ -982,8 +900,7 @@ main( argc, argv )
 				    strcat( tbuf, intvs[v] );
 				    strcat( tbuf, ")" );
 				}
-				efilter[v][i] =
-				    FilterOpen( header[i], tbuf, mode );
+				efilter[v][i] = FilterOpen( header[i], tbuf, mode );
 			    }
 			    else {
 				efilter[v][i] = NULL;
@@ -993,33 +910,27 @@ main( argc, argv )
 		    /* allocate region value buffer */
 		    rbuf = xmalloc( maxrow * sizeof( int ) );
 		    /* extract and filter events */
-		    while ( ( ebuf =
-		              FunTableRowGet( fun[SRC], NULL, maxrow, NULL,
-		                              &got ) ) ) {
+		    while ( ( ebuf = FunTableRowGet( fun[SRC], NULL, maxrow, NULL, &got ) ) ) {
 			/* get pointer to raw buffer */
 			FunInfoGet( fun[SRC], FUN_RAWBUF, &rawbuf, 0 );
 			/* process all intervals in one pass through this data */
 			for ( v = 0; v < nintv; v++ ) {
 			    /* get events which pass the region filter */
 			    for ( i = 0; i < NTYPE; i++ ) {
-				if ( efilter[v][i]
-				     && ( efilter[v][i] != NOFILTER )
+			        if ( efilter[v][i]
+			             && ( efilter[v][i] != NOFILTER )
 				     && FilterEvents( efilter[v][i], rawbuf,
-				                      rawsize[i], got,
-				                      rbuf ) ) {
+				                      rawsize[i], got, rbuf ) ) {
 				    /* count events which are in a region */
 				    for ( j = 0; j < got; j++ ) {
 					eptr =
 					    ( char * ) ( ebuf +
-					                 ( rowsize[i] * j ) +
-					                 valoffsets[i] );
+					                 ( rowsize[i] * j ) + valoffsets[i] );
 					if ( rbuf[j] > 0 ) {
 					    if ( valname[i]
 					         && ( *valname[i] != '-' ) )
 						cnts[v][i][rbuf[j] - 1] +=
-					            DConvert( eptr,
-					                      valtypes[i],
-					                      valns[i] );
+					            DConvert( eptr, valtypes[i], valns[i] );
 					    else
 						cnts[v][i][rbuf[j] - 1] += 1;
 					}
@@ -1073,66 +984,52 @@ main( argc, argv )
 		switch ( exptrans[k] ) {
 		    case EXP_RATIO:
 			lastey = -1;
-			d1 = ( ( double ) dim1[NTYPE + k] /
-			       ( double ) dim1[k] );
-			d2 = ( ( double ) dim2[NTYPE + k] /
-			       ( double ) dim2[k] );
+			d1 = ( ( double ) dim1[NTYPE + k] / ( double ) dim1[k] );
+			d2 = ( ( double ) dim2[NTYPE + k] / ( double ) dim2[k] );
 			for ( i = 0; i < nmask[k]; i++ ) {
 			    ey = ( ( masks[k][i].y - 1 ) * d2 ) + 1;
 			    if ( ey != lastey ) {
 				if ( !FunImageRowGet
-				     ( fun[NTYPE + k], exbuf, ey, ey,
-				       "bitpix=-64" ) )
+				     ( fun[NTYPE + k], exbuf, ey, ey, "bitpix=-64" ) )
 				    gerror( stderr,
-				            "can't FunImageRowGet (exp file): %d %s\n",
-				            ey, tname );
+				            "can't FunImageRowGet (exp file): %d %s\n", ey, tname );
 				lastey = ey;
 			    }
-			    for ( j = masks[k][i].xstart;
-			          j <= masks[k][i].xstop; j++ ) {
+			    for ( j = masks[k][i].xstart; j <= masks[k][i].xstop; j++ ) {
 				ex = ( j - 1 ) * d1 + 1;
 				if ( ex < 1 ) ex = 1;
-				if ( ex > dim1[NTYPE + k] ) ex =
-				        dim1[NTYPE + k];
-				exp[k][masks[k][i].region - 1] +=
-				    exbuf[ex - 1];
+				if ( ex > dim1[NTYPE + k] ) ex = dim1[NTYPE + k];
+				exp[k][masks[k][i].region - 1] += exbuf[ex - 1];
 			    }
 			}
 			break;
 		    case EXP_WCS:
 			lastey = -1;
 			for ( i = 0; i < nmask[k]; i++ ) {
-			    for ( j = masks[k][i].xstart;
-			          j <= masks[k][i].xstop; j++ ) {
+			    for ( j = masks[k][i].xstart; j <= masks[k][i].xstop; j++ ) {
 				double dval1, dval2;
 				double dex, dey;
 				int offscl;
 				/* convert data image pixels to ra/dec using wcs */
 				pix2wcs( wcs[k], ( double ) j,
-				         ( double ) masks[k][i].y, &dval1,
-				         &dval2 );
+				         ( double ) masks[k][i].y, &dval1, &dval2 );
 				/* convert ra/dec to exp image pixels using wcs */
-				wcs2pix( wcs[NTYPE + k], dval1, dval2, &dex,
-				         &dey, &offscl );
+				wcs2pix( wcs[NTYPE + k], dval1, dval2, &dex, &dey, &offscl );
 				ex = ( int ) ( dex + 0.5 );
 				ey = ( int ) ( dey + 0.5 );
 				if ( ex < 1 ) ex = 1;
-				if ( ex > dim1[NTYPE + k] ) ex =
-				        dim1[NTYPE + k];
+				if ( ex > dim1[NTYPE + k] ) ex = dim1[NTYPE + k];
 				if ( ey < 1 ) ey = 1;
-				if ( ey > dim2[NTYPE + k] ) ey =
-				        dim2[NTYPE + k];
+				if ( ey > dim2[NTYPE + k] ) ey = dim2[NTYPE + k];
 				if ( ey != lastey ) {
 				    if ( !FunImageRowGet
-				         ( fun[NTYPE + k], exbuf, ey, ey,
-				           "bitpix=-64" ) )
+				         ( fun[NTYPE + k], exbuf, ey, ey, "bitpix=-64" ) )
 					gerror( stderr,
 				                "can't FunImageRowGet (exp file): %d %s\n",
 				                ey, tname );
 				    lastey = ey;
 				}
-				exp[k][masks[k][i].region - 1] +=
-				    exbuf[ex - 1];
+				exp[k][masks[k][i].region - 1] += exbuf[ex - 1];
 			    }
 			}
 			break;
@@ -1180,8 +1077,7 @@ main( argc, argv )
     if ( valname[SRC] && ( *valname[SRC] != '-' ) )
 	fprintf( stdout, "#   value column:\t%s\n", valname[SRC] );
     if ( dpp[SRC] > 0.0 )
-	fprintf( stdout, "#   arcsec/pixel:\t%g\n",
-                 dpp[SRC] * ARCSEC_PER_DEG );
+	fprintf( stdout, "#   arcsec/pixel:\t%g\n", dpp[SRC] * ARCSEC_PER_DEG );
     if ( doexp & SCORR )
 	fprintf( stdout, "#   exp_correction:\t%s\n", name[NTYPE + SRC] );
     if ( dotim & SCORR )
@@ -1196,16 +1092,14 @@ main( argc, argv )
 	if ( valname[BKG] && ( *valname[BKG] != '-' ) )
 	    fprintf( stdout, "#   value column:\t%s\n", valname[BKG] );
 	if ( dpp[BKG] > 0.0 )
-	    fprintf( stdout, "#   arcsec/pixel:\t%g\n",
-	             dpp[BKG] * ARCSEC_PER_DEG );
+	    fprintf( stdout, "#   arcsec/pixel:\t%g\n", dpp[BKG] * ARCSEC_PER_DEG );
 	if ( doexp & BCORR )
 	    fprintf( stdout, "#   exp_correction:\t%s\n", name[NTYPE + BKG] );
 	if ( dotim & BCORR )
 	    fprintf( stdout, "#   time_correction:\t%g\n", timecorr[BKG] );
 	if ( dppnorm != 1.0 )
 	    fprintf( stdout,
-	             "# wcs area norm factor:\t%g/%g (source/bkgd))\n",
-	             dpp[SRC], dpp[BKG] );
+	             "# wcs area norm factor:\t%g/%g (source/bkgd))\n", dpp[SRC], dpp[BKG] );
     }
     else if ( bktype != BKG_VAL ) {
 	fprintf( stdout, "#   data_file:\t\t%s\n", name[SRC] );
@@ -1225,11 +1119,9 @@ main( argc, argv )
     fprintf( stdout, "# column units\n" );
     fprintf( stdout, "#   area:\t\t%s**2\n", s );
     fprintf( stdout, "#   surf_bri:\t\tcnts/%s**2%s%s\n",
-             s, ( dotim & SCORR ) ? "/sec" : "",
-             ( doexp & SCORR ) ? "/expval" : "" );
+             s, ( dotim & SCORR ) ? "/sec" : "", ( doexp & SCORR ) ? "/expval" : "" );
     fprintf( stdout, "#   surf_err:\t\tcnts/%s**2%s%s\n", s,
-             ( dotim & SCORR ) ? "/sec" : "",
-             ( doexp & SCORR ) ? "/expval" : "" );
+             ( dotim & SCORR ) ? "/sec" : "", ( doexp & SCORR ) ? "/expval" : "" );
     if ( doradang ) {
 	fprintf( stdout, "#   radii:\t\t%ss\n", s );
 	fprintf( stdout, "#   angles:\t\tdegrees\n" );
@@ -1241,19 +1133,15 @@ main( argc, argv )
        because we will have to display those as well */
     switch ( dosum ) {
 	case 1:
-	    memcpy( savecnts[v][SRC], cnts[v][SRC],
-	            ( nreg[SRC] + 1 ) * sizeof( double ) );
-	    memcpy( savearea[SRC], area[SRC],
-	            ( nreg[SRC] + 1 ) * sizeof( int ) );
+	    memcpy( savecnts[v][SRC], cnts[v][SRC], ( nreg[SRC] + 1 ) * sizeof( double ) );
+	    memcpy( savearea[SRC], area[SRC], ( nreg[SRC] + 1 ) * sizeof( int ) );
 	    for ( i = 1; i < nreg[SRC]; i++ ) {
 		cnts[v][SRC][i] += cnts[v][SRC][i - 1];
 		area[SRC][i] += area[SRC][i - 1];
 	    }
 	    if ( bktype != BKG_VAL ) {
-		memcpy( savecnts[v][BKG], cnts[v][BKG],
-		        ( nreg[BKG] + 1 ) * sizeof( double ) );
-		memcpy( savearea[BKG], area[BKG],
-		        ( nreg[BKG] + 1 ) * sizeof( int ) );
+		memcpy( savecnts[v][BKG], cnts[v][BKG], ( nreg[BKG] + 1 ) * sizeof( double ) );
+		memcpy( savearea[BKG], area[BKG], ( nreg[BKG] + 1 ) * sizeof( int ) );
 		for ( i = 1; i < nreg[BKG]; i++ ) {
 		    cnts[v][BKG][i] += cnts[v][BKG][i - 1];
 		    area[BKG][i] += area[BKG][i - 1];
@@ -1261,15 +1149,11 @@ main( argc, argv )
 	    }
 	    break;
 	case 2:
-	    memcpy( cnts[v][SRC], savecnts[v][SRC],
-	            ( nreg[SRC] + 1 ) * sizeof( double ) );
-	    memcpy( area[SRC], savearea[SRC],
-	            ( nreg[SRC] + 1 ) * sizeof( int ) );
+	    memcpy( cnts[v][SRC], savecnts[v][SRC], ( nreg[SRC] + 1 ) * sizeof( double ) );
+	    memcpy( area[SRC], savearea[SRC], ( nreg[SRC] + 1 ) * sizeof( int ) );
 	    if ( bktype != BKG_VAL ) {
-		memcpy( cnts[v][BKG], savecnts[v][BKG],
-		        ( nreg[BKG] + 1 ) * sizeof( double ) );
-		memcpy( area[BKG], savearea[BKG],
-		        ( nreg[BKG] + 1 ) * sizeof( int ) );
+		memcpy( cnts[v][BKG], savecnts[v][BKG], ( nreg[BKG] + 1 ) * sizeof( double ) );
+		memcpy( area[BKG], savearea[BKG], ( nreg[BKG] + 1 ) * sizeof( int ) );
 	    }
 	    break;
 	default:
@@ -1332,9 +1216,7 @@ main( argc, argv )
 		    tempnorm *= dppnorm;
 		    bncnts[v][i] = ( bkval * tempnorm );
 		    bscnts[v][i] = cnts[v][SRC][i] - bncnts[v][i];
-		    bserr[v][i] =
-		        sqrt( cnts[v][SRC][i] +
-		              ( tempnorm * tempnorm * bkval ) );
+		    bserr[v][i] = sqrt( cnts[v][SRC][i] + ( tempnorm * tempnorm * bkval ) );
 		    if ( dobkgderr )
 			bnerr[v][i] = sqrt( bkval ) * tempnorm;
 		    else
@@ -1350,17 +1232,13 @@ main( argc, argv )
 		    /* get area and exposure normalization */
 		    switch ( doexp ) {
 			case NONE:
-			    tempnorm =
-			        ( double ) area[SRC][i] /
-			        ( double ) area[BKG][i];
+			    tempnorm = ( double ) area[SRC][i] / ( double ) area[BKG][i];
 			    break;
 			case SCORR:
 			    tempnorm = exp[SRC][i] / ( double ) area[BKG][i];
 			    break;
 			case BCORR:
-			    tempnorm =
-			        ( double ) area[SRC][i] /
-			        ( double ) exp[BKG][i];
+			    tempnorm = ( double ) area[SRC][i] / ( double ) exp[BKG][i];
 			    break;
 			case BOTH:
 			    tempnorm = exp[SRC][i] / ( double ) exp[BKG][i];
@@ -1373,8 +1251,7 @@ main( argc, argv )
 		    bncnts[v][i] = ( cnts[v][BKG][i] * tempnorm );
 		    bscnts[v][i] = cnts[v][SRC][i] - bncnts[v][i];
 		    bserr[v][i] = sqrt( cnts[v][SRC][i] +
-		                        ( tempnorm * tempnorm *
-		                          cnts[v][BKG][i] ) );
+		                        ( tempnorm * tempnorm * cnts[v][BKG][i] ) );
 		    if ( dobkgderr )
 			bnerr[v][i] = sqrt( cnts[v][BKG][i] ) * tempnorm;
 		    else
@@ -1403,15 +1280,13 @@ main( argc, argv )
     fprintf( stdout, "%c  background%c   berror", cold, cold );
     fprintf( stdout, "%c     area%c surf_bri%c surf_err", cold, cold, cold );
     if ( doradang )
-	fprintf( stdout, "%c  radius1%c  radius2%c   angle1%c   angle2",
-                 cold, cold, cold, cold );
+	fprintf( stdout, "%c  radius1%c  radius2%c   angle1%c   angle2", cold, cold, cold, cold );
     fprintf( stdout, "\n" );
     fprintf( stdout, "----%c------------%c---------", cold, cold );
     fprintf( stdout, "%c------------%c---------", cold, cold );
     fprintf( stdout, "%c---------%c---------%c---------", cold, cold, cold );
     if ( doradang )
-	fprintf( stdout, "%c---------%c---------%c---------%c---------",
-                 cold, cold, cold, cold );
+	fprintf( stdout, "%c---------%c---------%c---------%c---------", cold, cold, cold, cold );
     fprintf( stdout, "\n" );
     if ( radang )
 	newdtable( "," );
@@ -1439,28 +1314,20 @@ main( argc, argv )
 	    }
 	    /* if we know how to convert to cnts/pix**2 to cnts/arcsec**2, do it */
 	    if ( !dopixels && ( dpp[SRC] > 0.0 ) ) {
-		cntsperarea =
-		    ( cntsperarea / ( dpp[SRC] * dpp[SRC] ) ) /
-		    ARCSEC_PER_DEGSQ;
-		errperarea =
-		    ( errperarea / ( dpp[SRC] * dpp[SRC] ) ) /
-		    ARCSEC_PER_DEGSQ;
-		areasq =
-		    ( areasq * ( dpp[SRC] * dpp[SRC] ) ) * ARCSEC_PER_DEGSQ;
+		cntsperarea = ( cntsperarea / ( dpp[SRC] * dpp[SRC] ) ) / ARCSEC_PER_DEGSQ;
+		errperarea = ( errperarea / ( dpp[SRC] * dpp[SRC] ) ) / ARCSEC_PER_DEGSQ;
+		areasq = ( areasq * ( dpp[SRC] * dpp[SRC] ) ) * ARCSEC_PER_DEGSQ;
 	    }
 	    /* get correctly precisioned format statement */
 	    switch ( dog ) {
 		case 0:
-		    fmt =
-		        "%4d%c%12.3f%c%9.3f%c%12.3f%c%9.3f%c%9.2f%c%9.3f%c%9.3f";
+		    fmt = "%4d%c%12.3f%c%9.3f%c%12.3f%c%9.3f%c%9.2f%c%9.3f%c%9.3f";
 		    break;
 		case 1:
-		    fmt =
-		        "%4d%c%12.3g%c%9.3g%c%12.3g%c%9.3g%c%9.2g%c%9.3g%c%9.3g";
+		    fmt = "%4d%c%12.3g%c%9.3g%c%12.3g%c%9.3g%c%9.2g%c%9.3g%c%9.3g";
 		    break;
 		case 2:
-		    fmt =
-		        "%4d%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g";
+		    fmt = "%4d%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g";
 		    break;
 	    }
 	    fprintf( stdout, fmt,
@@ -1494,16 +1361,13 @@ main( argc, argv )
 	    /* get correctly precisioned format statement */
 	    switch ( dog ) {
 		case 0:
-		    fmt =
-		        "%4d%c%12.3f%c%9.3f%c%12.3f%c%9.3f%c%9.2f%c%9.3f%c%9.3f";
+		    fmt = "%4d%c%12.3f%c%9.3f%c%12.3f%c%9.3f%c%9.2f%c%9.3f%c%9.3f";
 		    break;
 		case 1:
-		    fmt =
-		        "%4d%c%12.3g%c%9.3g%c%12.3g%c%9.3g%c%9.2g%c%9.3g%c%9.3g";
+		    fmt = "%4d%c%12.3g%c%9.3g%c%12.3g%c%9.3g%c%9.2g%c%9.3g%c%9.3g";
 		    break;
 		case 2:
-		    fmt =
-		        "%4d%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g";
+		    fmt = "%4d%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g%c%.14g";
 		    break;
 	    }
 	    fprintf( stdout, fmt, i + 1, cold, 0.0, cold, 0.0, cold, 0.0,
@@ -1588,9 +1452,7 @@ main( argc, argv )
 		    break;
 	    }
 	    fprintf( stdout, fmt,
-	             i + 1, cold,
-	             cnts[v][SRC][i], cold, area[SRC][i], cold,
-	             tcnts, cold, tarea );
+	             i + 1, cold, cnts[v][SRC][i], cold, area[SRC][i], cold, tcnts, cold, tarea );
 	}
     }
     else {
@@ -1623,8 +1485,7 @@ main( argc, argv )
 		    fmt = "%4d%c%.14g%c%9d";
 		    break;
 	    }
-	    fprintf( stdout, fmt, i + 1, cold, cnts[v][SRC][i], cold,
-	             area[SRC][i] );
+	    fprintf( stdout, fmt, i + 1, cold, cnts[v][SRC][i], cold, area[SRC][i] );
 
 	    if ( doexp & SCORR ) {
 		/* get correctly precisioned format statement */
@@ -1733,8 +1594,7 @@ main( argc, argv )
 			    break;
 		    }
 		    fprintf( stdout, fmt, i + 1, cold,
-		             cnts[v][BKG][i], cold, area[BKG][i], cold,
-		             tcnts, cold, tarea );
+		             cnts[v][BKG][i], cold, area[BKG][i], cold, tcnts, cold, tarea );
 		}
 	    }
 	    else {
@@ -1745,13 +1605,11 @@ main( argc, argv )
 		    fprintf( stdout, "# %s\n\n", filtstr[BKG] );
 		}
 		fprintf( stdout, "# background_data\n" );
-		fprintf( stdout, " reg%c      counts%c   pixels", cold,
-		         cold );
+		fprintf( stdout, " reg%c      counts%c   pixels", cold, cold );
 		if ( doexp & BCORR )
 		    fprintf( stdout, "%c  avg_exp", cold );
 		fprintf( stdout, "\n" );
-		fprintf( stdout, "----%c------------%c---------", cold,
-		         cold );
+		fprintf( stdout, "----%c------------%c---------", cold, cold );
 		if ( doexp & BCORR )
 		    fprintf( stdout, "%c---------", cold );
 		fprintf( stdout, "\n" );
@@ -1768,8 +1626,7 @@ main( argc, argv )
 			    fmt = "%4d%c%.14g%c%9d";
 			    break;
 		    }
-		    fprintf( stdout, fmt, i + 1, cold,
-		             cnts[v][BKG][i], cold, area[BKG][i] );
+		    fprintf( stdout, fmt, i + 1, cold, cnts[v][BKG][i], cold, area[BKG][i] );
 		    if ( doexp & BCORR ) {
 			/* get correctly precisioned format statement */
 			switch ( dog ) {
@@ -1784,8 +1641,7 @@ main( argc, argv )
 				break;
 			}
 			if ( area[BKG][i] > 0 )
-			    fprintf( stdout, fmt, cold,
-			             exp[BKG][i] / area[BKG][i] );
+			    fprintf( stdout, fmt, cold, exp[BKG][i] / area[BKG][i] );
 			else
 			    fprintf( stdout, fmt, cold, 0.0 );
 		    }

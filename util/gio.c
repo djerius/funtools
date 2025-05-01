@@ -8,10 +8,14 @@
  *
  */
 
-#include <gio.h>
-#include <find.h>
-#include <word.h>
+#include "gio.h"
+#include "find.h"
+#include "word.h"
 #include <zlib.h>
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 /*
  *
@@ -35,15 +39,10 @@ static int _gcrnl = 1;
  * gext -- return extension from a file (without bracket extension)
  *
  */
-#ifdef ANSI_FUNC
 static char *
-gext( char *fname )
-#else
-static char *
-gext( fname )
-     char *fname;
-#endif
-{
+gext(
+    char *fname
+ ) {
     char *s, *t = NULL;
     char *file;
 
@@ -73,14 +72,10 @@ gext( fname )
  * gnew -- create a new GIO structure
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gnew( void )
-#else
-static GIO
-gnew(  )
-#endif
-{
+gnew(
+    void
+ ) {
     GIO gio;
     gio = ( GIO ) xcalloc( 1, sizeof( GFile ) );
     gio->ifd = -1;
@@ -93,15 +88,10 @@ gnew(  )
  * gfree -- destroy a GIO structure
  *
  */
-#ifdef ANSI_FUNC
 static void
-gfree( GIO gio )
-#else
-static void
-gfree( gio )
-     GIO gio;
-#endif
-{
+gfree(
+    GIO gio
+ ) {
     if ( gio == NULL )
 	return;
     if ( gio->name )
@@ -119,17 +109,12 @@ gfree( gio )
  * gmemseek -- memory "seek" of data
  *
  */
-#ifdef ANSI_FUNC
 static off_t
-gmemseek( GIO gio, off_t offset, int whence )
-#else
-static off_t
-gmemseek( gio, offset, whence )
-     GIO gio;
-     off_t offset;
-     int whence;
-#endif
-{
+gmemseek(
+    GIO gio,
+    off_t offset,
+    int whence
+ ) {
     int offset2;
 
     switch ( whence ) {
@@ -167,28 +152,21 @@ gmemseek( gio, offset, whence )
  * gmemread -- memory "read" of data
  *
  */
-#ifdef ANSI_FUNC
 static void *
-gmemread( GIO gio, void *buf, size_t size, size_t n, size_t *got )
-#else
-static void *
-gmemread( gio, buf, size, n, got )
-     GIO gio;
-     void *buf;
-     size_t size;
-     size_t n;
-     size_t *got;
-#endif
-{
+gmemread(
+    GIO gio,
+    void *buf,
+    size_t size,
+    size_t n,
+    size_t *got
+ ) {
     char *obuf;
 
     /* sanity checks */
     if ( ( gio == NULL ) || ( gio->buf == NULL ) )
 	return ( ( void * ) NULL );
     if ( !strchr( gio->mode, 'r' ) && !strstr( gio->mode, "w+" ) ) {
-	gerror( stderr,
-	        "illegal read operation on write-only data (%s)\n",
-	        gio->name );
+	gerror( stderr, "illegal read operation on write-only data (%s)\n", gio->name );
 	return ( ( void * ) NULL );
     }
     /* see how much we can grab to "EOF" */
@@ -215,18 +193,13 @@ gmemread( gio, buf, size, n, got )
  * gmemwrite -- memory "write" of data
  *
  */
-#ifdef ANSI_FUNC
 static int
-gmemwrite( GIO gio, char *buf, size_t size, size_t n )
-#else
-static int
-gmemwrite( gio, buf, size, n )
-     GIO gio;
-     char *buf;
-     size_t size;
-     size_t n;
-#endif
-{
+gmemwrite(
+    GIO gio,
+    char *buf,
+    size_t size,
+    size_t n
+ ) {
     size_t n2;
     int len;
 
@@ -234,9 +207,7 @@ gmemwrite( gio, buf, size, n )
     if ( ( gio == NULL ) || ( gio->buf == NULL ) )
 	return ( 0 );
     if ( !strchr( gio->mode, 'w' ) && !strstr( gio->mode, "r+" ) ) {
-	gerror( stderr,
-	        "illegal write operation on read-only data (%s)\n",
-	        gio->name );
+	gerror( stderr, "illegal write operation on read-only data (%s)\n", gio->name );
 	return ( 0 );
     }
     len = size * n;
@@ -244,13 +215,11 @@ gmemwrite( gio, buf, size, n )
     if ( gio->cur + len >= gio->len ) {
 	if ( gio->extend ) {
 	    gio->len += MAX( len, GIO_BUFINC );
-	    if ( ( gio->buf =
-	           ( char * ) xrealloc( gio->buf, gio->len ) ) != NULL )
+	    if ( ( gio->buf = ( char * ) xrealloc( gio->buf, gio->len ) ) != NULL )
 		n2 = len;
 	    /* could not grab space -- try just a bit to recover */
 	    else {
-		gerror( stderr,
-		        "could not realloc space for memory write\n" );
+		gerror( stderr, "could not realloc space for memory write\n" );
 		n2 = 0;
 	    }
 	}
@@ -274,17 +243,12 @@ gmemwrite( gio, buf, size, n )
  * IPC channels, implemented with pipes for this version
  *
  */
-#ifdef ANSI_FUNC
 static int
-gexec( GIO gio, char *cmd, char *mode )
-#else
-static int
-gexec( gio, cmd, mode )
-     GIO gio;
-     char *cmd;
-     char *mode;
-#endif
-{
+gexec(
+    GIO gio,
+    char *cmd,
+    char *mode
+ ) {
     int pin[2], pout[2];
     int maxforks = 3;
     char *argv[4096];
@@ -363,16 +327,11 @@ gexec( gio, cmd, mode )
  * gopenpipe -- open a command pipe
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopenpipe( char *name, char *mode )
-#else
-static GIO
-gopenpipe( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopenpipe(
+    char *name,
+    char *mode
+ ) {
     GIO gio;
     char *s;
 
@@ -405,15 +364,10 @@ gopenpipe( name, mode )
  * giohostip -- convert ascii host into ip number
  *
  */
-#ifdef ANSI_FUNC
 static unsigned int
-giohostip( char *xhost )
-#else
-static unsigned int
-giohostip( xhost )
-     char *xhost;
-#endif
-{
+giohostip(
+    char *xhost
+ ) {
     struct hostent *hostent;
     unsigned int ip;
     char temp[SZ_LINE];
@@ -458,17 +412,12 @@ giohostip( xhost )
  * gioparseipport -- parse ascii string into a host and port
  *
  */
-#ifdef ANSI_FUNC
 static int
-gioparseipport( char *host, unsigned int *ip, unsigned short *port )
-#else
-static int
-gioparseipport( host, ip, port )
-     char *host;
-     unsigned int *ip;
-     unsigned short *port;
-#endif
-{
+gioparseipport(
+    char *host,
+    unsigned int *ip,
+    unsigned short *port
+ ) {
     char *s1, *p1, *p2;
     int got;
 
@@ -519,16 +468,11 @@ gioparseipport( host, ip, port )
  * gopensocket -- open a socket for reading and/or writing
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopensocket( char *name, char *mode )
-#else
-static GIO
-gopensocket( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopensocket(
+    char *name,
+    char *mode
+ ) {
     char *s;
     char tbuf[SZ_LINE];
     int fd = -1;
@@ -591,15 +535,13 @@ gopensocket( name, mode )
 	/* set up listening socket, which will accept connection */
 	if ( ( fd = socket( AF_INET, SOCK_STREAM, 0 ) ) < 0 )
 	    goto error;
-	setsockopt( fd, SOL_SOCKET, SO_REUSEADDR,
-	            ( char * ) &reuse_addr, sizeof( reuse_addr ) );
+	setsockopt( fd, SOL_SOCKET, SO_REUSEADDR, ( char * ) &reuse_addr, sizeof( reuse_addr ) );
 	memset( ( char * ) &sock_in, 0, sizeof( sock_in ) );
 	sock_in.sin_family = AF_INET;
 	sock_in.sin_addr.s_addr = htonl( INADDR_ANY );
 	sock_in.sin_port = htons( port );
 	/* bind to a port */
-	if ( bind( fd, ( struct sockaddr * ) &sock_in, sizeof( sock_in ) ) <
-	     0 )
+	if ( bind( fd, ( struct sockaddr * ) &sock_in, sizeof( sock_in ) ) < 0 )
 	    goto error;
 	/* listen for connections */
 	if ( listen( fd, 5 ) < 0 )
@@ -613,15 +555,13 @@ gopensocket( name, mode )
 	    goto error;
 	/* accept connection -- the goal of our striving */
 	slen = sizeof( struct sockaddr_in );
-	if ( ( fd2 =
-	       accept( fd, ( struct sockaddr * ) &sock_in, &slen ) ) < 0 )
+	if ( ( fd2 = accept( fd, ( struct sockaddr * ) &sock_in, &slen ) ) < 0 )
 	    goto error;
 	/* done with the listening socket */
 	close( fd );
 	/* make sure we close on exec */
 	xfcntl( fd2, F_SETFD, FD_CLOEXEC );
-	setsockopt( fd2, SOL_SOCKET, SO_REUSEADDR,
-	            ( char * ) &reuse_addr, sizeof( reuse_addr ) );
+	setsockopt( fd2, SOL_SOCKET, SO_REUSEADDR, ( char * ) &reuse_addr, sizeof( reuse_addr ) );
 	/* make sure the right fd is set properly */
 	if ( strchr( mode, 'r' ) ) gio->ifd = fd2;
 	if ( strchr( mode, 'w' ) ) gio->ofd = fd2;
@@ -643,8 +583,7 @@ gopensocket( name, mode )
 	sock_in.sin_addr.s_addr = htonl( ip );
 	sock_in.sin_port = htons( port );
 	/* try connecting to the specified socket */
-	status =
-	    connect( fd2, ( struct sockaddr * ) &sock_in, sizeof( sock_in ) );
+	status = connect( fd2, ( struct sockaddr * ) &sock_in, sizeof( sock_in ) );
 	/* handle error */
 	if ( status != 0 ) {
 	    close( fd2 );
@@ -659,8 +598,7 @@ gopensocket( name, mode )
 	}
 	/* make sure we close on exec */
 	xfcntl( fd2, F_SETFD, FD_CLOEXEC );
-	setsockopt( fd2, SOL_SOCKET, SO_REUSEADDR,
-	            ( char * ) &reuse_addr, sizeof( reuse_addr ) );
+	setsockopt( fd2, SOL_SOCKET, SO_REUSEADDR, ( char * ) &reuse_addr, sizeof( reuse_addr ) );
 	/* make sure the right fd is set properly */
 	if ( strchr( mode, 'r' ) ) gio->ifd = fd2;
 	if ( strchr( mode, 'w' ) ) gio->ofd = fd2;
@@ -686,24 +624,18 @@ gopensocket( name, mode )
  * gopenstdio -- open stdin or stdout
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopenstdio( char *name, char *mode )
-#else
-static GIO
-gopenstdio( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopenstdio(
+    char *name,
+    char *mode
+ ) {
     GIO gio;
 
     /* allocate a new struct */
     if ( ( gio = gnew(  ) ) == NULL )
 	return ( NULL );
 
-    if ( !strncasecmp( name, "stdout", 6 ) ||
-         ( !strncmp( name, "-", 1 ) && strchr( mode, 'w' ) ) ) {
+    if ( !strncasecmp( name, "stdout", 6 ) || ( !strncmp( name, "-", 1 ) && strchr( mode, 'w' ) ) ) {
 	if ( strchr( mode, 'r' ) ) {
 	    gerror( stderr, "can't open STDOUT for reading\n" );
 	    gfree( gio );
@@ -750,16 +682,11 @@ gopenstdio( name, mode )
  * gopenshm -- open shared memory for reading or writing
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopenshm( char *name, char *mode )
-#else
-static GIO
-gopenshm( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopenshm(
+    char *name,
+    char *mode
+ ) {
     GIO gio;
     int shmid = -1;
     int shmkey = -1;
@@ -850,8 +777,7 @@ gopenshm( name, mode )
 	}
     }
     else {
-	gerror( stderr, "can't determine memory mapping length (%s)\n",
-	        name );
+	gerror( stderr, "can't determine memory mapping length (%s)\n", name );
 	goto error;
     }
 
@@ -882,16 +808,11 @@ gopenshm( name, mode )
  * gopenmmap -- open memory mapped file for reading or writing
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopenmmap( char *name, char *mode )
-#else
-static GIO
-gopenmmap( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopenmmap(
+    char *name,
+    char *mode
+ ) {
     GIO gio;
     int prot;
     int flags;
@@ -953,16 +874,11 @@ gopenmmap( name, mode )
  * gopengzip -- open gzip'ed for reading or writing
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopengzip( char *name, char *mode )
-#else
-static GIO
-gopengzip( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopengzip(
+    char *name,
+    char *mode
+ ) {
     GIO gio;
     char *s;
 
@@ -982,8 +898,7 @@ gopengzip( name, mode )
     gio->extend = 1;
 
     /* open stdin specially */
-    if ( !strncasecmp( name, "stdin", 5 ) ||
-         ( !strncmp( name, "-", 1 ) && strchr( mode, 'r' ) ) ) {
+    if ( !strncasecmp( name, "stdin", 5 ) || ( !strncmp( name, "-", 1 ) && strchr( mode, 'r' ) ) ) {
 	gio->gz = ( void * ) gzdopen( dup( fileno( stdin ) ), gio->mode );
     }
     /* open stdout specially */
@@ -1009,17 +924,12 @@ gopengzip( name, mode )
 }
 
 
-#ifdef ANSI_FUNC
 static void *
-_ggets( GIO gio, char *obuf, int len )
-#else
-static void *
-_ggets( gio, obuf, len )
-     GIO gio;
-     char *obuf;
-     int len;
-#endif
-{
+_ggets(
+    GIO gio,
+    char *obuf,
+    int len
+ ) {
     int i, j, l;
     char *s = NULL;
     char *t = NULL;
@@ -1038,7 +948,7 @@ _ggets( gio, obuf, len )
 	    if ( gio->crbuf[j] == '\0' ) {
 		/* yes, try to get more */
 		if ( !( s = fgets( gio->crbuf, gio->crlen, gio->fp ) ) )
-		        break;
+		    break;
 		/* reset cr buffer pointer to beginning */
 		j = 0;
 		/* continue processing at beginning of buffer */
@@ -1051,8 +961,7 @@ _ggets( gio, obuf, len )
 		/* change it to a new-line */
 		obuf[i++] = '\n';
 		/* shift rest of start of cr buffer */
-		memmove( gio->crbuf, &( gio->crbuf[j + 1] ),
-		         strlen( &( gio->crbuf[j + 1] ) ) + 1 );
+		memmove( gio->crbuf, &( gio->crbuf[j + 1] ), strlen( &( gio->crbuf[j + 1] ) ) + 1 );
 		/* bump cr bbuf pointer */
 		j++;
 		break;
@@ -1104,16 +1013,11 @@ _ggets( gio, obuf, len )
  * gopenfile -- open ordinary file for reading or writing
  *
  */
-#ifdef ANSI_FUNC
 static GIO
-gopenfile( char *name, char *mode )
-#else
-static GIO
-gopenfile( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+gopenfile(
+    char *name,
+    char *mode
+ ) {
     char *s;
     GIO gio;
 
@@ -1167,16 +1071,11 @@ gopenfile( name, mode )
  * gopen -- open a file or a stream
  *
  */
-#ifdef ANSI_FUNC
 GIO
-gopen( char *fname, char *mode )
-#else
-GIO
-gopen( fname, mode )
-     char *fname;
-     char *mode;
-#endif
-{
+gopen(
+    char *fname,
+    char *mode
+ ) {
     GIO gio;
     unsigned int ip;
     unsigned short port;
@@ -1244,8 +1143,7 @@ gopen( fname, mode )
 	    s += 4;
 	buf = ( char * ) strtoul( s, &t, 0 );
 	if ( *t != ':' ) {
-	    gerror( stderr, "illegal memory buffer specification (%s)\n",
-	            name );
+	    gerror( stderr, "illegal memory buffer specification (%s)\n", name );
 	    gio = NULL;
 	}
 	else {
@@ -1276,17 +1174,12 @@ gopen( fname, mode )
  * gmemopen -- open memory for reading or writing
  *
  */
-#ifdef ANSI_FUNC
 GIO
-gmemopen( char *buf, off_t len, char *mode )
-#else
-GIO
-gmemopen( buf, len, mode )
-     char *buf;
-     off_t len;
-     char *mode;
-#endif
-{
+gmemopen(
+    char *buf,
+    off_t len,
+    char *mode
+ ) {
     GIO gio;
 
     /* allocate a new struct */
@@ -1327,19 +1220,14 @@ gmemopen( buf, len, mode )
  * _gread -- read bytes from a data I/O structure
  *
  */
-#ifdef ANSI_FUNC
 void *
-_gread( GIO gio, char *buf, size_t size, size_t n, size_t *got )
-#else
-void *
-_gread( gio, buf, size, n, got )
-     GIO gio;
-     char *buf;
-     size_t size;
-     size_t n;
-     size_t *got;
-#endif
-{
+_gread(
+    GIO gio,
+    char *buf,
+    size_t size,
+    size_t n,
+    size_t *got
+ ) {
     char *obuf;
     char *tptr;
     int get;
@@ -1352,9 +1240,7 @@ _gread( gio, buf, size, n, got )
     if ( gio == NULL )
 	return ( NULL );
     if ( !strchr( gio->mode, 'r' ) && !strstr( gio->mode, "w+" ) ) {
-	gerror( stderr,
-	        "illegal read operation on write-only data (%s)\n",
-	        gio->name );
+	gerror( stderr, "illegal read operation on write-only data (%s)\n", gio->name );
 	return ( NULL );
     }
 
@@ -1502,18 +1388,13 @@ _gread( gio, buf, size, n, got )
  * gread -- read bytes from a data I/O structure
  *
  */
-#ifdef ANSI_FUNC
 size_t
-gread( GIO gio, char *buf, size_t size, size_t n )
-#else
-size_t
-gread( gio, buf, size, n )
-     GIO gio;
-     char *buf;
-     size_t size;
-     size_t n;
-#endif
-{
+gread(
+    GIO gio,
+    char *buf,
+    size_t size,
+    size_t n
+ ) {
     size_t got;
     if ( buf == NULL )
 	return ( 0 );
@@ -1526,28 +1407,20 @@ gread( gio, buf, size, n )
  * gwrite -- write bytes to a structure
  *
  */
-#ifdef ANSI_FUNC
 size_t
-gwrite( GIO gio, char *buf, size_t size, size_t n )
-#else
-size_t
-gwrite( gio, buf, size, n )
-     GIO gio;
-     char *buf;
-     size_t size;
-     size_t n;
-#endif
-{
+gwrite(
+    GIO gio,
+    char *buf,
+    size_t size,
+    size_t n
+ ) {
     int got = 0;
 
     /* sanity checks */
     if ( gio == NULL )
 	return ( 0 );
-    if ( !strchr( gio->mode, 'w' ) && !strchr( gio->mode, 'a' ) &&
-         !strstr( gio->mode, "r+" ) ) {
-	gerror( stderr,
-	        "illegal write operation on read-only data (%s)\n",
-	        gio->name );
+    if ( !strchr( gio->mode, 'w' ) && !strchr( gio->mode, 'a' ) && !strstr( gio->mode, "r+" ) ) {
+	gerror( stderr, "illegal write operation on read-only data (%s)\n", gio->name );
 	return ( 0 );
     }
 
@@ -1605,17 +1478,12 @@ gwrite( gio, buf, size, n )
     return ( got );
 }
 
-#ifdef ANSI_FUNC
 void *
-ggets( GIO gio, char *buf, int len )
-#else
-void *
-ggets( gio, buf, len )
-     GIO gio;
-     char *buf;
-     int len;
-#endif
-{
+ggets(
+    GIO gio,
+    char *buf,
+    int len
+ ) {
     int i = 0;
     int got;
     char *obuf = NULL;
@@ -1624,9 +1492,7 @@ ggets( gio, buf, len )
     if ( !gio )
 	return NULL;
     if ( !strchr( gio->mode, 'r' ) && !strstr( gio->mode, "w+" ) ) {
-	gerror( stderr,
-	        "illegal read operation on write-only data (%s)\n",
-	        gio->name );
+	gerror( stderr, "illegal read operation on write-only data (%s)\n", gio->name );
 	return NULL;
     }
 
@@ -1688,24 +1554,15 @@ ggets( gio, buf, len )
     }
 }
 
-#ifdef __STDC__
 int
-gprintf( GIO gio, char *format, ... ) {
+gprintf(
+    GIO gio,
+    char *format,
+    ...
+ ) {
     int got;
     va_list args;
     va_start( args, format );
-#else
-int
-gprintf( va_alist )
-     va_dcl {
-    GIO gio char *format;
-    int got;
-    va_list args;
-
-    va_start( args );
-    gio = va_arg( args, GIO );
-    format = va_arg( args, char * );
-#endif
     got = vsnprintf( _gtbuf, GBUFSZ, format, args );
     if ( got > GBUFSZ ) {
 	gerror( stderr, "gprintf string too long (%d > %d)\n", got, GBUFSZ );
@@ -1714,513 +1571,485 @@ gprintf( va_alist )
     else {
 	return gwrite( gio, _gtbuf, sizeof( char ), strlen( _gtbuf ) );
     }
-     }
+}
 
 /*
  *
  * gflush -- flush I/O
  *
  */
-#ifdef ANSI_FUNC
-     int gflush( GIO gio )
-#else
-     int gflush( gio )
-     GIO gio;
-#endif
-     {
-	 /* sanity checks */
-	 if ( gio == NULL )
-	     return ( -1 );
+int
+gflush(
+    GIO gio
+ ) {
+    /* sanity checks */
+    if ( gio == NULL )
+	return ( -1 );
 
-	 switch ( gio->type ) {
-	     case GIO_DISK:
-		 if ( gio->unbuffered )
-		     return ( 0 );
-		 else
-		     return ( fflush( gio->fp ) );
-	     case GIO_STREAM:
-		 return ( fflush( gio->fp ) );
-	     case GIO_MEMORY:
-		 return ( 0 );
+    switch ( gio->type ) {
+	case GIO_DISK:
+	    if ( gio->unbuffered )
+		return ( 0 );
+	    else
+		return ( fflush( gio->fp ) );
+	case GIO_STREAM:
+	    return ( fflush( gio->fp ) );
+	case GIO_MEMORY:
+	    return ( 0 );
 #ifdef HAVE_SYS_MMAN_H
-	     case GIO_MMAP:
-		 return ( 0 );
+	case GIO_MMAP:
+	    return ( 0 );
 #endif
 #ifdef HAVE_SYS_SHM_H
-	     case GIO_SHM:
-		 return ( 0 );
+	case GIO_SHM:
+	    return ( 0 );
 #endif
-	     case GIO_PIPE:
-		 return ( 0 );
-	     case GIO_SOCKET:
-		 return ( 0 );
-	     case GIO_GZIP:
-		 return ( 0 );
-	     default:
-		 return ( -1 );
-	 }
-     }
+	case GIO_PIPE:
+	    return ( 0 );
+	case GIO_SOCKET:
+	    return ( 0 );
+	case GIO_GZIP:
+	    return ( 0 );
+	default:
+	    return ( -1 );
+    }
+}
 
 /*
  *
  * gseek -- set current pointer position in a "file"
  *
  */
-#ifdef ANSI_FUNC
-     off_t gseek( GIO gio, off_t offset, int whence )
-#else
-     off_t gseek( gio, offset, whence )
-     GIO gio;
-     off_t offset;
-     int whence;
-#endif
-     {
-	 off_t opos;
-	 /* sanity checks */
-	 if ( gio == NULL )
-	     return ( -1 );
+off_t
+gseek(
+    GIO gio,
+    off_t offset,
+    int whence
+ ) {
+    off_t opos;
+    /* sanity checks */
+    if ( gio == NULL )
+	return ( -1 );
 
-	 switch ( gio->type ) {
-	     case GIO_DISK:
-		 if ( gio->unbuffered )
-		     return ( lseek( fileno( gio->fp ), offset, whence ) );
-		 else {
+    switch ( gio->type ) {
+	case GIO_DISK:
+	    if ( gio->unbuffered )
+		return ( lseek( fileno( gio->fp ), offset, whence ) );
+	    else {
 #if USE_FSEEKO
-		     opos = ftello( gio->fp );
-		     if ( fseeko( gio->fp, offset, whence ) == 0 ) {
-			 return ( opos );
-		     }
-		     else {
-			 return ( -1 );
-		     }
+		opos = ftello( gio->fp );
+		if ( fseeko( gio->fp, offset, whence ) == 0 ) {
+		    return ( opos );
+		}
+		else {
+		    return ( -1 );
+		}
 #else
-		     opos = ftell( gio->fp );
-		     if ( fseek( gio->fp, ( long ) offset, whence ) == 0 ) {
-			 return ( opos );
-		     }
-		     else {
-			 return ( -1 );
-		     }
+		opos = ftell( gio->fp );
+		if ( fseek( gio->fp, ( long ) offset, whence ) == 0 ) {
+		    return ( opos );
+		}
+		else {
+		    return ( -1 );
+		}
 #endif
-		 }
-	     case GIO_STREAM:
-		 if ( whence == SEEK_CUR )
-		     return ( gskip( gio, offset ) );
-		 else {
+	    }
+	case GIO_STREAM:
+	    if ( whence == SEEK_CUR )
+		return ( gskip( gio, offset ) );
+	    else {
 #if USE_FSEEKO
-		     opos = ftello( gio->fp );
-		     if ( fseeko( gio->fp, offset, whence ) == 0 ) {
-			 return ( opos );
-		     }
-		     else {
-			 return ( -1 );
-		     }
+		opos = ftello( gio->fp );
+		if ( fseeko( gio->fp, offset, whence ) == 0 ) {
+		    return ( opos );
+		}
+		else {
+		    return ( -1 );
+		}
 #else
-		     opos = ftell( gio->fp );
-		     if ( fseek( gio->fp, ( long ) offset, whence ) == 0 ) {
-			 return ( opos );
-		     }
-		     else {
-			 return ( -1 );
-		     }
+		opos = ftell( gio->fp );
+		if ( fseek( gio->fp, ( long ) offset, whence ) == 0 ) {
+		    return ( opos );
+		}
+		else {
+		    return ( -1 );
+		}
 #endif
-		 }
-	     case GIO_MEMORY:
-		 return ( gmemseek( gio, offset, whence ) );
+	    }
+	case GIO_MEMORY:
+	    return ( gmemseek( gio, offset, whence ) );
 #ifdef HAVE_SYS_MMAN_H
-	     case GIO_MMAP:
-		 return ( gmemseek( gio, offset, whence ) );
+	case GIO_MMAP:
+	    return ( gmemseek( gio, offset, whence ) );
 #endif
 #ifdef HAVE_SYS_SHM_H
-	     case GIO_SHM:
-		 return ( gmemseek( gio, offset, whence ) );
+	case GIO_SHM:
+	    return ( gmemseek( gio, offset, whence ) );
 #endif
-	     case GIO_PIPE:
-		 if ( whence == SEEK_CUR )
-		     return ( gskip( gio, offset ) );
-		 else
-		     return ( -1 );
-	     case GIO_SOCKET:
-		 if ( whence == SEEK_CUR )
-		     return ( gskip( gio, offset ) );
-		 else
-		     return ( -1 );
-	     case GIO_GZIP:
-		 return ( gzseek( gio->gz, offset, whence ) );
-	     default:
-		 return ( -1 );
-	 }
-     }
+	case GIO_PIPE:
+	    if ( whence == SEEK_CUR )
+		return ( gskip( gio, offset ) );
+	    else
+		return ( -1 );
+	case GIO_SOCKET:
+	    if ( whence == SEEK_CUR )
+		return ( gskip( gio, offset ) );
+	    else
+		return ( -1 );
+	case GIO_GZIP:
+	    return ( gzseek( gio->gz, offset, whence ) );
+	default:
+	    return ( -1 );
+    }
+}
 
 /*
  *
  * gtell -- return current pointer position in a "file"
  *
  */
-#ifdef ANSI_FUNC
-     off_t gtell( GIO gio )
-#else
-     off_t gtell( gio )
-     GIO gio;
-#endif
-     {
+off_t
+gtell(
+    GIO gio
+ ) {
 #if USE_FTELLO
-	 off_t lval;
+    off_t lval;
 #else
-	 long lval;
+    long lval;
 #endif
-	 /* sanity checks */
-	 if ( gio == NULL )
-	     return ( ( off_t ) - 1 );
+    /* sanity checks */
+    if ( gio == NULL )
+	return ( ( off_t ) - 1 );
 
-	 switch ( gio->type ) {
-	     case GIO_DISK:
-		 if ( gio->unbuffered )
-		     return ( lseek( fileno( gio->fp ), 0, SEEK_CUR ) );
-		 else
+    switch ( gio->type ) {
+	case GIO_DISK:
+	    if ( gio->unbuffered )
+		return ( lseek( fileno( gio->fp ), 0, SEEK_CUR ) );
+	    else
 #if USE_FTELLO
-		     return ( ftello( gio->fp ) );
+		return ( ftello( gio->fp ) );
 #else
-		     return ( ftell( gio->fp ) );
+		return ( ftell( gio->fp ) );
 #endif
-	     case GIO_STREAM:
+	case GIO_STREAM:
 #if USE_FTELLO
-		 lval = ftello( gio->fp );
+	    lval = ftello( gio->fp );
 #else
-		 lval = ftell( gio->fp );
+	    lval = ftell( gio->fp );
 #endif
-		 if ( lval >= 0 )
-		     return lval;
-		 else
-		     return gio->cur;
-	     case GIO_MEMORY:
-		 return ( gio->cur );
+	    if ( lval >= 0 )
+		return lval;
+	    else
+		return gio->cur;
+	case GIO_MEMORY:
+	    return ( gio->cur );
 #ifdef HAVE_SYS_MMAN_H
-	     case GIO_MMAP:
-		 return ( gio->cur );
+	case GIO_MMAP:
+	    return ( gio->cur );
 #endif
 #ifdef HAVE_SYS_SHM_H
-	     case GIO_SHM:
-		 return ( gio->cur );
+	case GIO_SHM:
+	    return ( gio->cur );
 #endif
-	     case GIO_PIPE:
-		 return ( gio->cur );
-	     case GIO_SOCKET:
-		 return ( gio->cur );
-	     case GIO_GZIP:
-		 return ( gztell( gio->gz ) );
-	     default:
-		 return ( ( off_t ) - 1 );
-	 }
-     }
+	case GIO_PIPE:
+	    return ( gio->cur );
+	case GIO_SOCKET:
+	    return ( gio->cur );
+	case GIO_GZIP:
+	    return ( gztell( gio->gz ) );
+	default:
+	    return ( ( off_t ) - 1 );
+    }
+}
 
 /*
  *
  * gskip - skip reading bytes to a file position
  *
  */
-#ifdef ANSI_FUNC
-     int gskip( GIO gio, off_t n )
-#else
-     int gskip( gio, n )
-     GIO gio;
-     off_t n;
-#endif
-     {
-	 char buf[1];
+int
+gskip(
+    GIO gio,
+    off_t n
+ ) {
+    char buf[1];
 
-	 /* sanity checks */
-	 if ( !gio )
-	     return ( -1 );
+    /* sanity checks */
+    if ( !gio )
+	return ( -1 );
 
-	 /* nothing to do */
-	 if ( !n )
-	     return 0;
+    /* nothing to do */
+    if ( !n )
+	return 0;
 
-	 switch ( gio->type ) {
-	     case GIO_DISK:
-		 if ( gio->unbuffered )
-		     return ( lseek( fileno( gio->fp ), n, SEEK_CUR ) );
-		 else
+    switch ( gio->type ) {
+	case GIO_DISK:
+	    if ( gio->unbuffered )
+		return ( lseek( fileno( gio->fp ), n, SEEK_CUR ) );
+	    else
 #if USE_FSEEKO
-		     return ( fseeko( gio->fp, n, SEEK_CUR ) );
+		return ( fseeko( gio->fp, n, SEEK_CUR ) );
 #else
-		     return ( fseek( gio->fp, ( long ) n, SEEK_CUR ) );
+		return ( fseek( gio->fp, ( long ) n, SEEK_CUR ) );
 #endif
-	     case GIO_STREAM:
-		 /* for stdin, read the bytes */
-		 if ( gio->fp == stdin ) {
-		     if ( n < 0 )
-			 return ( -1 );
-		     while ( n-- ) {
-			 if ( fread( buf, sizeof( char ), 1, gio->fp ) != 1 )
-			     return ( 0 );
-		     }
-		     return ( 0 );
-		 }
-		 /* who knows what will happen here */
-		 else {
+	case GIO_STREAM:
+	    /* for stdin, read the bytes */
+	    if ( gio->fp == stdin ) {
+		if ( n < 0 )
+		    return ( -1 );
+		while ( n-- ) {
+		    if ( fread( buf, sizeof( char ), 1, gio->fp ) != 1 )
+			return ( 0 );
+		}
+		return ( 0 );
+	    }
+	    /* who knows what will happen here */
+	    else {
 #if USE_FSEEKO
-		     return ( fseeko( gio->fp, n, SEEK_CUR ) );
+		return ( fseeko( gio->fp, n, SEEK_CUR ) );
 #else
-		     return ( fseek( gio->fp, ( long ) n, SEEK_CUR ) );
+		return ( fseek( gio->fp, ( long ) n, SEEK_CUR ) );
 #endif
-		 }
-	     case GIO_MEMORY:
-		 if ( ( gio->cur + n >= gio->len ) || ( gio->cur + n < 0 ) ) {
-		     return ( -1 );
-		 }
-		 else {
-		     gio->cur += n;
-		     return ( 0 );
-		 }
+	    }
+	case GIO_MEMORY:
+	    if ( ( gio->cur + n >= gio->len ) || ( gio->cur + n < 0 ) ) {
+		return ( -1 );
+	    }
+	    else {
+		gio->cur += n;
+		return ( 0 );
+	    }
 #ifdef HAVE_SYS_MMAN_H
-	     case GIO_MMAP:
-		 if ( ( gio->cur + n >= gio->len ) || ( gio->cur + n < 0 ) ) {
-		     return ( -1 );
-		 }
-		 else {
-		     gio->cur += n;
-		     return ( 0 );
-		 }
+	case GIO_MMAP:
+	    if ( ( gio->cur + n >= gio->len ) || ( gio->cur + n < 0 ) ) {
+		return ( -1 );
+	    }
+	    else {
+		gio->cur += n;
+		return ( 0 );
+	    }
 #endif
 #ifdef HAVE_SYS_SHM_H
-	     case GIO_SHM:
-		 if ( ( gio->cur + n >= gio->len ) || ( gio->cur + n < 0 ) ) {
-		     return ( -1 );
-		 }
-		 else {
-		     gio->cur += n;
-		     return ( 0 );
-		 }
+	case GIO_SHM:
+	    if ( ( gio->cur + n >= gio->len ) || ( gio->cur + n < 0 ) ) {
+		return ( -1 );
+	    }
+	    else {
+		gio->cur += n;
+		return ( 0 );
+	    }
 #endif
-	     case GIO_PIPE:
-		 if ( n < 0 )
-		     return ( -1 );
-		 if ( gio->ifd >= 0 ) {
-		     while ( n-- ) {
-			 if ( read( gio->ifd, buf, 1 ) != 1 )
-			     return ( 0 );
-			 gio->cur++;
-		     }
-		     return ( 0 );
-		 }
-		 else {
-		     return ( -1 );
-		 }
-	     case GIO_SOCKET:
-		 if ( n < 0 )
-		     return ( -1 );
-		 if ( gio->ifd >= 0 ) {
-		     while ( n-- ) {
-			 if ( recv( gio->ifd, buf, 1, 0 ) != 1 )
-			     return ( 0 );
-			 gio->cur++;
-		     }
-		     return ( 0 );
-		 }
-		 else {
-		     return ( -1 );
-		 }
-	     case GIO_GZIP:
-		 return ( gzseek( gio->gz, ( z_off_t ) n, SEEK_CUR ) );
-	     default:
-		 return ( -1 );
-	 }
-     }
+	case GIO_PIPE:
+	    if ( n < 0 )
+		return ( -1 );
+	    if ( gio->ifd >= 0 ) {
+		while ( n-- ) {
+		    if ( read( gio->ifd, buf, 1 ) != 1 )
+			return ( 0 );
+		    gio->cur++;
+		}
+		return ( 0 );
+	    }
+	    else {
+		return ( -1 );
+	    }
+	case GIO_SOCKET:
+	    if ( n < 0 )
+		return ( -1 );
+	    if ( gio->ifd >= 0 ) {
+		while ( n-- ) {
+		    if ( recv( gio->ifd, buf, 1, 0 ) != 1 )
+			return ( 0 );
+		    gio->cur++;
+		}
+		return ( 0 );
+	    }
+	    else {
+		return ( -1 );
+	    }
+	case GIO_GZIP:
+	    return ( gzseek( gio->gz, ( z_off_t ) n, SEEK_CUR ) );
+	default:
+	    return ( -1 );
+    }
+}
 
 /*
  *
  * ginfo -- return information about a "file"
  *
  */
-#ifdef ANSI_FUNC
-     int ginfo( GIO gio, char **name, int *type, off_t * cur, char **buf,
-                int *len )
-#else
-     int ginfo( gio, name, type, cur, buf, len )
-     GIO gio;
-     char **name;
-     int *type;
-     off_t *cur;
-     char **buf;
-     int *len;
-#endif
-     {
-	 if ( gio == NULL )
-	     return ( -1 );
-	 if ( name )
-	     *name = gio->name;
-	 if ( type )
-	     *type = gio->type;
-	 if ( cur )
-	     *cur = gtell( gio );
-	 if ( buf )
-	     *buf = gio->buf;
-	 if ( len )
-	     *len = gio->len;
-	 return ( 0 );
-     }
+int
+ginfo(
+    GIO gio,
+    char **name,
+    int *type,
+    off_t * cur,
+    char **buf,
+    int *len
+ ) {
+    if ( gio == NULL )
+	return ( -1 );
+    if ( name )
+	*name = gio->name;
+    if ( type )
+	*type = gio->type;
+    if ( cur )
+	*cur = gtell( gio );
+    if ( buf )
+	*buf = gio->buf;
+    if ( len )
+	*len = gio->len;
+    return ( 0 );
+}
 
 /*
  *
  * gfreebuf -- free allocated data buffers
  *
  */
-#ifdef ANSI_FUNC
-     void gfreebuf( GIO gio, void *buf )
-#else
-     void gfreebuf( gio, buf )
-     GIO gio;
-     void *buf;
-#endif
-     {
-	 if ( gio == NULL )
-	     return;
+void
+gfreebuf(
+    GIO gio,
+    void *buf
+ ) {
+    if ( gio == NULL )
+	return;
 
-	 switch ( gio->type ) {
-	     case GIO_DISK:
-		 if ( buf )
-		     xfree( buf );
-		 break;
-	     case GIO_STREAM:
-		 if ( buf )
-		     xfree( buf );
-		 break;
-	     case GIO_MEMORY:
-		 break;
+    switch ( gio->type ) {
+	case GIO_DISK:
+	    if ( buf )
+		xfree( buf );
+	    break;
+	case GIO_STREAM:
+	    if ( buf )
+		xfree( buf );
+	    break;
+	case GIO_MEMORY:
+	    break;
 #ifdef HAVE_SYS_MMAN_H
-	     case GIO_MMAP:
-		 break;
+	case GIO_MMAP:
+	    break;
 #endif
 #ifdef HAVE_SYS_SHM_H
-	     case GIO_SHM:
-		 break;
+	case GIO_SHM:
+	    break;
 #endif
-	     case GIO_PIPE:
-		 if ( buf )
-		     xfree( buf );
-		 break;
-	     case GIO_SOCKET:
-		 if ( buf )
-		     xfree( buf );
-		 break;
-	     case GIO_GZIP:
-		 if ( buf )
-		     xfree( buf );
-		 break;
-	     default:
-		 break;
-	 }
-     }
+	case GIO_PIPE:
+	    if ( buf )
+		xfree( buf );
+	    break;
+	case GIO_SOCKET:
+	    if ( buf )
+		xfree( buf );
+	    break;
+	case GIO_GZIP:
+	    if ( buf )
+		xfree( buf );
+	    break;
+	default:
+	    break;
+    }
+}
 
 /*
  *
  * gclose -- close an I/O structure
  *
  */
-#ifdef ANSI_FUNC
-     void gclose( GIO gio )
-#else
-     void gclose( gio )
-     GIO gio;
-#endif
-     {
-	 int status;
+void
+gclose(
+    GIO gio
+ ) {
+    int status;
 
-	 /* sanity checks */
-	 if ( gio == NULL )
-	     return;
+    /* sanity checks */
+    if ( gio == NULL )
+	return;
 
-	 switch ( gio->type ) {
-	     case GIO_DISK:
-		 if ( gio->unbuffered ) {
-		     fclose( gio->fp );
-		 }
-		 else {
-		     fflush( gio->fp );
-		     fclose( gio->fp );
-		 }
-		 break;
-	     case GIO_STREAM:
-		 fflush( gio->fp );
-		 /* close stream, but don't close a stdio stream */
-		 if ( ( gio->fp != stdin ) && ( gio->fp != stdout )
-		      && ( gio->fp != stderr ) )
-		     fclose( gio->fp );
-		 break;
+    switch ( gio->type ) {
+	case GIO_DISK:
+	    if ( gio->unbuffered ) {
+		fclose( gio->fp );
+	    }
+	    else {
+		fflush( gio->fp );
+		fclose( gio->fp );
+	    }
+	    break;
+	case GIO_STREAM:
+	    fflush( gio->fp );
+	    /* close stream, but don't close a stdio stream */
+	    if ( ( gio->fp != stdin ) && ( gio->fp != stdout )
+	         && ( gio->fp != stderr ) )
+		fclose( gio->fp );
+	    break;
 #ifdef HAVE_SYS_MMAN_H
-	     case GIO_MMAP:
-		 munmap( gio->buf, gio->len );
-		 break;
+	case GIO_MMAP:
+	    munmap( gio->buf, gio->len );
+	    break;
 #endif
-	     case GIO_MEMORY:
-		 break;
+	case GIO_MEMORY:
+	    break;
 #ifdef HAVE_SYS_SHM_H
-	     case GIO_SHM:
-		 /* unmap shared memory segment */
-		 shmdt( gio->buf );
-		 /* in write+ mode, we try to destroy the shared memory as well */
-		 if ( strstr( gio->mode, "w+" ) ) shmctl( gio->shmid,
-		                                          IPC_RMID, NULL );
-		 break;
+	case GIO_SHM:
+	    /* unmap shared memory segment */
+	    shmdt( gio->buf );
+	    /* in write+ mode, we try to destroy the shared memory as well */
+	    if ( strstr( gio->mode, "w+" ) ) shmctl( gio->shmid, IPC_RMID, NULL );
+	    break;
 #endif
-	     case GIO_PIPE:
-		 if ( gio->ifd >= 0 )
-		     close( gio->ifd );
-		 if ( gio->ofd >= 0 )
-		     close( gio->ofd );
+	case GIO_PIPE:
+	    if ( gio->ifd >= 0 )
+		close( gio->ifd );
+	    if ( gio->ofd >= 0 )
+		close( gio->ofd );
 #if HAVE_MINGW32==0
-		 if ( gio->pid )
-		     waitpid( gio->pid, &status, 0 );
+	    if ( gio->pid )
+		waitpid( gio->pid, &status, 0 );
 #endif
-		 break;
-	     case GIO_SOCKET:
-		 if ( gio->ifd >= 0 )
-		     close( gio->ifd );
-		 else if ( gio->ofd >= 0 )
-		     close( gio->ofd );
-		 break;
-	     case GIO_GZIP:
-		 gzclose( gio->gz );
-		 break;
-	     default:
-		 break;
-	 }
-	 gfree( gio );
-     }
+	    break;
+	case GIO_SOCKET:
+	    if ( gio->ifd >= 0 )
+		close( gio->ifd );
+	    else if ( gio->ofd >= 0 )
+		close( gio->ofd );
+	    break;
+	case GIO_GZIP:
+	    gzclose( gio->gz );
+	    break;
+	default:
+	    break;
+    }
+    gfree( gio );
+}
 
 /*
  *
  * gerrorstring -- return last exception string
  *
  */
-#ifdef ANSI_FUNC
-     char *gerrorstring( void )
-#else
-     char *gerrorstring(  )
-#endif
-     {
-	 return ( _gerrors );
-     }
+char *
+gerrorstring(
+    void
+ ) {
+    return ( _gerrors );
+}
 
 /*
  *
  * setgerror -- set the error flag
  *
  */
-#ifdef ANSI_FUNC
-     int setgerror( int flag )
-#else
-     int setgerror( flag )
-     int flag;
-#endif
-     {
-	 int oflag;
-	 oflag = _gerror;
-	 _gerror = flag;
-	 return oflag;
-     }
+int
+setgerror(
+    int flag
+ ) {
+    int oflag;
+    oflag = _gerror;
+    _gerror = flag;
+    return oflag;
+}
 
 /*
  *
@@ -2235,12 +2064,20 @@ gprintf( va_alist )
  *
  */
 #ifdef __STDC__
-     void gerror( FILE * fd, char *format, ... ) {
-	 char tbuf[SZ_LINE];
-	 va_list args;
-	 va_start( args, format );
+void
+gerror(
+    FILE * fd,
+    char *format,
+    ...
+ ) {
+    char tbuf[SZ_LINE];
+    va_list args;
+    va_start( args, format );
 #else
-     void gerror( va_alist )
+void
+gerror(
+    va_alist
+ )
      va_dcl {
     FILE *fd;
     char *format;
@@ -2249,7 +2086,8 @@ gprintf( va_alist )
 
     va_start( args );
     fd = va_arg( args, FILE * );
-    format = va_arg( args, char * );
+    format = va_arg( args, char *
+     );
 #endif
     /* initialize level, if not already done */
     if ( _gerror == -1 ) {
@@ -2276,12 +2114,9 @@ gprintf( va_alist )
  * gwarningstring -- return last exception string
  *
  */
-#ifdef ANSI_FUNC
-     char *gwarningstring( void )
-#else
-     char *gwarningstring(  )
-#endif
-     {
+     char *gwarningstring(
+    void
+      ) {
 	 return ( _gwarnings );
      }
 
@@ -2290,13 +2125,9 @@ gprintf( va_alist )
  * setgwarning -- set the warning flag
  *
  */
-#ifdef ANSI_FUNC
-     int setgwarning( int flag )
-#else
-     int setgwarning( flag )
-     int flag;
-#endif
-     {
+     int setgwarning(
+    int flag
+      ) {
 	 int oflag;
 	 oflag = _gwarning;
 	 _gwarning = flag;
@@ -2304,12 +2135,18 @@ gprintf( va_alist )
      }
 
 #ifdef __STDC__
-     void gwarning( FILE * fd, char *format, ... ) {
+     void gwarning(
+    FILE * fd,
+    char *format,
+    ...
+      ) {
 	 char tbuf[SZ_LINE];
 	 va_list args;
 	 va_start( args, format );
 #else
-     void gwarning( va_alist )
+     void gwarning(
+    va_alist
+      )
      va_dcl {
     FILE *fd;
     char *format;
@@ -2318,7 +2155,8 @@ gprintf( va_alist )
 
     va_start( args );
     fd = va_arg( args, FILE * );
-    format = va_arg( args, char * );
+    format = va_arg( args, char *
+     );
 #endif
     /* initialize level, if not already done */
     if ( _gwarning == -1 ) {
@@ -2337,13 +2175,9 @@ gprintf( va_alist )
     }
      }
 
-#ifdef ANSI_FUNC
-     void gsleep( int msec )
-#else
-     void gsleep( msec )
-     int msec;
-#endif
-     {
+     void gsleep(
+    int msec
+      ) {
 	 struct timeval tv;
 	 if ( msec > 0 ) {
 	     tv.tv_sec = msec / 1000;

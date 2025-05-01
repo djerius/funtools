@@ -2,7 +2,7 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#include <mkrtemp.h>
+#include "mkrtemp.h"
 
 /*
  *
@@ -17,19 +17,14 @@
  * so that you can create files with extensions. Either of these can be NULL.
  *
  */
-#ifdef ANSI_FUNC
 int
-mkrtemp( char *prefix, char *suffix, char *path, int len, int doopen )
-#else
-int
-mkrtemp( prefix, suffix, path, len, doopen )
-     char *prefix;
-     char *suffix;
-     char *path;
-     int len;
-     int doopen;
-#endif
-{
+mkrtemp(
+    char *prefix,
+    char *suffix,
+    char *path,
+    int len,
+    int doopen
+ ) {
     char *s;
     int fd;
     long lval;
@@ -100,8 +95,7 @@ mkrtemp( prefix, suffix, path, len, doopen )
 	    default:
 		return -1;
 	}
-	snprintf( path, len, "%s%ld%s",
-	          ( prefix ? prefix : "" ), lval, ( suffix ? suffix : "" ) );
+	snprintf( path, len, "%s%ld%s", ( prefix ? prefix : "" ), lval, ( suffix ? suffix : "" ) );
 	if ( doopen ) {
 	    if ( ( fd = open( path, O_CREAT | O_EXCL | O_RDWR, 0600 ) ) >= 0 )
 		return fd;

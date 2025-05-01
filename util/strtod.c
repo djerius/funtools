@@ -10,7 +10,10 @@
 int SAOdtype = 0;
 
 double
-SAOstrtod( char *str, char **ptr ) {
+SAOstrtod(
+    char *str,
+    char **ptr
+ ) {
     double d = 0.0;
     double m = 0.0;
     double s = 0.0;
@@ -35,8 +38,7 @@ SAOstrtod( char *str, char **ptr ) {
          && ( c == 'h' || c == 'd' || c == ':' || c == ' ' || c == 'm' )
          && ( ( *ptr - str ) <= 4 )
          && ( ( isdigit( ( int ) *( ( *ptr ) + 1 ) ) )
-              || ( ( *( ( *ptr ) + 1 ) ) == ' '
-	           && isdigit( ( int ) *( ( *ptr ) + 2 ) ) ) ) ) {
+              || ( ( *( ( *ptr ) + 1 ) ) == ' ' && isdigit( ( int ) *( ( *ptr ) + 2 ) ) ) ) ) {
 	double sign = 1.0;
 
 	SAOdtype = c;
@@ -82,7 +84,12 @@ SAOstrtod( char *str, char **ptr ) {
 }
 
 char *
-SAOconvert( char *buff, double val, int type, int prec ) {
+SAOconvert(
+    char *buff,
+    double val,
+    int type,
+    int prec
+ ) {
     char fmt[32];
     char *sign = "";
 
@@ -163,8 +170,7 @@ SAOconvert( char *buff, double val, int type, int prec ) {
 		sprintf( buff, "%s%d%c0%g", sign,
 	                 ( int ) ( minutes + degrees * 60 ), ch2, seconds );
 	    else
-		sprintf( buff, "%s%d%c%g", sign,
-	                 ( int ) ( minutes + degrees * 60 ), ch2, seconds );
+		sprintf( buff, "%s%d%c%g", sign, ( int ) ( minutes + degrees * 60 ), ch2, seconds );
 	}
 	else if ( seconds < 10.0 )
 	    sprintf( buff, "%s%d%c0%2d%c0%g", sign, ( int ) ( degrees )

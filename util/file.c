@@ -20,15 +20,10 @@
  * a system to call to check for a file's existance.
  *
  */
-#ifdef ANSI_FUNC
 int
-FileExists( char *filename )
-#else
-int
-FileExists( filename )
-     char *filename;
-#endif
-{
+FileExists(
+    char *filename
+ ) {
     FILE *fp;
 
     if ( ( fp = fopen( filename, "r" ) ) == NULL ) {
@@ -47,17 +42,12 @@ FileExists( filename )
  * We skip white space, etc and return the actual file name
  *
  */
-#ifdef ANSI_FUNC
 int
-IsFile( char *s, char *filename, int len )
-#else
-int
-IsFile( s, filename, len )
-     char *s;
-     char *filename;
-     int len;
-#endif
-{
+IsFile(
+    char *s,
+    char *filename,
+    int len
+ ) {
     int i;
 
     /* skip white space */
@@ -76,15 +66,10 @@ IsFile( s, filename, len )
  * IsFits -- determine if a string is a FITS file
  *
  */
-#ifdef ANSI_FUNC
 int
-IsFits( char *filename )
-#else
-int
-IsFits( filename )
-     char *filename;
-#endif
-{
+IsFits(
+    char *filename
+ ) {
     int got = 0;
     char tbuf[10];
     FILE *fp = NULL;
@@ -107,15 +92,10 @@ IsFits( filename )
  * FileNameFromPath -- return file name, given a path
  *
  */
-#ifdef ANSI_FUNC
 char *
-FileNameFromPath( char *s )
-#else
-char *
-FileNameFromPath( s )
-     char *s;
-#endif
-{
+FileNameFromPath(
+    char *s
+ ) {
     char *idx;
 
     idx = strrchr( s, DIR_SEPARATOR );
@@ -130,17 +110,12 @@ FileNameFromPath( s )
  * FileContents -- return contents of a file
  *
  */
-#ifdef ANSI_FUNC
 char *
-FileContents( char *path, int isize, int *osize )
-#else
-char *
-FileContents( path, isize, osize )
-     char *path;
-     int isize;
-     int *osize;
-#endif
-{
+FileContents(
+    char *path,
+    int isize,
+    int *osize
+ ) {
     FILE *fd;
     char *npath;
     char *tbuf;
@@ -192,15 +167,10 @@ FileContents( path, isize, osize )
  * FileSize -- return the size of a file
  *
  */
-#ifdef ANSI_FUNC
 int
-FileSize( char *path )
-#else
-int
-FileSize( path )
-     char *path;
-#endif
-{
+FileSize(
+    char *path
+ ) {
     char *npath;
     struct stat buf;
 
@@ -222,16 +192,11 @@ FileSize( path )
  * FileCopy -- copy a file to another file
  *
  */
-#ifdef ANSI_FUNC
 int
-FileCopy( char *iname, char *oname )
-#else
-int
-FileCopy( iname, oname )
-     char *iname;
-     char *oname;
-#endif
-{
+FileCopy(
+    char *iname,
+    char *oname
+ ) {
     FILE *ifd;
     FILE *ofd;
     char *ipath;
@@ -260,15 +225,10 @@ FileCopy( iname, oname )
  * FileRoot -- strip the [...] extension from a file name and return root
  *
  */
-#ifdef ANSI_FUNC
 char *
-FileRoot( char *fname )
-#else
-char *
-FileRoot( fname )
-     char *fname;
-#endif
-{
+FileRoot(
+    char *fname
+ ) {
     int i;
     int len;
     char *file;
@@ -286,15 +246,10 @@ FileRoot( fname )
  * FileExtension -- extract the [...] extension from a file name
  *
  */
-#ifdef ANSI_FUNC
 char *
-FileExtension( char *fname )
-#else
-char *
-FileExtension( fname )
-     char *fname;
-#endif
-{
+FileExtension(
+    char *fname
+ ) {
     int i;
     int len;
     char *s;
@@ -325,17 +280,12 @@ FileExtension( fname )
  * form [xdim=x,ydim=y,...] from various valid inputs 
  *
  */
-#ifdef ANSI_FUNC
 int
-GenerateArraySpecification( char *ispec, char *ospec, int olen )
-#else
-int
-GenerateArraySpecification( ispec, ospec, olen )
-     char *ispec;
-     char *ospec;
-     int olen;
-#endif
-{
+GenerateArraySpecification(
+    char *ispec,
+    char *ospec,
+    int olen
+ ) {
     int got;
     int size;
     int dsize;
@@ -364,9 +314,7 @@ GenerateArraySpecification( ispec, ospec, olen )
 	    if ( size > 0 ) {
 		dsize = atoi( s2 ) * atoi( s2 );
 		bitpix = ( size / dsize ) * 8;
-		snprintf( ospec, olen,
-		          "%s[xdim=%s,ydim=%s,bitpix=%d]", s1, s2, s2,
-		          bitpix );
+		snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%d]", s1, s2, s2, bitpix );
 		return ( 2 );
 	    }
 	    else {
@@ -374,16 +322,13 @@ GenerateArraySpecification( ispec, ospec, olen )
 		return ( 0 );
 	    }
 	case 3:
-	    snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%s]", s1, s2,
-	              s2, s3 );
+	    snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%s]", s1, s2, s2, s3 );
 	    return ( 3 );
 	case 4:
-	    snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%s]", s1, s2,
-	              s3, s4 );
+	    snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%s]", s1, s2, s3, s4 );
 	    return ( 4 );
 	case 5:
-	    snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%s,skip=%s]",
-	              s1, s2, s3, s4, s5 );
+	    snprintf( ospec, olen, "%s[xdim=%s,ydim=%s,bitpix=%s,skip=%s]", s1, s2, s3, s4, s5 );
 	    return ( 5 );
 	default:
 	    return ( 0 );
@@ -396,18 +341,13 @@ GenerateArraySpecification( ispec, ospec, olen )
  * and spec strings
  *
  */
-#ifdef ANSI_FUNC
 int
-GenerateArraySpec2( char *iname, char *ispec, char *ospec, int olen )
-#else
-int
-GenerateArraySpec2( iname, ispec, ospec, olen )
-     char *iname;
-     char *ispec;
-     char *ospec;
-     int olen;
-#endif
-{
+GenerateArraySpec2(
+    char *iname,
+    char *ispec,
+    char *ospec,
+    int olen
+ ) {
 
     char *buf;
     int len;
@@ -428,18 +368,13 @@ GenerateArraySpec2( iname, ispec, ospec, olen )
  * GetNextFileName -- return next file name, given a list
  *
  */
-#ifdef ANSI_FUNC
 int
-GetNextFileName( char *filenames, int *ip, char *filename, int len )
-#else
-int
-GetNextFileName( filenames, ip, filename, len )
-     char *filenames;
-     int *ip;
-     char *filename;
-     int len;
-#endif
-{
+GetNextFileName(
+    char *filenames,
+    int *ip,
+    char *filename,
+    int len
+ ) {
     int i;
     int j;
 
@@ -455,7 +390,7 @@ GetNextFileName( filenames, ip, filename, len )
     /* copy string up to a terminator */
     j = 0;
     while ( filenames[i] && !isspace( ( int ) filenames[i] )
-	    && filenames[i] != ':' ) {
+            && filenames[i] != ':' ) {
 	if ( j < len ) filename[j++] = filenames[i++];
     }
     /* null terminate */
@@ -503,21 +438,15 @@ GetNextFileName( filenames, ip, filename, len )
  *	r512l		bitpix=-32 xdim=512 ydim=512 endian=little
  *
  */
-#ifdef ANSI_FUNC
 int
-ParseArraySpec( char *tbuf, int *xdim, int *ydim, int *bitpix,
-                int *skip, int *bigendian )
-#else
-int
-ParseArraySpec( tbuf, xdim, ydim, bitpix, skip, bigendian )
-     char *tbuf;
-     int *xdim;
-     int *ydim;
-     int *bitpix;
-     int *skip;
-     int *bigendian;
-#endif
-{
+ParseArraySpec(
+    char *tbuf,
+    int *xdim,
+    int *ydim,
+    int *bitpix,
+    int *skip,
+    int *bigendian
+ ) {
     int txdim = 0;
     int tydim = 0;
     int tbitpix = 0;

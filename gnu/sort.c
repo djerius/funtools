@@ -66,7 +66,9 @@
 #include <table.h>
 #endif
 #ifdef SAOMOD_ASTRO
-double mjd(  );
+double mjd(
+    void
+ );
 #endif
 
 #ifdef _POSIX_VERSION
@@ -83,7 +85,9 @@ typedef long long longlong;
 typedef long longlong;
 #endif
 
-static void usage( int status );
+static void usage(
+    int status
+ );
 
 #ifdef SAOMOD_TABLE
 int table = 0;
@@ -243,7 +247,9 @@ static int setcnt = 1;
 /* Clean up any remaining temporary files. */
 
 static void
-cleanup(  ) {
+cleanup(
+    void
+ ) {
     struct tempnode *node;
 
     for ( node = temphead.next; node; node = node->next )
@@ -253,9 +259,9 @@ cleanup(  ) {
 /* Allocate N bytes of memory dynamically, with error checking.  */
 
 char *
-xmalloc( n )
-     unsigned n;
-{
+xmalloc(
+    unsigned n
+ ) {
     char *p;
 
     p = ( char * ) malloc( n );
@@ -273,10 +279,10 @@ xmalloc( n )
    If N is 0, run free and return NULL.  */
 
 char *
-xrealloc( p, n )
-     char *p;
-     unsigned n;
-{
+xrealloc(
+    char *p,
+    unsigned n
+ ) {
     if ( p == 0 )
 	return ( char * ) xmalloc( n );
     if ( n == 0 ) {
@@ -293,9 +299,10 @@ xrealloc( p, n )
 }
 
 static FILE *
-xfopen( file, how )
-     char *file, *how;
-{
+xfopen(
+    char *file,
+    char *how
+ ) {
 #ifdef SAOMOD_TABLE
     FILE *fp = Open( file, how );
 #else
@@ -317,9 +324,9 @@ xfopen( file, how )
 }
 
 static void
-xfclose( fp )
-     FILE *fp;
-{
+xfclose(
+    FILE * fp
+ ) {
     if ( fp == stdin ) {
 	/* Allow reading stdin from tty more than once. */
 	if ( feof( fp ) )
@@ -347,11 +354,12 @@ xfclose( fp )
 }
 
 static void
-xfwrite( buf, size, nelem, fp )
-     char *buf;
-     int size, nelem;
-     FILE *fp;
-{
+xfwrite(
+    char *buf,
+    int size,
+    int nelem,
+    FILE * fp
+ ) {
     if ( fwrite( buf, size, nelem, fp ) != ( size_t ) nelem ) {
 	perror( "writing file" );
 	cleanup(  );
@@ -362,12 +370,13 @@ xfwrite( buf, size, nelem, fp )
 /* Return a name for a temporary file. */
 
 static char *
-tempname(  ) {
+tempname(
+    void
+ ) {
     static int seq;
     int len = strlen( temp_file_prefix );
     char *name = xmalloc( len + 16 );
-    struct tempnode *node =
-        ( struct tempnode * ) xmalloc( sizeof( struct tempnode ) );
+    struct tempnode *node = ( struct tempnode * ) xmalloc( sizeof( struct tempnode ) );
 
     sprintf( name,
              "%s%ssort%5.5d%5.5d",
@@ -384,9 +393,9 @@ tempname(  ) {
    remove it if it is found on the list. */
 
 static void
-zaptemp( name )
-     char *name;
-{
+zaptemp(
+    char *name
+ ) {
     struct tempnode *node, *temp;
 
     for ( node = &temphead; node->next; node = node->next )
@@ -404,7 +413,9 @@ zaptemp( name )
 /* Initialize the character class tables. */
 
 static void
-inittables(  ) {
+inittables(
+    void
+ ) {
     int i;
 
     for ( i = 0; i < UCHAR_LIM; ++i ) {
@@ -426,10 +437,10 @@ inittables(  ) {
 /* Initialize BUF, allocating ALLOC bytes initially. */
 
 static void
-initbuf( buf, alloc )
-     struct buffer *buf;
-     int alloc;
-{
+initbuf(
+    struct buffer *buf,
+    int alloc
+ ) {
     buf->alloc = alloc;
     buf->buf = xmalloc( buf->alloc );
     buf->used = buf->left = 0;
@@ -441,10 +452,10 @@ initbuf( buf, alloc )
    of bytes buffered. */
 
 static int
-fillbuf( buf, fp )
-     struct buffer *buf;
-     FILE *fp;
-{
+fillbuf(
+    struct buffer *buf,
+    FILE * fp
+ ) {
     int cc;
 
     memmove( buf->buf, buf->buf + buf->used - buf->left, buf->left );
@@ -491,14 +502,13 @@ fillbuf( buf, fp )
    for, ever.  */
 
 static void
-initlines( lines, alloc, limit )
-     struct lines *lines;
-     int alloc;
-     int limit;
-{
+initlines(
+    struct lines *lines,
+    int alloc,
+    int limit
+ ) {
     lines->alloc = alloc;
-    lines->lines =
-        ( struct line * ) xmalloc( lines->alloc * sizeof( struct line ) );
+    lines->lines = ( struct line * ) xmalloc( lines->alloc * sizeof( struct line ) );
     lines->used = 0;
     lines->limit = limit;
 }
@@ -507,12 +517,12 @@ initlines( lines, alloc, limit )
    by KEY in LINE. */
 
 static char *
-begfield( line, key )
-     struct line *line;
-     struct keyfield *key;
-{
-    register char *ptr = line->text, *lim = ptr + line->length;
-    register int sword = key->sword, schar = key->schar;
+begfield(
+    struct line *line,
+    struct keyfield *key
+ ) {
+    char *ptr = line->text, *lim = ptr + line->length;
+    int sword = key->sword, schar = key->schar;
 
     if ( tab )
 	while ( ptr < lim && sword-- ) {
@@ -547,12 +557,12 @@ begfield( line, key )
    in LINE specified by KEY. */
 
 static char *
-limfield( line, key )
-     struct line *line;
-     struct keyfield *key;
-{
-    register char *ptr = line->text, *lim = ptr + line->length;
-    register int eword = key->eword, echar = key->echar;
+limfield(
+    struct line *line,
+    struct keyfield *key
+ ) {
+    char *ptr = line->text, *lim = ptr + line->length;
+    int eword = key->eword, echar = key->echar;
 
     if ( eword == -1 ) {
 	eword = 1;
@@ -599,11 +609,11 @@ limfield( line, key )
    Also replace newlines with NULs. */
 
 static void
-findlines( buf, lines )
-     struct buffer *buf;
-     struct lines *lines;
-{
-    register char *beg = buf->buf, *lim = buf->buf + buf->used, *ptr;
+findlines(
+    struct buffer *buf,
+    struct lines *lines
+ ) {
+    char *beg = buf->buf, *lim = buf->buf + buf->used, *ptr;
     struct keyfield *key = keyhead.next;
 
     lines->used = 0;
@@ -629,8 +639,7 @@ findlines( buf, lines )
 	    if ( lines->used == lines->alloc ) {
 		lines->alloc *= 2;
 		lines->lines = ( struct line * )
-		    xrealloc( ( char * ) lines->lines,
-		              lines->alloc * sizeof( struct line ) );
+		    xrealloc( ( char * ) lines->lines, lines->alloc * sizeof( struct line ) );
 	    }
 
 	    lines->lines[lines->used].text = beg;
@@ -658,8 +667,7 @@ findlines( buf, lines )
 	if ( lines->used == lines->alloc ) {
 	    lines->alloc *= 2;
 	    lines->lines = ( struct line * )
-	        xrealloc( ( char * ) lines->lines,
-	                  lines->alloc * sizeof( struct line ) );
+	        xrealloc( ( char * ) lines->lines, lines->alloc * sizeof( struct line ) );
 	}
 
 	lines->lines[lines->used].text = beg;
@@ -675,14 +683,12 @@ findlines( buf, lines )
 	         || table
 #endif
 	         )
-		lines->lines[lines->used].keylim =
-	            limfield( &lines->lines[lines->used], key );
+		lines->lines[lines->used].keylim = limfield( &lines->lines[lines->used], key );
 	    else
 		lines->lines[lines->used].keylim = ptr;
 
 	    if ( key->sword >= 0 )
-		lines->lines[lines->used].keybeg =
-	            begfield( &lines->lines[lines->used], key );
+		lines->lines[lines->used].keybeg = begfield( &lines->lines[lines->used], key );
 	    else {
 	        if ( key->skipsblanks
 #ifdef SAOMOD_TABLE
@@ -711,10 +717,11 @@ findlines( buf, lines )
    of the fraction.  Strings not of this form are considered to be zero. */
 
 static int
-fraccompare( a, b )
-     register char *a, *b;
-{
-    register int tmpa = UCHAR( *a ), tmpb = UCHAR( *b );
+fraccompare(
+    char *a,
+    char *b
+ ) {
+    int tmpa = UCHAR( *a ), tmpb = UCHAR( *b );
 
     if ( tmpa == '.' && tmpb == '.' ) {
 	do
@@ -762,10 +769,11 @@ fraccompare( a, b )
    hideously fast. */
 
 static int
-numcompare( a, b )
-     register char *a, *b;
-{
-    register int tmpa, tmpb, loga, logb, tmp;
+numcompare(
+    char *a,
+    char *b
+ ) {
+    int tmpa, tmpb, loga, logb, tmp;
 
     tmpa = UCHAR( *a ), tmpb = UCHAR( *b );
 
@@ -856,12 +864,12 @@ numcompare( a, b )
    0 if the name in S is not recognized. */
 
 static int
-getmonth( s, len )
-     char *s;
-     int len;
-{
+getmonth(
+    char *s,
+    int len
+ ) {
     char month[4];
-    register int i, lo = 0, hi = 12;
+    int i, lo = 0, hi = 12;
 
     while ( len > 0 && blanks[UCHAR( *s )] )
 	++s, --len;
@@ -887,11 +895,12 @@ getmonth( s, len )
    are no more keys or a difference is found. */
 
 static int
-keycompare( a, b )
-     struct line *a, *b;
-{
-    register char *texta, *textb, *lima, *limb, *translate;
-    register int *ignore;
+keycompare(
+    struct line *a,
+    struct line *b
+ ) {
+    char *texta, *textb, *lima, *limb, *translate;
+    int *ignore;
     struct keyfield *key;
     int diff = 0, iter = 0, lena, lenb;
 
@@ -936,10 +945,8 @@ keycompare( a, b )
 			short va, vb;
 
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( short ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( short ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( short ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( short ) );
 			    if ( key->nzone ) {
 				va = ( int ) ( va / key->dzone );
 				vb = ( int ) ( vb / key->dzone );
@@ -950,11 +957,8 @@ keycompare( a, b )
 			    if ( a->flag ) va = a->value;
 			    else {
 #endif
-				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( short ) );
-				if ( key->nzone ) va =
-				        ( int ) ( va / key->dzone );
+				memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( short ) );
+				if ( key->nzone ) va = ( int ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -962,11 +966,8 @@ keycompare( a, b )
 			    if ( b->flag ) vb = b->value;
 			    else {
 #endif
-				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( short ) );
-				if ( key->nzone ) va =
-				        ( int ) ( vb / key->dzone );
+				memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( short ) );
+				if ( key->nzone ) va = ( int ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -981,10 +982,8 @@ keycompare( a, b )
 			unsigned short va, vb;
 
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( short ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( short ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( short ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( short ) );
 			    if ( key->nzone ) {
 				va = ( int ) ( va / key->dzone );
 				vb = ( int ) ( vb / key->dzone );
@@ -995,11 +994,8 @@ keycompare( a, b )
 			    if ( a->flag ) va = a->value;
 			    else {
 #endif
-				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( short ) );
-				if ( key->nzone ) va =
-				        ( int ) ( va / key->dzone );
+				memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( short ) );
+				if ( key->nzone ) va = ( int ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -1007,11 +1003,8 @@ keycompare( a, b )
 			    if ( b->flag ) vb = b->value;
 			    else {
 #endif
-				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( short ) );
-				if ( key->nzone ) va =
-				        ( int ) ( vb / key->dzone );
+				memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( short ) );
+				if ( key->nzone ) va = ( int ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -1026,10 +1019,8 @@ keycompare( a, b )
 			int va, vb;
 
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( int ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( int ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( int ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( int ) );
 			    if ( key->nzone ) {
 				va = ( int ) ( va / key->dzone );
 				vb = ( int ) ( vb / key->dzone );
@@ -1040,11 +1031,8 @@ keycompare( a, b )
 			    if ( a->flag ) va = a->value;
 			    else {
 #endif
-				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( int ) );
-				if ( key->nzone ) va =
-				        ( int ) ( va / key->dzone );
+				memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( int ) );
+				if ( key->nzone ) va = ( int ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -1052,11 +1040,8 @@ keycompare( a, b )
 			    if ( b->flag ) vb = b->value;
 			    else {
 #endif
-				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( int ) );
-				if ( key->nzone ) va =
-				        ( int ) ( vb / key->dzone );
+				memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( int ) );
+				if ( key->nzone ) va = ( int ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -1070,15 +1055,12 @@ keycompare( a, b )
 		case 'l':{
 			longlong va, vb;
 #if HAVE_LONG_LONG == 0
-			fprintf( stderr,
-			         "long long support was not built into this program\n" );
+			fprintf( stderr, "long long support was not built into this program\n" );
 			exit( 1 );
 #endif
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( longlong ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( longlong ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( longlong ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( longlong ) );
 			    if ( key->nzone ) {
 				va = ( longlong ) ( va / key->dzone );
 				vb = ( longlong ) ( vb / key->dzone );
@@ -1090,10 +1072,8 @@ keycompare( a, b )
 			    else {
 #endif
 				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( longlong ) );
-				if ( key->nzone ) va =
-				        ( longlong ) ( va / key->dzone );
+				        ( void * ) ( a->text + key->sword ), sizeof( longlong ) );
+				if ( key->nzone ) va = ( longlong ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -1102,10 +1082,8 @@ keycompare( a, b )
 			    else {
 #endif
 				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( longlong ) );
-				if ( key->nzone ) va =
-				        ( longlong ) ( vb / key->dzone );
+				        ( void * ) ( b->text + key->sword ), sizeof( longlong ) );
+				if ( key->nzone ) va = ( longlong ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -1120,10 +1098,8 @@ keycompare( a, b )
 			unsigned int va, vb;
 
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( int ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( int ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( int ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( int ) );
 			    if ( key->nzone ) {
 				va = ( int ) ( va / key->dzone );
 				vb = ( int ) ( vb / key->dzone );
@@ -1134,11 +1110,8 @@ keycompare( a, b )
 			    if ( a->flag ) va = a->value;
 			    else {
 #endif
-				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( int ) );
-				if ( key->nzone ) va =
-				        ( int ) ( va / key->dzone );
+				memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( int ) );
+				if ( key->nzone ) va = ( int ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -1146,11 +1119,8 @@ keycompare( a, b )
 			    if ( b->flag ) vb = b->value;
 			    else {
 #endif
-				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( int ) );
-				if ( key->nzone ) va =
-				        ( int ) ( vb / key->dzone );
+				memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( int ) );
+				if ( key->nzone ) va = ( int ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -1165,10 +1135,8 @@ keycompare( a, b )
 			float va, vb;
 
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( float ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( float ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( float ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( float ) );
 			    if ( key->nzone ) {
 				va = ( int ) ( va / key->dzone );
 				vb = ( int ) ( vb / key->dzone );
@@ -1179,11 +1147,8 @@ keycompare( a, b )
 			    if ( a->flag ) va = a->value;
 			    else {
 #endif
-				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( float ) );
-				if ( key->nzone ) va =
-				        ( int ) ( va / key->dzone );
+				memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( float ) );
+				if ( key->nzone ) va = ( int ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -1191,11 +1156,8 @@ keycompare( a, b )
 			    if ( b->flag ) vb = b->value;
 			    else {
 #endif
-				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( float ) );
-				if ( key->nzone ) va =
-				        ( int ) ( vb / key->dzone );
+				memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( float ) );
+				if ( key->nzone ) va = ( int ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -1210,10 +1172,8 @@ keycompare( a, b )
 			double va, vb;
 
 			if ( !iter ) {
-			    memcpy( &va, ( void * ) ( a->text + key->sword ),
-			            sizeof( double ) );
-			    memcpy( &vb, ( void * ) ( b->text + key->sword ),
-			            sizeof( double ) );
+			    memcpy( &va, ( void * ) ( a->text + key->sword ), sizeof( double ) );
+			    memcpy( &vb, ( void * ) ( b->text + key->sword ), sizeof( double ) );
 			    if ( key->nzone ) {
 				va = ( int ) ( va / key->dzone );
 				vb = ( int ) ( vb / key->dzone );
@@ -1225,10 +1185,8 @@ keycompare( a, b )
 			    else {
 #endif
 				memcpy( &va,
-				        ( void * ) ( a->text + key->sword ),
-				        sizeof( double ) );
-				if ( key->nzone ) va =
-				        ( int ) ( va / key->dzone );
+				        ( void * ) ( a->text + key->sword ), sizeof( double ) );
+				if ( key->nzone ) va = ( int ) ( va / key->dzone );
 #ifdef SAOMOD_ASTRO
 				a->flag = 1;
 				a->value = va;
@@ -1237,10 +1195,8 @@ keycompare( a, b )
 			    else {
 #endif
 				memcpy( &vb,
-				        ( void * ) ( b->text + key->sword ),
-				        sizeof( double ) );
-				if ( key->nzone ) va =
-				        ( int ) ( vb / key->dzone );
+				        ( void * ) ( b->text + key->sword ), sizeof( double ) );
+				if ( key->nzone ) va = ( int ) ( vb / key->dzone );
 #ifdef SAOMOD_ASTRO
 				b->flag = 1;
 				b->value = vb;
@@ -1252,9 +1208,7 @@ keycompare( a, b )
 			break;
 		    }
 		case 't':{
-			diff =
-			    strncmp( a->text + key->sword,
-			             b->text + key->sword, key->schar );
+			diff = strncmp( a->text + key->sword, b->text + key->sword, key->schar );
 			break;
 		    }
 		default:
@@ -1322,18 +1276,15 @@ keycompare( a, b )
 	/* Actually compare the fields. */
 	if ( key->numeric ) {
 #ifdef SAOMOD_FIX
-	    if ( *texta != '+' && *texta != '-'
-		 && !ISDIGIT( ( int ) *texta ) ) {
-		if ( *textb != '+' && *textb != '-'
-		     && !ISDIGIT( ( int ) *textb ) ) {
+	    if ( *texta != '+' && *texta != '-' && !ISDIGIT( ( int ) *texta ) ) {
+		if ( *textb != '+' && *textb != '-' && !ISDIGIT( ( int ) *textb ) ) {
 		    diff = memcmp( texta, textb, min( lena, lenb ) );
 		}
 		else {
 		    diff = 1;
 		}
 	    }
-	    else if ( *textb != '+' && *textb != '-'
-		      && !ISDIGIT( ( int ) *textb ) ) {
+	    else if ( *textb != '+' && *textb != '-' && !ISDIGIT( ( int ) *textb ) ) {
 		diff = -1;
 	    }
 	    else
@@ -1457,11 +1408,8 @@ keycompare( a, b )
 		while ( textb < limb && ignore[UCHAR( *textb )] )
 		    ++textb;
 		if ( texta < lima && textb < limb &&
-		     translate[UCHAR( *texta++ )] !=
-		     translate[UCHAR( *textb++ )] ) {
-		    diff =
-		        translate[UCHAR( *--texta )] -
-		        translate[UCHAR( *--textb )];
+		     translate[UCHAR( *texta++ )] != translate[UCHAR( *textb++ )] ) {
+		    diff = translate[UCHAR( *--texta )] - translate[UCHAR( *--textb )];
 		    break;
 		}
 		else if ( texta == lima && textb < limb ) diff = -1;
@@ -1482,11 +1430,8 @@ keycompare( a, b )
 	    }
 	else if ( translate )
 	    while ( texta < lima && textb < limb ) {
-		if ( translate[UCHAR( *texta++ )] !=
-		     translate[UCHAR( *textb++ )] ) {
-		    diff =
-		        translate[UCHAR( *--texta )] -
-		        translate[UCHAR( *--textb )];
+		if ( translate[UCHAR( *texta++ )] != translate[UCHAR( *textb++ )] ) {
+		    diff = translate[UCHAR( *--texta )] - translate[UCHAR( *--textb )];
 		    break;
 		}
 	    }
@@ -1506,9 +1451,10 @@ keycompare( a, b )
    depending on whether A compares less than, equal to, or greater than B. */
 
 static int
-compare( a, b )
-     register struct line *a, *b;
-{
+compare(
+    struct line *a,
+    struct line *b
+ ) {
     int diff, tmpa, tmpb, mini;
 
     /* First try to compare on the specified keys (if any).
@@ -1547,9 +1493,9 @@ compare( a, b )
 
 static int line;
 static int
-checkfp( fp )
-     FILE *fp;
-{
+checkfp(
+    FILE * fp
+ ) {
     struct buffer buf;          /* Input buffer. */
     struct lines lines;         /* Lines scanned from the buffer. */
     struct line *prev_line;     /* Pointer to previous line. */
@@ -1622,10 +1568,11 @@ checkfp( fp )
    Close FPS before returning. */
 
 static void
-mergefps( fps, nfps, ofp )
-     FILE *fps[], *ofp;
-     register int nfps;
-{
+mergefps(
+    FILE * fps[],
+    int nfps,
+    FILE * ofp
+ ) {
     struct buffer buffer[NMERGE];       /* Input buffers for each file. */
     struct lines lines[NMERGE]; /* Line tables for each buffer. */
     struct line saved;          /* Saved line for unique check. */
@@ -1636,7 +1583,7 @@ mergefps( fps, nfps, ofp )
                                    such that lines[ord[0]].lines[cur[ord[0]]]
                                    is the smallest line and will be next
                                    output. */
-    register int i, j, t;
+    int i, j, t;
 
     /* Allocate space for a saved line if necessary. */
     if ( unique ) {
@@ -1661,8 +1608,7 @@ mergefps( fps, nfps, ofp )
 	    free( buffer[i].buf );
 	else {
 	    initlines( &lines[i], mergealloc / linelength + 1,
-	               LINEALLOC / ( ( NMERGE + NMERGE ) *
-	                             sizeof( struct line ) ) );
+	               LINEALLOC / ( ( NMERGE + NMERGE ) * sizeof( struct line ) ) );
 	    findlines( &buffer[i], &lines[i] );
 	    cur[i] = 0;
 	}
@@ -1724,14 +1670,12 @@ mergefps( fps, nfps, ofp )
 
 	    if ( !savedflag ) {
 		if ( savealloc < lines[ord[0]].lines[cur[ord[0]]].length + 1 ) {
-		    while ( savealloc <
-		            lines[ord[0]].lines[cur[ord[0]]].length + 1 )
+		    while ( savealloc < lines[ord[0]].lines[cur[ord[0]]].length + 1 )
 			savealloc *= 2;
 		    saved.text = xrealloc( saved.text, savealloc );
 		}
 		saved.length = lines[ord[0]].lines[cur[ord[0]]].length;
-		memcpy( saved.text, lines[ord[0]].lines[cur[ord[0]]].text,
-		        saved.length + 1 );
+		memcpy( saved.text, lines[ord[0]].lines[cur[ord[0]]].text, saved.length + 1 );
 		if ( lines[ord[0]].lines[cur[ord[0]]].keybeg != NULL ) {
 		    saved.keybeg = saved.text +
 		        ( lines[ord[0]].lines[cur[ord[0]]].keybeg
@@ -1822,8 +1766,7 @@ mergefps( fps, nfps, ofp )
 	   already in core; push it back in the queue until we encounter
 	   a line larger than it. */
 	for ( i = 1; i < nfps; ++i ) {
-	    t = compare( &lines[ord[0]].lines[cur[ord[0]]],
-	                 &lines[ord[i]].lines[cur[ord[i]]] );
+	    t = compare( &lines[ord[0]].lines[cur[ord[0]]], &lines[ord[i]].lines[cur[ord[i]]] );
 	    if ( !t )
 		t = ord[0] - ord[i];
 	    if ( t < 0 )
@@ -1865,12 +1808,13 @@ mergefps( fps, nfps, ofp )
 /* Sort the array LINES with NLINES members, using TEMP for temporary space. */
 
 static void
-sortlines( lines, nlines, temp )
-     struct line *lines, *temp;
-     int nlines;
-{
-    register struct line *lo, *hi, *t;
-    register int nlo, nhi;
+sortlines(
+    struct line *lines,
+    int nlines,
+    struct line *temp
+ ) {
+    struct line *lo, *hi, *t;
+    int nlo, nhi;
 
     if ( nlines == 2 ) {
 	if ( compare( &lines[0], &lines[1] ) > 0 )
@@ -1908,10 +1852,10 @@ sortlines( lines, nlines, temp )
 
 
 static int
-check( files, nfiles )
-     char *files[];
-     int nfiles;
-{
+check(
+    char *files[],
+    int nfiles
+ ) {
     int i, disorders = 0;
     FILE *fp;
 
@@ -1930,11 +1874,11 @@ check( files, nfiles )
 /* Merge NFILES FILES onto OFP. */
 
 static void
-merge( files, nfiles, ofp )
-     char *files[];
-     int nfiles;
-     FILE *ofp;
-{
+merge(
+    char *files[],
+    int nfiles,
+    FILE * ofp
+ ) {
     int i, j, t;
     char *temp;
     FILE *fps[NMERGE], *tfp;
@@ -1955,20 +1899,16 @@ merge( files, nfiles, ofp )
 		fps[j] = xfopen( files[i * NMERGE + j], "r" );
 #ifdef SAOMOD_TABLE
 		if ( table == 2 ) {
-		    if ( TH == NULL ) TH =
-		            table_header( fps[j], TABLE_PARSE );
+		    if ( TH == NULL ) TH = table_header( fps[j], TABLE_PARSE );
 		    else {
 			int k;
 
 			th = table_header( fps[j], TABLE_PARSE );
 			for ( k = 0; k < table_ncol( TH ); k++ )
-			    if ( strcmp
-			         ( table_colnam( TH, k + 1 ),
-			           table_colnam( th, k + 1 ) ) ) {
+			    if ( strcmp( table_colnam( TH, k + 1 ), table_colnam( th, k + 1 ) ) ) {
 				fprintf( stderr,
 				         "sorttable: can't merge tables with different column definitions: \"%\"s != \"%s\"\n",
-				         table_colnam( TH, k + 1 ),
-				         table_colnam( th, k + 1 ) );
+				         table_colnam( TH, k + 1 ), table_colnam( th, k + 1 ) );
 				exit( 1 );
 			    }
 			table_hdrfree( th );
@@ -1996,13 +1936,10 @@ merge( files, nfiles, ofp )
 
 		    th = table_header( fps[j], TABLE_PARSE );
 		    for ( k = 0; k < table_ncol( TH ); k++ )
-			if ( strcmp
-			     ( table_colnam( TH, k + 1 ),
-			       table_colnam( th, k + 1 ) ) ) {
+			if ( strcmp( table_colnam( TH, k + 1 ), table_colnam( th, k + 1 ) ) ) {
 			    fprintf( stderr,
 			             "sorttable: can't merge tables with different column definitions: \"%s\" != \"%s\"\n",
-			             table_colnam( TH, k + 1 ),
-			             table_colnam( th, k + 1 ) );
+			             table_colnam( TH, k + 1 ), table_colnam( th, k + 1 ) );
 			    exit( 1 );
 			}
 		    table_hdrfree( th );
@@ -2031,14 +1968,10 @@ merge( files, nfiles, ofp )
 
 		th = table_header( fps[i], TABLE_PARSE );
 		for ( k = 0; k < table_ncol( TH ); k++ ) {
-		    if ( strcmp
-		         ( table_colnam( TH, k + 1 ),
-		           table_colnam( th, k + 1 ) ) ) {
+		    if ( strcmp( table_colnam( TH, k + 1 ), table_colnam( th, k + 1 ) ) ) {
 			fprintf( stderr,
 			         "sorttable: can't merge tables with different column definitions: \"%s\" != \"%s\"\n",
-			         table_colnam( TH, k + 1 ), table_colnam( th,
-			                                                  k +
-			                                                  1 ) );
+			         table_colnam( TH, k + 1 ), table_colnam( th, k + 1 ) );
 			exit( 1 );
 		    }
 		}
@@ -2057,11 +1990,11 @@ merge( files, nfiles, ofp )
 /* Sort NFILES FILES onto OFP. */
 
 static void
-sort( files, nfiles, ofp )
-     char **files;
-     int nfiles;
-     FILE *ofp;
-{
+sort(
+    char **files,
+    int nfiles,
+    FILE * ofp
+ ) {
     struct buffer buf;
     struct lines lines;
     struct line saved;          /* Saved line for unique check. */
@@ -2075,8 +2008,7 @@ sort( files, nfiles, ofp )
     char **tempfiles;
 
     initbuf( &buf, sortalloc );
-    initlines( &lines, sortalloc / linelength + 1,
-               LINEALLOC / sizeof( struct line ) );
+    initlines( &lines, sortalloc / linelength + 1, LINEALLOC / sizeof( struct line ) );
     ntmp = lines.alloc;
     tmp = ( struct line * ) xmalloc( ntmp * sizeof( struct line ) );
 
@@ -2108,8 +2040,7 @@ sort( files, nfiles, ofp )
 	    }
 	    if ( !unique || tfp != ofp )
 		for ( i = 0; i < lines.used; ++i ) {
-		    xfwrite( lines.lines[i].text, 1, lines.lines[i].length,
-		             tfp );
+		    xfwrite( lines.lines[i].text, 1, lines.lines[i].length, tfp );
 #ifdef SAOMOD_BINARY
 		    if ( !BinarySort ) putc( '\n', tfp );
 #else
@@ -2131,8 +2062,7 @@ sort( files, nfiles, ofp )
 				if ( !differ ) {
 				    if ( countr )
 					fprintf( ofp, "%d\t", savedflag );
-				    xfwrite( saved.text, 1, saved.length,
-				             ofp );
+				    xfwrite( saved.text, 1, saved.length, ofp );
 #ifdef SAOMOD_BINARY
 				    if ( !BinarySort ) putc( '\n', ofp );
 #else
@@ -2141,10 +2071,8 @@ sort( files, nfiles, ofp )
 				}
 				else {
 			            if ( ( differ == 1 && savedflag == 1 )
-				         || ( differ == 2
-				              && savedflag >= 2 ) ) {
-					xfwrite( saved.text, 1, saved.length,
-					         ofp );
+				         || ( differ == 2 && savedflag >= 2 ) ) {
+					xfwrite( saved.text, 1, saved.length, ofp );
 #ifdef SAOMOD_BINARY
 					if ( !BinarySort ) putc( '\n', ofp );
 #else
@@ -2166,17 +2094,14 @@ sort( files, nfiles, ofp )
 			    saved.text = xrealloc( saved.text, savealloc );
 			}
 			saved.length = lines.lines[i].length;
-			memcpy( saved.text, lines.lines[i].text,
-			        saved.length + 1 );
+			memcpy( saved.text, lines.lines[i].text, saved.length + 1 );
 			if ( lines.lines[i].keybeg != NULL ) {
 			    saved.keybeg = saved.text +
-			        ( lines.lines[i].keybeg -
-			          lines.lines[i].text );
+			        ( lines.lines[i].keybeg - lines.lines[i].text );
 			}
 			if ( lines.lines[i].keylim != NULL ) {
 			    saved.keylim = saved.text +
-			        ( lines.lines[i].keylim -
-			          lines.lines[i].text );
+			        ( lines.lines[i].keylim - lines.lines[i].text );
 			}
 
 #ifdef SAOMOD_ASTRO
@@ -2189,8 +2114,7 @@ sort( files, nfiles, ofp )
 
 		    if ( differ == 3 ) {
 			fprintf( ofp, "%d\t", setcnt );
-			xfwrite( lines.lines[i].text, 1,
-			         lines.lines[i].length, ofp );
+			xfwrite( lines.lines[i].text, 1, lines.lines[i].length, ofp );
 #ifdef SAOMOD_BINARY
 			if ( !BinarySort ) putc( '\n', ofp );
 #else
@@ -2207,8 +2131,7 @@ sort( files, nfiles, ofp )
 			    putc( '\n', ofp );
 #endif
 			}
-			xfwrite( lines.lines[i].text, 1,
-			         lines.lines[i].length, ofp );
+			xfwrite( lines.lines[i].text, 1, lines.lines[i].length, ofp );
 #ifdef SAOMOD_BINARY
 			if ( !BinarySort ) putc( '\n', ofp );
 #else
@@ -2267,9 +2190,9 @@ sort( files, nfiles, ofp )
 /* Insert key KEY at the end of the list (`keyhead'). */
 
 static void
-insertkey( key )
-     struct keyfield *key;
-{
+insertkey(
+    struct keyfield *key
+ ) {
     struct keyfield *k = &keyhead;
 
     while ( k->next )
@@ -2279,9 +2202,9 @@ insertkey( key )
 }
 
 static void
-badfieldspec( s )
-     char *s;
-{
+badfieldspec(
+    char *s
+ ) {
     fprintf( stderr, "invalid field specification `%s'", s );
     exit( 2 );
 }
@@ -2289,9 +2212,9 @@ badfieldspec( s )
 /* Handle interrupts and hangups. */
 
 static void
-sighandler( sig )
-     int sig;
-{
+sighandler(
+    int sig
+ ) {
 #ifdef _POSIX_VERSION
     struct sigaction sigact;
 
@@ -2316,11 +2239,11 @@ sighandler( sig )
    BLANKTYPE is the kind of blanks that 'b' should skip. */
 
 static char *
-set_ordering( s, key, blanktype )
-     char *s;
-     struct keyfield *key;
-     enum blanktype blanktype;
-{
+set_ordering(
+    char *s,
+    struct keyfield *key,
+    enum blanktype blanktype
+ ) {
     while ( *s ) {
 	switch ( *s ) {
 	    case 'b':
@@ -2381,10 +2304,10 @@ set_ordering( s, key, blanktype )
 }
 
 int
-main( argc, argv )
-     int argc;
-     char *argv[];
-{
+main(
+    int argc,
+    char *argv[]
+ ) {
     struct keyfield *key = NULL, gkey;
     char *s;
     int i, t, t2;
@@ -2595,8 +2518,7 @@ main( argc, argv )
 				++s;
 			    else {
 				if ( i == argc - 1 ) {
-				    fprintf( stderr,
-				             "option `-k' requires an argument" );
+				    fprintf( stderr, "option `-k' requires an argument" );
 				    exit( 2 );
 				}
 				else
@@ -2611,8 +2533,7 @@ main( argc, argv )
 			    key->ignore = NULL;
 			    key->translate = NULL;
 			    key->skipsblanks = key->skipeblanks = 0;
-			    key->nzone = key->numeric = key->month =
-			        key->reverse = 0;
+			    key->nzone = key->numeric = key->month = key->reverse = 0;
 			    /* Get POS1. */
 			    if ( !digits[UCHAR( *s )] )
 				badfieldspec( argv[i] );
@@ -2669,8 +2590,7 @@ main( argc, argv )
 				outfile = s + 1;
 			    else {
 				if ( i == argc - 1 ) {
-				    fprintf( stderr,
-				             "option `-o' requires an argument" );
+				    fprintf( stderr, "option `-o' requires an argument" );
 				    exit( 2 );
 				}
 				else
@@ -2688,8 +2608,7 @@ main( argc, argv )
 				goto outer;
 			    }
 			    else {
-				fprintf( stderr,
-				         "option `-t' requires an argument" );
+				fprintf( stderr, "option `-t' requires an argument" );
 				exit( 2 );
 			    }
 			    break;
@@ -2700,8 +2619,7 @@ main( argc, argv )
 				if ( i < argc - 1 )
 				    temp_file_prefix = argv[++i];
 				else {
-				    fprintf( stderr,
-				             "option `-T' requires an argument" );
+				    fprintf( stderr, "option `-T' requires an argument" );
 				    exit( 2 );
 				}
 			    }
@@ -2736,9 +2654,7 @@ main( argc, argv )
 			       Solaris 2.  */
 			    goto outer;
 			default:
-			    fprintf( stderr,
-			             "%s: unrecognized option `-%c'\n",
-			             argv[0], *s );
+			    fprintf( stderr, "%s: unrecognized option `-%c'\n", argv[0], *s );
 			    usage( 2 );
 		    }
 		    if ( *s )
@@ -2756,8 +2672,7 @@ main( argc, argv )
 
 #ifdef SAOMOD_BINARY
     if ( BinarySort == -1 ) {
-	fprintf( stderr,
-	         "No record length specified with binary file sort flags.\n" );
+	fprintf( stderr, "No record length specified with binary file sort flags.\n" );
 	usage( 2 );
     }
     if ( BinarySort && key == NULL ) {
@@ -2830,8 +2745,7 @@ main( argc, argv )
 			exit( 2 );
 		    }
 		    if ( S_ISREG( instat.st_mode )
-		         && ( instat.st_ino != outstat.st_ino
-		              || instat.st_dev != outstat.st_dev ) ) {
+		         && ( instat.st_ino != outstat.st_ino || instat.st_dev != outstat.st_dev ) ) {
 			/* We know the files are distinct.  */
 			continue;
 		    }
@@ -2880,58 +2794,41 @@ main( argc, argv )
 }
 
 static void
-usage( status )
-     int status;
-{
+usage(
+    int status
+ ) {
     if ( status != 0 )
-	fprintf( stderr, "Try `%s --help' for more information.\n",
-                 program_name );
+	fprintf( stderr, "Try `%s --help' for more information.\n", program_name );
     else {
 	fprintf( stderr, "Usage: %s [OPTION]... [FILE]...\n", program_name );
-	fprintf( stderr,
-	         "Write sorted concatenation of all FILE(s) to standard output.\n" );
+	fprintf( stderr, "Write sorted concatenation of all FILE(s) to standard output.\n" );
 	fprintf( stderr, "\n" );
-	fprintf( stderr,
-	         "+POS1 [-POS2]    start a key at POS1, end it before POS2\n" );
-	fprintf( stderr,
-	         "-M               compare (unknown) < `JAN' < ... < `DEC', imply -b\n" );
+	fprintf( stderr, "+POS1 [-POS2]    start a key at POS1, end it before POS2\n" );
+	fprintf( stderr, "-M               compare (unknown) < `JAN' < ... < `DEC', imply -b\n" );
 	fprintf( stderr,
 	         "-T DIRECT        use DIRECT for temporary files, not $TMPDIR or %s\n",
 	         DEFAULT_TMPDIR );
-	fprintf( stderr,
-	         "-b               ignore leading blanks in sort fields or keys\n" );
-	fprintf( stderr,
-	         "-c               check if given files already sorted, do not sort\n" );
-	fprintf( stderr,
-	         "-d               consider only [a-zA-Z0-9 ] characters in keys\n" );
-	fprintf( stderr,
-	         "-f               fold lower case to upper case characters in keys\n" );
-	fprintf( stderr,
-	         "-i               consider only [\\040-\\0176] characters in keys\n" );
+	fprintf( stderr, "-b               ignore leading blanks in sort fields or keys\n" );
+	fprintf( stderr, "-c               check if given files already sorted, do not sort\n" );
+	fprintf( stderr, "-d               consider only [a-zA-Z0-9 ] characters in keys\n" );
+	fprintf( stderr, "-f               fold lower case to upper case characters in keys\n" );
+	fprintf( stderr, "-i               consider only [\\040-\\0176] characters in keys\n" );
 	fprintf( stderr,
 	         "-k POS1[,POS2]   same as +POS1 [-POS2], but all positions counted from 1\n" );
-	fprintf( stderr,
-	         "-m               merge already sorted files, do not sort\n" );
+	fprintf( stderr, "-m               merge already sorted files, do not sort\n" );
 	fprintf( stderr,
 	         "-n               compare according to string numerical value, imply -b\n" );
-	fprintf( stderr,
-	         "-o FILE          write result on FILE instead of standard output\n" );
-	fprintf( stderr,
-	         "-r               reverse the result of comparisons\n" );
-	fprintf( stderr,
-	         "-s               stabilize sort by disabling last resort comparison\n" );
+	fprintf( stderr, "-o FILE          write result on FILE instead of standard output\n" );
+	fprintf( stderr, "-r               reverse the result of comparisons\n" );
+	fprintf( stderr, "-s               stabilize sort by disabling last resort comparison\n" );
 	fprintf( stderr,
 	         "-t SEP           use SEParator instead of non- to whitespace transition\n" );
-	fprintf( stderr,
-	         "-u               with -c, check for strict ordering\n" );
-	fprintf( stderr,
-	         "-u               with -m, only output the first of an equal sequence\n" );
+	fprintf( stderr, "-u               with -c, check for strict ordering\n" );
+	fprintf( stderr, "-u               with -m, only output the first of an equal sequence\n" );
 	fprintf( stderr, "-U		   output only unique records.\n" );
-	fprintf( stderr,
-	         "-D		   output only duplicate records.\n" );
+	fprintf( stderr, "-D		   output only duplicate records.\n" );
 	fprintf( stderr, "--help       display this help and exit\n" );
-	fprintf( stderr,
-	         "--version    output version information and exit\n" );
+	fprintf( stderr, "--version    output version information and exit\n" );
 	fprintf( stderr, "\n" );
 	fprintf( stderr, "Binary File Options:\n" );
 	fprintf( stderr, "\n" );
@@ -2955,14 +2852,12 @@ usage( status )
 	fprintf( stderr, "d		double data\n" );
 	fprintf( stderr, "t		text data\n" );
 	fprintf( stderr, "\n" );
-	fprintf( stderr,
-	         "POS is F[.C][OPTS], where F is the field number and C the character\n" );
+	fprintf( stderr, "POS is F[.C][OPTS], where F is the field number and C the character\n" );
 	fprintf( stderr,
 	         "position in the field, both counted from zero.  OPTS is made up of one\n" );
 	fprintf( stderr,
 	         "or more of Mbdfinr; this effectively disables global -Mbdfinr settings\n" );
-	fprintf( stderr,
-	         "for that key.  If no key given, use the entire line as key.  With no\n" );
+	fprintf( stderr, "for that key.  If no key given, use the entire line as key.  With no\n" );
 	fprintf( stderr, "FILE, or when FILE is -, read standard input.\n" );
 	fprintf( stderr, "\n" );
     }

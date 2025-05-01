@@ -32,18 +32,13 @@
  * AddString -- add a string to a buffer
  *
  */
-#ifdef ANSI_FUNC
 static void
-AddString( char **buf, int *blen, int *maxlen, char *str )
-#else
-static void
-AddString( buf, blen, maxlen, str )
-     char **buf;
-     int *blen;
-     int *maxlen;
-     char *str;
-#endif
-{
+AddString(
+    char **buf,
+    int *blen,
+    int *maxlen,
+    char *str
+ ) {
     int slen;
 
     if ( !str || !*str ) return;
@@ -61,18 +56,13 @@ AddString( buf, blen, maxlen, str )
  * AddChar -- add a single char to a buffer
  *
  */
-#ifdef ANSI_FUNC
 static void
-AddChar( char **buf, int *blen, int *maxlen, int c )
-#else
-static void
-AddChar( buf, blen, maxlen, c )
-     char **buf;
-     int *blen;
-     int *maxlen;
-     int c;
-#endif
-{
+AddChar(
+    char **buf,
+    int *blen,
+    int *maxlen,
+    int c
+ ) {
     char tbuf[2];
 
     tbuf[0] = ( char ) c;
@@ -87,18 +77,13 @@ AddChar( buf, blen, maxlen, c )
  * (Should use quarks ...)
  *
  */
-#ifdef ANSI_FUNC
 static char *
-LookupKeywords( char *name, char **keyword, char **value, int nkey )
-#else
-static char *
-LookupKeywords( name, keyword, value, nkey )
-     char *name;
-     char **keyword;
-     char **value;
-     int nkey;
-#endif
-{
+LookupKeywords(
+    char *name,
+    char **keyword,
+    char **value,
+    int nkey
+ ) {
     int i;
     for ( i = 0; i < nkey; i++ ) {
 	if ( keyword[i] && !strcmp( name, keyword[i] ) )
@@ -120,21 +105,15 @@ LookupKeywords( name, keyword, value, nkey )
  * returns: expanded macro as an allocated string
  *
  */
-#ifdef ANSI_FUNC
 char *
-ExpandMacro( char *icmd, char **keyword, char **value, int nkey,
-             MacroCall client_callback, void *client_data )
-#else
-char *
-ExpandMacro( icmd, keyword, value, nkey, client_callback, client_data )
-     char *icmd;
-     char **keyword;
-     char **value;
-     int nkey;
-     MacroCall client_callback;
-     void *client_data;
-#endif
-{
+ExpandMacro(
+    char *icmd,
+    char **keyword,
+    char **value,
+    int nkey,
+    MacroCall client_callback,
+    void *client_data
+ ) {
     int i, j;
     int maxlen;
     char brace;
@@ -189,16 +168,12 @@ ExpandMacro( icmd, keyword, value, nkey, client_callback, client_data )
 	    /* back up so the outer loop adds this delimiting char to the output */
 	    ip--;
 	    /* search for keyword from the list */
-	    if ( ( nkey > 0 ) &&
-	         ( s =
-	           LookupKeywords( tbuf, keyword, value, nkey ) ) != NULL ) {
+	    if ( ( nkey > 0 ) && ( s = LookupKeywords( tbuf, keyword, value, nkey ) ) != NULL ) {
 		AddString( &result, &i, &maxlen, s );
 	    }
 	    /* execute the client routine to expand macros */
 	    else if ( ( client_callback != NULL ) &&
-	              ( ( s =
-	                  ( *client_callback ) ( tbuf,
-	                                         client_data ) ) != NULL ) ) {
+	              ( ( s = ( *client_callback ) ( tbuf, client_data ) ) != NULL ) ) {
 		AddString( &result, &i, &maxlen, s );
 	    }
 	    /* look for an environment variable */

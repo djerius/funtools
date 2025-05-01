@@ -40,10 +40,9 @@ const double r2d = 180.0 / PI;
 
 
 double
-cosdeg( angle )
-     const double angle;
-
-{
+cosdeg(
+    const double angle
+ ) {
     double resid;
 
     resid = fabs( fmod( angle, 360.0 ) );
@@ -66,10 +65,9 @@ cosdeg( angle )
 /*--------------------------------------------------------------------------*/
 
 double
-sindeg( angle )
-     const double angle;
-
-{
+sindeg(
+    const double angle
+ ) {
     double resid;
 
     resid = fmod( angle - 90.0, 360.0 );
@@ -92,10 +90,9 @@ sindeg( angle )
 /*--------------------------------------------------------------------------*/
 
 double
-tandeg( angle )
-     const double angle;
-
-{
+tandeg(
+    const double angle
+ ) {
     double resid;
 
     resid = fmod( angle, 360.0 );
@@ -115,10 +112,9 @@ tandeg( angle )
 /*--------------------------------------------------------------------------*/
 
 double
-acosdeg( v )
-     const double v;
-
-{
+acosdeg(
+    const double v
+ ) {
     if ( v >= 1.0 ) {
 	if ( v - 1.0 < WCSTRIG_TOL ) return 0.0;
     }
@@ -135,10 +131,9 @@ acosdeg( v )
 /*--------------------------------------------------------------------------*/
 
 double
-asindeg( v )
-     const double v;
-
-{
+asindeg(
+    const double v
+ ) {
     if ( v <= -1.0 ) {
 	if ( v + 1.0 > -WCSTRIG_TOL ) return -90.0;
     }
@@ -155,10 +150,9 @@ asindeg( v )
 /*--------------------------------------------------------------------------*/
 
 double
-atandeg( v )
-     const double v;
-
-{
+atandeg(
+    const double v
+ ) {
     if ( v == -1.0 ) {
 	return -45.0;
     }
@@ -175,10 +169,10 @@ atandeg( v )
 /*--------------------------------------------------------------------------*/
 
 double
-atan2deg( y, x )
-     const double x, y;
-
-{
+atan2deg(
+    const double y,
+    const double x
+ ) {
     if ( y == 0.0 ) {
 	if ( x >= 0.0 ) {
 	    return 0.0;

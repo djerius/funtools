@@ -19,16 +19,12 @@ static ParseRec __parserec;
 static Parse _parse = &__parserec;
 static char _ctab[PARSE_TABLE_SIZE][PARSE_TABLE_SIZE];
 
-#ifdef ANSI_FUNC
 static int
-_gettype( char *s, double *d, longlong * i )
-#else
-_gettype( s, d, i )
-     char *s;
-     double *d;
-     longlong *i;
-#endif
-{
+_gettype(
+    char *s,
+    double *d,
+    longlong * i
+ ) {
     char *t;
     longlong lval;
     double dval;
@@ -102,14 +98,10 @@ _gettype( s, d, i )
     return PARSE_HEXINT;
 }
 
-#ifdef ANSI_FUNC
 static void
-_ParseInitialize( void )
-#else
-static void
-_ParseInitialize(  )
-#endif
-{
+_ParseInitialize(
+    void
+ ) {
     /* clear ctable */
     memset( _ctab, 0, PARSE_TABLE_SIZE * PARSE_TABLE_SIZE );
 
@@ -149,18 +141,12 @@ _ParseInitialize(  )
     _ctab[PARSE_HEXINT][PARSE_FLOAT] = -1;
 }
 
-#ifdef ANSI_FUNC
 static int
-_ParseEOT( Parse parse, char *line )
-#else
-static int
-_ParseEOT( parse, line )
-     Parse parse;
-     char *line;
-#endif
-{
-    if ( !parse || !line || !parse->eot
-         || ( parse->state & PARSE_STATE_BAD ) )
+_ParseEOT(
+    Parse parse,
+    char *line
+ ) {
+    if ( !parse || !line || !parse->eot || ( parse->state & PARSE_STATE_BAD ) )
 	return 0;
     if ( !strcmp( parse->eot->lines[parse->eot->ncur], line ) ) {
 	parse->eot->ncur++;
@@ -182,16 +168,11 @@ _ParseEOT( parse, line )
     return 0;
 }
 
-#ifdef ANSI_FUNC
 static int
-_ParseFixTokens( ParsedLine line1, ParsedLine line2 )
-#else
-static int
-_ParseFixTokens( line1, line2 )
-     ParsedLine line1;
-     ParsedLine line2;
-#endif
-{
+_ParseFixTokens(
+    ParsedLine line1,
+    ParsedLine line2
+ ) {
     int i;
 
     /* sanity check */
@@ -201,8 +182,7 @@ _ParseFixTokens( line1, line2 )
        null values. we try to fix that here. this really stinks */
     if ( line2->ntoken < line1->ntoken ) {
 	line2->tokens = ( ParsedToken ) xrealloc( line2->tokens,
-	                                          line1->ntoken *
-	                                          sizeof( ParsedTokenRec ) );
+	                                          line1->ntoken * sizeof( ParsedTokenRec ) );
 	for ( i = line2->ntoken; i < line1->ntoken; i++ ) {
 	    line2->tokens[i].sval = NULL;
 	    line2->tokens[i].type = PARSE_NULL;
@@ -217,16 +197,12 @@ _ParseFixTokens( line1, line2 )
     }
 }
 
-#ifdef ANSI_FUNC
 static int
-_ParseLineState( Parse parse, int istate, char *UNUSED( mode ) )
-#else
-_ParseLineState( parse, istate, mode )
-     Parse parse;
-     int state;
-     char *mode;
-#endif
-{
+_ParseLineState(
+    Parse parse,
+    int istate,
+    char *UNUSED( mode )
+ ) {
     int state;
     ParsedLine line;
 
@@ -281,8 +257,7 @@ _ParseLineState( parse, istate, mode )
 		line->types[0] = PARSE_COMMENT;
 		return istate;
 	    }
-	    else if ( ( line->ntypes[PARSE_STRING] +
-	                line->ntypes[PARSE_NULL] ) == line->ntoken ) {
+	    else if ( ( line->ntypes[PARSE_STRING] + line->ntypes[PARSE_NULL] ) == line->ntoken ) {
 		state = PARSE_STATE_STRING;
 	    }
 	    else {
@@ -301,8 +276,7 @@ _ParseLineState( parse, istate, mode )
 		    parse->header = ParseLineDup( parse, parse->prev );
 		}
 	    }
-	    else if ( ( line->ntypes[PARSE_STRING] +
-	                line->ntypes[PARSE_NULL] ) == line->ntoken ) {
+	    else if ( ( line->ntypes[PARSE_STRING] + line->ntypes[PARSE_NULL] ) == line->ntoken ) {
 		if ( parse->needunits ) {
 		    if ( parse->prev2 ) {
 			state = PARSE_STATE_DATA;
@@ -353,11 +327,9 @@ _ParseLineState( parse, istate, mode )
 		if ( parse->data1 &&
 		     ( ( parse->data1->ntoken != line->ntoken ) ||
 		       ( ( parse->data1->ntypes[PARSE_STRING] +
-		           parse->data1->ntypes[PARSE_NULL] ) !=
-		         line->ntoken ) ) ) {
+		           parse->data1->ntypes[PARSE_NULL] ) != line->ntoken ) ) ) {
 #if PARSE_LOOSELY
-		    state =
-		        _ParseLineState( parse, PARSE_STATE_INITIAL, NULL );
+		    state = _ParseLineState( parse, PARSE_STATE_INITIAL, NULL );
 		    state |= PARSE_STATE_EOT | PARSE_STATE_NEXTLINE;
 #else
 		    state = PARSE_STATE_BADTYPE;
@@ -367,14 +339,12 @@ _ParseLineState( parse, istate, mode )
 		    state = PARSE_STATE_DATA;
 		    /* 8/22: I added this line to support tables containing only ascii
 		       columns. But is there a reason why it was not here before??? */
-		    if ( !parse->data1 ) parse->data1 =
-		            ParseLineDup( parse, line );
+		    if ( !parse->data1 ) parse->data1 = ParseLineDup( parse, line );
 		}
 	    }
 	    else {
 		state = PARSE_STATE_DATA;
-		if ( !parse->data1 ) parse->data1 =
-		        ParseLineDup( parse, line );
+		if ( !parse->data1 ) parse->data1 = ParseLineDup( parse, line );
 	    }
 	    break;
 	case PARSE_STATE_BADMATCH:
@@ -393,15 +363,10 @@ _ParseLineState( parse, istate, mode )
     return state;
 }
 
-#ifdef ANSI_FUNC
 static int
-_ParseLineFree( ParsedLine line )
-#else
-static int
-_ParseLineFree( line )
-     ParsedLine line;
-#endif
-{
+_ParseLineFree(
+    ParsedLine line
+ ) {
     int i;
 
     /* sanity check */
@@ -429,25 +394,18 @@ _ParseLineFree( line )
  *----------------------------------------------------------------------------
  */
 
-#ifdef ANSI_FUNC
 int
-ParseWord( int *delims, int *comtab, int nullvalues, int whitespace,
-           char *lbuf, void *token, int tmax, int *lptr, int *lastd )
-#else
-int
-ParseWord( delims, comtab, nullvalues, whitespace,
-           lbuf, token, tmax, lptr, lastd )
-     int *delims;
-     int *comtab;
-     int nullvalues;
-     int whitespace;
-     char *lbuf;
-     void *token;
-     int tmax;
-     int *lptr;
-     int *lastd;
-#endif
-{
+ParseWord(
+    int *delims,
+    int *comtab,
+    int nullvalues,
+    int whitespace,
+    char *lbuf,
+    void *token,
+    int tmax,
+    int *lptr,
+    int *lastd
+ ) {
     int ip;
     int i;
     int tlen;
@@ -507,9 +465,7 @@ ParseWord( delims, comtab, nullvalues, whitespace,
     }
 
     /* grab up to next delim or comment */
-    for ( i = 0;
-	  lbuf[ip] && !delims[( int ) lbuf[ip]] && !comtab[( int ) lbuf[ip]];
-	  ip++ ) {
+    for ( i = 0; lbuf[ip] && !delims[( int ) lbuf[ip]] && !comtab[( int ) lbuf[ip]]; ip++ ) {
 	/*first  check for an explicit quote */
 	if ( lbuf[ip] == '"' ) {
 	    quotes = '"';
@@ -528,7 +484,7 @@ ParseWord( delims, comtab, nullvalues, whitespace,
 	    ip++;
 	    /* grab up to next quote -- but skip escaped quotes */
 	    for ( ; lbuf[ip] != '\0'; ip++ ) {
-		if ( ( lbuf[ip] == quotes )
+	        if ( ( lbuf[ip] == quotes )
 		     && ( ( ip == 0 ) || lbuf[ip - 1] != '\\' ) ) {
 		    break;
 		}
@@ -589,18 +545,13 @@ ParseWord( delims, comtab, nullvalues, whitespace,
     return ( i );
 }
 
-#ifdef ANSI_FUNC
 Parse
-ParseNew( char *delims, char *comchars, char *eot, char *mode )
-#else
-Parse
-ParseNew( delims, comchars, eot, mode )
-     char *delims;
-     char *comchars;
-     char *eot;
-     char *mode;
-#endif
-{
+ParseNew(
+    char *delims,
+    char *comchars,
+    char *eot,
+    char *mode
+ ) {
     int i;
     int ip;
     int lastd;
@@ -677,8 +628,7 @@ ParseNew( delims, comchars, eot, mode )
 	parse->eot = ( ParsedEOT ) xcalloc( 1, sizeof( ParsedEOTRec ) );
 	parse->eot->nline = 0;
 	parse->eot->maxline = 1;
-	parse->eot->lines =
-	    ( char ** ) xcalloc( parse->eot->maxline, sizeof( char * ) );
+	parse->eot->lines = ( char ** ) xcalloc( parse->eot->maxline, sizeof( char * ) );
 	*tbuf = '\0';
 	tlen = 0;
 	/* split up eot string into separate lines */
@@ -691,8 +641,7 @@ ParseNew( delims, comchars, eot, mode )
 		else if ( *s == 'f' ) c = '\014';
 	    }
 	    if ( tlen >= SZ_LINE )
-		gerror( stderr, "EOT specification is too long (%d)\n",
-	                tlen );
+		gerror( stderr, "EOT specification is too long (%d)\n", tlen );
 	    else
 		tbuf[tlen++] = c;
 	    /* handle end of one line */
@@ -704,8 +653,7 @@ ParseNew( delims, comchars, eot, mode )
 		    parse->eot->maxline++;
 		    parse->eot->lines =
 		        ( char ** ) xrealloc( parse->eot->lines,
-		                              parse->eot->maxline *
-		                              sizeof( char * ) );
+		                              parse->eot->maxline * sizeof( char * ) );
 		    parse->eot->lines[parse->eot->maxline - 1] = NULL;
 		}
 		*tbuf = '\0';
@@ -778,17 +726,12 @@ ParseNew( delims, comchars, eot, mode )
     return parse;
 }
 
-#ifdef ANSI_FUNC
 int
-ParseLine( Parse parse, char *lbuf, char *UNUSED( mode ) )
-#else
-int
-ParseLine( parse, lbuf, mode )
-     Parse parse;
-     char *lbuf;
-     char *mode;
-#endif
-{
+ParseLine(
+    Parse parse,
+    char *lbuf,
+    char *UNUSED( mode )
+ ) {
     int i;
     int got;
     int ip;
@@ -831,11 +774,8 @@ ParseLine( parse, lbuf, mode )
     /* initialize line if necessary */
     if ( !line->tokens ) {
 	line->maxtoken = PARSE_TOKEN_INCR;
-	line->tokens =
-	    ( ParsedToken ) xcalloc( line->maxtoken,
-	                             sizeof( ParsedTokenRec ) );
-	line->types =
-	    ( char * ) xcalloc( ( line->maxtoken + 1 ), sizeof( char ) );
+	line->tokens = ( ParsedToken ) xcalloc( line->maxtoken, sizeof( ParsedTokenRec ) );
+	line->types = ( char * ) xcalloc( ( line->maxtoken + 1 ), sizeof( char ) );
     }
 
     /* look for EOT */
@@ -862,20 +802,15 @@ ParseLine( parse, lbuf, mode )
 	if ( i >= line->maxtoken ) {
 	    line->maxtoken += PARSE_TOKEN_INCR;
 	    line->tokens = ( ParsedToken ) xrealloc( line->tokens,
-	                                             line->maxtoken *
-	                                             sizeof
-	                                             ( ParsedTokenRec ) );
+	                                             line->maxtoken * sizeof( ParsedTokenRec ) );
 	    line->types =
-	        ( char * ) xrealloc( line->types,
-	                             ( line->maxtoken +
-	                               1 ) * sizeof( char ) );
+	        ( char * ) xrealloc( line->types, ( line->maxtoken + 1 ) * sizeof( char ) );
 	}
 
 	/* process next word, and break if we don't get something */
 	got = ParseWord( parse->delimtab, parse->comtab,
 	                 parse->nullvalues, parse->whitespace,
-	                 lbuf, &( line->tokens[i].sval ), 0, &ip,
-	                 &( line->tokens[i].delim ) );
+	                 lbuf, &( line->tokens[i].sval ), 0, &ip, &( line->tokens[i].delim ) );
 	/* analyze result */
 	if ( ( got == 0 )
 	     && ( line->tokens[i].delim != '\'' )
@@ -911,14 +846,13 @@ ParseLine( parse, lbuf, mode )
 	else {
 	    /* valid token, set token type */
 	    if ( parse->convert ) {
-		if ( ( line->tokens[i].delim == '\'' )
+	        if ( ( line->tokens[i].delim == '\'' )
 		     || ( line->tokens[i].delim == '"' ) )
 		    line->tokens[i].type = PARSE_STRING;
 		else
 		    line->tokens[i].type =
 		        _gettype( line->tokens[i].sval,
-		                  &line->tokens[i].dval,
-		                  &line->tokens[i].lval );
+		                  &line->tokens[i].dval, &line->tokens[i].lval );
 	    }
 	    else {
 		line->tokens[i].type = PARSE_STRING;
@@ -934,11 +868,8 @@ ParseLine( parse, lbuf, mode )
     /* null terminate and realloc to actual size */
     line->types[i] = '\0';
     line->maxtoken = i;
-    line->tokens =
-        ( ParsedToken ) xrealloc( line->tokens,
-                                  i * sizeof( ParsedTokenRec ) );
-    line->types =
-        ( char * ) xrealloc( line->types, ( i + 1 ) * sizeof( char ) );
+    line->tokens = ( ParsedToken ) xrealloc( line->tokens, i * sizeof( ParsedTokenRec ) );
+    line->types = ( char * ) xrealloc( line->types, ( i + 1 ) * sizeof( char ) );
     /* finalize total number of tokens processed */
     line->ntoken = i;
     /* get parse state for this line */
@@ -959,17 +890,12 @@ ParseLine( parse, lbuf, mode )
     return parse->ntoken;
 }
 
-#ifdef ANSI_FUNC
 int
-ParseAnalyze( Parse * parsers, int nparser, char *lbuf )
-#else
-int
-ParseAnalyze( parsers, nparser, lbuf )
-     Parse *parsers;
-     int nparser;
-     char *lbuf;
-#endif
-{
+ParseAnalyze(
+    Parse * parsers,
+    int nparser,
+    char *lbuf
+ ) {
     int i, p;
     int eot = 0;
     int np = 0;
@@ -983,8 +909,7 @@ ParseAnalyze( parsers, nparser, lbuf )
 	ParseLine( parsers[p], lbuf, NULL );
 	if ( parsers[p]->state & PARSE_STATE_EOT ) eot++;
 	if ( parsers[p]->debug > 1 ) {
-	    fprintf( stderr, "PARSE %d: state %x %s", p, parsers[p]->state,
-	             lbuf );
+	    fprintf( stderr, "PARSE %d: state %x %s", p, parsers[p]->state, lbuf );
 	}
     }
     /* if some parsers found eot, but others did not, we can no longer use
@@ -996,8 +921,7 @@ ParseAnalyze( parsers, nparser, lbuf )
 	    /* this parser is in an unknown state */
 	    parsers[p]->state = PARSE_STATE_UNKNOWN;
 	    if ( parsers[p]->debug > 1 ) {
-		fprintf( stderr,
-		         "PARSE %d: did not find EOT (state unknown)\n", p );
+		fprintf( stderr, "PARSE %d: did not find EOT (state unknown)\n", p );
 	    }
 	}
 	/* exit on EOT */
@@ -1019,9 +943,7 @@ ParseAnalyze( parsers, nparser, lbuf )
 		parsers[p]->state = PARSE_STATE_BADMATCH;
 		if ( parsers[p]->debug ) {
 		    fprintf( stderr, "PARSE: badmatch %d/%d: %d %d\n",
-		             p, __parseline,
-		             parsers[p]->prev->ntoken,
-		             parsers[p]->cur->ntoken );
+		             p, __parseline, parsers[p]->prev->ntoken, parsers[p]->cur->ntoken );
 		}
 	    }
 	    /* check data type transitions */
@@ -1030,17 +952,15 @@ ParseAnalyze( parsers, nparser, lbuf )
 		    /* skip check if prev line did not had this many tokens */
 		    if ( i > parsers[p]->prev->ntoken ) break;
 		    switch ( _ctab[( int ) parsers[p]->prev->types[i]]
-			     [( int ) parsers[p]->cur->types[i]] ) {
+		             [( int ) parsers[p]->cur->types[i]] ) {
 			case -1:
 			    /* i2f conversion explicity permitted is OK */
 			    if ( parsers[p]->i2f ) {
 				break;
 			    }
 			    /* current data type same as initial data type is OK */
-			    if ( parsers[p]->data1
-			         && ( i <= parsers[p]->data1->ntoken )
-			         && ( parsers[p]->data1->types[i] ==
-			              parsers[p]->cur->types[i] ) ) {
+			    if ( parsers[p]->data1 && ( i <= parsers[p]->data1->ntoken )
+			         && ( parsers[p]->data1->types[i] == parsers[p]->cur->types[i] ) ) {
 				break;
 			    }
 			    /* bad i2f conversion: drop through to error */
@@ -1050,8 +970,7 @@ ParseAnalyze( parsers, nparser, lbuf )
 				fprintf( stderr,
 				         "PARSE: badconv %d/%d/%d: %c->%c\n",
 				         p, __parseline, i,
-				         parsers[p]->prev->types[i],
-				         parsers[p]->cur->types[i] );
+				         parsers[p]->prev->types[i], parsers[p]->cur->types[i] );
 			    }
 			    break;
 			case 1:
@@ -1098,16 +1017,11 @@ ParseAnalyze( parsers, nparser, lbuf )
     return np;
 }
 
-#ifdef ANSI_FUNC
 ParsedLine
-ParseLineDup( Parse parse, ParsedLine line )
-#else
-ParsedLine
-ParseLineDup( parse, line )
-     Parse parse;
-     ParsedLine line;
-#endif
-{
+ParseLineDup(
+    Parse parse,
+    ParsedLine line
+ ) {
     int i;
     ParsedLine nline;
 
@@ -1116,32 +1030,24 @@ ParseLineDup( parse, line )
 
     /* rellocate everything */
     if ( !( nline = ( ParsedLine ) xcalloc( 1, sizeof( ParsedLineRec ) ) ) )
-            return NULL;
+	return NULL;
     memcpy( nline, line, sizeof( ParsedLineRec ) );
-    nline->tokens =
-        ( ParsedToken ) xcalloc( line->maxtoken, sizeof( ParsedTokenRec ) );
-    memcpy( nline->tokens, line->tokens,
-            line->maxtoken * sizeof( ParsedTokenRec ) );
+    nline->tokens = ( ParsedToken ) xcalloc( line->maxtoken, sizeof( ParsedTokenRec ) );
+    memcpy( nline->tokens, line->tokens, line->maxtoken * sizeof( ParsedTokenRec ) );
     for ( i = 0; i < nline->ntoken; i++ ) {
 	nline->tokens[i].sval = xstrdup( line->tokens[i].sval );
     }
-    nline->types =
-        ( char * ) xcalloc( ( line->maxtoken + 1 ), sizeof( char ) );
+    nline->types = ( char * ) xcalloc( ( line->maxtoken + 1 ), sizeof( char ) );
     memcpy( nline->types, line->types, line->maxtoken + 1 );
     return nline;
 }
 
-#ifdef ANSI_FUNC
 int
-ParseReset( Parse parse, ParsedLine line, int state )
-#else
-int
-ParseReset( parse, line, state )
-     Parse parse;
-     ParsedLine line;
-     int state;
-#endif
-{
+ParseReset(
+    Parse parse,
+    ParsedLine line,
+    int state
+ ) {
     if ( !parse ) return 0;
 
     if ( parse->prev2 ) {
@@ -1187,15 +1093,10 @@ ParseReset( parse, line, state )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 int
-ParseFree( Parse parse )
-#else
-int
-ParseFree( parse )
-     Parse parse;
-#endif
-{
+ParseFree(
+    Parse parse
+ ) {
     int i;
 
     /* sanity check */
@@ -1225,16 +1126,11 @@ ParseFree( parse )
     return 1;
 }
 
-#ifdef ANSI_FUNC
 int
-ParseDataType( char *s, double *dval, longlong * ival )
-#else
-int
-ParseFree( s, dval, ival )
-     char *s;
-     double *dval;
-     longlong *ival;
-#endif
-{
+ParseDataType(
+    char *s,
+    double *dval,
+    longlong * ival
+ ) {
     return _gettype( s, dval, ival );
 }

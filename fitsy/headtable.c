@@ -5,9 +5,9 @@
 #include "fitsy.h"
 
 char *
-ft_formattyp( c )
-     char c;
-{
+ft_formattyp(
+    char c
+ ) {
     switch ( c ) {
 	case 'L':
 	    return "c";
@@ -48,9 +48,9 @@ ft_formattyp( c )
 }
 
 char *
-ft_format( col )
-     FITSTCol col;
-{
+ft_format(
+    FITSTCol col
+ ) {
     char format[80];
 
     char t = col->type;
@@ -66,9 +66,9 @@ ft_format( col )
 }
 
 int
-ft_sizeof( c )
-     int c;
-{
+ft_sizeof(
+    int c
+ ) {
     switch ( c ) {
 	case 'P':
 	    return 8;
@@ -131,9 +131,9 @@ ft_sizeof( c )
 /* Allocate and load a #FITSTable data structure.
  */
 FITSTable
-ft_tableloadhead( fits )
-     FITSHead fits;
-{
+ft_tableloadhead(
+    FITSHead fits
+ ) {
     FITSTable table = NULL;
     FITSCard card;
     char *xtension;
@@ -149,9 +149,7 @@ ft_tableloadhead( fits )
 	Malloc( table, sizeof( struct _FITSTable ) );
 
 	table->tabtype = !strcmp( xtension, "TABLE" );
-	if ( !
-	     ( table->tfields =
-	       ft_headgeti( fits, "TFIELDS", 0, 0, &card ) ) ) {
+	if ( !( table->tfields = ft_headgeti( fits, "TFIELDS", 0, 0, &card ) ) ) {
 	    ( void ) Free( table );
 	    return NULL;
 	}
@@ -167,20 +165,14 @@ ft_tableloadhead( fits )
 	    char t = ' ', h = ' ';
 	    char format[64];
 
-	    table->col[i - 1].name =
-	        ft_headgets( fits, "TTYPE", i, NULL, &card );
-	    table->col[i - 1].unit =
-	        ft_headgets( fits, "TUNIT", i, NULL, &card );
-	    table->col[i - 1].scale =
-	        ft_headgetr( fits, "TSCAL", i, 1.0, &card );
+	    table->col[i - 1].name = ft_headgets( fits, "TTYPE", i, NULL, &card );
+	    table->col[i - 1].unit = ft_headgets( fits, "TUNIT", i, NULL, &card );
+	    table->col[i - 1].scale = ft_headgetr( fits, "TSCAL", i, 1.0, &card );
 	    table->col[i - 1].has_scale = card != NULL;
-	    table->col[i - 1].zero =
-	        ft_headgetr( fits, "TZERO", i, 0.0, &card );
+	    table->col[i - 1].zero = ft_headgetr( fits, "TZERO", i, 0.0, &card );
 	    table->col[i - 1].has_zero = card != NULL;
-	    table->col[i - 1].scaled = table->col[i - 1].has_zero
-	        || table->col[i - 1].has_scale;
-	    table->col[i - 1].ablank =
-	        ft_headgets( fits, "TNULL", i, NULL, &card );
+	    table->col[i - 1].scaled = table->col[i - 1].has_zero || table->col[i - 1].has_scale;
+	    table->col[i - 1].ablank = ft_headgets( fits, "TNULL", i, NULL, &card );
 	    table->col[i - 1].has_blank = card != NULL;
 	    tform = ft_headget( fits, "TFORM", i, &card );
 	    /* if we have no TFORM, its an illegal binary table */
@@ -244,8 +236,7 @@ ft_tableloadhead( fits )
 		table->col[i - 1].type = 'A';
 		table->col[i - 1].n = 1;
 		table->col[i - 1].size = w;
-		table->col[i - 1].offset =
-		    ft_headgeti( fits, "TBCOL", i, 0, &card )
+		table->col[i - 1].offset = ft_headgeti( fits, "TBCOL", i, 0, &card )
 		    - 1;
 		table->col[i - 1].heap = 0;
 		table->col[i - 1].prec = p;
@@ -258,10 +249,8 @@ ft_tableloadhead( fits )
 			table->col[i - 1].heap = 1;
 			table->col[i - 1].type = h;
 			table->col[i - 1].n = p;
-			table->col[i - 1].size =
-			    ft_sizeof( table->col[i - 1].type );
-			table->col[i - 1].width =
-			    table->col[i - 1].size * table->col[i - 1].n;
+			table->col[i - 1].size = ft_sizeof( table->col[i - 1].type );
+			table->col[i - 1].width = table->col[i - 1].size * table->col[i - 1].n;
 			break;
 		    case 'A':
 			p = 1;
@@ -274,28 +263,23 @@ ft_tableloadhead( fits )
 			table->col[i - 1].type = t;
 			table->col[i - 1].n = r;
 			table->col[i - 1].size = 1;
-			table->col[i - 1].width = table->col[i - 1].size
-			    * table->col[i - 1].n;
+			table->col[i - 1].width = table->col[i - 1].size * table->col[i - 1].n;
 			break;
 		    case 'X':
 			table->col[i - 1].heap = 0;
 			table->col[i - 1].type = t;
 			table->col[i - 1].n = r;
-			table->col[i - 1].size =
-			    ft_sizeof( table->col[i - 1].type );
+			table->col[i - 1].size = ft_sizeof( table->col[i - 1].type );
 			table->col[i - 1].width =
-			    ( ( table->col[i - 1].size *
-			        table->col[i - 1].n ) + 7 ) / 8;
+			    ( ( table->col[i - 1].size * table->col[i - 1].n ) + 7 ) / 8;
 			table->col[i - 1].prec = p;
 			break;
 		    default:
 			table->col[i - 1].heap = 0;
 			table->col[i - 1].type = t;
 			table->col[i - 1].n = r;
-			table->col[i - 1].size =
-			    ft_sizeof( table->col[i - 1].type );
-			table->col[i - 1].width =
-			    table->col[i - 1].size * table->col[i - 1].n;
+			table->col[i - 1].size = ft_sizeof( table->col[i - 1].type );
+			table->col[i - 1].width = table->col[i - 1].size * table->col[i - 1].n;
 			table->col[i - 1].prec = p;
 			break;
 		}
@@ -308,21 +292,17 @@ ft_tableloadhead( fits )
 		    offset += table->col[i - 1].width;
 
 		if ( table->col[i - 1].ablank )
-		    table->col[i - 1].dblank =
-		        strtod( table->col[i - 1].ablank, NULL );
+		    table->col[i - 1].dblank = strtod( table->col[i - 1].ablank, NULL );
 
-		table->col[i - 1].disp =
-		    ft_headgets( fits, "TDISP", i, NULL, &card );
+		table->col[i - 1].disp = ft_headgets( fits, "TDISP", i, NULL, &card );
 		table->col[i - 1].format = ft_format( &table->col[i - 1] );
 	    }
 	}
 	if ( table->tabtype ) { /* ASCII TABLE  */
 	    for ( i = 1; i < table->tfields; i++ ) {
-		table->col[i - 1].width =
-		    table->col[i].offset - table->col[i - 1].offset;
+		table->col[i - 1].width = table->col[i].offset - table->col[i - 1].offset;
 	    }
-	    table->col[i - 1].width =
-	        fits->basic->naxis[0] - table->col[i - 1].offset;
+	    table->col[i - 1].width = fits->basic->naxis[0] - table->col[i - 1].offset;
 	}
 
     }
@@ -333,19 +313,19 @@ ft_tableloadhead( fits )
 /* Store a #FITSTable structure in a FITS header.
  */
 void
-ft_tablestorhead( fits, table )
-     FITSHead fits;
-     FITSTable table;
-{
+ft_tablestorhead(
+    FITSHead fits,
+    FITSTable table
+ ) {
     ft_basicstorhead( fits, fits->basic );
 }
 
 /* Free a #FITSTable structure.
  */
 void
-ft_tablefree( table )
-     FITSTable table;
-{
+ft_tablefree(
+    FITSTable table
+ ) {
     int i;
 
     for ( i = 1; i <= table->tfields; i++ ) {

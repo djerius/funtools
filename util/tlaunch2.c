@@ -21,16 +21,11 @@
 #include <unistd.h>
 #endif
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int i;
     char c;
     char *s, *t, *u;

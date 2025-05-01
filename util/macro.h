@@ -29,15 +29,19 @@
 #include "prsetup.h"
 
 typedef char *(*MacroCall)(
-#ifdef ANSI_FUNC
     char *s,
     void *client_data
-#endif
 );
 
-_PRbeg
-char *ExpandMacro _PRx((char *icmd, char **keyword, char **value, int nkey,
-			MacroCall client_callback, void *client_data));
-_PRend
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+char *ExpandMacro (char *icmd, char **keyword, char **value, int nkey,
+			MacroCall client_callback, void *client_data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __macro.h */

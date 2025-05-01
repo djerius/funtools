@@ -5,14 +5,8 @@
 extern char *optarg;
 extern int optind;
 
-#ifdef ANSI_FUNC
 int 
 main (int argc, char **argv)
-#else
-main(argc, argv)
-     int argc;
-     char **argv;
-#endif
 {
   int i, j;
   int c;

@@ -14,15 +14,10 @@ static int doraw = 0;
 				    !strcmp(name, "CONTINUE")  || \
 				    !strcmp(name, "COMMENT"))  )
 
-#ifdef ANSI_FUNC
 static int
-_FunParamGetType( FITSCard card )
-#else
-static int
-_FunParamGetType( card )
-     FITSCard card;
-#endif
-{
+_FunParamGetType(
+    FITSCard card
+ ) {
     FITSType type;
     char tbuf[SZ_LINE];
 
@@ -56,17 +51,12 @@ _FunParamGetType( card )
  * _FunParamUpdateFile -- make a stab at updating a param value
  *
  */
-#ifdef ANSI_FUNC
 static int
-_FunParamUpdateFile( Fun fun, FITSCard ocard, FITSCard card )
-#else
-static int
-_FunParamUpdateFile( fun, ocard, card )
-     Fun fun;
-     FITSCard card;
-     FITSCard ocard;
-#endif
-{
+_FunParamUpdateFile(
+    Fun fun,
+    FITSCard ocard,
+    FITSCard card
+ ) {
     off_t pos, opos;
 
     /* sanity check */
@@ -94,15 +84,10 @@ _FunParamUpdateFile( fun, ocard, card )
  * this is meant to look like one of the funtools defines
  *
  */
-#ifdef ANSI_FUNC
 Fun
-FUN_PRIMARY( Fun fun )
-#else
-Fun
-FUN_PRIMARY( fun )
-     Fun fun;
-#endif
-{
+FUN_PRIMARY(
+    Fun fun
+ ) {
     doprim = 1;
     return fun;
 }
@@ -113,15 +98,10 @@ FUN_PRIMARY( fun )
  * this is meant to look like one of the funtools defines
  *
  */
-#ifdef ANSI_FUNC
 char *
-FUN_RAW( char *name )
-#else
-char *
-FUN_RAW( name )
-     char *name;
-#endif
-{
+FUN_RAW(
+    char *name
+ ) {
     doraw = 1;
     return name;
 }
@@ -131,19 +111,14 @@ FUN_RAW( name )
  * FunParamGetb -- get a parameter as a logical
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamGetb( Fun fun, char *name, int n, int defval, int *got )
-#else
-int
-FunParamGetb( fun, name, n, defval, got )
-     Fun fun;
-     char *name;
-     int n;
-     int defval;
-     int *got;
-#endif
-{
+FunParamGetb(
+    Fun fun,
+    char *name,
+    int n,
+    int defval,
+    int *got
+ ) {
     FITSCard card;
     FITSHead hd;
     int val;
@@ -180,19 +155,14 @@ FunParamGetb( fun, name, n, defval, got )
  * FunParamGeti -- get a parameter as an integer
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamGeti( Fun fun, char *name, int n, int defval, int *got )
-#else
-int
-FunParamGeti( fun, name, n, defval, got )
-     Fun fun;
-     char *name;
-     int n;
-     int defval;
-     int *got;
-#endif
-{
+FunParamGeti(
+    Fun fun,
+    char *name,
+    int n,
+    int defval,
+    int *got
+ ) {
     FITSCard card;
     FITSHead hd;
     int val;
@@ -230,19 +200,14 @@ FunParamGeti( fun, name, n, defval, got )
  * FunParamGetl -- get a parameter as a longlong
  *
  */
-#ifdef ANSI_FUNC
 longlong
-FunParamGetl( Fun fun, char *name, int n, longlong defval, int *got )
-#else
-longlong
-FunParamGetl( fun, name, n, defval, got )
-     Fun fun;
-     char *name;
-     int n;
-     longlong defval;
-     int *got;
-#endif
-{
+FunParamGetl(
+    Fun fun,
+    char *name,
+    int n,
+    longlong defval,
+    int *got
+ ) {
     FITSCard card;
     FITSHead hd;
     int val;
@@ -280,19 +245,14 @@ FunParamGetl( fun, name, n, defval, got )
  * FunParamGetd -- get a parameter as a double float
  *
  */
-#ifdef ANSI_FUNC
 double
-FunParamGetd( Fun fun, char *name, int n, double defval, int *got )
-#else
-double
-FunParamGetd( fun, name, n, defval, got )
-     Fun fun;
-     char *name;
-     int n;
-     double defval;
-     int *got;
-#endif
-{
+FunParamGetd(
+    Fun fun,
+    char *name,
+    int n,
+    double defval,
+    int *got
+ ) {
     FITSCard card;
     FITSHead hd;
     double val;
@@ -330,19 +290,14 @@ FunParamGetd( fun, name, n, defval, got )
  * FunParamGets -- get a parameter as a string
  *
  */
-#ifdef ANSI_FUNC
 char *
-FunParamGets( Fun fun, char *name, int n, char *defval, int *got )
-#else
-char *
-FunParamGets( fun, name, n, defval, got )
-     Fun fun;
-     char *name;
-     int n;
-     char *defval;
-     int *got;
-#endif
-{
+FunParamGets(
+    Fun fun,
+    char *name,
+    int n,
+    char *defval,
+    int *got
+ ) {
     FITSCard card;
     FITSHead hd;
     char tbuf[FT_CARDLEN + 1];
@@ -416,20 +371,15 @@ FunParamGets( fun, name, n, defval, got )
  * FunParamPutb -- set a logical parameter value
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamPutb( Fun fun, char *name, int n, int value, char *comm, int append )
-#else
-int
-FunParamPutb( fun, name, n, value, comm, append )
-     Fun fun;
-     char *name;
-     int n;
-     int value;
-     char *comm;
-     int append;
-#endif
-{
+FunParamPutb(
+    Fun fun,
+    char *name,
+    int n,
+    int value,
+    char *comm,
+    int append
+ ) {
     FITSCard card = NULL, ocard = NULL, tcard = NULL;
     FITSHead hd;
     int got;
@@ -463,8 +413,7 @@ FunParamPutb( fun, name, n, value, comm, append )
 		snprintf( tbuf2, SZ_LINE - 1, "%s%d", name, n );
 	    else
 		strncpy( tbuf2, name, SZ_LINE - 1 );
-	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] );
-	          tcard++ ) {
+	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] ); tcard++ ) {
 		if ( !strncmp( ( *tcard ).c, BLANK_NAME, 8 ) ) {
 		    ip = 0;
 		    if ( word( ( *tcard ).c, tbuf, &ip )
@@ -499,20 +448,15 @@ FunParamPutb( fun, name, n, value, comm, append )
  * FunParamPuti -- set an integer parameter value
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamPuti( Fun fun, char *name, int n, int value, char *comm, int append )
-#else
-int
-FunParamPuti( fun, name, n, value, comm, append )
-     Fun fun;
-     char *name;
-     int n;
-     int value;
-     char *comm;
-     int append;
-#endif
-{
+FunParamPuti(
+    Fun fun,
+    char *name,
+    int n,
+    int value,
+    char *comm,
+    int append
+ ) {
     FITSCard card = NULL, ocard = NULL, tcard = NULL;
     FITSHead hd;
     int got;
@@ -546,8 +490,7 @@ FunParamPuti( fun, name, n, value, comm, append )
 		snprintf( tbuf2, SZ_LINE - 1, "%s%d", name, n );
 	    else
 		strncpy( tbuf2, name, SZ_LINE - 1 );
-	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] );
-	          tcard++ ) {
+	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] ); tcard++ ) {
 		if ( !strncmp( ( *tcard ).c, BLANK_NAME, 8 ) ) {
 		    ip = 0;
 		    if ( word( ( *tcard ).c, tbuf, &ip )
@@ -582,21 +525,15 @@ FunParamPuti( fun, name, n, value, comm, append )
  * FunParamPutl -- set a integer64 parameter value
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamPutl( Fun fun, char *name, int n, longlong value, char *comm,
-              int append )
-#else
-int
-FunParamPutl( fun, name, n, value, comm, append )
-     Fun fun;
-     char *name;
-     int n;
-     longlong value;
-     char *comm;
-     int append;
-#endif
-{
+FunParamPutl(
+    Fun fun,
+    char *name,
+    int n,
+    longlong value,
+    char *comm,
+    int append
+ ) {
     FITSCard card = NULL, ocard = NULL, tcard = NULL;
     FITSHead hd;
     int got;
@@ -630,8 +567,7 @@ FunParamPutl( fun, name, n, value, comm, append )
 		snprintf( tbuf2, SZ_LINE - 1, "%s%d", name, n );
 	    else
 		strncpy( tbuf2, name, SZ_LINE - 1 );
-	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] );
-	          tcard++ ) {
+	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] ); tcard++ ) {
 		if ( !strncmp( ( *tcard ).c, BLANK_NAME, 8 ) ) {
 		    ip = 0;
 		    if ( word( ( *tcard ).c, tbuf, &ip )
@@ -666,22 +602,16 @@ FunParamPutl( fun, name, n, value, comm, append )
  * FunParamPutd -- set a double parameter value
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamPutd( Fun fun, char *name, int n, double value, int prec,
-              char *comm, int append )
-#else
-int
-FunParamPutd( fun, name, n, value, prec, comm, append )
-     Fun fun;
-     char *name;
-     int n;
-     double value;
-     int prec;
-     char *comm;
-     int append;
-#endif
-{
+FunParamPutd(
+    Fun fun,
+    char *name,
+    int n,
+    double value,
+    int prec,
+    char *comm,
+    int append
+ ) {
     FITSCard card = NULL, ocard = NULL, tcard = NULL;
     FITSHead hd;
     int got;
@@ -715,8 +645,7 @@ FunParamPutd( fun, name, n, value, prec, comm, append )
 		snprintf( tbuf2, SZ_LINE - 1, "%s%d", name, n );
 	    else
 		strncpy( tbuf2, name, SZ_LINE - 1 );
-	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] );
-	          tcard++ ) {
+	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] ); tcard++ ) {
 		if ( !strncmp( ( *tcard ).c, BLANK_NAME, 8 ) ) {
 		    ip = 0;
 		    if ( word( ( *tcard ).c, tbuf, &ip )
@@ -751,21 +680,15 @@ FunParamPutd( fun, name, n, value, prec, comm, append )
  * FunParamPuts -- set a string parameter value
  *
  */
-#ifdef ANSI_FUNC
 int
-FunParamPuts( Fun fun, char *name, int n, char *value, char *comm,
-              int append )
-#else
-int
-FunParamPuts( fun, name, n, value, comm, append )
-     Fun fun;
-     char *name;
-     int n;
-     char *value;
-     char *comm;
-     int append;
-#endif
-{
+FunParamPuts(
+    Fun fun,
+    char *name,
+    int n,
+    char *value,
+    char *comm,
+    int append
+ ) {
     FITSCard card = NULL, ocard = NULL, tcard = NULL;
     FITSHead hd;
     int got;
@@ -799,8 +722,7 @@ FunParamPuts( fun, name, n, value, comm, append )
 		snprintf( tbuf2, SZ_LINE - 1, "%s%d", name, n );
 	    else
 		strncpy( tbuf2, name, SZ_LINE - 1 );
-	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] );
-	          tcard++ ) {
+	    for ( tcard = hd->cards; tcard != &( hd->cards[hd->ncard] ); tcard++ ) {
 		if ( !strncmp( ( *tcard ).c, BLANK_NAME, 8 ) ) {
 		    ip = 0;
 		    if ( word( ( *tcard ).c, tbuf, &ip )

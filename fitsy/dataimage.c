@@ -7,12 +7,12 @@
 /* Read data from a file pointer and convert it to the requested type.
  */
 void *
-ft_dataread( file, fits, dataptr, pixtype )
-     File file;                 /* File pointer to read data from.      */
-     FITSHead fits;
-     void *dataptr;             /* Pointer to data buffer to store data. */
-     int pixtype;               /* Pixtype to convert data to.       */
-{
+ft_dataread(
+    File file,                  /* File pointer to read data from.      */
+    FITSHead fits,
+    void *dataptr,              /* Pointer to data buffer to store data. */
+    int pixtype                 /* Pixtype to convert data to.       */
+ ) {
     void *fdata;
     void *mdata;
     size_t fsize;
@@ -25,13 +25,10 @@ ft_dataread( file, fits, dataptr, pixtype )
 	pixtype = ft_bitpix( fits );
 
     fsize = Abs( ft_bitpix( fits ) / 8 );
-    msize =
-        pixtype ? ( size_t ) ( ( Abs( pixtype ) & ~FT_UNSIGNED ) /
-                               8 ) : fsize;
+    msize = pixtype ? ( size_t ) ( ( Abs( pixtype ) & ~FT_UNSIGNED ) / 8 ) : fsize;
 
     if ( dataptr == NULL ) {
-	Malloc( mdata,
-	        ft_fitsbloks( ft_datapixls( fits ) * msize ) * FT_BLOCK );
+	Malloc( mdata, ft_fitsbloks( ft_datapixls( fits ) * msize ) * FT_BLOCK );
 	if ( mdata == NULL ) {
 	    return NULL;
 	}
@@ -53,8 +50,7 @@ ft_dataread( file, fits, dataptr, pixtype )
     /* Read in enough data but don't show an error in a short data
      * block.
      */
-    if ( ftRead( file, fdata, 1, ft_databloks( fits ) * FT_BLOCK ) <
-         ft_databytes( fits ) ) {
+    if ( ftRead( file, fdata, 1, ft_databloks( fits ) * FT_BLOCK ) < ft_databytes( fits ) ) {
 	if ( dataptr == NULL ) {
 	    if ( fdata != mdata ) ( void ) Free( fdata );
 	    ( void ) Free( mdata );
@@ -68,8 +64,7 @@ ft_dataread( file, fits, dataptr, pixtype )
 	if ( pixtype != ft_bitpix( fits )
 	     || ft_hasbscale( fits )
 	     || ft_hasbzero( fits ) ) {
-	    ft_acht( pixtype, mdata, ft_bitpix( fits ), fdata,
-	             ft_datapixls( fits )
+	    ft_acht( pixtype, mdata, ft_bitpix( fits ), fdata, ft_datapixls( fits )
 	             , 1, ft_hasbscale( fits ) || ft_hasbzero( fits )
 	             , ft_bscale( fits )
 	             , ft_bzero( fits ) );
@@ -82,12 +77,12 @@ ft_dataread( file, fits, dataptr, pixtype )
 
 
 int
-ft_datawrite( file, fits, data, pixtype )
-     File file;
-     FITSHead fits;
-     void *data;
-     int pixtype;
-{
+ft_datawrite(
+    File file,
+    FITSHead fits,
+    void *data,
+    int pixtype
+ ) {
     void *fdata;
     void *mdata = data;
     int fsize;
@@ -117,8 +112,7 @@ ft_datawrite( file, fits, data, pixtype )
         if ( pixtype != ft_bitpix( fits )
              || ft_hasbscale( fits )
 	     || ft_hasbzero( fits ) ) {
-	    ft_acht( ft_bitpix( fits ), fdata, pixtype, mdata,
-	             ft_datapixls( fits )
+	    ft_acht( ft_bitpix( fits ), fdata, pixtype, mdata, ft_datapixls( fits )
 	             , 0, ft_hasbscale( fits ) || ft_hasbzero( fits )
 	             , ft_bscale( fits )
 	             , ft_bzero( fits ) );
@@ -147,11 +141,11 @@ ft_datawrite( file, fits, data, pixtype )
 
 
 void *
-swap2( void_to, void_from, nbytes )
-     void *void_to;
-     const void *void_from;
-     size_t nbytes;
-{
+swap2(
+    void *void_to,
+    const void *void_from,
+    size_t nbytes
+ ) {
     char c;
     char *to = ( char * ) void_to;
     char *from = ( char * ) void_from;
@@ -166,11 +160,11 @@ swap2( void_to, void_from, nbytes )
 }
 
 void *
-swap4( void_to, void_from, nbytes )
-     void *void_to;
-     const void *void_from;
-     size_t nbytes;
-{
+swap4(
+    void *void_to,
+    const void *void_from,
+    size_t nbytes
+ ) {
     char c;
     char *to = ( char * ) void_to;
     char *from = ( char * ) void_from;
@@ -187,11 +181,11 @@ swap4( void_to, void_from, nbytes )
 }
 
 void *
-swap8( void_to, void_from, nbytes )
-     void *void_to;
-     const void *void_from;
-     size_t nbytes;
-{
+swap8(
+    void *void_to,
+    const void *void_from,
+    size_t nbytes
+ ) {
     char c;
     char *to = ( char * ) void_to;
     char *from = ( char * ) void_from;
@@ -216,12 +210,12 @@ swap8( void_to, void_from, nbytes )
 /* Swap n bytes of data if necessary.
  */
 void *
-ft_dataswap( to, from, n, type )
-     void *to;                  /* Pointer to data to swap.     */
-     void *from;                /* Pointer to data to swap.     */
-     size_t n;                  /* N bytes                      */
-     int type;                  /* Swap 2, swap 4, swap 8.      */
-{
+ft_dataswap(
+    void *to,                   /* Pointer to data to swap.     */
+    void *from,                 /* Pointer to data to swap.     */
+    size_t n,                   /* N bytes                      */
+    int type                    /* Swap 2, swap 4, swap 8.      */
+ ) {
     if ( !from || !to ) return NULL;
     if ( !ft_byteswap(  ) ) {
 	if ( from == to ) return to;

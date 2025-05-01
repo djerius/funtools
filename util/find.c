@@ -31,15 +31,10 @@
 #endif
 #define D_OK            256     /* is it a directory */
 
-#ifdef ANSI_FUNC
 static int
-amparse( char *mode )
-#else
-static int
-amparse( mode )
-     char *mode;
-#endif
-{
+amparse(
+    char *mode
+ ) {
     int xmode = 0;
 
     xmode |= ( strpbrk( mode, "r" ) != NULL ? R_OK : 0 );
@@ -51,17 +46,12 @@ amparse( mode )
     return xmode;
 }
 
-#ifdef ANSI_FUNC
 static char *
-findpath( char *name, char *mode, char *path )
-#else
-static char *
-findpath( name, mode, path )
-     char *name;
-     char *mode;
-     char *path;
-#endif
-{
+findpath(
+    char *name,
+    char *mode,
+    char *path
+ ) {
     char pathbuff[MAXBUFSIZE];
     char namebuff[MAXBUFSIZE];
     char tempbuff[MAXBUFSIZE];
@@ -159,17 +149,12 @@ findpath( name, mode, path )
  * ResolvePath -- resolve the path to remove . and .. entries
  *
  */
-#ifdef ANSI_FUNC
 char *
-ResolvePath( char *ibuf, char *obuf, int maxlen )
-#else
-char *
-ResolvePath( ibuf, obuf, maxlen )
-     char *ibuf;
-     char *obuf;
-     int maxlen;
-#endif
-{
+ResolvePath(
+    char *ibuf,
+    char *obuf,
+    int maxlen
+ ) {
     char path[MAXBUFSIZE];
     char *part[MAXBUFSIZE];
     char *tbuf;
@@ -265,17 +250,12 @@ ResolvePath( ibuf, obuf, maxlen )
     return ( obuf );
 }
 
-#ifdef ANSI_FUNC
 void
-ExpandEnv( char *name, char *envname, int maxlen )
-#else
-void
-ExpandEnv( name, envname, maxlen )
-     char *name;
-     char *envname;
-     int maxlen;
-#endif
-{
+ExpandEnv(
+    char *name,
+    char *envname,
+    int maxlen
+ ) {
     char brace[2];
     char tbuf[MAXBUFSIZE];
     char *fullname = NULL;
@@ -287,7 +267,7 @@ ExpandEnv( name, envname, maxlen )
 
     /* allocate temp working buffer (so dest can be same as source) */
     if ( !( fullname = ( char * ) xcalloc( maxlen, sizeof( char ) ) ) )
-            return;
+	return;
 
     /* process each character */
     for ( ip = name; *ip; ip++ ) {
@@ -312,9 +292,8 @@ ExpandEnv( name, envname, maxlen )
 	    else
 		brace[0] = '\0';
 	    /* get variable up to next white space */
-	    for ( *tbuf = '\0', j = 0;
-		  ( !isspace( ( int ) *ip ) ) && ( *ip != '"' )
-		  && ( *ip != '\'' ) && ( *ip ); ip++ ) {
+	    for ( *tbuf = '\0', j = 0; ( !isspace( ( int ) *ip ) ) && ( *ip != '"' )
+	          && ( *ip != '\'' ) && ( *ip ); ip++ ) {
 		/* look for trailing brace, if necessary */
 		if ( *brace && *ip == ( *brace == '(' ? ')' : '}' ) ) {
 		    ip++;
@@ -351,16 +330,11 @@ ExpandEnv( name, envname, maxlen )
     if ( fullname ) xfree( fullname );
 }
 
-#ifdef ANSI_FUNC
 char *
-Access( char *name, char *mode )
-#else
-char *
-Access( name, mode )
-     char *name;
-     char *mode;
-#endif
-{
+Access(
+    char *name,
+    char *mode
+ ) {
     struct stat info;
     char fullname[MAXBUFSIZE];
     char AccessName[MAXBUFSIZE];
@@ -399,18 +373,13 @@ Access( name, mode )
     return ( xstrdup( AccessName ) );
 }
 
-#ifdef ANSI_FUNC
 char *
-Find( char *name, char *mode, char *exten, char *path )
-#else
-char *
-Find( name, mode, exten, path )
-     char *name;
-     char *mode;
-     char *exten;
-     char *path;
-#endif
-{
+Find(
+    char *name,
+    char *mode,
+    char *exten,
+    char *path
+ ) {
     char extenbuff[MAXBUFSIZE];
     char namebuff[MAXBUFSIZE];
     char *here, *found;

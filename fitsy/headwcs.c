@@ -5,14 +5,14 @@
 #include "fitsy.h"
 
 int
-ft_trxlcs( lcs, x0, y0, x1, y1, direction )
-     FITSLinWCS lcs;
-     double x0;
-     double y0;
-     double *x1;
-     double *y1;
-     int direction;
-{
+ft_trxlcs(
+    FITSLinWCS lcs,
+    double x0,
+    double y0,
+    double *x1,
+    double *y1,
+    int direction
+ ) {
     if ( !lcs->has_wcs ) {
 	*x1 = x0;
 	*y1 = y0;
@@ -32,14 +32,14 @@ ft_trxlcs( lcs, x0, y0, x1, y1, direction )
 }
 
 int
-ft_trxsiz( lcs, x0, y0, x1, y1, direction )
-     FITSLinWCS lcs;
-     double x0;
-     double y0;
-     double *x1;
-     double *y1;
-     int direction;
-{
+ft_trxsiz(
+    FITSLinWCS lcs,
+    double x0,
+    double y0,
+    double *x1,
+    double *y1,
+    int direction
+ ) {
     if ( !lcs->has_wcs ) {
 	*x1 = x0;
 	*y1 = y0;
@@ -59,11 +59,15 @@ ft_trxsiz( lcs, x0, y0, x1, y1, direction )
 }
 
 void
-ft_loglcs( fits, m11, m12, m21, m22, v1, v2 )
-     FITSHead fits;
-     double m11, m12, m21, m22;
-     double v1, v2;
-{
+ft_loglcs(
+    FITSHead fits,
+    double m11,
+    double m12,
+    double m21,
+    double m22,
+    double v1,
+    double v2
+ ) {
     if ( m11 != 1.0 ) ft_headsetr( fits, "LTM1_1", 0, m11, 7, NULL, 1 );
     if ( m12 != 0.0 ) ft_headsetr( fits, "LTM1_2", 0, m12, 7, NULL, 1 );
     if ( m21 != 0.0 ) ft_headsetr( fits, "LTM2_1", 0, m21, 7, NULL, 1 );
@@ -73,12 +77,19 @@ ft_loglcs( fits, m11, m12, m21, m22, v1, v2 )
 }
 
 void
-ft_wcslcs( fits, m11, m12, m21, m22, crv1, crv2, crp1, crp2, cun1, cun2 )
-     FITSHead fits;
-     double m11, m12, m21, m22;
-     double crv1, crv2, crp1, crp2;
-     char *cun1, *cun2;
-{
+ft_wcslcs(
+    FITSHead fits,
+    double m11,
+    double m12,
+    double m21,
+    double m22,
+    double crv1,
+    double crv2,
+    double crp1,
+    double crp2,
+    char *cun1,
+    char *cun2
+ ) {
     ft_headsets( fits, "CTYPE1", 0, "LINEAR", NULL, 1 );
     ft_headsets( fits, "CTYPE2", 0, "LINEAR", NULL, 1 );
 

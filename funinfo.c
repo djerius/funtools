@@ -11,7 +11,10 @@
  */
 #ifdef __STDC__
 int
-FunInfoGet( Fun fun, ... ) {
+FunInfoGet(
+    Fun fun,
+    ...
+ ) {
     int type;
     int got;
     char *addr;
@@ -20,7 +23,9 @@ FunInfoGet( Fun fun, ... ) {
     va_start( args, fun );
 #else
 int
-FunInfoGet( va_alist )
+FunInfoGet(
+    va_alist
+ )
      va_dcl {
     Fun fun;
     int type;
@@ -41,7 +46,8 @@ FunInfoGet( va_alist )
 	_FunFITSOpen( fun, fun->fname, "r" );
 
     for ( got = 0; ( type = va_arg( args, int ) ); got++ ) {
-	addr = va_arg( args, void * );
+	addr = va_arg( args, void *
+	 );
 	ofun = fun;
 	if ( fun->current ) fun = fun->current;
 	switch ( type ) {
@@ -52,12 +58,10 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->gio, sizeof( fun->gio ) );
 		break;
 	    case FUN_HEADER:
-		if ( addr ) memcpy( addr, &fun->header,
-		                    sizeof( fun->header ) );
+		if ( addr ) memcpy( addr, &fun->header, sizeof( fun->header ) );
 		break;
 	    case FUN_THEADER:
-		if ( addr ) memcpy( addr, &fun->theader,
-		                    sizeof( fun->theader ) );
+		if ( addr ) memcpy( addr, &fun->theader, sizeof( fun->theader ) );
 		break;
 	    case FUN_WCS:
 		if ( addr ) memcpy( addr, &fun->wcs, sizeof( fun->wcs ) );
@@ -69,8 +73,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->type, sizeof( fun->type ) );
 		break;
 	    case FUN_BITPIX:
-		if ( addr ) memcpy( addr, &fun->bitpix,
-		                    sizeof( fun->bitpix ) );
+		if ( addr ) memcpy( addr, &fun->bitpix, sizeof( fun->bitpix ) );
 		break;
 	    case FUN_MIN1:
 		if ( addr ) memcpy( addr, &fun->min1, sizeof( fun->min1 ) );
@@ -94,12 +97,10 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->dims, sizeof( fun->dims ) );
 		break;
 	    case FUN_ENDIAN:
-		if ( addr ) memcpy( addr, &fun->endian,
-		                    sizeof( fun->endian ) );
+		if ( addr ) memcpy( addr, &fun->endian, sizeof( fun->endian ) );
 		break;
 	    case FUN_FILTER:
-		if ( addr ) memcpy( addr, &fun->filter,
-		                    sizeof( fun->filter ) );
+		if ( addr ) memcpy( addr, &fun->filter, sizeof( fun->filter ) );
 		break;
 	    case FUN_OPS:
 		if ( addr ) memcpy( addr, &fun->ops, sizeof( fun->ops ) );
@@ -115,34 +116,29 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->dpad, sizeof( fun->dpad ) );
 		break;
 	    case FUN_DOBLANK:
-		if ( addr ) memcpy( addr, &fun->doblank,
-		                    sizeof( fun->doblank ) );
+		if ( addr ) memcpy( addr, &fun->doblank, sizeof( fun->doblank ) );
 		break;
 	    case FUN_BLANK:
 		if ( addr ) memcpy( addr, &fun->blank, sizeof( fun->blank ) );
 		break;
 	    case FUN_SCALED:
-		if ( addr ) memcpy( addr, &fun->scaled,
-		                    sizeof( fun->scaled ) );
+		if ( addr ) memcpy( addr, &fun->scaled, sizeof( fun->scaled ) );
 		break;
 	    case FUN_BSCALE:
-		if ( addr ) memcpy( addr, &fun->bscale,
-		                    sizeof( fun->bscale ) );
+		if ( addr ) memcpy( addr, &fun->bscale, sizeof( fun->bscale ) );
 		break;
 	    case FUN_BZERO:
 		if ( addr ) memcpy( addr, &fun->bzero, sizeof( fun->bzero ) );
 		break;
 		/* table information */
 	    case FUN_BINCOLS:
-		if ( addr ) memcpy( addr, &fun->bincols,
-		                    sizeof( fun->bincols ) );
+		if ( addr ) memcpy( addr, &fun->bincols, sizeof( fun->bincols ) );
 		break;
 	    case FUN_BINOFFS:
 		if ( addr ) memcpy( addr, fun->bin, sizeof( fun->bin ) );
 		break;
 	    case FUN_ROWSIZE:
-		if ( addr ) memcpy( addr, &fun->rowsize,
-		                    sizeof( fun->rowsize ) );
+		if ( addr ) memcpy( addr, &fun->rowsize, sizeof( fun->rowsize ) );
 		break;
 	    case FUN_NROWS:
 		if ( addr ) memcpy( addr, &fun->total, sizeof( fun->total ) );
@@ -151,8 +147,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->io, sizeof( fun->io ) );
 		break;
 	    case FUN_OVERFLOW:
-		if ( addr ) memcpy( addr, &fun->overflow,
-		                    sizeof( fun->overflow ) );
+		if ( addr ) memcpy( addr, &fun->overflow, sizeof( fun->overflow ) );
 		break;
 		/* array information */
 	    case FUN_SKIP:
@@ -194,21 +189,17 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->odims, sizeof( fun->odims ) );
 		break;
 	    case FUN_SECT_BITPIX:
-		if ( addr ) memcpy( addr, &fun->obitpix,
-		                    sizeof( fun->obitpix ) );
+		if ( addr ) memcpy( addr, &fun->obitpix, sizeof( fun->obitpix ) );
 		break;
 	    case FUN_SECT_DTYPE:
-		if ( addr ) memcpy( addr, &fun->odtype,
-		                    sizeof( fun->odtype ) );
+		if ( addr ) memcpy( addr, &fun->odtype, sizeof( fun->odtype ) );
 		break;
 		/* convenient ways to get to data in binned images and tables */
 	    case FUN_RAWBUF:
-		if ( addr ) memcpy( addr, &fun->rawbuf,
-		                    sizeof( fun->rawbuf ) );
+		if ( addr ) memcpy( addr, &fun->rawbuf, sizeof( fun->rawbuf ) );
 		break;
 	    case FUN_RAWSIZE:
-		if ( addr ) memcpy( addr, &fun->rawsize,
-		                    sizeof( fun->rawsize ) );
+		if ( addr ) memcpy( addr, &fun->rawsize, sizeof( fun->rawsize ) );
 		break;
 		/* specified columns */
 	    case FUN_NCOL:
@@ -218,8 +209,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->cols, sizeof( fun->cols ) );
 		break;
 	    case FUN_LTYPE:
-		if ( addr ) memcpy( addr, &ofun->ltype,
-		                    sizeof( ofun->ltype ) );
+		if ( addr ) memcpy( addr, &ofun->ltype, sizeof( ofun->ltype ) );
 		break;
 	    case FUN_LMEM:
 		if ( addr ) memcpy( addr, &ofun->lmem, sizeof( ofun->lmem ) );
@@ -228,8 +218,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &ofun->head, sizeof( ofun->head ) );
 		break;
 	    case FUN_CURRENT:
-		if ( addr ) memcpy( addr, &ofun->current,
-		                    sizeof( ofun->current ) );
+		if ( addr ) memcpy( addr, &ofun->current, sizeof( ofun->current ) );
 		break;
 	    case FUN_NEXT:
 		if ( addr ) memcpy( addr, &ofun->next, sizeof( ofun->next ) );
@@ -238,8 +227,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->doraw, sizeof( fun->doraw ) );
 		break;
 	    case FUN_PRIMARYHEADER:
-		if ( addr ) memcpy( addr, &fun->doprim,
-		                    sizeof( fun->doprim ) );
+		if ( addr ) memcpy( addr, &fun->doprim, sizeof( fun->doprim ) );
 		break;
 	    case FUN_VCOLS:
 		if ( addr ) memcpy( addr, &fun->vcols, sizeof( fun->vcols ) );
@@ -248,9 +236,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( addr, &fun->vfmt, sizeof( fun->vfmt ) );
 		break;
 	    default:
-		gerror( stderr,
-		        "invalid info parameter passed to FunInfoGet: %d\n",
-		        type );
+		gerror( stderr, "invalid info parameter passed to FunInfoGet: %d\n", type );
 		return ( got );
 	}
     }
@@ -263,7 +249,10 @@ FunInfoGet( va_alist )
  *
  */
 #ifdef __STDC__
-     int FunInfoPut( Fun fun, ... ) {
+     int FunInfoPut(
+    Fun fun,
+    ...
+      ) {
 	 Fun ref;
 	 Fun oifun;
 	 Fun ofun;
@@ -274,7 +263,9 @@ FunInfoGet( va_alist )
 	 va_list args;
 	 va_start( args, fun );
 #else
-     int FunInfoPut( va_alist )
+     int FunInfoPut(
+    va_alist
+      )
      va_dcl {
     Fun fun;
     Fun ref;
@@ -300,7 +291,8 @@ FunInfoGet( va_alist )
     ofun = fun;
     if ( fun->current ) fun = fun->current;
     for ( got = 0; ( type = va_arg( args, int ) ); got++ ) {
-	addr = va_arg( args, void * );
+	addr = va_arg( args, void *
+	 );
 	switch ( type ) {
 	    case FUN_FNAME:
 		if ( addr ) {
@@ -312,12 +304,10 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->gio, addr, sizeof( fun->gio ) );
 		break;
 	    case FUN_HEADER:
-		if ( addr ) memcpy( &fun->header, addr,
-		                    sizeof( fun->header ) );
+		if ( addr ) memcpy( &fun->header, addr, sizeof( fun->header ) );
 		break;
 	    case FUN_THEADER:
-		if ( addr ) memcpy( &fun->theader, addr,
-		                    sizeof( fun->theader ) );
+		if ( addr ) memcpy( &fun->theader, addr, sizeof( fun->theader ) );
 		break;
 	    case FUN_WCS:
 		if ( addr ) memcpy( &fun->wcs, addr, sizeof( fun->wcs ) );
@@ -329,8 +319,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->type, addr, sizeof( fun->type ) );
 		break;
 	    case FUN_BITPIX:
-		if ( addr ) memcpy( &fun->bitpix, addr,
-		                    sizeof( fun->bitpix ) );
+		if ( addr ) memcpy( &fun->bitpix, addr, sizeof( fun->bitpix ) );
 		break;
 	    case FUN_MIN1:
 		if ( addr ) memcpy( &fun->min1, addr, sizeof( fun->min1 ) );
@@ -354,15 +343,13 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->dims, addr, sizeof( fun->dims ) );
 		break;
 	    case FUN_ENDIAN:
-		if ( addr ) memcpy( &fun->endian, addr,
-		                    sizeof( fun->endian ) );
+		if ( addr ) memcpy( &fun->endian, addr, sizeof( fun->endian ) );
 		break;
 	    case FUN_OPS:
 		if ( addr ) memcpy( &fun->ops, addr, sizeof( fun->ops ) );
 		break;
 	    case FUN_FILTER:
-		if ( addr ) memcpy( &fun->filter, addr,
-		                    sizeof( fun->filter ) );
+		if ( addr ) memcpy( &fun->filter, addr, sizeof( fun->filter ) );
 		break;
 		/* image information */
 	    case FUN_DTYPE:
@@ -375,41 +362,35 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->dpad, addr, sizeof( fun->dpad ) );
 		break;
 	    case FUN_DOBLANK:
-		if ( addr ) memcpy( &fun->doblank, addr,
-		                    sizeof( fun->doblank ) );
+		if ( addr ) memcpy( &fun->doblank, addr, sizeof( fun->doblank ) );
 		break;
 	    case FUN_BLANK:
 		if ( addr ) memcpy( &fun->blank, addr, sizeof( fun->blank ) );
 		break;
 	    case FUN_SCALED:
-		if ( addr ) memcpy( &fun->scaled, addr,
-		                    sizeof( fun->scaled ) );
+		if ( addr ) memcpy( &fun->scaled, addr, sizeof( fun->scaled ) );
 		break;
 	    case FUN_BSCALE:
-		if ( addr ) memcpy( &fun->bscale, addr,
-		                    sizeof( fun->bscale ) );
+		if ( addr ) memcpy( &fun->bscale, addr, sizeof( fun->bscale ) );
 		break;
 	    case FUN_BZERO:
 		if ( addr ) memcpy( &fun->bzero, addr, sizeof( fun->bzero ) );
 		break;
 		/* table information */
 	    case FUN_BINCOLS:
-		if ( addr ) memcpy( &fun->bincols, addr,
-		                    sizeof( fun->bincols ) );
+		if ( addr ) memcpy( &fun->bincols, addr, sizeof( fun->bincols ) );
 		break;
 	    case FUN_BINOFFS:
 		if ( addr ) memcpy( fun->bin, addr, sizeof( fun->bin ) );
 		break;
 	    case FUN_ROWSIZE:
-		if ( addr ) memcpy( &fun->rowsize, addr,
-		                    sizeof( fun->rowsize ) );
+		if ( addr ) memcpy( &fun->rowsize, addr, sizeof( fun->rowsize ) );
 		break;
 	    case FUN_NROWS:
 		if ( addr ) memcpy( &fun->total, addr, sizeof( fun->total ) );
 		break;
 	    case FUN_OVERFLOW:
-		if ( addr ) memcpy( &fun->overflow, addr,
-		                    sizeof( fun->overflow ) );
+		if ( addr ) memcpy( &fun->overflow, addr, sizeof( fun->overflow ) );
 		break;
 		/* array information */
 	    case FUN_SKIP:
@@ -509,21 +490,17 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->odims, addr, sizeof( fun->odims ) );
 		break;
 	    case FUN_SECT_BITPIX:
-		if ( addr ) memcpy( &fun->obitpix, addr,
-		                    sizeof( fun->obitpix ) );
+		if ( addr ) memcpy( &fun->obitpix, addr, sizeof( fun->obitpix ) );
 		break;
 	    case FUN_SECT_DTYPE:
-		if ( addr ) memcpy( &fun->odtype, addr,
-		                    sizeof( fun->odtype ) );
+		if ( addr ) memcpy( &fun->odtype, addr, sizeof( fun->odtype ) );
 		break;
 		/* convenient ways to get to data in binned images and tables */
 	    case FUN_RAWBUF:
-		if ( addr ) memcpy( &fun->rawbuf, addr,
-		                    sizeof( fun->rawbuf ) );
+		if ( addr ) memcpy( &fun->rawbuf, addr, sizeof( fun->rawbuf ) );
 		break;
 	    case FUN_RAWSIZE:
-		if ( addr ) memcpy( &fun->rawsize, addr,
-		                    sizeof( fun->rawsize ) );
+		if ( addr ) memcpy( &fun->rawsize, addr, sizeof( fun->rawsize ) );
 		break;
 		/* specified columns */
 	    case FUN_NCOL:
@@ -533,8 +510,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->cols, addr, sizeof( fun->cols ) );
 		break;
 	    case FUN_LTYPE:
-		if ( addr ) memcpy( &ofun->ltype, addr,
-		                    sizeof( ofun->ltype ) );
+		if ( addr ) memcpy( &ofun->ltype, addr, sizeof( ofun->ltype ) );
 		break;
 	    case FUN_LMEM:
 		if ( addr ) memcpy( &ofun->lmem, addr, sizeof( ofun->lmem ) );
@@ -543,8 +519,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &ofun->head, addr, sizeof( ofun->head ) );
 		break;
 	    case FUN_CURRENT:
-		if ( addr ) memcpy( &ofun->current, addr,
-		                    sizeof( ofun->current ) );
+		if ( addr ) memcpy( &ofun->current, addr, sizeof( ofun->current ) );
 		break;
 	    case FUN_NEXT:
 		if ( addr ) memcpy( &ofun->next, addr, sizeof( ofun->next ) );
@@ -553,8 +528,7 @@ FunInfoGet( va_alist )
 		if ( addr ) memcpy( &fun->doraw, addr, sizeof( fun->doraw ) );
 		break;
 	    case FUN_PRIMARYHEADER:
-		if ( addr ) memcpy( &fun->doprim, addr,
-		                    sizeof( fun->doprim ) );
+		if ( addr ) memcpy( &fun->doprim, addr, sizeof( fun->doprim ) );
 		break;
 	    case FUN_VCOLS:
 		if ( addr ) {
@@ -568,9 +542,7 @@ FunInfoGet( va_alist )
 		}
 		break;
 	    default:
-		gerror( stderr,
-		        "invalid info parameter passed to FunInfoPut: %d\n",
-		        type );
+		gerror( stderr, "invalid info parameter passed to FunInfoPut: %d\n", type );
 		return ( got );
 	}
     }

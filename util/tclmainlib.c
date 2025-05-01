@@ -25,15 +25,10 @@
  *----------------------------------------------------------------------------
  */
 
-#ifdef ANSI_FUNC
 int
-MainLibInit_Tcl( MainLib ml )
-#else
-int
-MainLibInit_Tcl( ml )
-     MainLib ml;
-#endif
-{
+MainLibInit_Tcl(
+    MainLib ml
+ ) {
     /* sanity check */
     if ( !ml ) return 0;
 
@@ -59,16 +54,11 @@ MainLibInit_Tcl( ml )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibLookup_Tcl( void *vinterp, char *s )
-#else
-int
-MainLibLookup_Tcl( vinterp, s )
-     void *vinterp;
-     char *s;
-#endif
-{
+MainLibLookup_Tcl(
+    void *vinterp,
+    char *s
+ ) {
     Tcl_Interp *interp = ( Tcl_Interp * ) vinterp;
     Tcl_CmdInfo info;
     char lbuf[SZ_LINE];
@@ -117,16 +107,11 @@ MainLibLookup_Tcl( vinterp, s )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibEval_Tcl( void *vinterp, char *s )
-#else
-int
-MainLibEval_Tcl( vinterp, s )
-     void *vinterp;
-     char *s;
-#endif
-{
+MainLibEval_Tcl(
+    void *vinterp,
+    char *s
+ ) {
     Tcl_Interp *interp = ( Tcl_Interp * ) vinterp;
     int got = 0;
 
@@ -162,19 +147,13 @@ MainLibEval_Tcl( vinterp, s )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibProcess_Tcl( ClientData clientData, Tcl_Interp * interp,
-                    int objc, Tcl_Obj * CONST objv[] )
-#else
-int
-MainLibProcess_Tcl( clientData, interp, objc, objv )
-     ClientData clientData;
-     Tcl_Interp *interp;
-     int objc;
-     Tcl_Obj *CONST objv[];
-#endif
-{
+MainLibProcess_Tcl(
+    ClientData clientData,
+    Tcl_Interp * interp,
+    int objc,
+    Tcl_Obj * CONST objv[]
+ ) {
     int len;
     int got;
     int fillbuf = 1;
@@ -217,8 +196,7 @@ MainLibProcess_Tcl( clientData, interp, objc, objv )
     /* get mainlib handle */
     s = Tcl_GetStringFromObj( objv[1], NULL );
     if ( ( sscanf( s, "%p", &tml ) != 1 ) ) {
-	Tcl_SetStringObj( resultPtr, "MAINLIB$ERROR: invalid mainlib handle",
-	                  -1 );
+	Tcl_SetStringObj( resultPtr, "MAINLIB$ERROR: invalid mainlib handle", -1 );
 	return ( TCL_ERROR );
     }
     ml = ( MainLib ) tml;
@@ -260,8 +238,7 @@ MainLibProcess_Tcl( clientData, interp, objc, objv )
 
     /* fillbuf determines meaning of MainLibProcess return value */
     if ( ( t = xstrdup( mode ) ) ) {
-	if ( keyword( t, "fillbuf", tbuf, SZ_LINE ) ) fillbuf =
-	        istrue( tbuf );
+	if ( keyword( t, "fillbuf", tbuf, SZ_LINE ) ) fillbuf = istrue( tbuf );
 	xfree( t );
     }
 
@@ -286,20 +263,15 @@ MainLibProcess_Tcl( clientData, interp, objc, objv )
 	else {
 	    Tcl_Channel chan;
 	    /* create a tcl channel corresponding to the pipe */
-	    if ( !
-	         ( chan =
-	           Tcl_MakeFileChannel( ( ClientData ) got,
-	                                TCL_READABLE ) ) ) {
-		Tcl_SetResult( interp, "can't create Tcl chan for pipe",
-		               TCL_STATIC );
+	    if ( !( chan = Tcl_MakeFileChannel( ( ClientData ) got, TCL_READABLE ) ) ) {
+		Tcl_SetResult( interp, "can't create Tcl chan for pipe", TCL_STATIC );
 		return TCL_ERROR;
 	    }
 	    else {
 		/* register this channel with tcl */
 		Tcl_RegisterChannel( interp, chan );
 		/* return name so that it can be used by tcl */
-		Tcl_SetResult( interp, ( char * ) Tcl_GetChannelName( chan ),
-		               TCL_VOLATILE );
+		Tcl_SetResult( interp, ( char * ) Tcl_GetChannelName( chan ), TCL_VOLATILE );
 		return ( TCL_OK );
 	    }
 	}
@@ -313,8 +285,7 @@ MainLibProcess_Tcl( clientData, interp, objc, objv )
 #endif
     }
     else {
-	Tcl_SetStringObj( resultPtr, "unable to execute mainlib command",
-	                  -1 );
+	Tcl_SetStringObj( resultPtr, "unable to execute mainlib command", -1 );
 	return ( TCL_ERROR );
     }
 }
@@ -334,19 +305,13 @@ MainLibProcess_Tcl( clientData, interp, objc, objv )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibProcessCleanup_Tcl( ClientData clientData, Tcl_Interp * interp,
-                           int objc, Tcl_Obj * CONST objv[] )
-#else
-int
-MainLibProcessCleanup_Tcl( clientData, interp, objc, objv )
-     ClientData clientData;
-     Tcl_Interp *interp;
-     int objc;
-     Tcl_Obj *CONST objv[];
-#endif
-{
+MainLibProcessCleanup_Tcl(
+    ClientData clientData,
+    Tcl_Interp * interp,
+    int objc,
+    Tcl_Obj * CONST objv[]
+ ) {
     int got;
     char *s = NULL;
     void *tml;
@@ -370,8 +335,7 @@ MainLibProcessCleanup_Tcl( clientData, interp, objc, objv )
     /* get mainlib handle */
     s = Tcl_GetStringFromObj( objv[1], NULL );
     if ( ( sscanf( s, "%p", &tml ) != 1 ) ) {
-	Tcl_SetStringObj( resultPtr, "MAINLIB$ERROR: invalid mainlib handle",
-	                  -1 );
+	Tcl_SetStringObj( resultPtr, "MAINLIB$ERROR: invalid mainlib handle", -1 );
 	return ( TCL_ERROR );
     }
     ml = ( MainLib ) tml;
@@ -408,19 +372,13 @@ MainLibProcessCleanup_Tcl( clientData, interp, objc, objv )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-MainLibLoad_Tcl( ClientData clientData, Tcl_Interp * interp,
-                 int objc, Tcl_Obj * CONST objv[] )
-#else
-int
-MainLibLoad_Tcl( clientData, interp, objc, objv )
-     ClientData clientData;
-     Tcl_Interp *interp;
-     int objc;
-     Tcl_Obj *CONST objv[];
-#endif
-{
+MainLibLoad_Tcl(
+    ClientData clientData,
+    Tcl_Interp * interp,
+    int objc,
+    Tcl_Obj * CONST objv[]
+ ) {
     char *package = NULL;
     char *shlib = NULL;
     char *ermsg;
@@ -451,14 +409,12 @@ MainLibLoad_Tcl( clientData, interp, objc, objv )
     switch ( MainLibLoad( package, shlib, &ml, &ermsg ) ) {
 	case -1:
 	    snprintf( tbuf, SZ_LINE - 1,
-	              "MAINLIB$ERROR: could not load shared library %s (%s)",
-	              shlib, ermsg );
+	              "MAINLIB$ERROR: could not load shared library %s (%s)", shlib, ermsg );
 	    Tcl_SetStringObj( resultPtr, tbuf, -1 );
 	    return ( TCL_ERROR );
 	case -2:
 	    snprintf( tbuf, SZ_LINE - 1,
-	              "MAINLIB$ERROR: could not initialize package %s (%s)",
-	              package, ermsg );
+	              "MAINLIB$ERROR: could not initialize package %s (%s)", package, ermsg );
 	    Tcl_SetStringObj( resultPtr, tbuf, -1 );
 	    return ( TCL_ERROR );
 	default:
@@ -490,29 +446,22 @@ MainLibLoad_Tcl( clientData, interp, objc, objv )
  *
  *----------------------------------------------------------------------------
  */
-#ifdef ANSI_FUNC
 int
-Tclmainlib_Init( void *vinterp )
-#else
-int
-Tclmainlib_Init( vinterp )
-     void *vinterp;
-#endif
-{
+Tclmainlib_Init(
+    void *vinterp
+ ) {
     Tcl_Interp *interp = ( Tcl_Interp * ) vinterp;
 
     /* add mainlib commands to this interpreter */
     Tcl_CreateObjCommand( interp, TCL_MAINLIB_NAME,
-                          MainLibProcess_Tcl,
-                          ( ClientData ) NULL, ( Tcl_CmdDeleteProc * ) NULL );
+                          MainLibProcess_Tcl, ( ClientData ) NULL, ( Tcl_CmdDeleteProc * ) NULL );
 
     Tcl_CreateObjCommand( interp, "mainlibcleanup",
                           MainLibProcessCleanup_Tcl,
                           ( ClientData ) NULL, ( Tcl_CmdDeleteProc * ) NULL );
 
     Tcl_CreateObjCommand( interp, "mainlibload",
-                          MainLibLoad_Tcl,
-                          ( ClientData ) NULL, ( Tcl_CmdDeleteProc * ) NULL );
+                          MainLibLoad_Tcl, ( ClientData ) NULL, ( Tcl_CmdDeleteProc * ) NULL );
 
     Tcl_PkgProvide( interp, "tclmainlib", "1.0" );
     return ( TCL_OK );

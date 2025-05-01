@@ -1,14 +1,8 @@
 #include <funtools.h>
 #include <stdlib.h>
 
-#ifdef ANSI_FUNC
 int 
 main (int argc, char **argv)
-#else
-main(argc, argv)
-     int argc;
-     char **argv;
-#endif
 {
   int i;
   int bitpix, dim1, dim2;

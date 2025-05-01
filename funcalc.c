@@ -26,45 +26,30 @@ extern int optind;
 #define FUN_LIB "-L. -lfuntools -lsocket -ldl -lm"
 #endif
 
-#ifdef ANSI_FUNC
 static void
-usage( char *fname )
-#else
-static void
-usage( fname )
-     char *fname;
-#endif
-{
+usage(
+    char *fname
+ ) {
     fprintf( stderr,
              "usage: %s [-n] [-a 'args'] [-e expr] [-f file] [-l libs] [-p prog] [-u] iname [oname [columns]]\n",
              fname );
     fprintf( stderr, "optional switches:\n" );
-    fprintf( stderr,
-             "  -a 'args'     # arguments to add to program command line\n" );
+    fprintf( stderr, "  -a 'args'     # arguments to add to program command line\n" );
     fprintf( stderr, "  -e 'expr'     # funcalc expression to execute\n" );
-    fprintf( stderr,
-             "  -f [filename] # filename containing funcalc expression\n" );
+    fprintf( stderr, "  -f [filename] # filename containing funcalc expression\n" );
     fprintf( stderr, "  -l [libs]     # extra libraries to link\n" );
-    fprintf( stderr,
-             "  -n            # write program to stdout instead of executing it \n" );
-    fprintf( stderr,
-             "  -p [prog]     # create prog instead of executing it\n" );
-    fprintf( stderr,
-             "  -u            # no auto-define: die if variable is undefined\n" );
+    fprintf( stderr, "  -n            # write program to stdout instead of executing it \n" );
+    fprintf( stderr, "  -p [prog]     # create prog instead of executing it\n" );
+    fprintf( stderr, "  -u            # no auto-define: die if variable is undefined\n" );
     fprintf( stderr, "\n(version: %s)\n", FUN_VERSION );
     exit( 1 );
 }
 
-#ifdef ANSI_FUNC
 int
-main( int argc, char **argv )
-#else
-int
-main( argc, argv )
-     int argc;
-     char **argv;
-#endif
-{
+main(
+    int argc,
+    char **argv
+ ) {
     int i, j = 0;
     int dosave = 0;
     int c, args;
@@ -121,8 +106,7 @@ main( argc, argv )
 	    case 'f':
 		expr = FileContents( optarg, 0, NULL );
 		if ( !expr || !*expr )
-		    gerror( stderr, "invalid funcalc expression file: %s\n",
-		            optarg );
+		    gerror( stderr, "invalid funcalc expression file: %s\n", optarg );
 		break;
 	    case 'h':
 		usage( argv[0] );
@@ -179,8 +163,7 @@ main( argc, argv )
 
     /* get prefix for filter source and program */
     if ( !( tmpdir = ( char * ) getenv( "FUNCALC_TMPDIR" ) ) &&
-         !( tmpdir = ( char * ) getenv( "TMPDIR" ) ) &&
-         !( tmpdir = ( char * ) getenv( "TMP" ) ) )
+         !( tmpdir = ( char * ) getenv( "TMPDIR" ) ) && !( tmpdir = ( char * ) getenv( "TMP" ) ) )
 	tmpdir = DEFAULT_FUNCALC_TMPDIR;
     if ( !*tmpdir )
 	tmpdir = ".";
@@ -189,9 +172,7 @@ main( argc, argv )
   again:
     /* make up name of C source file we will generate */
     if ( ( fd = mkrtemp( prefix, ".c", code, SZ_LINE, 1 ) ) < 0 ) {
-	fprintf( stderr,
-	         "ERROR: could not generate C funcalc source name: %s\n",
-	         prefix );
+	fprintf( stderr, "ERROR: could not generate C funcalc source name: %s\n", prefix );
 	error = 1;
 	goto endgame;
     }
@@ -201,9 +182,7 @@ main( argc, argv )
        by an intruder harder */
     if ( !*prog ) {
 	if ( mkrtemp( prefix, NULL, prog, SZ_LINE, 0 ) < 0 ) {
-	    fprintf( stderr,
-	             "ERROR: could not generate C funcalc program name: %s\n",
-	             prefix );
+	    fprintf( stderr, "ERROR: could not generate C funcalc program name: %s\n", prefix );
 	    error = 1;
 	    goto endgame;
 	}
@@ -216,9 +195,7 @@ main( argc, argv )
               cc, cflags, FUN_INCLUDE, libs, FUN_LIB );
 
     /* parse expression */
-    if ( !
-         ( codestr =
-           FunCalcParse( iname, oname, cmd2, expr, autodefs, args ) ) ) {
+    if ( !( codestr = FunCalcParse( iname, oname, cmd2, expr, autodefs, args ) ) ) {
 	fprintf( stderr, "ERROR: no program generated!\n" );
 	error = 1;
 	goto endgame;
@@ -226,8 +203,7 @@ main( argc, argv )
 
     /* get stdio handle and output the generated code */
     if ( !( fp = fdopen( fd, "w+b" ) ) ) {
-	fprintf( stderr, "ERROR: could not open funcalc source file: %s\n",
-	         code );
+	fprintf( stderr, "ERROR: could not open funcalc source file: %s\n", code );
 	error = 1;
 	goto endgame;
     }

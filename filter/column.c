@@ -3,19 +3,14 @@
  */
 #include <column.h>
 
-#ifdef ANSI_FUNC
 void
-ColumnLoad( char *ibuf, int size, int n, int convert, void *obuf )
-#else
-void
-ColumnLoad( ibuf, size, n, convert, obuf )
-     char *ibuf;
-     int size;
-     int n;
-     int convert;
-     void *obuf;
-#endif
-{
+ColumnLoad(
+    char *ibuf,
+    int size,
+    int n,
+    int convert,
+    void *obuf
+ ) {
     register char *iptr;
     register char *optr;
     int i, j;

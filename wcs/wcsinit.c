@@ -47,21 +47,32 @@
 #include <stdlib.h>
 #endif
 
-static void wcseq( char *, struct WorldCoor * );
-static void wcseqm( char *, struct WorldCoor *, char * );
-static void wcsioset( struct WorldCoor *wcs );
-void invert_wcs( struct WorldCoor *wcs );
+static void wcseq(
+    const char *,
+    struct WorldCoor *
+ );
+static void wcseqm(
+    const char *,
+    struct WorldCoor *,
+    char *
+ );
+static void wcsioset(
+    struct WorldCoor *wcs
+ );
+void invert_wcs(
+    struct WorldCoor *wcs
+ );
 
 /* set up a WCS structure from a FITS image header lhstring bytes long 
  * for a specified WCS name */
 
 struct WorldCoor *
-wcsninitn( hstring, lhstring, name )
-     const char *hstring;       /* character string containing FITS header information
+wcsninitn(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     int lhstring;              /* Length of FITS header in bytes */
-     const char *name;          /* character string with identifying name of WCS */
-{
+    int lhstring,               /* Length of FITS header in bytes */
+    const char *name            /* character string with identifying name of WCS */
+ ) {
     hlength( hstring, lhstring );
     return ( wcsinitn( hstring, name ) );
 }
@@ -70,17 +81,16 @@ wcsninitn( hstring, lhstring, name )
 /* set up a WCS structure from a FITS image header for specified WCSNAME */
 
 struct WorldCoor *
-wcsinitn( hstring, name )
-     const char *hstring;       /* character string containing FITS header information
+wcsinitn(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     const char *name;          /* character string with identifying name of WCS */
-{
+    const char *name            /* character string with identifying name of WCS */
+ ) {
     char mchar;                 /* Suffix character for one of multiple WCS */
 
     mchar = wcschar( hstring, name );
     if ( mchar == '_' ) {
-	fprintf( stderr, "WCSINITN: WCS name %s not matched in FITS header\n",
-	         name );
+	fprintf( stderr, "WCSINITN: WCS name %s not matched in FITS header\n", name );
 	return ( NULL );
     }
     return ( wcsinitc( hstring, &mchar ) );
@@ -90,12 +100,12 @@ wcsinitn( hstring, name )
 /* WCSCHAR -- Find the letter for a specific WCS conversion */
 
 char
-wcschar( hstring, name )
-     const char *hstring;       /* character string containing FITS header information
+wcschar(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     const char *name;          /* Name of WCS conversion to be matched
+    const char *name            /* Name of WCS conversion to be matched
                                    (case-independent) */
-{
+ ) {
     char *upname;
     char cwcs, charwcs;
     int iwcs;
@@ -138,9 +148,9 @@ wcschar( hstring, name )
 /* Make string of arbitrary case all uppercase */
 
 char *
-uppercase( string )
-     const char *string;
-{
+uppercase(
+    const char *string
+ ) {
     int lstring, i;
     char *upstring;
 
@@ -160,11 +170,11 @@ uppercase( string )
 /* set up a WCS structure from a FITS image header lhstring bytes long */
 
 struct WorldCoor *
-wcsninit( hstring, lhstring )
-     const char *hstring;       /* character string containing FITS header information
+wcsninit(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     int lhstring;              /* Length of FITS header in bytes */
-{
+    int lhstring                /* Length of FITS header in bytes */
+ ) {
     char mchar;                 /* Suffix character for one of multiple WCS */
     mchar = ( char ) 0;
     hlength( hstring, lhstring );
@@ -175,12 +185,12 @@ wcsninit( hstring, lhstring )
 /* set up a WCS structure from a FITS image header lhstring bytes long */
 
 struct WorldCoor *
-wcsninitc( hstring, lhstring, mchar )
-     const char *hstring;       /* character string containing FITS header information
+wcsninitc(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     int lhstring;              /* Length of FITS header in bytes */
-     char *mchar;               /* Suffix character for one of multiple WCS */
-{
+    int lhstring,               /* Length of FITS header in bytes */
+    char *mchar                 /* Suffix character for one of multiple WCS */
+ ) {
     hlength( hstring, lhstring );
     if ( mchar[0] == ' ' )
 	mchar[0] = ( char ) 0;
@@ -191,10 +201,10 @@ wcsninitc( hstring, lhstring, mchar )
 /* set up a WCS structure from a FITS image header */
 
 struct WorldCoor *
-wcsinit( hstring )
-     const char *hstring;       /* character string containing FITS header information
+wcsinit(
+    const char *hstring         /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-{
+ ) {
     char mchar;                 /* Suffix character for one of multiple WCS */
     mchar = ( char ) 0;
     return ( wcsinitc( hstring, &mchar ) );
@@ -204,11 +214,11 @@ wcsinit( hstring )
 /* set up a WCS structure from a FITS image header for specified suffix */
 
 struct WorldCoor *
-wcsinitc( hstring, wchar )
-     const char *hstring;       /* character string containing FITS header information
+wcsinitc(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     char *wchar;               /* Suffix character for one of multiple WCS */
-{
+    char *wchar                 /* Suffix character for one of multiple WCS */
+ ) {
     struct WorldCoor *wcs, *depwcs;
     char ctype1[32], ctype2[32], tstring[32];
     char pvkey1[8], pvkey2[8], pvkey3[8];
@@ -327,8 +337,7 @@ wcsinitc( hstring, wchar )
 		j = wcs->nypix;
 	    }
 	    else
-		fprintf( stderr, "WCSINIT: Missing keyword %s assumed 1\n",
-	                 keyword );
+		fprintf( stderr, "WCSINIT: Missing keyword %s assumed 1\n", keyword );
 	}
 
 	/* Check for TAB WCS in axis */
@@ -425,8 +434,7 @@ wcsinitc( hstring, wchar )
 		wcs->prjcode = WCS_PIX;
 	    if ( twod ) {
 		if ( !hgetsc( hstring, "CUNIT2", &mchar, 16, wcs->units[1] ) ) {
-		    if ( !mgetstr
-		         ( hstring, "WAT2", "units", 16, wcs->units[1] ) ) {
+		    if ( !mgetstr( hstring, "WAT2", "units", 16, wcs->units[1] ) ) {
 			wcs->units[1][0] = 0;
 		    }
 		}
@@ -570,8 +578,7 @@ wcsinitc( hstring, wchar )
 	cd12p = hgetr8c( hstring, "CD1_2", &mchar, &cd[1] );
 	cd21p = hgetr8c( hstring, "CD2_1", &mchar, &cd[2] );
 	cd22p = hgetr8c( hstring, "CD2_2", &mchar, &cd[3] );
-	if ( wcs->wcsproj != WCS_OLD &&
-	     ( hcoeff = ksearch( hstring, "CO1_1" ) ) != NULL ) {
+	if ( wcs->wcsproj != WCS_OLD && ( hcoeff = ksearch( hstring, "CO1_1" ) ) != NULL ) {
 	    wcs->prjcode = WCS_PLT;
 	    ( void ) strcpy( wcs->ptype, "PLA" );
 	    for ( i = 0; i < 20; i++ ) {
@@ -601,12 +608,10 @@ wcsinitc( hstring, wchar )
 
 	    /* Compute scale at reference pixel */
 	    platepos( wcs->crpix[0], wcs->crpix[1], wcs, &ra0, &dec0 );
-	    platepos( wcs->crpix[0] + cos( rot ),
-	              wcs->crpix[1] + sin( rot ), wcs, &ra1, &dec1 );
+	    platepos( wcs->crpix[0] + cos( rot ), wcs->crpix[1] + sin( rot ), wcs, &ra1, &dec1 );
 	    wcs->cdelt[0] = -wcsdist( ra0, dec0, ra1, dec1 );
 	    wcs->xinc = wcs->cdelt[0];
-	    platepos( wcs->crpix[0] + sin( rot ),
-	              wcs->crpix[1] + cos( rot ), wcs, &ra1, &dec1 );
+	    platepos( wcs->crpix[0] + sin( rot ), wcs->crpix[1] + cos( rot ), wcs, &ra1, &dec1 );
 	    wcs->cdelt[1] = wcsdist( ra0, dec0, ra1, dec1 );
 	    wcs->yinc = wcs->cdelt[1];
 
@@ -764,9 +769,7 @@ wcsinitc( hstring, wchar )
 	    for ( k = 0; k < 2; k++ ) {
 		for ( j = 0; j < MAXPV; j++ ) {
 		    sprintf( keyword, "PV%d_%d", k + 1, j );
-		    if ( hgetr8c
-		         ( hstring, keyword, &mchar,
-		           &wcs->projppv[j + k * MAXPV] ) == 0 ) {
+		    if ( hgetr8c( hstring, keyword, &mchar, &wcs->projppv[j + k * MAXPV] ) == 0 ) {
 			wcs->projppv[j + k * MAXPV] = 0.0;
 		    }
 		    else
@@ -781,10 +784,8 @@ wcsinitc( hstring, wchar )
 		for ( k = MAXPV; k >= 0; k-- ) {
 		    /* lat comes first for compatibility reasons */
 		    wcs->prj.ppv[k] = wcs->projppv[k + wcs->wcsl.lat * MAXPV];
-		    wcs->prj.ppv[k + MAXPV] =
-		        wcs->projppv[k + wcs->wcsl.lng * MAXPV];
-		    if ( !n
-		         && ( wcs->prj.ppv[k] || wcs->prj.ppv[k + MAXPV] ) ) {
+		    wcs->prj.ppv[k + MAXPV] = wcs->projppv[k + wcs->wcsl.lng * MAXPV];
+		    if ( !n && ( wcs->prj.ppv[k] || wcs->prj.ppv[k + MAXPV] ) ) {
 			n = k + 1;
 		    }
 		}
@@ -796,8 +797,7 @@ wcsinitc( hstring, wchar )
 	}
 
 	/* If linear or pixel WCS, print "degrees" */
-	if ( !strncmp( wcs->ptype, "LIN", 3 ) ||
-	     !strncmp( wcs->ptype, "PIX", 3 ) ) {
+	if ( !strncmp( wcs->ptype, "LIN", 3 ) || !strncmp( wcs->ptype, "PIX", 3 ) ) {
 	    wcs->degout = -1;
 	    wcs->ndec = 5;
 	}
@@ -817,11 +817,9 @@ wcsinitc( hstring, wchar )
 	    hgets( hstring, "DATE-OBS", 32, tstring );
 	    if ( !strchr( tstring, 'T' ) ) {
 		if ( hgetr8( hstring, "UT", &ut ) )
-		    wcs->epoch =
-		        wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
+		    wcs->epoch = wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
 		else if ( hgetr8( hstring, "UTMID", &ut ) )
-		    wcs->epoch =
-		        wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
+		    wcs->epoch = wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
 	    }
 	}
 
@@ -829,8 +827,7 @@ wcsinitc( hstring, wchar )
     }
 
     else if ( mchar != cnull && mchar != cspace ) {
-	( void ) sprintf( temp, "WCSINITC: No image scale for WCS %c",
-	                  mchar );
+	( void ) sprintf( temp, "WCSINITC: No image scale for WCS %c", mchar );
 	setwcserr( temp );
 	wcsfree( wcs );
 	return ( NULL );
@@ -843,8 +840,7 @@ wcsinitc( hstring, wchar )
 	hgetr8( hcoeff, "PLTRAH", &rah );
 	hgetr8( hcoeff, "PLTRAM", &ram );
 	hgetr8( hcoeff, "PLTRAS", &ras );
-	ra_hours =
-	    rah + ( ram / ( double ) 60.0 ) + ( ras / ( double ) 3600.0 );
+	ra_hours = rah + ( ram / ( double ) 60.0 ) + ( ras / ( double ) 3600.0 );
 	wcs->plate_ra = hrrad( ra_hours );
 	decsign = '+';
 	hgets( hcoeff, "PLTDECSN", 1, &decsign );
@@ -855,9 +851,7 @@ wcsinitc( hstring, wchar )
 	hgetr8( hcoeff, "PLTDECD", &decd );
 	hgetr8( hcoeff, "PLTDECM", &decm );
 	hgetr8( hcoeff, "PLTDECS", &decs );
-	dec_deg =
-	    dsign * ( decd + ( decm / ( double ) 60.0 ) +
-	              ( decs / ( double ) 3600.0 ) );
+	dec_deg = dsign * ( decd + ( decm / ( double ) 60.0 ) + ( decs / ( double ) 3600.0 ) );
 	wcs->plate_dec = degrad( dec_deg );
 	hgetr8( hstring, "EQUINOX", &wcs->equinox );
 	hgeti4( hstring, "EQUINOX", &ieq );
@@ -869,8 +863,7 @@ wcsinitc( hstring, wchar )
 	hgetr8( hstring, "EPOCH", &wcs->epoch );
 	( void ) sprintf( wcs->center,
 	                  "%2.0f:%2.0f:%5.3f %c%2.0f:%2.0f:%5.3f %s", rah,
-	                  ram, ras, decsign, decd, decm, decs,
-	                  wcs->radecsys );
+	                  ram, ras, decsign, decd, decm, decs, wcs->radecsys );
 	hgetr8( hstring, "PLTSCALE", &wcs->plate_scale );
 	hgetr8( hstring, "XPIXELSZ", &wcs->x_pixel_size );
 	hgetr8( hstring, "YPIXELSZ", &wcs->y_pixel_size );
@@ -926,11 +919,9 @@ wcsinitc( hstring, wchar )
 	rot = degrad( wcs->rot );
 
 	/* Compute image scale at center */
-	dsspos( wcs->crpix[0] + cos( rot ),
-	        wcs->crpix[1] + sin( rot ), wcs, &ra1, &dec1 );
+	dsspos( wcs->crpix[0] + cos( rot ), wcs->crpix[1] + sin( rot ), wcs, &ra1, &dec1 );
 	wcs->cdelt[0] = -wcsdist( ra0, dec0, ra1, dec1 );
-	dsspos( wcs->crpix[0] + sin( rot ),
-	        wcs->crpix[1] + cos( rot ), wcs, &ra1, &dec1 );
+	dsspos( wcs->crpix[0] + sin( rot ), wcs->crpix[1] + cos( rot ), wcs, &ra1, &dec1 );
 	wcs->cdelt[1] = wcsdist( ra0, dec0, ra1, dec1 );
 
 	/* Set all other image scale parameters */
@@ -1072,11 +1063,9 @@ wcsinitc( hstring, wchar )
 	    hgets( hstring, "DATE-OBS", 32, tstring );
 	    if ( !strchr( tstring, 'T' ) ) {
 		if ( hgetr8( hstring, "UT", &ut ) )
-		    wcs->epoch =
-		        wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
+		    wcs->epoch = wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
 		else if ( hgetr8( hstring, "UTMID", &ut ) )
-		    wcs->epoch =
-		        wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
+		    wcs->epoch = wcs->epoch + ( ut / ( 24.0 * 365.242198781 ) );
 	    }
 	}
 
@@ -1122,7 +1111,9 @@ VERSION	06/11/2003
  ***/
 
 void
-invert_wcs( struct WorldCoor *wcs ) {
+invert_wcs(
+    struct WorldCoor *wcs
+ ) {
     polystruct *poly;
     double pixin[NAXISPV], raw[NAXISPV], rawmin[NAXISPV];
     double *outpos, *outpost, *lngpos, *lngpost;
@@ -1150,8 +1141,7 @@ invert_wcs( struct WorldCoor *wcs ) {
 	return;
     }
 
-    if ( ( wcs->projppv[1 + lng * MAXPV] == 0 ) &&
-         ( wcs->projppv[1 + lat * MAXPV] == 0 ) ) {
+    if ( ( wcs->projppv[1 + lng * MAXPV] == 0 ) && ( wcs->projppv[1 + lat * MAXPV] == 0 ) ) {
 	return;
     }
 
@@ -1194,14 +1184,12 @@ invert_wcs( struct WorldCoor *wcs ) {
 	raw[lng] = rawmin[lng];
 	for ( i = WCS_NGRIDPOINTS; i--; raw[lng] += lngstep ) {
 	    if ( linrev( raw, &wcs->lin, pixin ) ) {
-		sprintf( errstr, "*Error*: incorrect linear conversion in %s",
-		         wcs->wcsl.pcode );
+		sprintf( errstr, "*Error*: incorrect linear conversion in %s", wcs->wcsl.pcode );
 		setwcserr( errstr );
 	    }
 	    *( lngpost++ ) = pixin[lng];
 	    *( latpost++ ) = pixin[lat];
-	    raw_to_pv( &wcs->prj, pixin[lng], pixin[lat], outpost,
-	               outpost + 1 );
+	    raw_to_pv( &wcs->prj, pixin[lng], pixin[lat], outpost, outpost + 1 );
 	    outpost += 2;
 	}
     }
@@ -1212,11 +1200,9 @@ invert_wcs( struct WorldCoor *wcs ) {
     pixin[lng] += S2D;
     linfwd( pixin, &wcs->lin, raw );
     rawsize = sqrt( ( raw[lng] - rawmin[lng] ) * ( raw[lng] - rawmin[lng] )
-                    + ( raw[lat] - rawmin[lat] ) * ( raw[lat] -
-                                                     rawmin[lat] ) ) * D2S;
+                    + ( raw[lat] - rawmin[lat] ) * ( raw[lat] - rawmin[lat] ) ) * D2S;
     if ( !rawsize ) {
-	sprintf( errstr, "*Error*: incorrect linear conversion in %s",
-	         wcs->wcsl.pcode );
+	sprintf( errstr, "*Error*: incorrect linear conversion in %s", wcs->wcsl.pcode );
 	setwcserr( errstr );
     }
     epsilon = WCS_INVACCURACY / rawsize;
@@ -1234,16 +1220,14 @@ invert_wcs( struct WorldCoor *wcs ) {
 	outpost = outpos;
 	lngpost = lngpos;
 	for ( i = WCS_NGRIDPOINTS2; i--; outpost += 2 ) {
-	    if ( fabs( poly_func( poly, outpost ) - *( lngpost++ ) ) >
-	         epsilon ) {
+	    if ( fabs( poly_func( poly, outpost ) - *( lngpost++ ) ) > epsilon ) {
 		maxflag = 1;
 		break;
 	    }
 	}
     }
     if ( maxflag ) {
-	setwcserr
-	    ( "WARNING: Significant inaccuracy likely to occur in projection" );
+	setwcserr( "WARNING: Significant inaccuracy likely to occur in projection" );
 	wcs->pvfail = 1;
     }
 
@@ -1256,11 +1240,9 @@ invert_wcs( struct WorldCoor *wcs ) {
     pixin[lat] += S2D;
     linfwd( pixin, &wcs->lin, raw );
     rawsize = sqrt( ( raw[lng] - rawmin[lng] ) * ( raw[lng] - rawmin[lng] )
-                    + ( raw[lat] - rawmin[lat] ) * ( raw[lat] -
-                                                     rawmin[lat] ) ) * D2S;
+                    + ( raw[lat] - rawmin[lat] ) * ( raw[lat] - rawmin[lat] ) ) * D2S;
     if ( !rawsize ) {
-	sprintf( errstr, "*Error*: incorrect linear conversion in %s",
-	         wcs->wcsl.pcode );
+	sprintf( errstr, "*Error*: incorrect linear conversion in %s", wcs->wcsl.pcode );
 	setwcserr( errstr );
     }
     epsilon = WCS_INVACCURACY / rawsize;
@@ -1276,16 +1258,14 @@ invert_wcs( struct WorldCoor *wcs ) {
 	outpost = outpos;
 	latpost = latpos;
 	for ( i = WCS_NGRIDPOINTS2; i--; outpost += 2 ) {
-	    if ( fabs( poly_func( poly, outpost ) - *( latpost++ ) ) >
-	         epsilon ) {
+	    if ( fabs( poly_func( poly, outpost ) - *( latpost++ ) ) > epsilon ) {
 		maxflag = 1;
 		break;
 	    }
 	}
     }
     if ( maxflag ) {
-	setwcserr
-	    ( "WARNING: Significant inaccuracy likely to occur in projection" );
+	setwcserr( "WARNING: Significant inaccuracy likely to occur in projection" );
 	wcs->pvfail = 1;
     }
 
@@ -1304,9 +1284,9 @@ invert_wcs( struct WorldCoor *wcs ) {
 /* Set coordinate system of image, input, and output */
 
 static void
-wcsioset( wcs )
-     struct WorldCoor *wcs;
-{
+wcsioset(
+    struct WorldCoor *wcs
+ ) {
     if ( strlen( wcs->radecsys ) == 0 || wcs->prjcode == WCS_LIN )
 	strcpy( wcs->radecsys, "LINEAR" );
     if ( wcs->prjcode == WCS_PIX )
@@ -1329,11 +1309,11 @@ wcsioset( wcs )
 
 
 static void
-wcseq( hstring, wcs )
-     char *hstring;             /* character string containing FITS header information
+wcseq(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     struct WorldCoor *wcs;     /* World coordinate system data structure */
-{
+    struct WorldCoor *wcs       /* World coordinate system data structure */
+ ) {
     char mchar;                 /* Suffix character for one of multiple WCS */
     mchar = ( char ) 0;
     wcseqm( hstring, wcs, &mchar );
@@ -1342,12 +1322,12 @@ wcseq( hstring, wcs )
 
 
 static void
-wcseqm( hstring, wcs, mchar )
-     char *hstring;             /* character string containing FITS header information
+wcseqm(
+    const char *hstring,        /* character string containing FITS header information
                                    in the format <keyword>= <value> [/ <comment>] */
-     struct WorldCoor *wcs;     /* World coordinate system data structure */
-     char *mchar;               /* Suffix character for one of multiple WCS */
-{
+    struct WorldCoor *wcs,      /* World coordinate system data structure */
+    char *mchar                 /* Suffix character for one of multiple WCS */
+ ) {
     int ieq = 0;
     int eqhead = 0;
     char systring[32], eqstring[32];

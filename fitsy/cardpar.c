@@ -34,13 +34,13 @@
 	The value parameter.
  */
 char *
-ft_cardpar( card, type, value, index, comm )
-     FITSCard card;             /* FITS card to parse.                  */
-     FITSType *type;            /* Returned card type.                  */
-     char *value;               /* Returned card value string.          */
-     int *index;                /* Returned index of the card keyword.  */
-     char *comm;                /* Returned card comment.               */
-{
+ft_cardpar(
+    FITSCard card,              /* FITS card to parse.                  */
+    FITSType * type,            /* Returned card type.                  */
+    char *value,                /* Returned card value string.          */
+    int *index,                 /* Returned index of the card keyword.  */
+    char *comm                  /* Returned card comment.               */
+ ) {
     int i = 0, j;
 
     if ( card == NULL ) {
@@ -116,18 +116,18 @@ static FITSBuff ft_value;
 /* Return the value of a FITS card in a static buffer.
  */
 char *
-ft_cardget( card )
-     FITSCard card;
-{
+ft_cardget(
+    FITSCard card
+ ) {
     return ft_cardpar( card, NULL, ( char * ) ft_value.c, NULL, NULL );
 }
 
 /* Return the value of a FITS card as a logical.
  */
 int
-ft_cardgetl( card )
-     FITSCard card;
-{
+ft_cardgetl(
+    FITSCard card
+ ) {
     char *value = ft_cardget( card );
 
     return *value == 'T' || *value == 't';
@@ -136,9 +136,9 @@ ft_cardgetl( card )
 /* Return the value of a FITS card as an integer.
  */
 int
-ft_cardgeti( card )
-     FITSCard card;
-{
+ft_cardgeti(
+    FITSCard card
+ ) {
     /* return strtol(ft_cardget(card), NULL, 0); */
     return ( int ) ft_cardgetr( card );
 }
@@ -146,9 +146,9 @@ ft_cardgeti( card )
 /* Return the value of a FITS card as an integer.
  */
 longlong
-ft_cardgetil( card )
-     FITSCard card;
-{
+ft_cardgetil(
+    FITSCard card
+ ) {
     /* return strtol(ft_cardget(card), NULL, 0); */
     return ( longlong ) ft_cardgetr( card );
 }
@@ -156,9 +156,9 @@ ft_cardgetil( card )
 /* Return the value of a FITS card as a double.
  */
 double
-ft_cardgetr( card )
-     FITSCard card;
-{
+ft_cardgetr(
+    FITSCard card
+ ) {
     int i;
     char *s = ft_cardget( card );
 
@@ -177,8 +177,8 @@ ft_cardgetr( card )
    The returned string is allocated with strdup().
  */
 char *
-ft_cardgets( card )
-     FITSCard card;
-{
+ft_cardgets(
+    FITSCard card
+ ) {
     return ( char * ) strdup( ft_cardget( card ) );
 }

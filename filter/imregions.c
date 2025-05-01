@@ -32,13 +32,22 @@ static fpu_control_t _cw;
 /* add to FilterOpen to cause this module to be loaded for dynamic linking */
 static int imregno = 0;
 void
-initimregions( void ) {
+initimregions(
+    void
+ ) {
     imregno++;
     return;
 }
 
 static void
-markx( GFilt g, int UNUSED( sno ), int flag, int type, int x, int y ) {
+markx(
+    GFilt g,
+    int UNUSED( sno ),
+    int flag,
+    int type,
+    int x,
+    int y
+ ) {
     /* don't mark exclude regions */
     if ( type == TOK_EREG )
 	return;
@@ -57,7 +66,12 @@ markx( GFilt g, int UNUSED( sno ), int flag, int type, int x, int y ) {
 }
 
 static void
-marky( GFilt g, int sno, int flag, int type ) {
+marky(
+    GFilt g,
+    int sno,
+    int flag,
+    int type
+ ) {
     int i;
     /* don't mark exclude regions */
     if ( type == TOK_EREG )
@@ -78,7 +92,10 @@ marky( GFilt g, int sno, int flag, int type ) {
 }
 
 static int
-imagemaskcmp( const void *s1, const void *s2 ) {
+imagemaskcmp(
+    const void *s1,
+    const void *s2
+ ) {
     FilterMask f1 = ( FilterMask ) s1;
     FilterMask f2 = ( FilterMask ) s2;
 
@@ -101,8 +118,15 @@ imagemaskcmp( const void *s1, const void *s2 ) {
 /* ***************************** shape support ***************************** */
 
 static void
-quadeq( double a, double b, double c,
-        double *x1, double *x2, int *nr, int *nc ) {
+quadeq(
+    double a,
+    double b,
+    double c,
+    double *x1,
+    double *x2,
+    int *nr,
+    int *nc
+ ) {
     double dis, q;
     if ( feq( a, 0.0 ) ) {
 	*nc = 0;
@@ -148,8 +172,15 @@ quadeq( double a, double b, double c,
 }
 
 static void
-rgs_mark( GFilt g, Scan * scanlist,
-          int sno, int flag, int type, int xval, int yval ) {
+rgs_mark(
+    GFilt g,
+    Scan * scanlist,
+    int sno,
+    int flag,
+    int type,
+    int xval,
+    int yval
+ ) {
     Scan scanmark, mark;
     /* since yval is used as an index, make sure its within limits */
     if ( yval < g->y0 ) yval = g->y0;
@@ -174,9 +205,19 @@ rgs_mark( GFilt g, Scan * scanlist,
 }
 
 static void
-rgs_segment( GFilt g, Scan * scanlist, int width, int height,
-             int sno, int flag, int type,
-             double x1, double y1, double x2, double y2 ) {
+rgs_segment(
+    GFilt g,
+    Scan * scanlist,
+    int width,
+    int height,
+    int sno,
+    int flag,
+    int type,
+    double x1,
+    double y1,
+    double x2,
+    double y2
+ ) {
     int ystart, ystop, yval, xval;
     double invslope, xoffset;
 
@@ -202,8 +243,17 @@ rgs_segment( GFilt g, Scan * scanlist, int width, int height,
 }
 
 static void
-_polygoni( GFilt g, int qt, int UNUSED( rno ), int sno, int flag,
-           int type, double *vx, double *vy, int count ) {
+_polygoni(
+    GFilt g,
+    int qt,
+    int UNUSED( rno ),
+    int sno,
+    int flag,
+    int type,
+    double *vx,
+    double *vy,
+    int count
+ ) {
     int i, j;
     double xlo, xhi;
     double ylo, yhi;
@@ -255,7 +305,13 @@ _polygoni( GFilt g, int qt, int UNUSED( rno ), int sno, int flag,
 }
 
 static int
-corner_vertex( int index, int width, int height, double *x, double *y ) {
+corner_vertex(
+    int index,
+    int width,
+    int height,
+    double *x,
+    double *y
+ ) {
     switch ( index ) {
 	case 1:
 	    *x = 0.0;
@@ -281,8 +337,15 @@ corner_vertex( int index, int width, int height, double *x, double *y ) {
 }
 
 static int
-pie_intercept( int width, int height, double xcen, double ycen,
-               double angle, double *xcept, double *ycept ) {
+pie_intercept(
+    int width,
+    int height,
+    double xcen,
+    double ycen,
+    double angle,
+    double *xcept,
+    double *ycept
+ ) {
     double angl, slope;         /* l: angle and slope of ray */
     angl = angle;
     /* put angles in normal range */
@@ -356,9 +419,20 @@ pie_intercept( int width, int height, double xcen, double ycen,
 }
 
 void
-_impiei( GFilt g, int qt, int rno, int sno, int flag, int type,
-         double UNUSED( x ), double UNUSED( y ),
-         double xcen, double ycen, double angle1, double angle2 ) {
+_impiei(
+    GFilt g,
+    int qt,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double UNUSED( y ),
+    double xcen,
+    double ycen,
+    double angle1,
+    double angle2
+ ) {
     int width, height;          /* l: image mask width and height */
     double sweep;               /* l: sweep between cut angles */
     double vx[7], vy[7];        /* l: arrays of vertices for polygon */
@@ -381,16 +455,14 @@ _impiei( GFilt g, int qt, int rno, int sno, int flag, int type,
     if ( fabs( sweep ) < SMALL_NUMBER )
 	return;
     if ( sweep < 0.0 ) sweep = sweep + 360.0;
-    intrcpt1 = pie_intercept( width, height, xcen, ycen, angle1,
-                              &( vx[1] ), &( vy[1] ) );
+    intrcpt1 = pie_intercept( width, height, xcen, ycen, angle1, &( vx[1] ), &( vy[1] ) );
     intrcpt2 = pie_intercept( width, height, xcen, ycen, angle2, &x2, &y2 );
     count = 2;
     /* if angles intercept same side and slice is between them, no corners */
     /* else, mark corners until reaching side with second angle intercept */
     if ( ( intrcpt1 != intrcpt2 ) || ( sweep > 180.0 ) ) {
 	do {
-	    intrcpt1 = corner_vertex( intrcpt1, width, height,
-	                              &( vx[count] ), &( vy[count] ) );
+	    intrcpt1 = corner_vertex( intrcpt1, width, height, &( vx[count] ), &( vy[count] ) );
 	    count = count + 1;
 	} while ( intrcpt1 != intrcpt2 );
     }
@@ -403,9 +475,19 @@ _impiei( GFilt g, int qt, int rno, int sno, int flag, int type,
 /* ***************************** shapes ********************************** */
 
 void
-imannulusi( GFilt g, int rno, int sno, int flag, int type,
-            double x, double y,
-            double xcen, double ycen, double iradius, double oradius ) {
+imannulusi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double iradius,
+    double oradius
+ ) {
     int yy;
     double dval;
     double xoff, yoff;
@@ -440,18 +522,14 @@ imannulusi( GFilt g, int rno, int sno, int flag, int type,
 	if ( ( dval = ( oradius * oradius ) - ( yoff * yoff ) ) > 0.0 ) {
 	    xoff = sqrt( dval );
 	    if ( PIXSTART( xcen - xoff ) <= PIXSTOP( xcen + xoff ) ) {
-		rgs_mark( g, scanlist, sno, flag, type,
-		          PIXSTART( xcen - xoff ), yy );
-		rgs_mark( g, scanlist, sno, flag, type,
-		          PIXSTOP( xcen + xoff ), yy );
+		rgs_mark( g, scanlist, sno, flag, type, PIXSTART( xcen - xoff ), yy );
+		rgs_mark( g, scanlist, sno, flag, type, PIXSTOP( xcen + xoff ), yy );
 	    }
 	    if ( ( dval = ( iradius * iradius ) - ( yoff * yoff ) ) > 0.0 ) {
 		xoff = sqrt( dval );
 		if ( PIXSTART( xcen - xoff ) <= PIXSTOP( xcen + xoff ) ) {
-		    rgs_mark( g, scanlist, sno, flag, type,
-		              PIXSTART( xcen - xoff ), yy );
-		    rgs_mark( g, scanlist, sno, flag, type,
-		              PIXSTOP( xcen + xoff ), yy );
+		    rgs_mark( g, scanlist, sno, flag, type, PIXSTART( xcen - xoff ), yy );
+		    rgs_mark( g, scanlist, sno, flag, type, PIXSTOP( xcen + xoff ), yy );
 		}
 	    }
 	}
@@ -459,14 +537,23 @@ imannulusi( GFilt g, int rno, int sno, int flag, int type,
 }
 
 int
-imannulus( GFilt g, int rno, int sno, int flag, int type,
-           double x, double y,
-           double xcen, double ycen, double iradius, double oradius ) {
+imannulus(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double iradius,
+    double oradius
+ ) {
     Scan scan;
 
     if ( iradius == 0 ) {
-	return ( imcircle
-	         ( g, rno, sno, flag, type, x, y, xcen, ycen, oradius ) );
+	return ( imcircle( g, rno, sno, flag, type, x, y, xcen, ycen, oradius ) );
     }
     if ( g->evsect ) {
 	if ( g->usebinsiz ) {
@@ -490,17 +577,11 @@ imannulus( GFilt g, int rno, int sno, int flag, int type,
     }
     scan = g->shapes[sno].scanlist[( int ) y];
     if ( ( scan &&
-           ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && ( scan->next->
-                next
-                ? ( ( ( x >= scan->x ) && ( x <= scan->next->next->next->x ) )
-                    && !( ( x >= scan->next->x )
-                          && ( x <= scan->next->next->x ) ) ) : ( ( x >=
-                                                                    scan->x )
-                                                                  && ( x <=
-                                                                       scan->
-                                                                       next->
-                                                                       x ) ) ) )
+           ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           ( scan->next->next ?
+             ( ( ( x >= scan->x ) && ( x <= scan->next->next->next->x ) ) &&
+               !( ( x >= scan->next->x ) && ( x <= scan->next->next->x ) ) ) :
+             ( ( x >= scan->x ) && ( x <= scan->next->x ) ) ) )
          == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
@@ -510,10 +591,20 @@ imannulus( GFilt g, int rno, int sno, int flag, int type,
 }
 
 void
-imboxi( GFilt g, int rno, int sno, int flag, int type,
-        double UNUSED( x ), double UNUSED( y ),
-        double xcen, double ycen, double xwidth, double yheight,
-        double angle ) {
+imboxi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double UNUSED( y ),
+    double xcen,
+    double ycen,
+    double xwidth,
+    double yheight,
+    double angle
+ ) {
     double angl;                /* l: Cartesian angle in radians */
     double half_width, half_height;     /* l: radii (1/2 width and height) */
     double cosangl, sinangl;    /* l: sine, cosine of the Cartesian angle */
@@ -578,10 +669,20 @@ imboxi( GFilt g, int rno, int sno, int flag, int type,
 }
 
 int
-imbox( GFilt g, int rno, int sno, int flag, int type,
-       double x, double y,
-       double UNUSED( xcen ), double UNUSED( ycen ),
-       double xwidth, double yheight, double UNUSED( angle ) ) {
+imbox(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double UNUSED( xcen ),
+    double UNUSED( ycen ),
+    double xwidth,
+    double yheight,
+    double UNUSED( angle )
+ ) {
     if ( ( xwidth == 0 ) && ( yheight == 0 ) ) {
 	return ( !flag );
     }
@@ -589,9 +690,18 @@ imbox( GFilt g, int rno, int sno, int flag, int type,
 }
 
 void
-imcirclei( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
-           double UNUSED( x ), double UNUSED( y ),
-           double xcen, double ycen, double radius ) {
+imcirclei(
+    GFilt g,
+    int UNUSED( rno ),
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double UNUSED( y ),
+    double xcen,
+    double ycen,
+    double radius
+ ) {
     int yy;
     double dval;
     double xoff, yoff;
@@ -623,19 +733,26 @@ imcirclei( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
 	if ( ( dval = ( radius * radius ) - ( yoff * yoff ) ) >= 0.0 ) {
 	    xoff = sqrt( dval );
 	    if ( PIXSTART( xcen - xoff ) <= PIXSTOP( xcen + xoff ) ) {
-		rgs_mark( g, scanlist, sno, flag, type,
-		          PIXSTART( xcen - xoff ), yy );
-		rgs_mark( g, scanlist, sno, flag, type,
-		          PIXSTOP( xcen + xoff ), yy );
+		rgs_mark( g, scanlist, sno, flag, type, PIXSTART( xcen - xoff ), yy );
+		rgs_mark( g, scanlist, sno, flag, type, PIXSTOP( xcen + xoff ), yy );
 	    }
 	}
     }
 }
 
 int
-imcircle( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-          double x, double y,
-          double UNUSED( xcen ), double UNUSED( ycen ), double radius ) {
+imcircle(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double UNUSED( xcen ),
+    double UNUSED( ycen ),
+    double radius
+ ) {
     Scan scan;
 
     if ( radius == 0 ) {
@@ -663,8 +780,8 @@ imcircle( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
     }
     scan = g->shapes[sno].scanlist[( int ) y];
     if ( ( scan &&
-           ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) )
-           && ( ( x >= scan->x ) && ( x <= ( scan->next )->x ) ) ) == flag ) {
+           ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+           ( ( x >= scan->x ) && ( x <= ( scan->next )->x ) ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -674,10 +791,20 @@ imcircle( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 }
 
 void
-imellipsei( GFilt g, int rno, int sno, int flag, int type,
-            double x, double y,
-            double xcen, double ycen, double xrad, double yrad,
-            double angle ) {
+imellipsei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double xrad,
+    double yrad,
+    double angle
+ ) {
     int yy;
     int nr, nc;
     double yhi;
@@ -732,9 +859,7 @@ imellipsei( GFilt g, int rno, int sno, int flag, int type,
 	g->shapes[sno].ystart = min( g->y1, PIXSTOP( ycen + yhi ) );
 	g->shapes[sno].ystop = max( g->y0, PIXSTART( ycen - yhi ) );
     }
-    FPU_RESTORE
-        g->shapes[sno].scanlist =
-        ( Scan * ) calloc( g->y1 + 1, sizeof( Scan ) );
+    FPU_RESTORE g->shapes[sno].scanlist = ( Scan * ) calloc( g->y1 + 1, sizeof( Scan ) );
     scanlist = g->shapes[sno].scanlist;
     marky( g, sno, flag, type );
     /* prepare partials for quadratic equation solutions to coordinates */
@@ -753,8 +878,7 @@ imellipsei( GFilt g, int rno, int sno, int flag, int type,
 #endif
     /* fill in as much of a,b,c as we can */
     a = ( cossq / xradsq ) + ( sinsq / yradsq );
-    b_partial =
-        ( 2.0 * sinangl ) * ( ( cosangl / xradsq ) - ( cosangl / yradsq ) );
+    b_partial = ( 2.0 * sinangl ) * ( ( cosangl / xradsq ) - ( cosangl / yradsq ) );
     c_partial = ( sinsq / xradsq ) + ( cossq / yradsq );
     /* calculate start/stop values for each y line */
     for ( yy = g->shapes[sno].ystart; yy <= g->shapes[sno].ystop; yy++ ) {
@@ -766,24 +890,31 @@ imellipsei( GFilt g, int rno, int sno, int flag, int type,
 	/* if real roots */
 	if ( nr != 0 ) {
 	    /* translate x coordinates */
-	    rgs_mark( g, scanlist, sno, flag, type, PIXSTART( xcen + xboff ),
-	              yy );
-	    rgs_mark( g, scanlist, sno, flag, type, PIXSTOP( xcen + xfoff ),
-	              yy );
+	    rgs_mark( g, scanlist, sno, flag, type, PIXSTART( xcen + xboff ), yy );
+	    rgs_mark( g, scanlist, sno, flag, type, PIXSTOP( xcen + xfoff ), yy );
 	}
     }
 }
 
 int
-imellipse( GFilt g, int rno, int sno, int flag, int type,
-           double x, double y,
-           double xcen, double ycen, double xrad, double yrad,
-           double UNUSED( angle ) ) {
+imellipse(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double xrad,
+    double yrad,
+    double UNUSED( angle )
+ ) {
     Scan scan;
 
     if ( xrad == yrad ) {
-	return ( imcircle
-	         ( g, rno, sno, flag, type, x, y, xcen, ycen, xrad ) );
+	return ( imcircle( g, rno, sno, flag, type, x, y, xcen, ycen, xrad ) );
     }
     if ( g->evsect ) {
 	if ( g->usebinsiz ) {
@@ -808,12 +939,8 @@ imellipse( GFilt g, int rno, int sno, int flag, int type,
     scan = g->shapes[sno].scanlist[( int ) y];
     FPU_DOUBLE
         if ( ( scan &&
-               ( ( y >= g->shapes[sno].ystart )
-                 && ( y <= g->shapes[sno].ystop ) ) && ( ( x >= scan->x )
-                                                         && ( x <=
-                                                              ( scan->next )->
-                                                              x ) ) ) ==
-             flag ) {
+               ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) &&
+               ( ( x >= scan->x ) && ( x <= ( scan->next )->x ) ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	FPU_RESTORE return 1;
     }
@@ -823,8 +950,15 @@ imellipse( GFilt g, int rno, int sno, int flag, int type,
 }
 
 void
-imfieldi( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
-          double UNUSED( x ), double UNUSED( y ) ) {
+imfieldi(
+    GFilt g,
+    int UNUSED( rno ),
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double UNUSED( y )
+ ) {
     int yy;
     Scan *scanlist;
 
@@ -842,8 +976,15 @@ imfieldi( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
 }
 
 int
-imfield( GFilt g, int rno, int UNUSED( sno ), int flag, int UNUSED( type ),
-         double UNUSED( x ), double UNUSED( y ) ) {
+imfield(
+    GFilt g,
+    int rno,
+    int UNUSED( sno ),
+    int flag,
+    int UNUSED( type ),
+    double UNUSED( x ),
+    double UNUSED( y )
+ ) {
     if ( flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
@@ -854,9 +995,19 @@ imfield( GFilt g, int rno, int UNUSED( sno ), int flag, int UNUSED( type ),
 }
 
 void
-imlinei( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
-         double UNUSED( x ), double UNUSED( y ),
-         double x1, double y1, double x2, double y2 ) {
+imlinei(
+    GFilt g,
+    int UNUSED( rno ),
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double UNUSED( y ),
+    double x1,
+    double y1,
+    double x2,
+    double y2
+ ) {
     double vx[2];
     double vy[2];
     int xval, yval;
@@ -898,18 +1049,26 @@ imlinei( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
 	xoffset = vx[0];
 	for ( yval = vy[0]; yval <= vy[1]; yval++ ) {
 	    xval = xoffset;
-	    rgs_mark( g, g->shapes[sno].scanlist, sno, flag, type, xval,
-	              yval );
+	    rgs_mark( g, g->shapes[sno].scanlist, sno, flag, type, xval, yval );
 	    xoffset = xoffset + invslope;
 	}
     }
 }
 
 int
-imline( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-        double x, double y,
-        double UNUSED( x1 ), double UNUSED( y1 ),
-        double UNUSED( x2 ), double UNUSED( y2 ) ) {
+imline(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double UNUSED( x1 ),
+    double UNUSED( y1 ),
+    double UNUSED( x2 ),
+    double UNUSED( y2 )
+ ) {
     Scan scan;
 
     if ( g->evsect ) {
@@ -936,8 +1095,7 @@ imline( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
     if ( ( scan &&
 	   ( ( x == ( int ) scan->x ) ||
 	     ( scan->next
-	       && ( ( x >= ( int ) scan->x )
-	            && ( x <= ( int ) scan->next->x ) ) ) ) ) == flag ) {
+	       && ( ( x >= ( int ) scan->x ) && ( x <= ( int ) scan->next->x ) ) ) ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -946,38 +1104,85 @@ imline( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 }
 
 void
-impiei( GFilt g, int rno, int sno, int flag, int type,
-        double x, double y,
-        double xcen, double ycen, double angle1, double angle2 ) {
+impiei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double angle1,
+    double angle2
+ ) {
     _impiei( g, 0, rno, sno, flag, type, x, y, xcen, ycen, angle1, angle2 );
 }
 
 int
-impie( GFilt g, int rno, int sno, int flag, int type,
-       double x, double y,
-       double UNUSED( xcen ), double UNUSED( ycen ),
-       double UNUSED( angle1 ), double UNUSED( angle2 ) ) {
+impie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double UNUSED( xcen ),
+    double UNUSED( ycen ),
+    double UNUSED( angle1 ),
+    double UNUSED( angle2 )
+ ) {
     return impolygon( g, rno, sno, flag, type, x, y );
 }
 
 void
-imqtpiei( GFilt g, int rno, int sno, int flag, int type,
-          double x, double y,
-          double xcen, double ycen, double angle1, double angle2 ) {
+imqtpiei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double angle1,
+    double angle2
+ ) {
     _impiei( g, 1, rno, sno, flag, type, x, y, xcen, ycen, angle1, angle2 );
 }
 
 int
-imqtpie( GFilt g, int rno, int sno, int flag, int type,
-         double x, double y,
-         double UNUSED( xcen ), double UNUSED( ycen ),
-         double UNUSED( angle1 ), double UNUSED( angle2 ) ) {
+imqtpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double UNUSED( xcen ),
+    double UNUSED( ycen ),
+    double UNUSED( angle1 ),
+    double UNUSED( angle2 )
+ ) {
     return impolygon( g, rno, sno, flag, type, x, y );
 }
 
 void
-impointi( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
-          double UNUSED( x ), double UNUSED( y ), double xcen, double ycen ) {
+impointi(
+    GFilt g,
+    int UNUSED( rno ),
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double UNUSED( y ),
+    double xcen,
+    double ycen
+ ) {
     /* NB: do not use x and y variables, they have bogus values */
     /* divide by block factor to get "real" parameters */
     xcen = ( xcen - g->xmin ) / g->block + 1.0;
@@ -987,13 +1192,21 @@ impointi( GFilt g, int UNUSED( rno ), int sno, int flag, int type,
     g->shapes[sno].ystop = PIXNUM( ycen );
     g->shapes[sno].scanlist = ( Scan * ) calloc( g->y1 + 1, sizeof( Scan ) );
     marky( g, sno, flag, type );
-    rgs_mark( g, g->shapes[sno].scanlist, sno, flag, type,
-              PIXNUM( xcen ), PIXNUM( ycen ) );
+    rgs_mark( g, g->shapes[sno].scanlist, sno, flag, type, PIXNUM( xcen ), PIXNUM( ycen ) );
 }
 
 int
-impoint( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-         double x, double y, double UNUSED( xcen ), double UNUSED( ycen ) ) {
+impoint(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    double UNUSED( xcen ),
+    double UNUSED( ycen )
+ ) {
     Scan scan;
 
     if ( g->evsect ) {
@@ -1017,9 +1230,7 @@ impoint( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 	if ( y > g->shapes[sno].ystop ) return 0;
     }
     scan = g->shapes[sno].scanlist[( int ) y];
-    if ( ( scan &&
-	   ( y == ( int ) g->shapes[sno].ystart ) &&
-	   ( x == ( int ) scan->x ) ) == flag ) {
+    if ( ( scan && ( y == ( int ) g->shapes[sno].ystart ) && ( x == ( int ) scan->x ) ) == flag ) {
 	if ( rno && flag ) g->rid = rno;
 	return 1;
     }
@@ -1029,15 +1240,25 @@ impoint( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
 
 #ifdef __STDC__
 void
-impolygoni( GFilt g, int rno, int sno, int flag, int type,
-            double UNUSED( x ), double y, ... ) {
+impolygoni(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double UNUSED( x ),
+    double y,
+    ...
+ ) {
     double *vx = NULL, *vy = NULL;
     int count, maxcount;
     va_list args;
     va_start( args, y );
 #else
 void
-impolygoni( va_alist )
+impolygoni(
+    va_alist
+ )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1047,12 +1268,18 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
 #endif
     /* NB: do not use x and y variables, they have bogus values */
     /* allocate space for x,y arguments */
@@ -1067,8 +1294,10 @@ impolygoni( va_alist )
 	    vx = ( double * ) realloc( vx, maxcount * sizeof( double ) );
 	    vy = ( double * ) realloc( vy, maxcount * sizeof( double ) );
 	}
-	vx[count] = va_arg( args, double );
-	vy[count] = va_arg( args, double );
+	vx[count] = va_arg( args, double
+	 );
+	vy[count] = va_arg( args, double
+	 );
 	if ( feq( vx[count], PSTOP ) && feq( vy[count], PSTOP ) )
 	    break;
 	vx[count] = ( vx[count] - g->xmin ) / g->block + 1.0;
@@ -1086,14 +1315,24 @@ impolygoni( va_alist )
      }
 
 #ifdef __STDC__
-     int impolygon( GFilt g, int rno, int sno, int flag, int UNUSED( type ),
-	            double x, double y, ... ) {
+     int impolygon(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int UNUSED( type ),
+    double x,
+    double y,
+    ...
+      ) {
 	 int crossings;
 	 Scan scan;
 	 va_list args;
 	 va_start( args, y );
 #else
-     int impolygon( va_alist )
+     int impolygon(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1103,12 +1342,18 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
 #endif
     va_end( args );
     if ( g->evsect ) {
@@ -1134,8 +1379,7 @@ impolygoni( va_alist )
     /* no initialization of x for this row, just jump right in */
     if ( ( y >= g->shapes[sno].ystart ) && ( y <= g->shapes[sno].ystop ) ) {
 	crossings = 0;
-	for ( scan = g->shapes[sno].scanlist[( int ) y]; scan;
-	      scan = scan->next ) {
+	for ( scan = g->shapes[sno].scanlist[( int ) y]; scan; scan = scan->next ) {
 	    if ( x >= scan->x )
 		crossings++;
 	    else
@@ -1154,10 +1398,20 @@ impolygoni( va_alist )
     }
      }
 
-     void imnannulusi( GFilt g, int rno, int sno, int flag, int type,
-	               double x, double y,
-	               double xcen, double ycen,
-	               double lo, double hi, int n ) {
+     void imnannulusi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lo,
+    double hi,
+    int n
+      ) {
 	 int i;
 	 int xsno;
 	 double dinc;
@@ -1171,16 +1425,27 @@ impolygoni( va_alist )
 	 imannulusi( g, 0, xsno, flag, type, x, y, xcen, ycen, lo, hi );
 	 for ( i = 0; i < n; i++ ) {
 	     imannulusi( g, rno + i, sno + i, flag, type, x, y,
-	                 xcen, ycen, lo + ( i * dinc ),
-	                 lo + ( ( i + 1 ) * dinc ) );
+	                 xcen, ycen, lo + ( i * dinc ), lo + ( ( i + 1 ) * dinc ) );
 	 }
      }
 
-     void imnboxi( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y,
-	           double xcen, double ycen,
-	           double lox, double loy, double hix, double hiy, int n,
-	           double ang ) {
+     void imnboxi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lox,
+    double loy,
+    double hix,
+    double hiy,
+    int n,
+    double ang
+      ) {
 	 int i;
 	 int xsno;
 	 double dincx;
@@ -1194,20 +1459,30 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 /* init all shapes */
 	 imboxi( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy, ang );
-	 imboxi( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy,
-	         ang );
+	 imboxi( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy, ang );
 	 for ( i = 0; i < n; i++ ) {
 	     imboxi( g, rno + i, sno + i, flag, type, x, y,
-	             xcen, ycen, lox + ( ( i + 1 ) * dincx ),
-	             loy + ( ( i + 1 ) * dincy ), ang );
+	             xcen, ycen, lox + ( ( i + 1 ) * dincx ), loy + ( ( i + 1 ) * dincy ), ang );
 	 }
      }
 
-     void imnellipsei( GFilt g, int rno, int sno, int flag, int type,
-	               double x, double y,
-	               double xcen, double ycen,
-	               double lox, double loy, double hix, double hiy, int n,
-	               double ang ) {
+     void imnellipsei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lox,
+    double loy,
+    double hix,
+    double hiy,
+    int n,
+    double ang
+      ) {
 	 int i;
 	 int xsno;
 	 double dincx;
@@ -1220,20 +1495,29 @@ impolygoni( va_alist )
 	 dincy = ( hiy - loy ) / n;
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 /* init all shapes */
-	 imellipsei( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy,
-	             ang );
-	 imellipsei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy,
-	             ang );
+	 imellipsei( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy, ang );
+	 imellipsei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy, ang );
 	 for ( i = 0; i < n; i++ ) {
 	     imellipsei( g, rno + i, sno + i, flag, type, x, y,
-	                 xcen, ycen, lox + ( ( i + 1 ) * dincx ),
-	                 loy + ( ( i + 1 ) * dincy ), ang );
+	                 xcen, ycen, lox + ( ( i + 1 ) * dincx ), loy + ( ( i + 1 ) * dincy ),
+	                 ang );
 	 }
      }
 
-     void imnpiei( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y,
-	           double xcen, double ycen, double lo, double hi, int n ) {
+     void imnpiei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lo,
+    double hi,
+    int n
+      ) {
 	 int i;
 	 int xsno;
 	 double dinc;
@@ -1248,16 +1532,27 @@ impolygoni( va_alist )
 	 impiei( g, 0, xsno, flag, type, x, y, xcen, ycen, lo, hi );
 	 for ( i = 0; i < n; i++ ) {
 	     impiei( g, rno + i, sno + i, flag, type, x, y,
-	             xcen, ycen, lo + ( i * dinc ),
-	             lo + ( ( i + 1 ) * dinc ) );
+	             xcen, ycen, lo + ( i * dinc ), lo + ( ( i + 1 ) * dinc ) );
 	 }
      }
 
-     void impandai( GFilt g, int rno, int sno, int flag, int type,
-	            double x, double y,
-	            double xcen, double ycen,
-	            double anglo, double anghi, double angn,
-	            double radlo, double radhi, double radn ) {
+     void impandai(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double radlo,
+    double radhi,
+    double radn
+      ) {
 	 int a, r;
 	 int ahi, rhi;
 	 int xsno;
@@ -1275,27 +1570,38 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 /* init pies and annuli */
 	 imannulusi( g, 0, xsno, flag, type, x, y, xcen, ycen, radlo, radhi );
-	 imqtpiei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	           anghi );
+	 imqtpiei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi );
 	 for ( a = 0; a < ahi; a++ ) {
 	     for ( r = 0; r < rhi; r++ ) {
 		 imannulusi( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		             xcen, ycen, radlo + ( r * rinc ),
-		             radlo + ( ( r + 1 ) * rinc ) );
+		             xcen, ycen, radlo + ( r * rinc ), radlo + ( ( r + 1 ) * rinc ) );
 		 imqtpiei( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
-		           xcen, ycen, anglo + ( a * ainc ),
-		           anglo + ( ( a + 1 ) * ainc ) );
+		           xcen, ycen, anglo + ( a * ainc ), anglo + ( ( a + 1 ) * ainc ) );
 		 n++;
 	     }
 	 }
      }
 
-     void imbpandai( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y,
-	             double xcen, double ycen,
-	             double anglo, double anghi, double angn,
-	             double xlo, double ylo, double xhi, double yhi,
-	             double radn, double ang ) {
+     void imbpandai(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double xlo,
+    double ylo,
+    double xhi,
+    double yhi,
+    double radn,
+    double ang
+      ) {
 	 int a, r;
 	 int ahi, rhi;
 	 int xsno;
@@ -1316,29 +1622,39 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 /* init pies and ellipses */
 	 imboxi( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi, ang );
-	 imqtpiei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	           anghi );
-	 imboxi( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo,
-	         ang );
+	 imqtpiei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi );
+	 imboxi( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo, ang );
 	 for ( a = 0; a < ahi; a++ ) {
 	     for ( r = 1; r <= rhi; r++ ) {
 		 imboxi( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		         xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ),
-		         ang );
+		         xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ), ang );
 		 imqtpiei( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
-		           xcen, ycen, anglo + ( a * ainc ),
-		           anglo + ( ( a + 1 ) * ainc ) );
+		           xcen, ycen, anglo + ( a * ainc ), anglo + ( ( a + 1 ) * ainc ) );
 		 n++;
 	     }
 	 }
      }
 
-     void imepandai( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y,
-	             double xcen, double ycen,
-	             double anglo, double anghi, double angn,
-	             double xlo, double ylo, double xhi, double yhi,
-	             double radn, double ang ) {
+     void imepandai(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double xlo,
+    double ylo,
+    double xhi,
+    double yhi,
+    double radn,
+    double ang
+      ) {
 	 int a, r;
 	 int ahi, rhi;
 	 int xsno;
@@ -1358,20 +1674,15 @@ impolygoni( va_alist )
 	 rhi = ( int ) radn;
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 /* init pies and ellipses */
-	 imellipsei( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi,
-	             ang );
-	 imqtpiei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	           anghi );
-	 imellipsei( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo,
-	             ang );
+	 imellipsei( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi, ang );
+	 imqtpiei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi );
+	 imellipsei( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo, ang );
 	 for ( a = 0; a < ahi; a++ ) {
 	     for ( r = 1; r <= rhi; r++ ) {
 		 imellipsei( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		             xcen, ycen, xlo + ( r * xinc ),
-		             ylo + ( r * yinc ), ang );
+		             xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ), ang );
 		 imqtpiei( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
-		           xcen, ycen, anglo + ( a * ainc ),
-		           anglo + ( ( a + 1 ) * ainc ) );
+		           xcen, ycen, anglo + ( a * ainc ), anglo + ( ( a + 1 ) * ainc ) );
 		 n++;
 	     }
 	 }
@@ -1379,9 +1690,20 @@ impolygoni( va_alist )
 
 /* accelerator regions -- lower and upper limits are given for n regions */
 
-     int imnannulus( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen,
-	             double lo, double hi, int n ) {
+     int imnannulus(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lo,
+    double hi,
+    int n
+      ) {
 	 int i;
 	 int xsno;
 	 double dinc;
@@ -1391,15 +1713,13 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !imannulus
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, lo, hi ) ) {
+	     if ( !imannulus( g, 0, xsno, flag, type, x, y, xcen, ycen, lo, hi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( i = 0; i < n; i++ ) {
 		 if ( imannulus( g, rno + i, sno + i, flag, type, x, y,
-		                 xcen, ycen, lo + ( i * dinc ),
-		                 lo + ( ( i + 1 ) * dinc ) ) ) {
+		                 xcen, ycen, lo + ( i * dinc ), lo + ( ( i + 1 ) * dinc ) ) ) {
 		     return ( 1 );
 		 }
 	     }
@@ -1407,18 +1727,30 @@ impolygoni( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !imannulus
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, lo, hi ) ) {
+	     if ( !imannulus( g, 0, xsno, 1, type, x, y, xcen, ycen, lo, hi ) ) {
 		 return ( 1 );
 	     }
 	     return ( 0 );
 	 }
      }
 
-     int imnbox( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen,
-	         double lox, double loy, double hix, double hiy, int n,
-	         double ang ) {
+     int imnbox(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lox,
+    double loy,
+    double hix,
+    double hiy,
+    int n,
+    double ang
+      ) {
 	 int i;
 	 int xsno;
 	 double dincx;
@@ -1430,22 +1762,18 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !imbox
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy,
-	            ang ) ) {
+	     if ( !imbox( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* if its in the inner region we lose */
-	     if ( imbox
-	          ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( imbox( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( i = 0; i < n; i++ ) {
 		 if ( imbox( g, rno + i, sno + i, flag, type, x, y,
-		             xcen, ycen, lox + ( ( i + 1 ) * dincx ),
-		             loy + ( ( i + 1 ) * dincy ), ang ) ) {
+		             xcen, ycen, lox + ( ( i + 1 ) * dincx ), loy + ( ( i + 1 ) * dincy ),
+		             ang ) ) {
 		     return ( 1 );
 		 }
 	     }
@@ -1454,24 +1782,34 @@ impolygoni( va_alist )
 	 /* for excludes, we have to check that we are not in any of them */
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !imbox
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
+	     if ( !imbox( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 1 );
 	     }
 	     /* if its in the inner region we win */
-	     if ( imbox
-	          ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( imbox( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 1 );
 	     }
 	     return ( 0 );
 	 }
      }
 
-     int imnellipse( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen,
-	             double lox, double loy, double hix, double hiy, int n,
-	             double ang ) {
+     int imnellipse(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lox,
+    double loy,
+    double hix,
+    double hiy,
+    int n,
+    double ang
+      ) {
 	 int i;
 	 int xsno;
 	 double dincx;
@@ -1483,15 +1821,11 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !imellipse
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy,
-	            ang ) ) {
+	     if ( !imellipse( g, 0, xsno, flag, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* if its in the inner region we lose */
-	     if ( imellipse
-	          ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( imellipse( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
@@ -1507,23 +1841,31 @@ impolygoni( va_alist )
 	 /* for excludes, we have to check that we are not in any of them */
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !imellipse
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
+	     if ( !imellipse( g, 0, xsno, 1, type, x, y, xcen, ycen, hix, hiy, ang ) ) {
 		 return ( 1 );
 	     }
 	     /* if its in the inner region we win */
-	     if ( imellipse
-	          ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy,
-	            ang ) ) {
+	     if ( imellipse( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, lox, loy, ang ) ) {
 		 return ( 1 );
 	     }
 	     return ( 0 );
 	 }
      }
 
-     int imnpie( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen,
-	         double lo, double hi, int n ) {
+     int imnpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double lo,
+    double hi,
+    int n
+      ) {
 	 int i;
 	 int xsno;
 	 double dinc;
@@ -1540,8 +1882,7 @@ impolygoni( va_alist )
 	     /* look through all of them to find the right one */
 	     for ( i = 0; i < n; i++ ) {
 		 if ( impie( g, rno + i, sno + i, flag, type, x, y,
-		             xcen, ycen, lo + ( i * dinc ),
-		             lo + ( ( i + 1 ) * dinc ) ) ) {
+		             xcen, ycen, lo + ( i * dinc ), lo + ( ( i + 1 ) * dinc ) ) ) {
 		     return ( 1 );
 		 }
 	     }
@@ -1556,11 +1897,23 @@ impolygoni( va_alist )
 	 }
      }
 
-     int impanda( GFilt g, int rno, int sno, int flag, int type,
-	          double x, double y,
-	          double xcen, double ycen,
-	          double anglo, double anghi, double angn,
-	          double radlo, double radhi, double radn ) {
+     int impanda(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double radlo,
+    double radhi,
+    double radn
+      ) {
 
 	 int a, r;
 	 int ahi, rhi;
@@ -1577,23 +1930,18 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !imannulus
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, radlo, radhi )
-	          || !impie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen,
-	                     anglo, anghi ) ) {
+	     if ( !imannulus( g, 0, xsno, flag, type, x, y, xcen, ycen, radlo, radhi ) ||
+	          !impie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( a = 1; a <= ahi; a++ ) {
 		 for ( r = 1; r <= rhi; r++ ) {
-		     if ( imannulus
-		          ( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		            xcen, ycen, radlo + ( ( r - 1 ) * rinc ),
-		            radlo + ( r * rinc ) )
-		          && impie( g, rno + n, sno + ( 2 * n + 1 ), flag,
-		                    type, x, y, xcen, ycen,
-		                    anglo + ( ( a - 1 ) * ainc ),
-		                    anglo + ( a * ainc ) ) ) {
+		     if ( imannulus( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
+		                     xcen, ycen, radlo + ( ( r - 1 ) * rinc ),
+		                     radlo + ( r * rinc ) )
+		          && impie( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y, xcen, ycen,
+		                    anglo + ( ( a - 1 ) * ainc ), anglo + ( a * ainc ) ) ) {
 			 return ( 1 );
 		     }
 		     n++;
@@ -1603,12 +1951,9 @@ impolygoni( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !imannulus
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, radlo, radhi ) )
+	     if ( !imannulus( g, 0, xsno, 1, type, x, y, xcen, ycen, radlo, radhi ) )
 		 return ( 1 );
-	     else if ( !impie
-	               ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !impie( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 1 );
 	     }
 	     else {
@@ -1617,12 +1962,26 @@ impolygoni( va_alist )
 	 }
      }
 
-     int imbpanda( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y,
-	           double xcen, double ycen,
-	           double anglo, double anghi, double angn,
-	           double xlo, double ylo, double xhi, double yhi,
-	           double radn, double ang ) {
+     int imbpanda(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double xlo,
+    double ylo,
+    double xhi,
+    double yhi,
+    double radn,
+    double ang
+      ) {
 
 	 int a, r;
 	 int ahi, rhi;
@@ -1642,33 +2001,25 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !imbox( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi,
-	                  ang ) ) {
+	     if ( !imbox( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* but if its in the inner region we lose */
-	     else if ( imbox
-	               ( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo,
-	                 ylo, ang ) ) {
+	     else if ( imbox( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* its in the box .. must also be in the pie */
-	     else if ( !impie
-	               ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !impie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( a = 0; a < ahi; a++ ) {
 		 for ( r = 1; r <= rhi; r++ ) {
-		     if ( imbox
-		          ( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		            xcen, ycen, xlo + ( r * xinc ),
-		            ylo + ( r * yinc ), ang )
-		          && imqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag,
-		                      type, x, y, xcen, ycen,
-		                      anglo + ( a * ainc ),
-		                      anglo + ( ( a + 1 ) * ainc ) ) ) {
+		     if ( imbox( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
+		                 xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ), ang ) &&
+		          imqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
+		                   xcen, ycen, anglo + ( a * ainc ),
+		                   anglo + ( ( a + 1 ) * ainc ) ) ) {
 			 return ( 1 );
 		     }
 		     n++;
@@ -1678,18 +2029,13 @@ impolygoni( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !imbox
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
+	     if ( !imbox( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
 		 return ( 1 );
 	     /* if its in the inner region we win */
-	     else if ( !imbox
-	               ( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo,
-	                 ang ) )
+	     else if ( !imbox( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo, ang ) )
 		 return ( 1 );
 	     /* if its not in the pie, we win */
-	     else if ( !impie
-	               ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !impie( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 1 );
 	     }
 	     else {
@@ -1698,12 +2044,26 @@ impolygoni( va_alist )
 	 }
      }
 
-     int imepanda( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y,
-	           double xcen, double ycen,
-	           double anglo, double anghi, double angn,
-	           double xlo, double ylo, double xhi, double yhi,
-	           double radn, double ang ) {
+     int imepanda(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    double anglo,
+    double anghi,
+    double angn,
+    double xlo,
+    double ylo,
+    double xhi,
+    double yhi,
+    double radn,
+    double ang
+      ) {
 
 	 int a, r;
 	 int ahi, rhi;
@@ -1723,34 +2083,25 @@ impolygoni( va_alist )
 	 xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
 	 if ( flag ) {
 	     /* if its not somewhere inside the entire region we lose ... */
-	     if ( !imellipse
-	          ( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi,
-	            ang ) ) {
+	     if ( !imellipse( g, 0, xsno, flag, type, x, y, xcen, ycen, xhi, yhi, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* but if its in the inner region we lose */
-	     else if ( imellipse
-	               ( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo,
-	                 ylo, ang ) ) {
+	     else if ( imellipse( g, 0, xsno + 2, flag, type, x, y, xcen, ycen, xlo, ylo, ang ) ) {
 		 return ( 0 );
 	     }
 	     /* its in the ellipse .. must also be in the pie */
-	     else if ( !impie
-	               ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !impie( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 0 );
 	     }
 	     /* look through all of them to find the right one */
 	     for ( a = 0; a < ahi; a++ ) {
 		 for ( r = 1; r <= rhi; r++ ) {
-		     if ( imellipse
-		          ( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
-		            xcen, ycen, xlo + ( r * xinc ),
-		            ylo + ( r * yinc ), ang )
-		          && imqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag,
-		                      type, x, y, xcen, ycen,
-		                      anglo + ( a * ainc ),
-		                      anglo + ( ( a + 1 ) * ainc ) ) ) {
+		     if ( imellipse( g, rno + n, sno + ( 2 * n ), flag, type, x, y,
+		                     xcen, ycen, xlo + ( r * xinc ), ylo + ( r * yinc ), ang ) &&
+		          imqtpie( g, rno + n, sno + ( 2 * n + 1 ), flag, type, x, y,
+		                   xcen, ycen, anglo + ( a * ainc ),
+		                   anglo + ( ( a + 1 ) * ainc ) ) ) {
 			 return ( 1 );
 		     }
 		     n++;
@@ -1760,18 +2111,13 @@ impolygoni( va_alist )
 	 }
 	 else {
 	     /* if its not somewhere inside the entire region we win ... */
-	     if ( !imellipse
-	          ( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
+	     if ( !imellipse( g, 0, xsno, 1, type, x, y, xcen, ycen, xhi, yhi, ang ) )
 		 return ( 1 );
 	     /* if its in the inner region we win */
-	     else if ( !imellipse
-	               ( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo,
-	                 ang ) )
+	     else if ( !imellipse( g, 0, xsno + 2, 1, type, x, y, xcen, ycen, xlo, ylo, ang ) )
 		 return ( 1 );
 	     /* if its not in the pie, we win */
-	     else if ( !impie
-	               ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo,
-	                 anghi ) ) {
+	     else if ( !impie( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, anglo, anghi ) ) {
 		 return ( 1 );
 	     }
 	     else {
@@ -1781,8 +2127,18 @@ impolygoni( va_alist )
      }
 
 #ifdef __STDC__
-     void imvannulusi( GFilt g, int rno, int sno, int flag, int type,
-	               double x, double y, double xcen, double ycen, ... ) {
+     void imvannulusi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, n;
 	 int maxpts;
 	 int xsno;
@@ -1790,7 +2146,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvannulusi( va_alist )
+     int imvannulusi(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1804,14 +2162,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1822,10 +2188,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1835,8 +2201,7 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
@@ -1847,14 +2212,23 @@ impolygoni( va_alist )
     }
     imannulusi( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0], xv[n - 1] );
     for ( i = 0; i < ( n - 1 ); i++ ) {
-	imannulusi( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i],
-	            xv[i + 1] );
+	imannulusi( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1] );
     }
      }
 
 #ifdef __STDC__
-     void imvboxi( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y, double xcen, double ycen, ... ) {
+     void imvboxi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -1863,7 +2237,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvboxi( va_alist )
+     int imvboxi(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1877,14 +2253,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1895,10 +2279,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1908,30 +2292,36 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     ang = xv[--n];
     /* this should be impossible ... */
     if ( n == 2 ) {
-	imboxi( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-	        ang );
+	imboxi( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang );
 	return;
     }
-    imboxi( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-            ang );
+    imboxi( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang );
     imboxi( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang );
     for ( i = 2, j = 0; i < n; i += 2, j++ ) {
-	imboxi( g, rno + j, sno + j, flag, type, x, y, xcen, ycen, xv[i],
-	        xv[i + 1], ang );
+	imboxi( g, rno + j, sno + j, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1], ang );
     }
      }
 
 #ifdef __STDC__
-     void imvellipsei( GFilt g, int rno, int sno, int flag, int type,
-	               double x, double y, double xcen, double ycen, ... ) {
+     void imvellipsei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -1940,7 +2330,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvellipsei( va_alist )
+     int imvellipsei(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -1954,14 +2346,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -1972,10 +2372,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -1985,31 +2385,36 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     ang = xv[--n];
     /* this should be impossible ... */
     if ( n == 2 ) {
-	imellipsei( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-	            ang );
+	imellipsei( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang );
 	return;
     }
-    imellipsei( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2],
-                xv[n - 1], ang );
-    imellipsei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-                ang );
+    imellipsei( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang );
+    imellipsei( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang );
     for ( i = 2, j = 0; i < n; i += 2, j++ ) {
-	imellipsei( g, rno + j, sno + j, flag, type, x, y, xcen, ycen,
-	            xv[i], xv[i + 1], ang );
+	imellipsei( g, rno + j, sno + j, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1], ang );
     }
      }
 
 #ifdef __STDC__
-     void imvpiei( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y, double xcen, double ycen, ... ) {
+     void imvpiei(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, n;
 	 int maxpts;
 	 int xsno;
@@ -2017,7 +2422,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvpiei( va_alist )
+     int imvpiei(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2031,14 +2438,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2049,10 +2464,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2062,8 +2477,7 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
@@ -2074,14 +2488,21 @@ impolygoni( va_alist )
     }
     impiei( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0], xv[n - 1] );
     for ( i = 0; i < ( n - 1 ); i++ ) {
-	impiei( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i],
-	        xv[i + 1] );
+	impiei( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1] );
     }
      }
 
 #ifdef __STDC__
-     void imvpointi( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, ... ) {
+     void imvpointi(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -2089,7 +2510,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, y );
 #else
-     int imvpointi( va_alist )
+     int imvpointi(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2101,12 +2524,18 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2117,10 +2546,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2130,8 +2559,7 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
@@ -2143,8 +2571,18 @@ impolygoni( va_alist )
 /* varargs regions -- a series of lower and upper limits is specified */
 
 #ifdef __STDC__
-     int imvannulus( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen, ... ) {
+     int imvannulus(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, n;
 	 int maxpts;
 	 int xsno;
@@ -2152,7 +2590,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvannulus( va_alist )
+     int imvannulus(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2165,14 +2605,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2183,10 +2631,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2196,28 +2644,22 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( imannulus
-	         ( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0],
-	           xv[1] ) );
+	return ( imannulus( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1] ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !imannulus
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0],
-	       xv[n - 1] ) ) {
+	if ( !imannulus( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
 	for ( i = 0; i < n; i++ ) {
-	    if ( imannulus( g, rno + i, sno + i, flag, type, x, y, xcen, ycen,
-	                    xv[i], xv[i + 1] ) ) {
+	    if ( imannulus( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1] ) ) {
 		return ( 1 );
 	    }
 	}
@@ -2226,8 +2668,7 @@ impolygoni( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we win ... */
-	if ( !imannulus
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
+	if ( !imannulus( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 1 );
 	}
 	return ( 0 );
@@ -2235,8 +2676,18 @@ impolygoni( va_alist )
      }
 
 #ifdef __STDC__
-     int imvbox( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen, ... ) {
+     int imvbox(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -2245,7 +2696,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvbox( va_alist )
+     int imvbox(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2259,14 +2712,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2277,10 +2738,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2290,34 +2751,27 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     ang = xv[--n];
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( imbox( g, rno, sno, flag, type, x, y,
-	                xcen, ycen, xv[0], xv[1], ang ) );
+	return ( imbox( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !imbox
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !imbox( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 0 );
 	}
 	/* if its in the inner region we lose */
-	if ( imbox
-	     ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-	       ang ) ) {
+	if ( imbox( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
 	for ( i = 2, j = 0; i < n; i += 2, j++ ) {
-	    if ( imbox( g, rno + j, sno + j, flag, type, x, y, xcen, ycen,
-	                xv[i], xv[i + 1], ang ) ) {
+	    if ( imbox( g, rno + j, sno + j, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1], ang ) ) {
 		return ( 1 );
 	    }
 	}
@@ -2326,15 +2780,11 @@ impolygoni( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we win ... */
-	if ( !imbox
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !imbox( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 1 );
 	}
 	/* if its in the inner region we win */
-	else if ( imbox
-	          ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1],
-	            ang ) ) {
+	else if ( imbox( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 1 );
 	}
 	return ( 0 );
@@ -2342,8 +2792,18 @@ impolygoni( va_alist )
      }
 
 #ifdef __STDC__
-     int imvellipse( GFilt g, int rno, int sno, int flag, int type,
-	             double x, double y, double xcen, double ycen, ... ) {
+     int imvellipse(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -2352,7 +2812,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvellipse( va_alist )
+     int imvellipse(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2366,14 +2828,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2384,10 +2854,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2397,28 +2867,22 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     ang = xv[--n];
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( imellipse( g, rno, sno, flag, type, x, y,
-	                    xcen, ycen, xv[0], xv[1], ang ) );
+	return ( imellipse( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !imellipse
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !imellipse( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 0 );
 	}
 	/* if its in the inner region we lose */
-	if ( imellipse
-	     ( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1],
-	       ang ) ) {
+	if ( imellipse( g, 0, xsno + 1, flag, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
@@ -2433,15 +2897,11 @@ impolygoni( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !imellipse
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1],
-	       ang ) ) {
+	if ( !imellipse( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[n - 2], xv[n - 1], ang ) ) {
 	    return ( 1 );
 	}
 	/* if its in the inner region we win */
-	if ( imellipse
-	     ( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1],
-	       ang ) ) {
+	if ( imellipse( g, 0, xsno + 1, 1, type, x, y, xcen, ycen, xv[0], xv[1], ang ) ) {
 	    return ( 1 );
 	}
 	return ( 0 );
@@ -2449,8 +2909,18 @@ impolygoni( va_alist )
      }
 
 #ifdef __STDC__
-     int imvpie( GFilt g, int rno, int sno, int flag, int type,
-	         double x, double y, double xcen, double ycen, ... ) {
+     int imvpie(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    double xcen,
+    double ycen,
+    ...
+      ) {
 	 int i, n;
 	 int maxpts;
 	 int xsno;
@@ -2458,7 +2928,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, ycen );
 #else
-     int imvpie( va_alist )
+     int imvpie(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2471,14 +2943,22 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
-    xcen = va_arg( args, double );
-    ycen = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
+    xcen = va_arg( args, double
+     );
+    ycen = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2489,10 +2969,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2502,28 +2982,22 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     /* this should be impossible ... */
     if ( n == 2 ) {
-	return ( impie( g, rno, sno, flag, type, x, y,
-	                xcen, ycen, xv[0], xv[1] ) );
+	return ( impie( g, rno, sno, flag, type, x, y, xcen, ycen, xv[0], xv[1] ) );
     }
     if ( flag ) {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !impie
-	     ( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0],
-	       xv[n - 1] ) ) {
+	if ( !impie( g, 0, xsno, flag, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 0 );
 	}
 	/* look through all of them to find the right one */
 	for ( i = 0; i < n; i++ ) {
-	    if ( impie
-	         ( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i],
-	           xv[i + 1] ) ) {
+	    if ( impie( g, rno + i, sno + i, flag, type, x, y, xcen, ycen, xv[i], xv[i + 1] ) ) {
 		return ( 1 );
 	    }
 	}
@@ -2532,8 +3006,7 @@ impolygoni( va_alist )
     /* for excludes, we have to check that we are not in any of them */
     else {
 	/* if its not somewhere inside the entire region we lose ... */
-	if ( !impie
-	     ( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
+	if ( !impie( g, 0, xsno, 1, type, x, y, xcen, ycen, xv[0], xv[n - 1] ) ) {
 	    return ( 1 );
 	}
 	return ( 1 );
@@ -2541,8 +3014,16 @@ impolygoni( va_alist )
      }
 
 #ifdef __STDC__
-     int imvpoint( GFilt g, int rno, int sno, int flag, int type,
-	           double x, double y, ... ) {
+     int imvpoint(
+    GFilt g,
+    int rno,
+    int sno,
+    int flag,
+    int type,
+    double x,
+    double y,
+    ...
+      ) {
 	 int i, j, n;
 	 int maxpts;
 	 int xsno;
@@ -2550,7 +3031,9 @@ impolygoni( va_alist )
 	 va_list args;
 	 va_start( args, y );
 #else
-     int imvpoint( va_alist )
+     int imvpoint(
+    va_alist
+      )
      va_dcl {
     GFilt g;
     int rno, sno, flag, type;
@@ -2562,12 +3045,18 @@ impolygoni( va_alist )
     va_list args;
     va_start( args );
     g = va_arg( args, GFilt );
-    rno = va_arg( args, int );
-    sno = va_arg( args, int );
-    flag = va_arg( args, int );
-    type = va_arg( args, int );
-    x = va_arg( args, double );
-    y = va_arg( args, double );
+    rno = va_arg( args, int
+     );
+    sno = va_arg( args, int
+     );
+    flag = va_arg( args, int
+     );
+    type = va_arg( args, int
+     );
+    x = va_arg( args, double
+     );
+    y = va_arg( args, double
+     );
 #endif
     xsno = ( g->nshapes + 1 ) + ( ( sno - 1 ) * XSNO );
     if ( !g->shapes[xsno].xv ) {
@@ -2578,10 +3067,10 @@ impolygoni( va_alist )
 	    if ( g->shapes[xsno].nv >= maxpts ) {
 		maxpts += MASKINC;
 		g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-		                                           maxpts *
-		                                           sizeof( double ) );
+		                                           maxpts * sizeof( double ) );
 	    }
-	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double );
+	    g->shapes[xsno].xv[g->shapes[xsno].nv] = va_arg( args, double
+	     );
 	    if ( feq( g->shapes[xsno].xv[g->shapes[xsno].nv], PSTOP ) &&
 	         feq( g->shapes[xsno].xv[g->shapes[xsno].nv - 1], PSTOP ) ) {
 		g->shapes[xsno].nv--;
@@ -2591,24 +3080,28 @@ impolygoni( va_alist )
 	}
 	va_end( args );
 	g->shapes[xsno].xv = ( double * ) realloc( g->shapes[xsno].xv,
-	                                           g->shapes[xsno].nv *
-	                                           sizeof( double ) );
+	                                           g->shapes[xsno].nv * sizeof( double ) );
     }
     n = g->shapes[xsno].nv;
     xv = g->shapes[xsno].xv;
     /* look through all of them to find the right one */
     for ( i = 0, j = 0; i < n; i += 2, j++ ) {
-	if ( impoint
-	     ( g, rno + j, sno + j, flag, type, x, y, xv[i], xv[i + 1] ) ) {
+	if ( impoint( g, rno + j, sno + j, flag, type, x, y, xv[i], xv[i + 1] ) ) {
 	    return ( 1 );
 	}
     }
     return ( 0 );
      }
 
-     void imimagemaski( GFilt g, int UNUSED( rno ), int UNUSED( sno ),
-	                int UNUSED( flag ), int UNUSED( type ),
-	                double UNUSED( x ), double UNUSED( y ) ) {
+     void imimagemaski(
+    GFilt g,
+    int UNUSED( rno ),
+    int UNUSED( sno ),
+    int UNUSED( flag ),
+    int UNUSED( type ),
+    double UNUSED( x ),
+    double UNUSED( y )
+      ) {
 	 int i, j;
 	 int got;
 	 int fsize;
@@ -2657,9 +3150,15 @@ impolygoni( va_alist )
 	 }
      }
 
-     int imimagemask( GFilt g, int UNUSED( rno ), int UNUSED( sno ),
-	              int UNUSED( flag ), int UNUSED( type ),
-	              double x, double y ) {
+     int imimagemask(
+    GFilt g,
+    int UNUSED( rno ),
+    int UNUSED( sno ),
+    int UNUSED( flag ),
+    int UNUSED( type ),
+    double x,
+    double y
+      ) {
 	 int i;
 	 int ix, iy;
 
@@ -2692,8 +3191,7 @@ impolygoni( va_alist )
 		 if ( g->masks[i].y > iy ) {
 		     return ( 0 );
 		 }
-		 if ( ( ix >= g->masks[i].xstart )
-		      && ( ix <= g->masks[i].xstop ) ) {
+		 if ( ( ix >= g->masks[i].xstart ) && ( ix <= g->masks[i].xstop ) ) {
 		     g->rid = g->masks[i].region;
 		     return ( 1 );
 		 }

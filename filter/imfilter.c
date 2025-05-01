@@ -26,22 +26,28 @@ int *rbuf;                      /* temp region flags */
 int *rptr;                      /* pointer into region buffer */
 
 void
-incnmask( void ) {
+incnmask(
+    void
+ ) {
     int omax;
     nmask++;
     if ( nmask >= maxmask ) {
 	omax = maxmask;
 	maxmask += MASKINC;
-	masks =
-	    ( FilterMask ) realloc( masks,
-	                            maxmask * sizeof( FilterMaskRec ) );
-	memset( masks + omax, 0,
-	        ( maxmask - omax ) * sizeof( FilterMaskRec ) );
+	masks = ( FilterMask ) realloc( masks, maxmask * sizeof( FilterMaskRec ) );
+	memset( masks + omax, 0, ( maxmask - omax ) * sizeof( FilterMaskRec ) );
     }
 }
 
 FilterMask
-IMFILTRTN( int txmin, int txmax, int tymin, int tymax, int tblock, int *got ) {
+IMFILTRTN(
+    int txmin,
+    int txmax,
+    int tymin,
+    int tymax,
+    int tblock,
+    int *got
+ ) {
     int i, j;
     int fieldonly;
     GFilt g;
@@ -193,7 +199,10 @@ IMFILTRTN( int txmin, int txmax, int tymin, int tymax, int tblock, int *got ) {
 }
 
 int
-main( int argc, char **argv ) {
+main(
+    int argc,
+    char **argv
+ ) {
     int i;
     int get, got;
 #if DO_FILTER_SWAP
@@ -271,8 +280,7 @@ main( int argc, char **argv ) {
 	    break;
 #endif
 #endif /* #ifdef TEST */
-	if ( sscanf( tbuf, "%d %d %d %d %d",
-	             &txmin, &txmax, &tymin, &tymax, &tblock ) != 5 ) {
+	if ( sscanf( tbuf, "%d %d %d %d %d", &txmin, &txmax, &tymin, &tymax, &tblock ) != 5 ) {
 	    break;
 	}
 	masks = IMFILTRTN( txmin, txmax, tymin, tymax, tblock, &got );
@@ -281,8 +289,7 @@ main( int argc, char **argv ) {
 	fprintf( stdout, "nmask=%d\n", nmask );
 	for ( i = 0; i < nmask; i++ ) {
 	    fprintf( stdout, "region: %d\tx: (%d,%d)\ty: %d\n",
-	             masks[i].region, masks[i].xstart, masks[i].xstop,
-	             masks[i].y );
+	             masks[i].region, masks[i].xstart, masks[i].xstop, masks[i].y );
 	}
 	fflush( stdout );
 #else

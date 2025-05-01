@@ -46,13 +46,17 @@ int __maxrow = MAXROW;
 
 typedef struct rowstruct {
     $MEMBERS int __ncol;
-}  *Row, RowRec;
+}  *Row,
+    RowRec;
 
 /* global definitions and init calls go here */
 $GLOBAL
 /* main program */
     int
-main( int argc, char **argv ) {
+main(
+    int argc,
+    char **argv
+ ) {
     int __c, __i;
     int __get, __got, __total, __rectype, __args;
     int __saved = 0;
@@ -133,24 +137,21 @@ main( int argc, char **argv ) {
 
     /* open input file */
     if ( !( fun = FunOpen( argv[optind + 0], "rc", NULL ) ) ) {
-	gerror( stderr, "could not FunOpen input file: %s\n",
-	        argv[optind + 0] );
+	gerror( stderr, "could not FunOpen input file: %s\n", argv[optind + 0] );
 	goto error;
     }
 
     /* open the output FITS image, inheriting params from input */
     if ( $ARGS > 1 ) {
 	if ( !( ofun = FunOpen( argv[optind + 1], "w", fun ) ) ) {
-	    gerror( stderr, "could not FunOpen output file: %s\n",
-	            argv[optind + 1] );
+	    gerror( stderr, "could not FunOpen output file: %s\n", argv[optind + 1] );
 	    goto error;
 	}
     }
 
     /* select columns */
     FunColumnSelect( fun, sizeof( RowRec ), "merge=$MERGE",
-                     $SELECT
-                     "$N", "1J", "r", FUN_OFFSET( Row, __ncol ), NULL );
+                     $SELECT "$N", "1J", "r", FUN_OFFSET( Row, __ncol ), NULL );
 
     /* activate specified columns -- these will be written to the output file */
     if ( __args >= 3 ) __cols = argv[optind + 2];
@@ -186,19 +187,15 @@ main( int argc, char **argv ) {
 	    /* read last processed record into start of __rowbuf, process others */
 	    else {
 		if ( __rectype & REC_NEXT ) {
-		    memcpy( __rowbuf, __rowrptr + ( __got - 2 ),
-		            sizeof( RowRec ) * 2 );
+		    memcpy( __rowbuf, __rowrptr + ( __got - 2 ), sizeof( RowRec ) * 2 );
 		    __rowsptr = __rowbuf + 1;
 		    __rowrptr = __rowbuf + 2;
 		    /* save raw data for this unprocessed record */
 		    FunInfoGet( fun, FUN_RAWBUF, &__rawbuf, 0 );
-		    memcpy( __rawsave,
-		            __rawbuf + ( ( __got - 1 ) * __rawsize ),
-		            __rawsize );
+		    memcpy( __rawsave, __rawbuf + ( ( __got - 1 ) * __rawsize ), __rawsize );
 		}
 		else {
-		    memcpy( __rowbuf, __rowrptr + ( __got - 1 ),
-		            sizeof( RowRec ) );
+		    memcpy( __rowbuf, __rowrptr + ( __got - 1 ), sizeof( RowRec ) );
 		    __rowsptr = __rowbuf + 1;
 		    __rowrptr = __rowbuf + 1;
 		}
@@ -213,14 +210,12 @@ main( int argc, char **argv ) {
 	    }
 	    /* read last processed record into first new record, process others */
 	    else {
-		memcpy( __rowbuf, __rowrptr + ( __got - 1 ),
-		        sizeof( RowRec ) );
+		memcpy( __rowbuf, __rowrptr + ( __got - 1 ), sizeof( RowRec ) );
 		__rowsptr = __rowbuf;
 		__rowrptr = __rowbuf + 1;
 		/* save raw data for this unprocessed record */
 		FunInfoGet( fun, FUN_RAWBUF, &__rawbuf, 0 );
-		memcpy( __rawsave, __rawbuf + ( ( __got - 1 ) * __rawsize ),
-		        __rawsize );
+		memcpy( __rawsave, __rawbuf + ( ( __got - 1 ) * __rawsize ), __rawsize );
 	    }
 	}
 
@@ -240,8 +235,7 @@ main( int argc, char **argv ) {
 	if ( ( __roweptr - __rowsptr ) <= 0 ) break;
 
 	/* process all rows */
-	for ( cur = __rowsptr, __i = __rowsptr - __rowrptr; cur < __roweptr;
-	      cur++, __i++ ) {
+	for ( cur = __rowsptr, __i = __rowsptr - __rowrptr; cur < __roweptr; cur++, __i++ ) {
 	    /* save raw buffer and switch rawbuf from previous */
 	    if ( __i == -1 ) {
 		FunInfoGet( fun, FUN_RAWBUF, &__rawbuf, 0 );

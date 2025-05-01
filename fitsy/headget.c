@@ -27,27 +27,27 @@
 /* Find and return the value of a FITS card as a static string.
  */
 char *
-ft_headget( fits, name, n, card )
-     FITSHead fits;             /* The FITS header to search.           */
-     char *name;                /* Name of the card keyword to search for. */
-     int n;                     /* keyword index number, if is zero no
+ft_headget(
+    FITSHead fits,              /* The FITS header to search.           */
+    char *name,                 /* Name of the card keyword to search for. */
+    int n,                      /* keyword index number, if is zero no
                                    index number is appended to the keyword.
                                  */
-     FITSCard *card;            /* The FITS card that was found.        */
-{
+    FITSCard * card             /* The FITS card that was found.        */
+ ) {
     return ft_cardget( *( card ) = ft_headfind( fits, name, n, 0 ) );
 }
 
 /* Find and return the value of a FITS card as a logical.
  */
 int
-ft_headgetl( fits, name, n, ldefault, card )
-     FITSHead fits;
-     char *name;
-     int n;
-     int ldefault;              /* Default logical value to return.  */
-     FITSCard *card;
-{
+ft_headgetl(
+    FITSHead fits,
+    char *name,
+    int n,
+    int ldefault,               /* Default logical value to return.  */
+    FITSCard * card
+ ) {
     FITSCard C;
 
     if ( card == NULL ) card = &C;
@@ -60,13 +60,13 @@ ft_headgetl( fits, name, n, ldefault, card )
 /* Find and return the value of a FITS card as an integer.
  */
 int
-ft_headgeti( fits, name, n, idefault, card )
-     FITSHead fits;
-     char *name;
-     int n;
-     int idefault;              /* Default integer value to return.  */
-     FITSCard *card;
-{
+ft_headgeti(
+    FITSHead fits,
+    char *name,
+    int n,
+    int idefault,               /* Default integer value to return.  */
+    FITSCard * card
+ ) {
     FITSCard C;
 
     if ( card == NULL ) card = &C;
@@ -78,13 +78,13 @@ ft_headgeti( fits, name, n, idefault, card )
 /* Find and return the value of a FITS card as an integer.
  */
 longlong
-ft_headgetil( fits, name, n, idefault, card )
-     FITSHead fits;
-     char *name;
-     int n;
-     longlong idefault;         /* Default integer value to return.  */
-     FITSCard *card;
-{
+ft_headgetil(
+    FITSHead fits,
+    char *name,
+    int n,
+    longlong idefault,          /* Default integer value to return.  */
+    FITSCard * card
+ ) {
     FITSCard C;
 
     if ( card == NULL ) card = &C;
@@ -96,13 +96,13 @@ ft_headgetil( fits, name, n, idefault, card )
 /* Find and return the value of a FITS card as a real.
  */
 double
-ft_headgetr( fits, name, n, ddefault, card )
-     FITSHead fits;
-     char *name;
-     int n;
-     double ddefault;           /* Default real value to return.     */
-     FITSCard *card;
-{
+ft_headgetr(
+    FITSHead fits,
+    char *name,
+    int n,
+    double ddefault,            /* Default real value to return.     */
+    FITSCard * card
+ ) {
     FITSCard C;
 
     if ( card == NULL ) card = &C;
@@ -115,19 +115,18 @@ ft_headgetr( fits, name, n, ddefault, card )
 /* Find and return the value of a FITS card as a allocated string.
  */
 char *
-ft_headgets( fits, name, n, sdefault, card )
-     FITSHead fits;
-     char *name;
-     int n;
-     char *sdefault;            /* Default string value to return.   */
-     FITSCard *card;
-{
+ft_headgets(
+    FITSHead fits,
+    char *name,
+    int n,
+    char *sdefault,             /* Default string value to return.   */
+    FITSCard * card
+ ) {
     FITSCard C;
 
     if ( card == NULL ) card = &C;
 
     return ( ( *( card ) = ft_headfind( fits, name, n, 0 ) ) ?
              ft_cardgets( *( card ) ) : ( sdefault == NULL
-                                          ? NULL
-                                          : ( char * ) strdup( sdefault ) ) );
+                                          ? NULL : ( char * ) strdup( sdefault ) ) );
 }

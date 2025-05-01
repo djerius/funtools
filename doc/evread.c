@@ -38,14 +38,8 @@ typedef struct pevstruct{
   double *dx, *dy;
 } *PEv, PEvRec;
 
-#ifdef ANSI_FUNC
 int 
 main (int argc, char **argv)
-#else
-main(argc, argv)
-     int argc;
-     char **argv;
-#endif
 {
   int i;
   int c;

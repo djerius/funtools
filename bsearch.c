@@ -2,7 +2,10 @@
 
 /* returns first target if more than one have same value */
 static public int
-search( int[]array, int target ) {
+search(
+    int[]array,
+    int target
+ ) {
     int high = array.length, low = -1, probe;
     while ( high - low > 1 ) {
 	probe = ( high + low ) / 2;
@@ -19,7 +22,10 @@ search( int[]array, int target ) {
 
 /* returns last target if more than one have same value */
 static public int
-search2( int[]array, int target ) {
+search2(
+    int[]array,
+    int target
+ ) {
     int high = array.length, low = -1, probe;
     while ( high - low > 1 ) {
 	probe = ( high + low ) / 2;
@@ -35,7 +41,11 @@ search2( int[]array, int target ) {
 }
 
 static public int[]
-range( int[]array, int floor, int ceiling ) {
+range(
+    int[]array,
+    int floor,
+    int ceiling
+ ) {
     int[] answer = new int[2];
     int high, low, probe;
 

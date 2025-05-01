@@ -20,10 +20,15 @@
 #endif
 
 #include "prsetup.h"
-_PRbeg
 
-void ColumnLoad _PRx((char *ibuf, int size, int n, int convert, void *obuf));
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-_PRend
+void ColumnLoad (char *ibuf, int size, int n, int convert, void *obuf);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

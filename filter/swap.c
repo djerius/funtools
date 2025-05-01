@@ -16,7 +16,12 @@
 
 #if DO_FILTER_SWAP
 char *
-_sw2( char *s, int n, char *_swf, int off ) {
+_sw2(
+    char *s,
+    int n,
+    char *_swf,
+    int off
+ ) {
     char c;
     char *t = s;
     size_t i;
@@ -31,7 +36,12 @@ _sw2( char *s, int n, char *_swf, int off ) {
 }
 
 char *
-_sw4( char *s, int n, char *_swf, int off ) {
+_sw4(
+    char *s,
+    int n,
+    char *_swf,
+    int off
+ ) {
     char c;
     char *t = s;
     size_t i;
@@ -49,7 +59,12 @@ _sw4( char *s, int n, char *_swf, int off ) {
 }
 
 char *
-_sw8( char *s, int n, char *_swf, int off ) {
+_sw8(
+    char *s,
+    int n,
+    char *_swf,
+    int off
+ ) {
     char c;
     char *t = s;
     size_t i;

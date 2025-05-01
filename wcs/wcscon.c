@@ -80,24 +80,22 @@
 /* Convert from coordinate system sys1 to coordinate system sys2, converting
    proper motions, too, and adding them if an epoch is specified */
 
-void
-wcsconp( sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi )
-     int sys1;                  /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-     int sys2;                  /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-     double eq1;                /* Input equinox (default of sys1 if 0.0) */
-     double eq2;                /* Output equinox (default of sys2 if 0.0) */
-     double ep1;                /* Input Besselian epoch in years (for proper motion) */
-     double ep2;                /* Output Besselian epoch in years (for proper motion) */
-     double *dtheta;            /* Longitude or right ascension in degrees
+void wcsconp(
+    int sys1,                   /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+    int sys2,                   /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+    double eq1,                 /* Input equinox (default of sys1 if 0.0) */
+    double eq2,                 /* Output equinox (default of sys2 if 0.0) */
+    double ep1,                 /* Input Besselian epoch in years (for proper motion) */
+    double ep2,                 /* Output Besselian epoch in years (for proper motion) */
+    double *dtheta,             /* Longitude or right ascension in degrees
                                    Input in sys1, returned in sys2 */
-     double *dphi;              /* Latitude or declination in degrees
+    double *dphi,               /* Latitude or declination in degrees
                                    Input in sys1, returned in sys2 */
-     double *ptheta;            /* Longitude or right ascension proper motion in RA degrees/year
+    double *ptheta,             /* Longitude or right ascension proper motion in RA degrees/year
                                    Input in sys1, returned in sys2 */
-     double *pphi;              /* Latitude or declination proper motion in Dec degrees/year
+    double *pphi                /* Latitude or declination proper motion in Dec degrees/year
                                    Input in sys1, returned in sys2 */
-
-{
+ ) {
     /* Set equinoxes if 0.0 */
     if ( eq1 == 0.0 ) {
 	if ( sys1 == WCS_B1950 )
@@ -281,26 +279,24 @@ wcsconp( sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi )
 /* Convert from coordinate system sys1 to coordinate system sys2, converting
    proper motions, too, and adding them if an epoch is specified */
 
-void
-wcsconv( sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi, px, rv )
-     int sys1;                  /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-     int sys2;                  /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-     double eq1;                /* Input equinox (default of sys1 if 0.0) */
-     double eq2;                /* Output equinox (default of sys2 if 0.0) */
-     double ep1;                /* Input Besselian epoch in years (for proper motion) */
-     double ep2;                /* Output Besselian epoch in years (for proper motion) */
-     double *dtheta;            /* Longitude or right ascension in degrees
+void wcsconv(
+    int sys1,                   /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+    int sys2,                   /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+    double eq1,                 /* Input equinox (default of sys1 if 0.0) */
+    double eq2,                 /* Output equinox (default of sys2 if 0.0) */
+    double ep1,                 /* Input Besselian epoch in years (for proper motion) */
+    double ep2,                 /* Output Besselian epoch in years (for proper motion) */
+    double *dtheta,             /* Longitude or right ascension in degrees
                                    Input in sys1, returned in sys2 */
-     double *dphi;              /* Latitude or declination in degrees
+    double *dphi,               /* Latitude or declination in degrees
                                    Input in sys1, returned in sys2 */
-     double *ptheta;            /* Longitude or right ascension proper motion in degrees/year
+    double *ptheta,             /* Longitude or right ascension proper motion in degrees/year
                                    Input in sys1, returned in sys2 */
-     double *pphi;              /* Latitude or declination proper motion in degrees/year
+    double *pphi,               /* Latitude or declination proper motion in degrees/year
                                    Input in sys1, returned in sys2 */
-     double *px;                /* Parallax in arcseconds */
-     double *rv;                /* Radial velocity in km/sec */
-
-{
+    double *px,                 /* Parallax in arcseconds */
+    double *rv                  /* Radial velocity in km/sec */
+ ) {
     /* Set equinoxes if 0.0 */
     if ( eq1 == 0.0 ) {
 	if ( sys1 == WCS_B1950 )
@@ -489,19 +485,17 @@ wcsconv( sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi, px, rv )
 
 /* Convert from coordinate system sys1 to coordinate system sys2 */
 
-void
-wcscon( sys1, sys2, eq1, eq2, dtheta, dphi, epoch )
-     int sys1;                  /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-     int sys2;                  /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-     double eq1;                /* Input equinox (default of sys1 if 0.0) */
-     double eq2;                /* Output equinox (default of sys2 if 0.0) */
-     double *dtheta;            /* Longitude or right ascension in degrees
+void wcscon(
+    int sys1,                   /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+    int sys2,                   /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+    double eq1,                 /* Input equinox (default of sys1 if 0.0) */
+    double eq2,                 /* Output equinox (default of sys2 if 0.0) */
+    double *dtheta,             /* Longitude or right ascension in degrees
                                    Input in sys1, returned in sys2 */
-     double *dphi;              /* Latitude or declination in degrees
+    double *dphi,               /* Latitude or declination in degrees
                                    Input in sys1, returned in sys2 */
-     double epoch;              /* Besselian epoch in years */
-
-{
+    double epoch                /* Besselian epoch in years */
+ ) {
     /* Set equinoxes if 0.0 */
     if ( eq1 == 0.0 ) {
 	if ( sys1 == WCS_B1950 )
@@ -643,9 +637,9 @@ wcscon( sys1, sys2, eq1, eq2, dtheta, dphi, epoch )
 
 /* Set coordinate system from string */
 int
-wcscsys( wcstring )
-     char *wcstring;            /* Name of coordinate system */
-{
+wcscsys(
+    char *wcstring              /* Name of coordinate system */
+ ) {
     double equinox;
 
     if ( wcstring[0] == 'J' || wcstring[0] == 'j' ||
@@ -700,20 +694,16 @@ wcscsys( wcstring )
 /* Set equinox from string (return 0.0 if not obvious) */
 
 double
-wcsceq( wcstring )
-     char *wcstring;            /* Name of coordinate system */
-{
-    if ( wcstring[0] == 'J' || wcstring[0] == 'j' ||
-         wcstring[0] == 'B' || wcstring[0] == 'b' )
+wcsceq(
+    char *wcstring              /* Name of coordinate system */
+ ) {
+    if ( wcstring[0] == 'J' || wcstring[0] == 'j' || wcstring[0] == 'B' || wcstring[0] == 'b' )
 	return ( atof( wcstring + 1 ) );
-    else if ( !strncmp( wcstring, "FK4", 3 ) ||
-              !strncmp( wcstring, "fk4", 3 ) )
+    else if ( !strncmp( wcstring, "FK4", 3 ) || !strncmp( wcstring, "fk4", 3 ) )
 	return ( 1950.0 );
-    else if ( !strncmp( wcstring, "FK5", 3 ) ||
-              !strncmp( wcstring, "fk5", 3 ) )
+    else if ( !strncmp( wcstring, "FK5", 3 ) || !strncmp( wcstring, "fk5", 3 ) )
 	return ( 2000.0 );
-    else if ( !strncmp( wcstring, "ICRS", 4 ) ||
-              !strncmp( wcstring, "icrs", 4 ) )
+    else if ( !strncmp( wcstring, "ICRS", 4 ) || !strncmp( wcstring, "icrs", 4 ) )
 	return ( 2000.0 );
     else if ( wcstring[0] == '1' || wcstring[0] == '2' )
 	return ( atof( wcstring ) );
@@ -725,12 +715,12 @@ wcsceq( wcstring )
 /* Set coordinate system type string from system and equinox */
 
 void
-wcscstr( cstr, syswcs, equinox, epoch )
-     char *cstr;                /* Coordinate system string (returned) */
-     int syswcs;                /* Coordinate system code */
-     double equinox;            /* Equinox of coordinate system */
-     double epoch;              /* Epoch of coordinate system */
-{
+wcscstr(
+    char *cstr,                 /* Coordinate system string (returned) */
+    int syswcs,                 /* Coordinate system code */
+    double equinox,             /* Equinox of coordinate system */
+    double epoch                /* Epoch of coordinate system */
+ ) {
 
     char *estr;
 
@@ -862,11 +852,10 @@ static double emi[6][6] = {
 };
 
 void
-fk524( ra, dec )
-     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
-     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
-
-{
+fk524(
+    double *ra,                 /* Right ascension in degrees (J2000 in, B1950 out) */
+    double *dec                 /* Declination in degrees (J2000 in, B1950 out) */
+ ) {
     double rapm;                /* Proper motion in right ascension */
     double decpm;               /* Proper motion in declination  */
     /* In:  deg/jul.yr.  Out: deg/trop.yr.  */
@@ -878,12 +867,11 @@ fk524( ra, dec )
 }
 
 void
-fk524e( ra, dec, epoch )
-     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
-     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
-     double epoch;              /* Besselian epoch in years */
-
-{
+fk524e(
+    double *ra,                 /* Right ascension in degrees (J2000 in, B1950 out) */
+    double *dec,                /* Declination in degrees (J2000 in, B1950 out) */
+    double epoch                /* Besselian epoch in years */
+ ) {
     double rapm;                /* Proper motion in right ascension */
     double decpm;               /* Proper motion in declination  */
     /* In:  deg/jul.yr.  Out: deg/trop.yr.  */
@@ -897,13 +885,13 @@ fk524e( ra, dec, epoch )
 }
 
 void
-fk524m( ra, dec, rapm, decpm )
-     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
-     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
-     double *rapm;              /* Proper motion in right ascension */
-     double *decpm;             /* Proper motion in declination */
+fk524m(
+    double *ra,                 /* Right ascension in degrees (J2000 in, B1950 out) */
+    double *dec,                /* Declination in degrees (J2000 in, B1950 out) */
+    double *rapm,               /* Proper motion in right ascension */
+    double *decpm               /* Proper motion in declination */
+ )
                         /* In:  ra/dec deg/jul.yr.  Out: ra/dec deg/trop.yr.  */
-
 {
     double parallax = 0.0;
     double rv = 0.0;
@@ -914,16 +902,16 @@ fk524m( ra, dec, rapm, decpm )
 
 
 void
-fk524pv( ra, dec, rapm, decpm, parallax, rv )
-     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
-     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
-     double *rapm;              /* Proper motion in right ascension */
-     double *decpm;             /* Proper motion in declination
+fk524pv(
+    double *ra,                 /* Right ascension in degrees (J2000 in, B1950 out) */
+    double *dec,                /* Declination in degrees (J2000 in, B1950 out) */
+    double *rapm,               /* Proper motion in right ascension */
+    double *decpm,              /* Proper motion in declination
                                  * In:  ra/dec degrees/Julian year (not ra*cos(dec))
                                  * Out: ra/dec degrees/tropical year */
-     double *parallax;          /* Parallax (arcsec) */
-     double *rv;                /* Rradial velocity (km/s, +ve = moving away) */
-
+    double *parallax,           /* Parallax (arcsec) */
+    double *rv                  /* Rradial velocity (km/s, +ve = moving away) */
+ )
 /*  This routine converts stars from the IAU 1976 FK5 Fricke
     system, to the old Bessel-Newcomb FK4 system, using Yallop's
     implementation (see ref 2) of a matrix method due to Standish
@@ -973,7 +961,6 @@ fk524pv( ra, dec, rapm, decpm, parallax, rv )
 
    P.T.Wallace   Starlink   19 December 1993
    Doug Mink     Smithsonian Astrophysical Observatory 1 November 2000 */
-
 {
     double r2000, d2000;        /* J2000.0 ra,dec (radians) */
     double r1950, d1950;        /* B1950.0 ra,dec (rad) */
@@ -1081,14 +1068,11 @@ fk524pv( ra, dec, rapm, decpm, parallax, rv )
 
     if ( rxy > tiny ) {
 	ur = ( x * yd - y * xd ) / rxysq;
-	ud = ( zd * rxysq -
-	       z * ( x * xd + y * yd ) ) / ( ( rxysq + z * z ) * rxy );
+	ud = ( zd * rxysq - z * ( x * xd + y * yd ) ) / ( ( rxysq + z * z ) * rxy );
     }
 
     if ( *parallax > tiny ) {
-	*rv =
-	    ( ( x * xd ) + ( y * yd ) +
-	      ( z * zd ) ) / ( *parallax * vf * rxyz );
+	*rv = ( ( x * xd ) + ( y * yd ) + ( z * zd ) ) / ( *parallax * vf * rxyz );
 	*parallax = *parallax / rxyz;
     }
 
@@ -1101,9 +1085,7 @@ fk524pv( ra, dec, rapm, decpm, parallax, rv )
     if ( diag ) {
 	dra = 240.0 * raddeg( r1950 - r2000 );
 	ddec = 3600.0 * raddeg( d1950 - d2000 );
-	fprintf( stderr,
-	         "B1950-J2000: dra= %11.5f sec  ddec= %f11.5f arcsec\n", dra,
-	         ddec );
+	fprintf( stderr, "B1950-J2000: dra= %11.5f sec  ddec= %f11.5f arcsec\n", dra, ddec );
     }
 
     return;
@@ -1156,11 +1138,10 @@ static double em[6][6] = {
 };
 
 void
-fk425( ra, dec )
-     double *ra;                /* Right ascension in degrees (B1950 in, J2000 out) */
-     double *dec;               /* Declination in degrees (B1950 in, J2000 out) */
-
-{
+fk425(
+    double *ra,                 /* Right ascension in degrees (B1950 in, J2000 out) */
+    double *dec                 /* Declination in degrees (B1950 in, J2000 out) */
+ ) {
     double rapm;                /* Proper motion in right ascension */
     double decpm;               /* Proper motion in declination  */
     /* In: rad/trop.yr.  Out:  rad/jul.yr. */
@@ -1173,11 +1154,11 @@ fk425( ra, dec )
 
 
 void
-fk425e( ra, dec, epoch )
-     double *ra;                /* Right ascension in degrees (B1950 in, J2000 out) */
-     double *dec;               /* Declination in degrees (B1950 in, J2000 out) */
-     double epoch;              /* Besselian epoch in years */
-{
+fk425e(
+    double *ra,                 /* Right ascension in degrees (B1950 in, J2000 out) */
+    double *dec,                /* Declination in degrees (B1950 in, J2000 out) */
+    double epoch                /* Besselian epoch in years */
+ ) {
     double rapm;                /* Proper motion in right ascension */
     double decpm;               /* Proper motion in declination  */
     /* In: rad/trop.yr.  Out:  rad/jul.yr. */
@@ -1191,13 +1172,15 @@ fk425e( ra, dec, epoch )
 }
 
 void
-fk425m( ra, dec, rapm, decpm )
-     double *ra, *dec;          /* Right ascension and declination in degrees
+fk425m(
+    double *ra,
+    double *dec,                /* Right ascension and declination in degrees
                                    input:  B1950.0,FK4  returned:  J2000.0,FK5 */
-     double *rapm, *decpm;      /* Proper motion in right ascension and declination
+    double *rapm,
+    double *decpm               /* Proper motion in right ascension and declination
                                    input:  B1950.0,FK4  returned:  J2000.0,FK5
                                    ra/dec deg/trop.yr.     ra/dec deg/jul.yr.  */
-{
+ ) {
     double parallax = 0.0;
     double rv = 0.0;
 
@@ -1207,16 +1190,16 @@ fk425m( ra, dec, rapm, decpm )
 
 
 void
-fk425pv( ra, dec, rapm, decpm, parallax, rv )
-     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
-     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
-     double *rapm;              /* Proper motion in right ascension */
-     double *decpm;             /* Proper motion in declination
+fk425pv(
+    double *ra,                 /* Right ascension in degrees (J2000 in, B1950 out) */
+    double *dec,                /* Declination in degrees (J2000 in, B1950 out) */
+    double *rapm,               /* Proper motion in right ascension */
+    double *decpm,              /* Proper motion in declination
                                  * In:  ra/dec degrees/Julian year (not ra*cos(dec))
                                  * Out: ra/dec degrees/tropical year */
-     double *parallax;          /* Parallax (arcsec) */
-     double *rv;                /* Rradial velocity (km/s, +ve = moving away) */
-
+    double *parallax,           /* Parallax (arcsec) */
+    double *rv                  /* Rradial velocity (km/s, +ve = moving away) */
+ )
 /*  This routine converts stars from the old Bessel-Newcomb FK4 system
     to the IAU 1976 FK5 Fricke system, using Yallop's implementation
     (see ref 2) of a matrix method due to Standish (see ref 3).  The
@@ -1263,7 +1246,6 @@ fk425pv( ra, dec, rapm, decpm, parallax, rv )
 
    P.T.Wallace   Starlink   20 December 1993
    Doug Mink     Smithsonian Astrophysical Observatory  7 June 1995 */
-
 {
     double r1950, d1950;        /* B1950.0 ra,dec (rad) */
     double r2000, d2000;        /* J2000.0 ra,dec (rad) */
@@ -1382,9 +1364,7 @@ fk425pv( ra, dec, rapm, decpm, parallax, rv )
     if ( diag ) {
 	dra = 240.0 * raddeg( r2000 - r1950 );
 	ddec = 3600.0 * raddeg( d2000 - d1950 );
-	fprintf( stderr,
-	         "J2000-B1950: dra= %11.5f sec  ddec= %f11.5f arcsec\n", dra,
-	         ddec );
+	fprintf( stderr, "J2000-B1950: dra= %11.5f sec  ddec= %f11.5f arcsec\n", dra, ddec );
     }
     return;
 }
@@ -1404,8 +1384,7 @@ int idg = 0;
 	cp.sq		+sp.sq		+cq
  */
 
-static
-    double bgal[3][3] = { {-0.066988739415, -0.872755765852, -0.483538914632},
+static double bgal[3][3] = { {-0.066988739415, -0.872755765852, -0.483538914632},
 {0.492728466075, -0.450346958020, 0.744584633283},
 {-0.867600811151, -0.188374601723, 0.460199784784}
 };
@@ -1414,12 +1393,12 @@ static
  *     IAU 1958 galactic coordinates */
 
 void
-fk42gal( dtheta, dphi )
-     double *dtheta;            /* B1950.0 FK4 right ascension in degrees
+fk42gal(
+    double *dtheta,             /* B1950.0 FK4 right ascension in degrees
                                    Galactic longitude (l2) in degrees (returned) */
-     double *dphi;              /* B1950.0 FK4 declination in degrees
+    double *dphi                /* B1950.0 FK4 declination in degrees
                                    Galactic latitude (b2) in degrees (returned) */
-
+ )
 /*  Input equatorial coordinates are B1950 FK4.
     Use fk52gal() to convert from j2000.0 coordinates.
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
@@ -1442,8 +1421,7 @@ fk42gal( dtheta, dphi )
 
     /*  rotate to galactic */
     for ( i = 0; i < 3; i++ ) {
-	pos1[i] =
-	    pos[0] * bgal[i][0] + pos[1] * bgal[i][1] + pos[2] * bgal[i][2];
+	pos1[i] = pos[0] * bgal[i][0] + pos[1] * bgal[i][1] + pos[2] * bgal[i][2];
     }
 
     /*  Cartesian to spherical */
@@ -1470,16 +1448,15 @@ fk42gal( dtheta, dphi )
  *    equatorial coordinates */
 
 void
-gal2fk4( dtheta, dphi )
-     double *dtheta;            /* Galactic longitude (l2) in degrees
+gal2fk4(
+    double *dtheta,             /* Galactic longitude (l2) in degrees
                                    B1950 FK4 RA in degrees (returned) */
-     double *dphi;              /* Galactic latitude (b2) in degrees
+    double *dphi                /* Galactic latitude (b2) in degrees
                                    B1950 FK4 Dec in degrees (returned) */
-
+ )
 /*  Output equatorial coordinates are B1950.0 FK4.
     Use gal2fk5() to convert to J2000 coordinates.
     Reference:  Blaauw et al, MNRAS,121,123 (1960) */
-
 {
     double pos[3], pos1[3], r, dl, db, rl, rb, rra, rdec, dra, ddec;
     char *eqcoor;
@@ -1495,8 +1472,7 @@ gal2fk4( dtheta, dphi )
 
     /*  rotate to equatorial coordinates */
     for ( i = 0; i < 3; i++ ) {
-	pos1[i] =
-	    pos[0] * bgal[0][i] + pos[1] * bgal[1][i] + pos[2] * bgal[2][i];
+	pos1[i] = pos[0] * bgal[0][i] + pos[1] * bgal[1][i] + pos[2] * bgal[2][i];
     }
 
     /*  cartesian to spherical */
@@ -1534,8 +1510,7 @@ gal2fk4( dtheta, dphi )
 	-cp.cq.cr-sp.sr     -sp.cq.cr+cp.sr     +sq.cr
 	+cp.sq              +sp.sq              +cq		*/
 
-static
-    double jgal[3][3] = { {-0.054875539726, -0.873437108010, -0.483834985808},
+static double jgal[3][3] = { {-0.054875539726, -0.873437108010, -0.483834985808},
 {0.494109453312, -0.444829589425, 0.746982251810},
 {-0.867666135858, -0.198076386122, 0.455983795705}
 };
@@ -1543,14 +1518,13 @@ static
 /* Transform J2000 equatorial coordinates to IAU 1958 galactic coordinates */
 
 void
-fk52gal( dtheta, dphi )
-     double *dtheta;            /* J2000 right ascension in degrees
+fk52gal(
+    double *dtheta,             /* J2000 right ascension in degrees
                                    Galactic longitude (l2) in degrees (returned) */
-     double *dphi;              /* J2000 declination in degrees
+    double *dphi                /* J2000 declination in degrees
                                    Galactic latitude (b2) in degrees (returned) */
-
+ )
 /* Rotation matrices by P.T.Wallace, Starlink eqgal and galeq, March 1986 */
-
 /*  Input equatorial coordinates are J2000 FK5.
     Use gal2fk4() if converting from B1950 FK4 coordinates.
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
@@ -1569,8 +1543,7 @@ fk52gal( dtheta, dphi )
 
     /*  Rotate to galactic */
     for ( i = 0; i < 3; i++ ) {
-	pos1[i] =
-	    pos[0] * jgal[i][0] + pos[1] * jgal[i][1] + pos[2] * jgal[i][2];
+	pos1[i] = pos[0] * jgal[i][0] + pos[1] * jgal[i][1] + pos[2] * jgal[i][2];
     }
 
     /*  Cartesian to spherical */
@@ -1596,16 +1569,15 @@ fk52gal( dtheta, dphi )
 /*--- Transform IAU 1958 galactic coordinates to J2000 equatorial coordinates */
 
 void
-gal2fk5( dtheta, dphi )
-     double *dtheta;            /* Galactic longitude (l2) in degrees
+gal2fk5(
+    double *dtheta,             /* Galactic longitude (l2) in degrees
                                    J2000.0 ra in degrees (returned) */
-     double *dphi;              /* Galactic latitude (b2) in degrees
+    double *dphi                /* Galactic latitude (b2) in degrees
                                    J2000.0 dec in degrees (returned) */
-
+ )
 /*  Output equatorial coordinates are J2000.
    Use gal2fk4() to convert to B1950 coordinates.
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
-
 {
     double pos[3], pos1[3], r, dl, db, rl, rb, rra, rdec, dra, ddec;
     int i;
@@ -1621,8 +1593,7 @@ gal2fk5( dtheta, dphi )
 
     /*  Rotate to equatorial coordinates */
     for ( i = 0; i < 3; i++ ) {
-	pos1[i] =
-	    pos[0] * jgal[0][i] + pos[1] * jgal[1][i] + pos[2] * jgal[2][i];
+	pos1[i] = pos[0] * jgal[0][i] + pos[1] * jgal[1][i] + pos[2] * jgal[2][i];
     }
 
     /*  Cartesian to Spherical */
@@ -1647,11 +1618,10 @@ gal2fk5( dtheta, dphi )
 /* Return string with right ascension in hours and declination in degrees */
 
 char *
-eqstrn( dra, ddec )
-     double dra;                /* Right ascension in degrees */
-     double ddec;               /* Declination in degrees */
-
-{
+eqstrn(
+    double dra,                 /* Right ascension in degrees */
+    double ddec                 /* Declination in degrees */
+ ) {
     char *eqcoor;               /* ASCII character string of position (returned) */
     char decp;
     int rah, irm, decd, decm;
@@ -1660,9 +1630,13 @@ eqstrn( dra, ddec )
     /*  Right ascension to hours, minutes, and seconds */
     xpos = dra / 15.0;
     rah = ( int ) xpos;
-    xp = ( double ) 60.0 *( xpos - ( double ) rah );
+    xp = ( double ) 60.0 *(
+    xpos - ( double ) rah
+     );
     irm = ( int ) xp;
-    ras = ( double ) 60.0 *( xp - ( double ) irm );
+    ras = ( double ) 60.0 *(
+    xp - ( double ) irm
+     );
 
     /* Declination to degrees, minutes, seconds */
     if ( ddec < 0 ) {
@@ -1674,9 +1648,13 @@ eqstrn( dra, ddec )
 	ypos = ddec;
     }
     decd = ( int ) ypos;
-    yp = ( double ) 60.0 *( ypos - ( double ) decd );
+    yp = ( double ) 60.0 *(
+    ypos - ( double ) decd
+     );
     decm = ( int ) yp;
-    decs = ( double ) 60.0 *( yp - ( double ) decm );
+    decs = ( double ) 60.0 *(
+    yp - ( double ) decm
+     );
 
     eqcoor = malloc( 32 );
     ( void ) sprintf( eqcoor, "%02d:%02d:%06.3f %c%02d:%02d:%05.2f",
@@ -1699,14 +1677,13 @@ eqstrn( dra, ddec )
 /* Convert B1950 right ascension and declination to ecliptic coordinates */
 
 void
-fk42ecl( dtheta, dphi, epoch )
-     double *dtheta;            /* B1950 right ascension in degrees
+fk42ecl(
+    double *dtheta,             /* B1950 right ascension in degrees
                                    Galactic longitude (l2) in degrees (returned) */
-     double *dphi;              /* B1950 declination in degrees
+    double *dphi,               /* B1950 declination in degrees
                                    Galactic latitude (b2) in degrees (returned) */
-     double epoch;              /* Besselian epoch in years */
-
-{
+    double epoch                /* Besselian epoch in years */
+ ) {
     /* Convert from B1950 to J2000 coordinates */
     fk425e( dtheta, dphi, epoch );
 
@@ -1719,14 +1696,13 @@ fk42ecl( dtheta, dphi, epoch )
 /* Convert J2000 right ascension and declination to ecliptic coordinates */
 
 void
-fk52ecl( dtheta, dphi, epoch )
-     double *dtheta;            /* J2000 right ascension in degrees
+fk52ecl(
+    double *dtheta,             /* J2000 right ascension in degrees
                                    Galactic longitude (l2) in degrees (returned) */
-     double *dphi;              /* J2000 declination in degrees
+    double *dphi,               /* J2000 declination in degrees
                                    Galactic latitude (b2) in degrees (returned) */
-     double epoch;              /* Besselian epoch in years */
-
-{
+    double epoch                /* Besselian epoch in years */
+ ) {
     int i, j;
     double t, eps0, rphi, rtheta;
     double v1[3], v2[3], r;
@@ -1748,9 +1724,7 @@ fk52ecl( dtheta, dphi, epoch )
     t = ( epoch - 2000.0 ) * 0.01;
 
     /* Mean obliquity */
-    eps0 =
-        secrad( ( 84381.448 +
-                  ( -46.8150 + ( -0.00059 + 0.001813 * t ) * t ) * t ) );
+    eps0 = secrad( ( 84381.448 + ( -46.8150 + ( -0.00059 + 0.001813 * t ) * t ) * t ) );
 
     /* Form the equatorial to ecliptic rotation matrix (IAU 1980 theory).
      *  References: Murray, C.A., Vectorial Astrometry, section 4.3.
@@ -1778,14 +1752,13 @@ fk52ecl( dtheta, dphi, epoch )
 /* Convert ecliptic coordinates to B1950 right ascension and declination */
 
 void
-ecl2fk4( dtheta, dphi, epoch )
-     double *dtheta;            /* Galactic longitude (l2) in degrees
+ecl2fk4(
+    double *dtheta,             /* Galactic longitude (l2) in degrees
                                    B1950 right ascension in degrees (returned) */
-     double *dphi;              /* Galactic latitude (b2) in degrees
+    double *dphi,               /* Galactic latitude (b2) in degrees
                                    B1950 declination in degrees (returned) */
-     double epoch;              /* Besselian epoch in years */
-
-{
+    double epoch                /* Besselian epoch in years */
+ ) {
     /* Convert from ecliptic to J2000 coordinates */
     ecl2fk5( dtheta, dphi, epoch );
 
@@ -1800,14 +1773,13 @@ ecl2fk4( dtheta, dphi, epoch )
 /* Convert ecliptic coordinates to J2000 right ascension and declination */
 
 void
-ecl2fk5( dtheta, dphi, epoch )
-     double *dtheta;            /* Galactic longitude (l2) in degrees
+ecl2fk5(
+    double *dtheta,             /* Galactic longitude (l2) in degrees
                                    J2000 right ascension in degrees  (returned) */
-     double *dphi;              /* Galactic latitude (b2) in degrees
+    double *dphi,               /* Galactic latitude (b2) in degrees
                                    J2000 declination in degrees (returned) */
-     double epoch;              /* Besselian epoch in years */
-
-{
+    double epoch                /* Besselian epoch in years */
+ ) {
     int i, j;
     double rtheta, rphi, v1[3], v2[3];
     double t, eps0, r;
@@ -1824,9 +1796,7 @@ ecl2fk5( dtheta, dphi, epoch )
     t = ( epoch - 2000.0 ) * 0.01;
 
     /* Mean obliquity */
-    eps0 =
-        secrad( ( 84381.448 +
-                  ( -46.8150 + ( -0.00059 + 0.001813 * t ) * t ) * t ) );
+    eps0 = secrad( ( 84381.448 + ( -46.8150 + ( -0.00059 + 0.001813 * t ) * t ) * t ) );
 
     /* Form the equatorial to ecliptic rotation matrix (IAU 1980 theory).
      *  References: Murray, C.A., Vectorial Astrometry, section 4.3.
@@ -1857,13 +1827,14 @@ ecl2fk5( dtheta, dphi, epoch )
 
 /* Precess coordinates between epochs in FK4 */
 void
-fk4prec( ep0, ep1, ra, dec )
-     double ep0;                /* Starting Besselian epoch */
-     double ep1;                /* Ending Besselian epoch */
-     double *ra;                /* RA in degrees mean equator & equinox of epoch ep0
+fk4prec(
+    double ep0,                 /* Starting Besselian epoch */
+    double ep1,                 /* Ending Besselian epoch */
+    double *ra,                 /* RA in degrees mean equator & equinox of epoch ep0
                                    mean equator & equinox of epoch ep1 (returned) */
-     double *dec;               /* Dec in degrees mean equator & equinox of epoch ep0
+    double *dec                 /* Dec in degrees mean equator & equinox of epoch ep0
                                    mean equator & equinox of epoch ep1 (returned) */
+ )
 /*
 **  Precession - FK4 (Bessel-Newcomb, pre-IAU1976)
 **
@@ -1903,13 +1874,14 @@ fk4prec( ep0, ep1, ra, dec )
 }
 
 void
-fk5prec( ep0, ep1, ra, dec )
-     double ep0;                /* Starting epoch */
-     double ep1;                /* Ending epoch */
-     double *ra;                /* RA in degrees mean equator & equinox of epoch ep0
+fk5prec(
+    double ep0,                 /* Starting epoch */
+    double ep1,                 /* Ending epoch */
+    double *ra,                 /* RA in degrees mean equator & equinox of epoch ep0
                                    mean equator & equinox of epoch ep1 (returned) */
-     double *dec;               /* Dec in degrees mean equator & equinox of epoch ep0
+    double *dec                 /* Dec in degrees mean equator & equinox of epoch ep0
                                    mean equator & equinox of epoch ep1 (returned) */
+ )
 /*
 **  Precession -  FK5 (Fricke, post-IAU1976)
 **
@@ -1951,11 +1923,11 @@ fk5prec( ep0, ep1, ra, dec )
 
 
 void
-mprecfk4( bep0, bep1, rmatp )
-     double bep0;               /* Beginning Besselian epoch */
-     double bep1;               /* Ending Besselian epoch */
-     double rmatp[9];           /* 3x3 Precession matrix (returned) */
-
+mprecfk4(
+    double bep0,                /* Beginning Besselian epoch */
+    double bep1,                /* Ending Besselian epoch */
+    double rmatp[9]             /* 3x3 Precession matrix (returned) */
+ )
 /*
 **  Generate the matrix of precession between two epochs,
 **  using the old, pre-IAU1976, Bessel-Newcomb model, using
@@ -1994,11 +1966,11 @@ mprecfk4( bep0, bep1, rmatp )
 
 
 void
-mprecfk5( ep0, ep1, rmatp )
-     double ep0;                /* Beginning epoch */
-     double ep1;                /* Ending epoch */
-     double rmatp[9];           /* 3x3 Precession matrix (returned) */
-
+mprecfk5(
+    double ep0,                 /* Beginning epoch */
+    double ep1,                 /* Ending epoch */
+    double rmatp[9]             /* 3x3 Precession matrix (returned) */
+ )
 /*
 **  Form the matrix of precession between two epochs (IAU 1976, FK5).
 **  Notes:
@@ -2038,14 +2010,13 @@ mprecfk5( ep0, ep1, rmatp )
 /* Make 3-D rotation matrix from up to three rotations */
 
 void
-rotmat( axes, rot1, rot2, rot3, matrix )
-     int axes;                  /* Axes about which coordinates are rotated (1=x, 2=y, 3=z) */
-     double rot1;               /* First rotation in degrees */
-     double rot2;               /* Second rotation in degrees */
-     double rot3;               /* Third rotation in degrees */
-     double *matrix;            /* 3x3 rotation matrix (returned) */
-
-{
+rotmat(
+    int axes,                   /* Axes about which coordinates are rotated (1=x, 2=y, 3=z) */
+    double rot1,                /* First rotation in degrees */
+    double rot2,                /* Second rotation in degrees */
+    double rot3,                /* Third rotation in degrees */
+    double *matrix              /* 3x3 rotation matrix (returned) */
+ ) {
     int i, j, k, naxis, iaxes, iaxis;
     double rot[3], srot, crot, *mati, w, wm[9], *wmi, matn[9];
     int axis[3];
@@ -2151,12 +2122,12 @@ rotmat( axes, rot1, rot2, rot3, matrix )
    geocentric equatorial rectangular coordinates */
 
 void
-d2v3( rra, rdec, r, pos )
-     double rra;                /* Right ascension in degrees */
-     double rdec;               /* Declination in degrees */
-     double r;                  /* Distance to object in same units as pos */
-     double pos[3];             /* x,y,z geocentric equatorial position of object (returned) */
-{
+d2v3(
+    double rra,                 /* Right ascension in degrees */
+    double rdec,                /* Declination in degrees */
+    double r,                   /* Distance to object in same units as pos */
+    double pos[3]               /* x,y,z geocentric equatorial position of object (returned) */
+ ) {
     s2v3( degrad( rra ), degrad( rdec ), r, pos );
 
     return;
@@ -2167,12 +2138,12 @@ d2v3( rra, rdec, r, pos )
    geocentric equatorial rectangular coordinates */
 
 void
-s2v3( rra, rdec, r, pos )
-     double rra;                /* Right ascension in radians */
-     double rdec;               /* Declination in radians */
-     double r;                  /* Distance to object in same units as pos */
-     double pos[3];             /* x,y,z geocentric equatorial position of object (returned) */
-{
+s2v3(
+    double rra,                 /* Right ascension in radians */
+    double rdec,                /* Declination in radians */
+    double r,                   /* Distance to object in same units as pos */
+    double pos[3]               /* x,y,z geocentric equatorial position of object (returned) */
+ ) {
     pos[0] = r * cos( rra ) * cos( rdec );
     pos[1] = r * sin( rra ) * cos( rdec );
     pos[2] = r * sin( rdec );
@@ -2185,12 +2156,12 @@ s2v3( rra, rdec, r, pos )
    right ascension and declination in degrees and distance */
 
 void
-v2d3( pos, rra, rdec, r )
-     double pos[3];             /* x,y,z geocentric equatorial position of object */
-     double *rra;               /* Right ascension in degrees (returned) */
-     double *rdec;              /* Declination in degrees (returned) */
-     double *r;                 /* Distance to object in same units as pos (returned) */
-{
+v2d3(
+    double pos[3],              /* x,y,z geocentric equatorial position of object */
+    double *rra,                /* Right ascension in degrees (returned) */
+    double *rdec,               /* Declination in degrees (returned) */
+    double *r                   /* Distance to object in same units as pos (returned) */
+ ) {
     v2s3( pos, rra, rdec, r );
     *rra = raddeg( *rra );
     *rdec = raddeg( *rdec );
@@ -2201,12 +2172,12 @@ v2d3( pos, rra, rdec, r )
    right ascension, declination, and distance */
 
 void
-v2s3( pos, rra, rdec, r )
-     double pos[3];             /* x,y,z geocentric equatorial position of object */
-     double *rra;               /* Right ascension in radians (returned) */
-     double *rdec;              /* Declination in radians (returned) */
-     double *r;                 /* Distance to object in same units as pos (returned) */
-{
+v2s3(
+    double pos[3],              /* x,y,z geocentric equatorial position of object */
+    double *rra,                /* Right ascension in radians (returned) */
+    double *rdec,               /* Declination in radians (returned) */
+    double *r                   /* Distance to object in same units as pos (returned) */
+ ) {
     double x, y, z, rxy, rxy2, z2;
 
     x = pos[0];

@@ -425,12 +425,11 @@ const char *wcsmix_errmsg[] = {
 #define signb(X) ((X) < 0.0 ? 1 : 0)
 
 int
-wcsset( naxis, ctype, wcs )
-     const int naxis;
-     const char ctype[][16];
-     struct wcsprm *wcs;
-
-{
+wcsset(
+    const int naxis,
+    const char ctype[][16],
+    struct wcsprm *wcs
+ ) {
     int nalias = 2;
     char aliases[2][4] = { "NCP", "GLS" };
 
@@ -563,19 +562,19 @@ wcsset( naxis, ctype, wcs )
 /*--------------------------------------------------------------------------*/
 
 int
-wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj, imgcrd, lin, pixcrd )
-     const char ctype[][16];
-     struct wcsprm *wcs;
-     const double world[];
-     const double crval[];
-     struct celprm *cel;
-     double *phi, *theta;
-     struct prjprm *prj;
-     double imgcrd[];
-     struct linprm *lin;
-     double pixcrd[];
-
-{
+wcsfwd(
+    const char ctype[][16],
+    struct wcsprm *wcs,
+    const double world[],
+    const double crval[],
+    struct celprm *cel,
+    double *phi,
+    double *theta,
+    struct prjprm *prj,
+    double imgcrd[],
+    struct linprm *lin,
+    double pixcrd[]
+ ) {
     int err, j;
     double offset;
 
@@ -607,8 +606,7 @@ wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj, imgcrd, lin, pixcrd )
 
 	if ( ( err =
 	       celfwd( wcs->pcode, world[wcs->lng], world[wcs->lat], cel, phi,
-	               theta, prj, &imgcrd[wcs->lng],
-	               &imgcrd[wcs->lat] ) ) ) {
+	               theta, prj, &imgcrd[wcs->lng], &imgcrd[wcs->lat] ) ) ) {
 	    return err;
 	}
 
@@ -660,19 +658,19 @@ wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj, imgcrd, lin, pixcrd )
 /*--------------------------------------------------------------------------*/
 
 int
-wcsrev( ctype, wcs, pixcrd, lin, imgcrd, prj, phi, theta, crval, cel, world )
-     const char ctype[][16];
-     struct wcsprm *wcs;
-     const double pixcrd[];
-     struct linprm *lin;
-     double imgcrd[];
-     struct prjprm *prj;
-     double *phi, *theta;
-     const double crval[];
-     struct celprm *cel;
-     double world[];
-
-{
+wcsrev(
+    const char ctype[][16],
+    struct wcsprm *wcs,
+    const double pixcrd[],
+    struct linprm *lin,
+    double imgcrd[],
+    struct prjprm *prj,
+    double *phi,
+    double *theta,
+    const double crval[],
+    struct celprm *cel,
+    double world[]
+ ) {
     int err, face, j;
     double offset;
 
@@ -749,8 +747,7 @@ wcsrev( ctype, wcs, pixcrd, lin, imgcrd, prj, phi, theta, crval, cel, world )
 
 	if ( ( err =
 	       celrev( wcs->pcode, imgcrd[wcs->lng], imgcrd[wcs->lat], prj,
-	               phi, theta, cel, &world[wcs->lng],
-	               &world[wcs->lat] ) ) ) {
+	               phi, theta, cel, &world[wcs->lng], &world[wcs->lat] ) ) ) {
 	    return err;
 	}
     }
@@ -761,23 +758,24 @@ wcsrev( ctype, wcs, pixcrd, lin, imgcrd, prj, phi, theta, crval, cel, world )
 /*--------------------------------------------------------------------------*/
 
 int
-wcsmix( ctype, wcs, mixpix, mixcel, vspan, vstep, viter, world, crval, cel,
-        phi, theta, prj, imgcrd, lin, pixcrd )
-     const char ctype[][16];
-     struct wcsprm *wcs;
-     const int mixpix, mixcel;
-     const double vspan[2], vstep;
-     int viter;
-     double world[];
-     const double crval[];
-     struct celprm *cel;
-     double *phi, *theta;
-     struct prjprm *prj;
-     double imgcrd[];
-     struct linprm *lin;
-     double pixcrd[];
-
-{
+wcsmix(
+    const char ctype[][16],
+    struct wcsprm *wcs,
+    const int mixpix,
+    const int mixcel,
+    const double vspan[2],
+    const double vstep,
+    int viter,
+    double world[],
+    const double crval[],
+    struct celprm *cel,
+    double *phi,
+    double *theta,
+    struct prjprm *prj,
+    double imgcrd[],
+    struct linprm *lin,
+    double pixcrd[]
+ ) {
     const int niter = 60;
     int crossed, err, istep, iter, j, k, nstep, retry;
     const double tol = 1.0e-10;
@@ -1269,8 +1267,7 @@ wcsmix( ctype, wcs, mixpix, mixcel, vspan, vstep, viter, world, crval, cel,
 	err = sphrev( 0.0, *theta, cel->euler, &lng, &lat );
 
 	if ( mixcel == 1 ) {
-	    if ( fabs( fmod( world[wcs->lng] - lng, 360.0 ) ) >
-	         tol ) continue;
+	    if ( fabs( fmod( world[wcs->lng] - lng, 360.0 ) ) > tol ) continue;
 	    if ( lat < span[0] ) continue;
 	    if ( lat > span[1] ) continue;
 	    world[wcs->lat] = lat;

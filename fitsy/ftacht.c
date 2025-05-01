@@ -9,19 +9,22 @@
 #include "generic.h"
 
 
-#ifdef __STDC__
 #define achtxx(ch1, type1, ch2, type2)					\
 									\
-void acht##ch1##ch2(v1, v2, npix, direction, hasscale, bscale, bzero)	\
-			type1*	v1;					\
-			type2*	v2;					\
-			int	npix;					\
-			int	direction;				\
-			int	hasscale;				\
-			double	bscale;					\
-			double	bzero;					\
+void acht##ch1##ch2(                                                    \
+			void*	v1_void,                                \
+			void*	v2_void,                                \
+			int	npix,					\
+			int	direction,				\
+			int	hasscale,				\
+    			double	bscale,					\
+    			double	bzero					\
+)                                                                       \
 {									\
-     if ( hasscale ) {							\
+    type1 *v1 = ( type1 *) v1_void;                                     \
+    type2 *v2 = ( type2 *) v2_void;                                     \
+                                                                        \
+    if ( hasscale ) {							\
 	if ( direction ) {						\
 	    while ( npix-- ) v1[npix] =  v2[npix] * bscale + bzero;	\
 	} else {							\
@@ -31,35 +34,13 @@ void acht##ch1##ch2(v1, v2, npix, direction, hasscale, bscale, bzero)	\
 	while ( npix-- ) v1[npix] = v2[npix];				\
      }									\
 }
-#else
-#define achtxx(ch1, type1, ch2, type2)					\
-									\
-void acht/**/ch1/**/ch2(v1, v2, npix, direction, hasscale, bscale, bzero)\
-			type1*	v1;					\
-			type2*	v2;					\
-			int	npix;					\
-			int	direction;				\
-			int	hasscale;				\
-			double	bscale;					\
-			double	bzero;					\
-{									\
-     if ( hasscale ) {							\
-	if ( direction ) {						\
-	    while ( npix-- ) v1[npix] =  v2[npix] * bscale + bzero;	\
-	} else {							\
-	    while ( npix-- ) v1[npix] = (v2[npix] - bzero) / bscale;	\
-	}								\
-     } else {								\
-	while ( npix-- ) v1[npix] = v2[npix];				\
-     }									\
-}
-#endif
-
 
 DOUBLE_GENERIC( achtxx )
-     static int pixtype( type )
-     int type;
-{
+
+static int
+pixtype(
+    int type
+ ) {
     switch ( type ) {
 	case 8:
 	    return TY_UCHAR;
@@ -84,46 +65,38 @@ DOUBLE_GENERIC( achtxx )
     return -1;
 }
 
+
 void
-ft_acht( type1, v1, type2, v2, npix, direction, hasscale, bscale, bzero )
-     int type1;
-     void *v1;
-     int type2;
-     void *v2;
-     int npix;
-     int direction;
-     int hasscale;
-     double bscale;
-     double bzero;
-{
-    typedef void ( *vector )( void *, void *, int, int, int, double, double );
+ft_acht(
+    int type1,
+    void *v1,
+    int type2,
+    void *v2,
+    int npix,
+    int direction,
+    int hasscale,
+    double bscale,
+    double bzero
+ ) {
+
+    /* *INDENT-OFF* */
+    typedef void (*vector)  (void *, void *, int, int, int, double, double);
 
     static vector matrix[10][10] = {
-	{achtcc, achtcs, achtci, achtcl, achtcr, achtcd, achtct, achtcu,
-	 achtcv}
-	, {achtsc, achtss, achtsi, achtsl, achtsr, achtsd, achtst, achtsu,
-	   achtsv}
-	, {achtic, achtis, achtii, achtil, achtir, achtid, achtit, achtiu,
-	   achtiv}
-	, {achtlc, achtls, achtli, achtll, achtlr, achtld, achtlt, achtlu,
-	   achtlv}
-	, {achtrc, achtrs, achtri, achtrl, achtrr, achtrd, achtrt, achtru,
-	   achtrv}
-	, {achtdc, achtds, achtdi, achtdl, achtdr, achtdd, achtdt, achtdu,
-	   achtdv}
-	, {achttc, achtts, achtti, achttl, achttr, achttd, achttt, achttu,
-	   achttv}
-	, {achtuc, achtus, achtui, achtul, achtur, achtud, achtut, achtuu,
-	   achtuv}
-	, {achtvc, achtvs, achtvi, achtvl, achtvr, achtvd, achtvt, achtvu,
-	   achtvv}
+	  {achtcc, achtcs, achtci, achtcl, achtcr, achtcd, achtct, achtcu, achtcv}
+	, {achtsc, achtss, achtsi, achtsl, achtsr, achtsd, achtst, achtsu, achtsv}
+	, {achtic, achtis, achtii, achtil, achtir, achtid, achtit, achtiu, achtiv}
+	, {achtlc, achtls, achtli, achtll, achtlr, achtld, achtlt, achtlu, achtlv}
+	, {achtrc, achtrs, achtri, achtrl, achtrr, achtrd, achtrt, achtru, achtrv}
+	, {achtdc, achtds, achtdi, achtdl, achtdr, achtdd, achtdt, achtdu, achtdv}
+	, {achttc, achtts, achtti, achttl, achttr, achttd, achttt, achttu, achttv}
+	, {achtuc, achtus, achtui, achtul, achtur, achtud, achtut, achtuu, achtuv}
+	, {achtvc, achtvs, achtvi, achtvl, achtvr, achtvd, achtvt, achtvu, achtvv}
     };
+    /* *INDENT-ON* */
 
     type1 = pixtype( type1 );
     type2 = pixtype( type2 );
-
     if ( type1 < 0 || type2 < 0 ) return;
-
-    ( *matrix[type1][type2] ) ( v1, v2, npix, direction, hasscale, bscale,
-                                bzero );
+    ( *matrix[type1][type2] ) ( v1, v2, npix, direction, hasscale, bscale, bzero );
 }

@@ -41,11 +41,9 @@
 #ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
-#ifdef __STDC__
+
 #include <stdarg.h>
-#else
-#include <varargs.h>
-#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -122,46 +120,46 @@ typedef struct {
   int crlen;
 } *GIO, GIORec, GFile;
 
-_PRbeg
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-GIO gopen _PRx((char *name, char *mode));
-GIO gmemopen _PRx((char *buf, off_t len, char *mode));
-void *_gread _PRx((GIO gio, char *buf, size_t size, size_t n, size_t *got));
-size_t gread _PRx((GIO gio, char *buf, size_t size, size_t n));
-size_t gwrite _PRx((GIO gio, char *buf, size_t size, size_t n));
-void *ggets _PRx((GIO gio, char *buf, int len));
-int gflush _PRx((GIO gio));
+GIO gopen (char *name, char *mode);
+GIO gmemopen (char *buf, off_t len, char *mode);
+void *_gread (GIO gio, char *buf, size_t size, size_t n, size_t *got);
+size_t gread (GIO gio, char *buf, size_t size, size_t n);
+size_t gwrite (GIO gio, char *buf, size_t size, size_t n);
+void *ggets (GIO gio, char *buf, int len);
+int gflush (GIO gio);
 
-off_t gseek _PRx((GIO gio, off_t offset, int whence));
-off_t gtell _PRx((GIO gio));
-int gskip _PRx((GIO gio, off_t n));
-int ginfo _PRx((GIO gio, 
-		char **name, int *type, off_t *cur, char **buf, int *len));
-void gfreebuf _PRx((GIO gio, void *buf));
-void gclose _PRx((GIO gio));
-int setgerror _PRx((int flag));
-char *gerrorstring _PRx((void));
-#ifdef __STDC__
+off_t gseek (GIO gio, off_t offset, int whence);
+off_t gtell (GIO gio);
+int gskip (GIO gio, off_t n);
+int ginfo (GIO gio, 
+		char **name, int *type, off_t *cur, char **buf, int *len);
+void gfreebuf (GIO gio, void *buf);
+void gclose (GIO gio);
+int setgerror (int flag);
+char *gerrorstring (void);
+
 int gprintf(GIO gio, char *format, ...);
 void gerror(FILE *fd, char *format, ...);
 void gwarning(FILE *fd, char *format, ...);
-#else
-int gprintf();
-void gerror();
-void gwarning();
-#endif
-int setgwarning _PRx((int flag));
-char *gwarningstring _PRx((void));
-void gsleep _PRx((int millisec));
+
+int setgwarning (int flag);
+char *gwarningstring (void);
+void gsleep (int millisec);
 
 #if USE_FTELLO
-off_t ftello _PRx((FILE *stream));
+off_t ftello (FILE *stream);
 #endif
 #if USE_FSEEKO
-int fseeko _PRx((FILE *stream, off_t offset, int whence));
+int fseeko (FILE *stream, off_t offset, int whence);
 #endif
 
-_PRend
+#ifdef __cplusplus
+}
+#endif
 
 #define _gio_h
 

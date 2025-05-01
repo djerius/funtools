@@ -41,21 +41,17 @@
 #include <stdio.h>
 #include "wcs.h"
 
-int
-platepos( xpix, ypix, wcs, xpos, ypos )
+int platepos(
 /* Routine to determine accurate position for pixel coordinates */
 /* returns 0 if successful otherwise 1 = angle too large for projection; */
 /* based on amdpos() from getimage */
 /* Input: */
-     double xpix;               /* x pixel number  (RA or long without rotation) */
-     double ypix;               /* y pixel number  (dec or lat without rotation) */
-     struct WorldCoor *wcs;     /* WCS parameter structure */
-
-/* Output: */
-     double *xpos;              /* Right ascension or longitude in degrees */
-     double *ypos;              /* Declination or latitude in degrees */
-
-{
+    double xpix,                /* x pixel number  (RA or long without rotation) */
+    double ypix,                /* y pixel number  (dec or lat without rotation) */
+    struct WorldCoor *wcs,      /* WCS parameter structure */
+    double *xpos,               /* Right ascension or longitude in degrees */
+    double *ypos                /* Declination or latitude in degrees */
+ ) {
     double x, y, x2, y2, x3, y3, r2;
     double xi, xir, eta, etar, raoff, ra, dec, ra0, dec0;
     double twopi = 6.28318530717959;
@@ -78,29 +74,25 @@ platepos( xpix, ypix, wcs, xpos, ypos )
 
     /*  Compute xi,eta coordinates in degrees from x,y and plate model */
     xi = wcs->x_coeff[0] + wcs->x_coeff[1] * x +
-        wcs->x_coeff[2] * y + wcs->x_coeff[3] * x2 +
-        wcs->x_coeff[4] * y2 + wcs->x_coeff[5] * x * y;
+        wcs->x_coeff[2] * y + wcs->x_coeff[3] * x2 + wcs->x_coeff[4] * y2 + wcs->x_coeff[5] * x * y;
 
     if ( ncoeff1 > 6 )
 	xi = xi + wcs->x_coeff[6] * x3 + wcs->x_coeff[7] * y3;
 
     if ( ncoeff1 > 8 ) {
 	xi = xi + wcs->x_coeff[8] * x2 * y + wcs->x_coeff[9] * x * y2 +
-	    wcs->x_coeff[10] * ( r2 ) + wcs->x_coeff[11] * x * r2 +
-	    wcs->x_coeff[12] * y * r2;
+	    wcs->x_coeff[10] * ( r2 ) + wcs->x_coeff[11] * x * r2 + wcs->x_coeff[12] * y * r2;
     }
 
     eta = wcs->y_coeff[0] + wcs->y_coeff[1] * x +
-        wcs->y_coeff[2] * y + wcs->y_coeff[3] * x2 +
-        wcs->y_coeff[4] * y2 + wcs->y_coeff[5] * x * y;
+        wcs->y_coeff[2] * y + wcs->y_coeff[3] * x2 + wcs->y_coeff[4] * y2 + wcs->y_coeff[5] * x * y;
 
     if ( ncoeff2 > 6 )
 	eta = eta + wcs->y_coeff[6] * x3 + wcs->y_coeff[7] * y3;
 
     if ( ncoeff2 > 8 ) {
 	eta = eta + wcs->y_coeff[8] * x2 * y + wcs->y_coeff[9] * y2 * x +
-	    wcs->y_coeff[10] * r2 + wcs->y_coeff[11] * x * r2 +
-	    wcs->y_coeff[12] * y * r2;
+	    wcs->y_coeff[10] * r2 + wcs->y_coeff[11] * x * r2 + wcs->y_coeff[12] * y * r2;
     }
 
     /* Convert to radians */
@@ -117,29 +109,23 @@ platepos( xpix, ypix, wcs, xpos, ypos )
     if ( ra < 0.0 ) ra = ra + twopi;
     *xpos = raddeg( ra );
 
-    dec =
-        atan( cos( raoff ) /
-              ( ( 1.0 - ( etar * ctan ) ) / ( etar + ctan ) ) );
+    dec = atan( cos( raoff ) / ( ( 1.0 - ( etar * ctan ) ) / ( etar + ctan ) ) );
     *ypos = raddeg( dec );
     return 0;
 }
 
 
-int
-platepix( xpos, ypos, wcs, xpix, ypix )
+int platepix(
 /* Routine to determine pixel coordinates for sky position */
 /* returns 0 if successful otherwise 1 = angle too large for projection; */
 /* based on amdinv() from getimage */
 /* Input: */
-     double xpos;               /* Right ascension or longitude in degrees */
-     double ypos;               /* Declination or latitude in degrees */
-     struct WorldCoor *wcs;     /* WCS parameter structure */
-
-/* Output: */
-     double *xpix;              /* x pixel number  (RA or long without rotation) */
-     double *ypix;              /* y pixel number  (dec or lat without rotation) */
-
-{
+    double xpos,                /* Right ascension or longitude in degrees */
+    double ypos,                /* Declination or latitude in degrees */
+    struct WorldCoor *wcs,      /* WCS parameter structure */
+    double *xpix,               /* x pixel number  (RA or long without rotation) */
+    double *ypix                /* y pixel number  (dec or lat without rotation) */
+ ) {
     double xi, eta, x, y, xy, x2, y2, x2y, y2x, x3, y3, r2, dx, dy;
     double tdec, ctan, ccos, traoff, craoff, etar, xir;
     double f, fx, fy, g, gx, gy;
@@ -196,12 +182,10 @@ platepix( xpos, ypos, wcs, xpix, ypix )
 	    wcs->x_coeff[4] * y2 + wcs->x_coeff[5] * xy;
 
 	/*  Derivative of X model wrt x */
-	fx = wcs->x_coeff[1] + wcs->x_coeff[3] * 2.0 * x +
-	    wcs->x_coeff[5] * y;
+	fx = wcs->x_coeff[1] + wcs->x_coeff[3] * 2.0 * x + wcs->x_coeff[5] * y;
 
 	/* Derivative of X model wrt y */
-	fy = wcs->x_coeff[2] + wcs->x_coeff[4] * 2.0 * y +
-	    wcs->x_coeff[5] * x;
+	fy = wcs->x_coeff[2] + wcs->x_coeff[4] * 2.0 * y + wcs->x_coeff[5] * x;
 
 	if ( ncoeff1 > 6 ) {
 	    f = f + wcs->x_coeff[6] * x3 + wcs->x_coeff[7] * y3;
@@ -212,20 +196,17 @@ platepix( xpos, ypos, wcs, xpix, ypix )
 	if ( ncoeff1 > 8 ) {
 	    f = f +
 	        wcs->x_coeff[8] * x2y + wcs->x_coeff[9] * y2x +
-	        wcs->x_coeff[10] * r2 + wcs->x_coeff[11] * x * r2 +
-	        wcs->x_coeff[12] * y * r2;
+	        wcs->x_coeff[10] * r2 + wcs->x_coeff[11] * x * r2 + wcs->x_coeff[12] * y * r2;
 
 	    fx = fx + wcs->x_coeff[8] * 2.0 * xy +
 	        wcs->x_coeff[9] * y2 +
 	        wcs->x_coeff[10] * 2.0 * x +
-	        wcs->x_coeff[11] * ( 3.0 * x2 + y2 ) +
-	        wcs->x_coeff[12] * 2.0 * xy;
+	        wcs->x_coeff[11] * ( 3.0 * x2 + y2 ) + wcs->x_coeff[12] * 2.0 * xy;
 
 	    fy = fy + wcs->x_coeff[8] * x2 +
 	        wcs->x_coeff[9] * 2.0 * xy +
 	        wcs->x_coeff[10] * 2.0 * y +
-	        wcs->x_coeff[11] * 2.0 * xy +
-	        wcs->x_coeff[12] * ( 3.0 * y2 + x2 );
+	        wcs->x_coeff[11] * 2.0 * xy + wcs->x_coeff[12] * ( 3.0 * y2 + x2 );
 	}
 
 	/* Y plate model */
@@ -234,12 +215,10 @@ platepix( xpos, ypos, wcs, xpix, ypix )
 	    wcs->y_coeff[4] * y2 + wcs->y_coeff[5] * xy;
 
 	/* Derivative of Y model wrt x */
-	gx = wcs->y_coeff[1] + wcs->y_coeff[3] * 2.0 * x +
-	    wcs->y_coeff[5] * y;
+	gx = wcs->y_coeff[1] + wcs->y_coeff[3] * 2.0 * x + wcs->y_coeff[5] * y;
 
 	/* Derivative of Y model wrt y */
-	gy = wcs->y_coeff[2] + wcs->y_coeff[4] * 2.0 * y +
-	    wcs->y_coeff[5] * x;
+	gy = wcs->y_coeff[2] + wcs->y_coeff[4] * 2.0 * y + wcs->y_coeff[5] * x;
 
 	if ( ncoeff2 > 6 ) {
 	    g = g + wcs->y_coeff[6] * x3 + wcs->y_coeff[7] * y3;
@@ -250,20 +229,17 @@ platepix( xpos, ypos, wcs, xpix, ypix )
 	if ( ncoeff2 > 8 ) {
 	    g = g +
 	        wcs->y_coeff[8] * x2y + wcs->y_coeff[9] * y2x +
-	        wcs->y_coeff[10] * r2 + wcs->y_coeff[11] * x * r2 +
-	        wcs->y_coeff[12] * y * r2;
+	        wcs->y_coeff[10] * r2 + wcs->y_coeff[11] * x * r2 + wcs->y_coeff[12] * y * r2;
 
 	    gx = gx + wcs->y_coeff[8] * 2.0 * xy +
 	        wcs->y_coeff[9] * y2 +
 	        wcs->y_coeff[10] * 2.0 * x +
-	        wcs->y_coeff[11] * ( 3.0 * x2 + y2 ) +
-	        wcs->y_coeff[12] * 2.0 * xy;
+	        wcs->y_coeff[11] * ( 3.0 * x2 + y2 ) + wcs->y_coeff[12] * 2.0 * xy;
 
 	    gy = gy + wcs->y_coeff[8] * x2 +
 	        wcs->y_coeff[9] * 2.0 * xy +
 	        wcs->y_coeff[10] * 2.0 * y +
-	        wcs->y_coeff[11] * 2.0 * xy +
-	        wcs->y_coeff[12] * ( 3.0 * y2 + x2 );
+	        wcs->y_coeff[11] * 2.0 * xy + wcs->y_coeff[12] * ( 3.0 * y2 + x2 );
 	}
 
 	f = f - xi;
@@ -291,13 +267,12 @@ platepix( xpos, ypos, wcs, xpix, ypix )
 
 /* Set plate fit coefficients in structure from arguments */
 int
-SetPlate( wcs, ncoeff1, ncoeff2, coeff )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     int ncoeff1;               /* Number of coefficients for x */
-     int ncoeff2;               /* Number of coefficients for y */
-     double *coeff;             /* Plate fit coefficients */
-
-{
+SetPlate(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    int ncoeff1,                /* Number of coefficients for x */
+    int ncoeff2,                /* Number of coefficients for y */
+    double *coeff               /* Plate fit coefficients */
+ ) {
     int i;
 
     if ( nowcs( wcs ) || ( ncoeff1 < 1 && ncoeff2 < 1 ) )
@@ -326,13 +301,12 @@ SetPlate( wcs, ncoeff1, ncoeff2, coeff )
 
 /* Return plate fit coefficients from structure in arguments */
 int
-GetPlate( wcs, ncoeff1, ncoeff2, coeff )
-     struct WorldCoor *wcs;     /* World coordinate system structure */
-     int *ncoeff1;              /* Number of coefficients for x */
-     int *ncoeff2;              /* Number of coefficients for y) */
-     double *coeff;             /* Plate fit coefficients */
-
-{
+GetPlate(
+    struct WorldCoor *wcs,      /* World coordinate system structure */
+    int *ncoeff1,               /* Number of coefficients for x */
+    int *ncoeff2,               /* Number of coefficients for y) */
+    double *coeff               /* Plate fit coefficients */
+ ) {
     int i;
 
     if ( nowcs( wcs ) )
@@ -353,11 +327,10 @@ GetPlate( wcs, ncoeff1, ncoeff2, coeff )
 
 /* Set FITS header plate fit coefficients from structure */
 void
-SetFITSPlate( header, wcs )
-     char *header;              /* Image FITS header */
-     struct WorldCoor *wcs;     /* WCS structure */
-
-{
+SetFITSPlate(
+    char *header,               /* Image FITS header */
+    struct WorldCoor *wcs       /* WCS structure */
+ ) {
     char keyword[16];
     int i;
 
