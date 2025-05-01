@@ -100,130 +100,140 @@
 
 const double tol = 1.0e-5;
 
-int sphfwd (lng, lat, eul, phi, theta)
-
-const double lat, lng, eul[5];
-double *phi, *theta;
+int
+sphfwd( lng, lat, eul, phi, theta )
+     const double lat, lng, eul[5];
+     double *phi, *theta;
 
 {
-   double coslat, coslng, dlng, dphi, sinlat, sinlng, x, y, z;
+    double coslat, coslng, dlng, dphi, sinlat, sinlng, x, y, z;
 
-   coslat = cosdeg (lat);
-   sinlat = sindeg (lat);
+    coslat = cosdeg( lat );
+    sinlat = sindeg( lat );
 
-   dlng = lng - eul[0];
-   coslng = cosdeg (dlng);
-   sinlng = sindeg (dlng);
+    dlng = lng - eul[0];
+    coslng = cosdeg( dlng );
+    sinlng = sindeg( dlng );
 
-   /* Compute the native longitude. */
-   x = sinlat*eul[4] - coslat*eul[3]*coslng;
-   if (fabs(x) < tol) {
-      /* Rearrange formula to reduce roundoff errors. */
-      x = -cosdeg (lat+eul[1]) + coslat*eul[3]*(1.0 - coslng);
-   }
-   y = -coslat*sinlng;
-   if (x != 0.0 || y != 0.0) {
-      dphi = atan2deg (y, x);
-   } else {
-      /* Change of origin of longitude. */
-      dphi = dlng - 180.0;
-   }
-   *phi = eul[2] + dphi;
+    /* Compute the native longitude. */
+    x = sinlat * eul[4] - coslat * eul[3] * coslng;
+    if ( fabs( x ) < tol ) {
+	/* Rearrange formula to reduce roundoff errors. */
+	x = -cosdeg( lat + eul[1] ) + coslat * eul[3] * ( 1.0 - coslng );
+    }
+    y = -coslat * sinlng;
+    if ( x != 0.0 || y != 0.0 ) {
+	dphi = atan2deg( y, x );
+    }
+    else {
+	/* Change of origin of longitude. */
+	dphi = dlng - 180.0;
+    }
+    *phi = eul[2] + dphi;
 
-   /* Normalize the native longitude. */
-   if (*phi > 180.0) {
-      *phi -= 360.0;
-   } else if (*phi < -180.0) {
-      *phi += 360.0;
-   }
+    /* Normalize the native longitude. */
+    if ( *phi > 180.0 ) {
+	*phi -= 360.0;
+    }
+    else if ( *phi < -180.0 ) {
+	*phi += 360.0;
+    }
 
-   /* Compute the native latitude. */
-   if (fmod(dlng,180.0) == 0.0) {
-      *theta = lat + coslng*eul[1];
-      if (*theta >  90.0) *theta =  180.0 - *theta;
-      if (*theta < -90.0) *theta = -180.0 - *theta;
-   } else {
-      z = sinlat*eul[3] + coslat*eul[4]*coslng;
-      /* Use an alternative formula for greater numerical accuracy. */
-      if (fabs(z) > 0.99) {
-	if (z < 0)
-           *theta = -acosdeg (sqrt(x*x+y*y));
-	else
-           *theta =  acosdeg (sqrt(x*x+y*y));
-      } else {
-         *theta = asindeg (z);
-      }
-   }
+    /* Compute the native latitude. */
+    if ( fmod( dlng, 180.0 ) == 0.0 ) {
+	*theta = lat + coslng * eul[1];
+	if ( *theta > 90.0 ) *theta = 180.0 - *theta;
+	if ( *theta < -90.0 ) *theta = -180.0 - *theta;
+    }
+    else {
+	z = sinlat * eul[3] + coslat * eul[4] * coslng;
+	/* Use an alternative formula for greater numerical accuracy. */
+	if ( fabs( z ) > 0.99 ) {
+	    if ( z < 0 )
+		*theta = -acosdeg( sqrt( x * x + y * y ) );
+	    else
+		*theta = acosdeg( sqrt( x * x + y * y ) );
+	}
+	else {
+	    *theta = asindeg( z );
+	}
+    }
 
-   return 0;
+    return 0;
 }
 
 /*-----------------------------------------------------------------------*/
 
-int sphrev (phi, theta, eul, lng, lat)
-
-const double phi, theta, eul[5];
-double *lng, *lat;
+int
+sphrev( phi, theta, eul, lng, lat )
+     const double phi, theta, eul[5];
+     double *lng, *lat;
 
 {
-   double cosphi, costhe, dlng, dphi, sinphi, sinthe, x, y, z;
+    double cosphi, costhe, dlng, dphi, sinphi, sinthe, x, y, z;
 
-   costhe = cosdeg (theta);
-   sinthe = sindeg (theta);
+    costhe = cosdeg( theta );
+    sinthe = sindeg( theta );
 
-   dphi = phi - eul[2];
-   cosphi = cosdeg (dphi);
-   sinphi = sindeg (dphi);
+    dphi = phi - eul[2];
+    cosphi = cosdeg( dphi );
+    sinphi = sindeg( dphi );
 
-   /* Compute the celestial longitude. */
-   x = sinthe*eul[4] - costhe*eul[3]*cosphi;
-   if (fabs(x) < tol) {
-      /* Rearrange formula to reduce roundoff errors. */
-      x = -cosdeg (theta+eul[1]) + costhe*eul[3]*(1.0 - cosphi);
-   }
-   y = -costhe*sinphi;
-   if (x != 0.0 || y != 0.0) {
-      dlng = atan2deg (y, x);
-   } else {
-      /* Change of origin of longitude. */
-      dlng = dphi + 180.0;
-   }
-   *lng = eul[0] + dlng;
+    /* Compute the celestial longitude. */
+    x = sinthe * eul[4] - costhe * eul[3] * cosphi;
+    if ( fabs( x ) < tol ) {
+	/* Rearrange formula to reduce roundoff errors. */
+	x = -cosdeg( theta + eul[1] ) + costhe * eul[3] * ( 1.0 - cosphi );
+    }
+    y = -costhe * sinphi;
+    if ( x != 0.0 || y != 0.0 ) {
+	dlng = atan2deg( y, x );
+    }
+    else {
+	/* Change of origin of longitude. */
+	dlng = dphi + 180.0;
+    }
+    *lng = eul[0] + dlng;
 
-   /* Normalize the celestial longitude. */
-   if (eul[0] >= 0.0) {
-      if (*lng < 0.0) *lng += 360.0;
-   } else {
-      if (*lng > 0.0) *lng -= 360.0;
-   }
+    /* Normalize the celestial longitude. */
+    if ( eul[0] >= 0.0 ) {
+	if ( *lng < 0.0 ) *lng += 360.0;
+    }
+    else {
+	if ( *lng > 0.0 ) *lng -= 360.0;
+    }
 
-   if (*lng > 360.0) {
-      *lng -= 360.0;
-   } else if (*lng < -360.0) {
-      *lng += 360.0;
-   }
+    if ( *lng > 360.0 ) {
+	*lng -= 360.0;
+    }
+    else if ( *lng < -360.0 ) {
+	*lng += 360.0;
+    }
 
-   /* Compute the celestial latitude. */
-   if (fmod(dphi,180.0) == 0.0) {
-      *lat = theta + cosphi*eul[1];
-      if (*lat >  90.0) *lat =  180.0 - *lat;
-      if (*lat < -90.0) *lat = -180.0 - *lat;
-   } else {
-      z = sinthe*eul[3] + costhe*eul[4]*cosphi;
+    /* Compute the celestial latitude. */
+    if ( fmod( dphi, 180.0 ) == 0.0 ) {
+	*lat = theta + cosphi * eul[1];
+	if ( *lat > 90.0 ) *lat = 180.0 - *lat;
+	if ( *lat < -90.0 ) *lat = -180.0 - *lat;
+    }
+    else {
+	z = sinthe * eul[3] + costhe * eul[4] * cosphi;
 
-      /* Use an alternative formula for greater numerical accuracy. */
-      if (fabs(z) > 0.99) {
-	 if (z < 0)
-            *lat = -acosdeg (sqrt(x*x+y*y));
-	 else
-            *lat =  acosdeg (sqrt(x*x+y*y));
-      } else {
-         *lat = asindeg (z);
-      }
-   }
+	/* Use an alternative formula for greater numerical accuracy. */
+	if ( fabs( z ) > 0.99 ) {
+	    if ( z < 0 )
+		*lat = -acosdeg( sqrt( x * x + y * y ) );
+	    else
+		*lat = acosdeg( sqrt( x * x + y * y ) );
+	}
+	else {
+	    *lat = asindeg( z );
+	}
+    }
 
-   return 0;
+    return 0;
 }
+
 /* Dec 20 1999	Doug Mink - Change cosd() and sind() to cosdeg() and sindeg()
  * Dec 20 1999	Doug Mink - Include wcslib.h, which includes wcstrig.h, sph.h
  * Dec 20 1999	Doug Mink - Define copysign only if it is not already defined

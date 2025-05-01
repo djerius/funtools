@@ -31,57 +31,59 @@
 
    Returns #card;
  */
-FITSCard ft_cardins(fits, card, here)
-	FITSHead         fits;		/* FITS header.			*/
-	FITSCard	 card;		/* FITS card to insert, append or
-					   delete.			*/
-	FITSCard	 here;		/* Insert #card after #here	*/
+FITSCard
+ft_cardins( fits, card, here )
+     FITSHead fits;             /* FITS header.                 */
+     FITSCard card;             /* FITS card to insert, append or
+                                   delete.                      */
+     FITSCard here;             /* Insert #card after #here     */
 {
 
-	if ( fits == NULL )		return NULL;
-	if ( fits->cards == NULL ) 	return NULL;
-	if ( card == NULL ) 		return NULL;
+    if ( fits == NULL ) return NULL;
+    if ( fits->cards == NULL ) return NULL;
+    if ( card == NULL ) return NULL;
 
-	if ( fits->index ) (void)Free(fits->index);
+    if ( fits->index ) ( void ) Free( fits->index );
 
-	if ( fits->ncard+1 > fits->acard ) {
-		int	hereoffset = 0;
+    if ( fits->ncard + 1 > fits->acard ) {
+	int hereoffset = 0;
 
-	    if ( here != NULL ) hereoffset = here - fits->cards;
+	if ( here != NULL ) hereoffset = here - fits->cards;
 
-	    if ( fits->mem != FT_MALLOC ) return NULL;
+	if ( fits->mem != FT_MALLOC ) return NULL;
 
-	    fits->acard += FT_CARDS;
-	    /* fits->data  = fits->acard * FT_CARDLEN; */
-	    (void)ReAlloc(fits->cards, sizeof(FITSBuff) * fits->acard + 1);
-	    /* make sure there is a null at the end (EGM) */
-	    ((char *)fits->cards)[sizeof(FITSBuff) * fits->acard] = '\0';
+	fits->acard += FT_CARDS;
+	/* fits->data  = fits->acard * FT_CARDLEN; */
+	( void ) ReAlloc( fits->cards, sizeof( FITSBuff ) * fits->acard + 1 );
+	/* make sure there is a null at the end (EGM) */
+	( ( char * ) fits->cards )[sizeof( FITSBuff ) * fits->acard] = '\0';
 
-	    if ( here != NULL ) here = fits->cards + hereoffset;
+	if ( here != NULL ) here = fits->cards + hereoffset;
 
-	    ft_cardclr(&fits->cards[fits->acard-FT_CARDS], FT_CARDS);
-	} 
+	ft_cardclr( &fits->cards[fits->acard - FT_CARDS], FT_CARDS );
+    }
 
-	if ( here == NULL ) here = &fits->cards[fits->ncard-2];
+    if ( here == NULL ) here = &fits->cards[fits->ncard - 2];
 
-	memmove(here+2, here+1
-		, (&fits->cards[fits->ncard-1]-here) * sizeof(FITSBuff));
-	memmove(here+1, card  , sizeof(FITSBuff));
+    memmove( here + 2, here + 1,
+             ( &fits->cards[fits->ncard - 1] - here ) * sizeof( FITSBuff ) );
+    memmove( here + 1, card, sizeof( FITSBuff ) );
 
-	fits->ncard++;
+    fits->ncard++;
 
-	return (here+1);
+    return ( here + 1 );
 }
 
 /* Append a card to the end of the FITS header.
 
    Retuns #card.
  */
-FITSCard ft_cardapp(fits, card)
-	FITSHead         fits;
-	FITSCard	 card;
+FITSCard
+ft_cardapp( fits, card )
+     FITSHead fits;
+     FITSCard card;
 {
-	 return ft_cardins(fits, card, NULL);
+    return ft_cardins( fits, card, NULL );
 }
 
 /* Delete a card from a FITS header.
@@ -89,19 +91,20 @@ FITSCard ft_cardapp(fits, card)
    Returns #card which now points the the card after
    the one deleted
  */
-FITSCard ft_carddel(fits, card)
-	FITSHead         fits;
-	FITSCard	 card;
+FITSCard
+ft_carddel( fits, card )
+     FITSHead fits;
+     FITSCard card;
 {
-	if ( fits == NULL ) return NULL;
-	if ( card == NULL ) return NULL;
+    if ( fits == NULL ) return NULL;
+    if ( card == NULL ) return NULL;
 
-	(void)Free(fits->index);
-	memmove(card, card+1, (ft_last(fits) - card) * sizeof(FITSBuff));
-	ft_cardclr(ft_last(fits), 1);
+    ( void ) Free( fits->index );
+    memmove( card, card + 1,
+             ( ft_last( fits ) - card ) * sizeof( FITSBuff ) );
+    ft_cardclr( ft_last( fits ), 1 );
 
-	fits->ncard--;
+    fits->ncard--;
 
-	return card;
+    return card;
 }
-

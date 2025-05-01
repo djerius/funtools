@@ -91,288 +91,290 @@
 #include "wcs.h"
 
 int
-worldpos (xpix, ypix, wcs, xpos, ypos)
-
+worldpos( xpix, ypix, wcs, xpos, ypos )
 /* Routine to determine accurate position for pixel coordinates */
 /* returns 0 if successful otherwise 1 = angle too large for projection; */
 /* does: -SIN, -TAN, -ARC, -NCP, -GLS or -SFL, -MER, -AIT projections */
 /* anything else is linear */
-
 /* Input: */
-double	xpix;		/* x pixel number  (RA or long without rotation) */
-double	ypix;		/* y pixel number  (Dec or lat without rotation) */
-struct WorldCoor *wcs;		/* WCS parameter structure */
+     double xpix;               /* x pixel number  (RA or long without rotation) */
+     double ypix;               /* y pixel number  (Dec or lat without rotation) */
+     struct WorldCoor *wcs;     /* WCS parameter structure */
 
 /* Output: */
-double	*xpos;		/* x (RA) coordinate (deg) */
-double	*ypos;		/* y (dec) coordinate (deg) */
+     double *xpos;              /* x (RA) coordinate (deg) */
+     double *ypos;              /* y (dec) coordinate (deg) */
 
 {
-  double cosr, sinr, dx, dy, dz, tx;
-  double sins, coss, dt, l, m, mg, da, dd, cos0, sin0;
-  double rat = 0.0;
-  double dect = 0.0;
-  double mt, a, y0, td, r2;  /* allan: for COE */
-  double dec0, ra0, decout, raout;
-  double geo1, geo2, geo3;
-  double cond2r=1.745329252e-2;
-  double twopi = 6.28318530717959;
-  double deps = 1.0e-5;
+    double cosr, sinr, dx, dy, dz, tx;
+    double sins, coss, dt, l, m, mg, da, dd, cos0, sin0;
+    double rat = 0.0;
+    double dect = 0.0;
+    double mt, a, y0, td, r2;   /* allan: for COE */
+    double dec0, ra0, decout, raout;
+    double geo1, geo2, geo3;
+    double cond2r = 1.745329252e-2;
+    double twopi = 6.28318530717959;
+    double deps = 1.0e-5;
 
-  /* Structure elements */
-  double xref;		/* X reference coordinate value (deg) */
-  double yref;		/* Y reference coordinate value (deg) */
-  double xrefpix;	/* X reference pixel */
-  double yrefpix;	/* Y reference pixel */
-  double xinc;		/* X coordinate increment (deg) */
-  double yinc;		/* Y coordinate increment (deg) */
-  double rot;		/* Optical axis rotation (deg)  (N through E) */
-  int itype = wcs->prjcode;
+    /* Structure elements */
+    double xref;                /* X reference coordinate value (deg) */
+    double yref;                /* Y reference coordinate value (deg) */
+    double xrefpix;             /* X reference pixel */
+    double yrefpix;             /* Y reference pixel */
+    double xinc;                /* X coordinate increment (deg) */
+    double yinc;                /* Y coordinate increment (deg) */
+    double rot;                 /* Optical axis rotation (deg)  (N through E) */
+    int itype = wcs->prjcode;
 
-  /* Set local projection parameters */
-  xref = wcs->xref;
-  yref = wcs->yref;
-  xrefpix = wcs->xrefpix;
-  yrefpix = wcs->yrefpix;
-  xinc = wcs->xinc;
-  yinc = wcs->yinc;
-  rot = degrad (wcs->rot);
-  cosr = cos (rot);
-  sinr = sin (rot);
+    /* Set local projection parameters */
+    xref = wcs->xref;
+    yref = wcs->yref;
+    xrefpix = wcs->xrefpix;
+    yrefpix = wcs->yrefpix;
+    xinc = wcs->xinc;
+    yinc = wcs->yinc;
+    rot = degrad( wcs->rot );
+    cosr = cos( rot );
+    sinr = sin( rot );
 
-  /* Offset from ref pixel */
-  dx = xpix - xrefpix;
-  dy = ypix - yrefpix;
+    /* Offset from ref pixel */
+    dx = xpix - xrefpix;
+    dy = ypix - yrefpix;
 
-  /* Scale and rotate using CD matrix */
-  if (wcs->rotmat) {
-    tx = dx * wcs->cd[0] + dy * wcs->cd[1];
-    dy = dx * wcs->cd[2] + dy * wcs->cd[3];
-    dx = tx;
+    /* Scale and rotate using CD matrix */
+    if ( wcs->rotmat ) {
+	tx = dx * wcs->cd[0] + dy * wcs->cd[1];
+	dy = dx * wcs->cd[2] + dy * wcs->cd[3];
+	dx = tx;
     }
 
-  /* Scale and rotate using CDELTn and CROTA2 */
-  else {
+    /* Scale and rotate using CDELTn and CROTA2 */
+    else {
 
-    /* Check axis increments - bail out if either 0 */
-    if ((xinc==0.0) || (yinc==0.0)) {
-      *xpos=0.0;
-      *ypos=0.0;
-      return 2;
-      }
+	/* Check axis increments - bail out if either 0 */
+	if ( ( xinc == 0.0 ) || ( yinc == 0.0 ) ) {
+	    *xpos = 0.0;
+	    *ypos = 0.0;
+	    return 2;
+	}
 
-    /* Scale using CDELT */
-    dx = dx * xinc;
-    dy = dy * yinc;
+	/* Scale using CDELT */
+	dx = dx * xinc;
+	dy = dy * yinc;
 
-    /* Take out rotation from CROTA */
-    if (rot != 0.0) {
-      tx = dx * cosr - dy * sinr;
-      dy = dx * sinr + dy * cosr;
-      dx = tx;
-      }
+	/* Take out rotation from CROTA */
+	if ( rot != 0.0 ) {
+	    tx = dx * cosr - dy * sinr;
+	    dy = dx * sinr + dy * cosr;
+	    dx = tx;
+	}
     }
 
-  /* Flip coordinates if necessary */
-  if (wcs->coorflip) {
-    tx = dx;
-    dx = dy;
-    dy = tx;
+    /* Flip coordinates if necessary */
+    if ( wcs->coorflip ) {
+	tx = dx;
+	dx = dy;
+	dy = tx;
     }
 
-  /* Default, linear result for error or pixel return  */
-  *xpos = xref + dx;
-  *ypos = yref + dy;
-  if (itype <= 0)
+    /* Default, linear result for error or pixel return  */
+    *xpos = xref + dx;
+    *ypos = yref + dy;
+    if ( itype <= 0 )
+	return 0;
+
+    /* Convert to radians  */
+    if ( wcs->coorflip ) {
+	dec0 = degrad( xref );
+	ra0 = degrad( yref );
+    }
+    else {
+	ra0 = degrad( xref );
+	dec0 = degrad( yref );
+    }
+    l = degrad( dx );
+    m = degrad( dy );
+    sins = l * l + m * m;
+    decout = 0.0;
+    raout = 0.0;
+    cos0 = cos( dec0 );
+    sin0 = sin( dec0 );
+
+    /* Process by case  */
+    switch ( itype ) {
+
+	case WCS_CAR:          /* -CAR Cartesian (was WCS_PIX pixel and WCS_LIN linear) */
+	    rat = ra0 + l;
+	    dect = dec0 + m;
+	    break;
+
+	case WCS_SIN:          /* -SIN sin */
+	    if ( sins > 1.0 ) return 1;
+	    coss = sqrt( 1.0 - sins );
+	    dt = sin0 * coss + cos0 * m;
+	    if ( ( dt > 1.0 ) || ( dt < -1.0 ) ) return 1;
+	    dect = asin( dt );
+	    rat = cos0 * coss - sin0 * m;
+	    if ( ( rat == 0.0 ) && ( l == 0.0 ) ) return 1;
+	    rat = atan2( l, rat ) + ra0;
+	    break;
+
+	case WCS_TAN:          /* -TAN tan */
+	case WCS_TNX:          /* -TNX tan with polynomial correction */
+	case WCS_TPV:          /* -TPV tan with polynomial correction */
+	case WCS_ZPX:          /* -ZPX zpn with polynomial correction */
+	    if ( sins > 1.0 ) return 1;
+	    dect = cos0 - m * sin0;
+	    if ( dect == 0.0 ) return 1;
+	    rat = ra0 + atan2( l, dect );
+	    dect = atan( cos( rat - ra0 ) * ( m * cos0 + sin0 ) / dect );
+	    break;
+
+	case WCS_ARC:          /* -ARC Arc */
+	    if ( sins >= twopi * twopi / 4.0 ) return 1;
+	    sins = sqrt( sins );
+	    coss = cos( sins );
+	    if ( sins != 0.0 ) sins = sin( sins ) / sins;
+	    else
+		sins = 1.0;
+	    dt = m * cos0 * sins + sin0 * coss;
+	    if ( ( dt > 1.0 ) || ( dt < -1.0 ) ) return 1;
+	    dect = asin( dt );
+	    da = coss - dt * sin0;
+	    dt = l * sins * cos0;
+	    if ( ( da == 0.0 ) && ( dt == 0.0 ) ) return 1;
+	    rat = ra0 + atan2( dt, da );
+	    break;
+
+	case WCS_NCP:          /* -NCP North celestial pole */
+	    dect = cos0 - m * sin0;
+	    if ( dect == 0.0 ) return 1;
+	    rat = ra0 + atan2( l, dect );
+	    dt = cos( rat - ra0 );
+	    if ( dt == 0.0 ) return 1;
+	    dect = dect / dt;
+	    if ( ( dect > 1.0 ) || ( dect < -1.0 ) ) return 1;
+	    dect = acos( dect );
+	    if ( dec0 < 0.0 ) dect = -dect;
+	    break;
+
+	case WCS_GLS:          /* -GLS global sinusoid */
+	case WCS_SFL:          /* -SFL Samson-Flamsteed */
+	    dect = dec0 + m;
+	    if ( fabs( dect ) > twopi / 4.0 ) return 1;
+	    coss = cos( dect );
+	    if ( fabs( l ) > twopi * coss / 2.0 ) return 1;
+	    rat = ra0;
+	    if ( coss > deps ) rat = rat + l / coss;
+	    break;
+
+	case WCS_MER:          /* -MER mercator */
+	    dt = yinc * cosr + xinc * sinr;
+	    if ( dt == 0.0 ) dt = 1.0;
+	    dy = degrad( yref / 2.0 + 45.0 );
+	    dx = dy + dt / 2.0 * cond2r;
+	    dy = log( tan( dy ) );
+	    dx = log( tan( dx ) );
+	    geo2 = degrad( dt ) / ( dx - dy );
+	    geo3 = geo2 * dy;
+	    geo1 = cos( degrad( yref ) );
+	    if ( geo1 <= 0.0 ) geo1 = 1.0;
+	    rat = l / geo1 + ra0;
+	    if ( fabs( rat - ra0 ) > twopi ) return 1;  /* added 10/13/94 DCW/EWG */
+	    dt = 0.0;
+	    if ( geo2 != 0.0 ) dt = ( m + geo3 ) / geo2;
+	    dt = exp( dt );
+	    dect = 2.0 * atan( dt ) - twopi / 4.0;
+	    break;
+
+	case WCS_AIT:          /* -AIT Aitoff */
+	    dt = yinc * cosr + xinc * sinr;
+	    if ( dt == 0.0 ) dt = 1.0;
+	    dt = degrad( dt );
+	    dy = degrad( yref );
+	    dx = sin( dy + dt ) / sqrt( ( 1.0 + cos( dy + dt ) ) / 2.0 ) -
+	        sin( dy ) / sqrt( ( 1.0 + cos( dy ) ) / 2.0 );
+	    if ( dx == 0.0 ) dx = 1.0;
+	    geo2 = dt / dx;
+	    dt = xinc * cosr - yinc * sinr;
+	    if ( dt == 0.0 ) dt = 1.0;
+	    dt = degrad( dt );
+	    dx = 2.0 * cos( dy ) * sin( dt / 2.0 );
+	    if ( dx == 0.0 ) dx = 1.0;
+	    geo1 =
+	        dt * sqrt( ( 1.0 + cos( dy ) * cos( dt / 2.0 ) ) / 2.0 ) / dx;
+	    geo3 = geo2 * sin( dy ) / sqrt( ( 1.0 + cos( dy ) ) / 2.0 );
+	    rat = ra0;
+	    dect = dec0;
+	    if ( ( l == 0.0 ) && ( m == 0.0 ) ) break;
+	    dz = 4.0 - l * l / ( 4.0 * geo1 * geo1 ) -
+	        ( ( m + geo3 ) / geo2 ) * ( ( m + geo3 ) / geo2 );
+	    if ( ( dz > 4.0 ) || ( dz < 2.0 ) ) return 1;;
+	    dz = 0.5 * sqrt( dz );
+	    dd = ( m + geo3 ) * dz / geo2;
+	    if ( fabs( dd ) > 1.0 ) return 1;;
+	    dd = asin( dd );
+	    if ( fabs( cos( dd ) ) < deps ) return 1;;
+	    da = l * dz / ( 2.0 * geo1 * cos( dd ) );
+	    if ( fabs( da ) > 1.0 ) return 1;;
+	    da = asin( da );
+	    rat = ra0 + 2.0 * da;
+	    dect = dd;
+	    break;
+
+	case WCS_STG:          /* -STG Sterographic */
+	    dz = ( 4.0 - sins ) / ( 4.0 + sins );
+	    if ( fabs( dz ) > 1.0 ) return 1;
+	    dect = dz * sin0 + m * cos0 * ( 1.0 + dz ) / 2.0;
+	    if ( fabs( dect ) > 1.0 ) return 1;
+	    dect = asin( dect );
+	    rat = cos( dect );
+	    if ( fabs( rat ) < deps ) return 1;
+	    rat = l * ( 1.0 + dz ) / ( 2.0 * rat );
+	    if ( fabs( rat ) > 1.0 ) return 1;
+	    rat = asin( rat );
+	    mg = 1.0 + sin( dect ) * sin0 + cos( dect ) * cos0 * cos( rat );
+	    if ( fabs( mg ) < deps ) return 1;
+	    mg = 2.0 * ( sin( dect ) * cos0 -
+	                 cos( dect ) * sin0 * cos( rat ) ) / mg;
+	    if ( fabs( mg - m ) > deps ) rat = twopi / 2.0 - rat;
+	    rat = ra0 + rat;
+	    break;
+
+	case WCS_COE:          /* COE projection code from Andreas Wicenic, ESO */
+	    td = tan( dec0 );
+	    y0 = 1.0 / td;
+	    mt = y0 - m;
+	    if ( dec0 < 0. )
+		a = atan2( l, -mt );
+	    else
+		a = atan2( l, mt );
+	    rat = ra0 - ( a / sin0 );
+	    r2 = ( l * l ) + ( mt * mt );
+	    dect =
+	        asin( 1.0 / ( sin0 * 2.0 ) *
+	              ( 1.0 + sin0 * sin0 * ( 1.0 - r2 ) ) );
+	    break;
+    }
+
+    /* Return RA in range  */
+    raout = rat;
+    decout = dect;
+    if ( raout - ra0 > twopi / 2.0 ) raout = raout - twopi;
+    if ( raout - ra0 < -twopi / 2.0 ) raout = raout + twopi;
+    if ( raout < 0.0 ) raout += twopi;  /* added by DCW 10/12/94 */
+
+    /* Convert units back to degrees  */
+    *xpos = raddeg( raout );
+    *ypos = raddeg( decout );
+
     return 0;
-
-  /* Convert to radians  */
-  if (wcs->coorflip) {
-    dec0 = degrad (xref);
-    ra0 = degrad (yref);
-    }
-  else {
-    ra0 = degrad (xref);
-    dec0 = degrad (yref);
-    }
-  l = degrad (dx);
-  m = degrad (dy);
-  sins = l*l + m*m;
-  decout = 0.0;
-  raout = 0.0;
-  cos0 = cos (dec0);
-  sin0 = sin (dec0);
-
-  /* Process by case  */
-  switch (itype) {
-
-    case WCS_CAR:   /* -CAR Cartesian (was WCS_PIX pixel and WCS_LIN linear) */
-      rat =  ra0 + l;
-      dect = dec0 + m;
-      break;
-
-    case WCS_SIN: /* -SIN sin*/ 
-      if (sins>1.0) return 1;
-      coss = sqrt (1.0 - sins);
-      dt = sin0 * coss + cos0 * m;
-      if ((dt>1.0) || (dt<-1.0)) return 1;
-      dect = asin (dt);
-      rat = cos0 * coss - sin0 * m;
-      if ((rat==0.0) && (l==0.0)) return 1;
-      rat = atan2 (l, rat) + ra0;
-      break;
-
-    case WCS_TAN:   /* -TAN tan */
-    case WCS_TNX:   /* -TNX tan with polynomial correction */
-    case WCS_TPV:   /* -TPV tan with polynomial correction */
-    case WCS_ZPX:   /* -ZPX zpn with polynomial correction */
-      if (sins>1.0) return 1;
-      dect = cos0 - m * sin0;
-      if (dect==0.0) return 1;
-      rat = ra0 + atan2 (l, dect);
-      dect = atan (cos(rat-ra0) * (m * cos0 + sin0) / dect);
-      break;
-
-    case WCS_ARC:   /* -ARC Arc*/
-      if (sins>=twopi*twopi/4.0) return 1;
-      sins = sqrt(sins);
-      coss = cos (sins);
-      if (sins!=0.0) sins = sin (sins) / sins;
-      else
-	sins = 1.0;
-      dt = m * cos0 * sins + sin0 * coss;
-      if ((dt>1.0) || (dt<-1.0)) return 1;
-      dect = asin (dt);
-      da = coss - dt * sin0;
-      dt = l * sins * cos0;
-      if ((da==0.0) && (dt==0.0)) return 1;
-      rat = ra0 + atan2 (dt, da);
-      break;
-
-    case WCS_NCP:   /* -NCP North celestial pole*/
-      dect = cos0 - m * sin0;
-      if (dect==0.0) return 1;
-      rat = ra0 + atan2 (l, dect);
-      dt = cos (rat-ra0);
-      if (dt==0.0) return 1;
-      dect = dect / dt;
-      if ((dect>1.0) || (dect<-1.0)) return 1;
-      dect = acos (dect);
-      if (dec0<0.0) dect = -dect;
-      break;
-
-    case WCS_GLS:   /* -GLS global sinusoid */
-    case WCS_SFL:   /* -SFL Samson-Flamsteed */
-      dect = dec0 + m;
-      if (fabs(dect)>twopi/4.0) return 1;
-      coss = cos (dect);
-      if (fabs(l)>twopi*coss/2.0) return 1;
-      rat = ra0;
-      if (coss>deps) rat = rat + l / coss;
-      break;
-
-    case WCS_MER:   /* -MER mercator*/
-      dt = yinc * cosr + xinc * sinr;
-      if (dt==0.0) dt = 1.0;
-      dy = degrad (yref/2.0 + 45.0);
-      dx = dy + dt / 2.0 * cond2r;
-      dy = log (tan (dy));
-      dx = log (tan (dx));
-      geo2 = degrad (dt) / (dx - dy);
-      geo3 = geo2 * dy;
-      geo1 = cos (degrad (yref));
-      if (geo1<=0.0) geo1 = 1.0;
-      rat = l / geo1 + ra0;
-      if (fabs(rat - ra0) > twopi) return 1; /* added 10/13/94 DCW/EWG */
-      dt = 0.0;
-      if (geo2!=0.0) dt = (m + geo3) / geo2;
-      dt = exp (dt);
-      dect = 2.0 * atan (dt) - twopi / 4.0;
-      break;
-
-    case WCS_AIT:   /* -AIT Aitoff*/
-      dt = yinc*cosr + xinc*sinr;
-      if (dt==0.0) dt = 1.0;
-      dt = degrad (dt);
-      dy = degrad (yref);
-      dx = sin(dy+dt)/sqrt((1.0+cos(dy+dt))/2.0) -
-	  sin(dy)/sqrt((1.0+cos(dy))/2.0);
-      if (dx==0.0) dx = 1.0;
-      geo2 = dt / dx;
-      dt = xinc*cosr - yinc* sinr;
-      if (dt==0.0) dt = 1.0;
-      dt = degrad (dt);
-      dx = 2.0 * cos(dy) * sin(dt/2.0);
-      if (dx==0.0) dx = 1.0;
-      geo1 = dt * sqrt((1.0+cos(dy)*cos(dt/2.0))/2.0) / dx;
-      geo3 = geo2 * sin(dy) / sqrt((1.0+cos(dy))/2.0);
-      rat = ra0;
-      dect = dec0;
-      if ((l==0.0) && (m==0.0)) break;
-      dz = 4.0 - l*l/(4.0*geo1*geo1) - ((m+geo3)/geo2)*((m+geo3)/geo2) ;
-      if ((dz>4.0) || (dz<2.0)) return 1;;
-      dz = 0.5 * sqrt (dz);
-      dd = (m+geo3) * dz / geo2;
-      if (fabs(dd)>1.0) return 1;;
-      dd = asin (dd);
-      if (fabs(cos(dd))<deps) return 1;;
-      da = l * dz / (2.0 * geo1 * cos(dd));
-      if (fabs(da)>1.0) return 1;;
-      da = asin (da);
-      rat = ra0 + 2.0 * da;
-      dect = dd;
-      break;
-
-    case WCS_STG:   /* -STG Sterographic*/
-      dz = (4.0 - sins) / (4.0 + sins);
-      if (fabs(dz)>1.0) return 1;
-      dect = dz * sin0 + m * cos0 * (1.0+dz) / 2.0;
-      if (fabs(dect)>1.0) return 1;
-      dect = asin (dect);
-      rat = cos(dect);
-      if (fabs(rat)<deps) return 1;
-      rat = l * (1.0+dz) / (2.0 * rat);
-      if (fabs(rat)>1.0) return 1;
-      rat = asin (rat);
-      mg = 1.0 + sin(dect) * sin0 + cos(dect) * cos0 * cos(rat);
-      if (fabs(mg)<deps) return 1;
-      mg = 2.0 * (sin(dect) * cos0 - cos(dect) * sin0 * cos(rat)) / mg;
-      if (fabs(mg-m)>deps) rat = twopi/2.0 - rat;
-      rat = ra0 + rat;
-      break;
-
-    case WCS_COE:    /* COE projection code from Andreas Wicenic, ESO */
-      td = tan (dec0);
-      y0 = 1.0 / td;
-      mt = y0 - m;
-      if (dec0 < 0.)
-	a = atan2 (l,-mt);
-      else
-	a = atan2 (l, mt);
-      rat = ra0 - (a / sin0);
-      r2 = (l * l) + (mt * mt);
-      dect = asin (1.0 / (sin0 * 2.0) * (1.0 + sin0*sin0 * (1.0 - r2)));
-      break;
-  }
-
-  /* Return RA in range  */
-  raout = rat;
-  decout = dect;
-  if (raout-ra0>twopi/2.0) raout = raout - twopi;
-  if (raout-ra0<-twopi/2.0) raout = raout + twopi;
-  if (raout < 0.0) raout += twopi; /* added by DCW 10/12/94 */
-
-  /* Convert units back to degrees  */
-  *xpos = raddeg (raout);
-  *ypos = raddeg (decout);
-
-  return 0;
-}  /* End of worldpos */
+}                               /* End of worldpos */
 
 
 int
-worldpix (xpos, ypos, wcs, xpix, ypix)
-
+worldpix( xpos, ypos, wcs, xpix, ypix )
 /*-----------------------------------------------------------------------*/
 /* routine to determine accurate pixel coordinates for an RA and Dec     */
 /* returns 0 if successful otherwise:                                    */
@@ -380,286 +382,294 @@ worldpix (xpos, ypos, wcs, xpix, ypix)
 /*  2 = bad values                                                       */
 /* does: SIN, TAN, ARC, NCP, GLS or SFL, MER, AIT, STG, CAR, COE projections    */
 /* anything else is linear                                               */
-
 /* Input: */
-double	xpos;		/* x (RA) coordinate (deg) */
-double	ypos;		/* y (dec) coordinate (deg) */
-struct WorldCoor *wcs;	/* WCS parameter structure */
+     double xpos;               /* x (RA) coordinate (deg) */
+     double ypos;               /* y (dec) coordinate (deg) */
+     struct WorldCoor *wcs;     /* WCS parameter structure */
 
 /* Output: */
-double	*xpix;		/* x pixel number  (RA or long without rotation) */
-double	*ypix;		/* y pixel number  (dec or lat without rotation) */
+     double *xpix;              /* x pixel number  (RA or long without rotation) */
+     double *ypix;              /* y pixel number  (dec or lat without rotation) */
 {
-  double dx, dy, ra0, dec0, ra, dec, coss, sins, dt, da, dd, sint;
-  double l, m, geo1, geo2, geo3, sinr, cosr, tx, x, a2, a3, a4;
-  double rthea,gamby2,a,b,c,phi,an,rap,v,tthea,co1,co2,co3,co4,ansq; /* COE */
-  double cond2r=1.745329252e-2, deps=1.0e-5, twopi=6.28318530717959;
+    double dx, dy, ra0, dec0, ra, dec, coss, sins, dt, da, dd, sint;
+    double l, m, geo1, geo2, geo3, sinr, cosr, tx, x, a2, a3, a4;
+    double rthea, gamby2, a, b, c, phi, an, rap, v, tthea, co1, co2, co3, co4, ansq;    /* COE */
+    double cond2r = 1.745329252e-2, deps = 1.0e-5, twopi = 6.28318530717959;
 
 /* Structure elements */
-  double xref;		/* x reference coordinate value (deg) */
-  double yref;		/* y reference coordinate value (deg) */
-  double xrefpix;	/* x reference pixel */
-  double yrefpix;	/* y reference pixel */
-  double xinc;		/* x coordinate increment (deg) */
-  double yinc;		/* y coordinate increment (deg) */
-  double rot;		/* Optical axis rotation (deg)  (from N through E) */
-  int itype;
+    double xref;                /* x reference coordinate value (deg) */
+    double yref;                /* y reference coordinate value (deg) */
+    double xrefpix;             /* x reference pixel */
+    double yrefpix;             /* y reference pixel */
+    double xinc;                /* x coordinate increment (deg) */
+    double yinc;                /* y coordinate increment (deg) */
+    double rot;                 /* Optical axis rotation (deg)  (from N through E) */
+    int itype;
 
-  /* Set local projection parameters */
-  xref = wcs->xref;
-  yref = wcs->yref;
-  xrefpix = wcs->xrefpix;
-  yrefpix = wcs->yrefpix;
-  xinc = wcs->xinc;
-  yinc = wcs->yinc;
-  rot = degrad (wcs->rot);
-  cosr = cos (rot);
-  sinr = sin (rot);
+    /* Set local projection parameters */
+    xref = wcs->xref;
+    yref = wcs->yref;
+    xrefpix = wcs->xrefpix;
+    yrefpix = wcs->yrefpix;
+    xinc = wcs->xinc;
+    yinc = wcs->yinc;
+    rot = degrad( wcs->rot );
+    cosr = cos( rot );
+    sinr = sin( rot );
 
-  /* Projection type */
-  itype = wcs->prjcode;
+    /* Projection type */
+    itype = wcs->prjcode;
 
-  /* Nonlinear position */
-  if (itype > 0) {
-    if (wcs->coorflip) {
-      dec0 = degrad (xref);
-      ra0 = degrad (yref);
-      dt = xpos - yref;
-      }
-    else {
-      ra0 = degrad (xref);
-      dec0 = degrad (yref);
-      dt = xpos - xref;
-      }
-
-    /* 0h wrap-around tests added by D.Wells 10/12/1994: */
-    /* Modified to exclude weird reference pixels by D.Mink 2/3/2004 */
-    if (xrefpix*xinc > 180.0 || xrefpix*xinc < -180.0) {
-	if (dt > 360.0) xpos -= 360.0;
-	if (dt < 0.0) xpos += 360.0;
+    /* Nonlinear position */
+    if ( itype > 0 ) {
+	if ( wcs->coorflip ) {
+	    dec0 = degrad( xref );
+	    ra0 = degrad( yref );
+	    dt = xpos - yref;
 	}
-    else {
-	if (dt > 180.0) xpos -= 360.0;
-	if (dt < -180.0) xpos += 360.0;
+	else {
+	    ra0 = degrad( xref );
+	    dec0 = degrad( yref );
+	    dt = xpos - xref;
 	}
-    /* NOTE: changing input argument xpos is OK (call-by-value in C!) */
 
-    ra = degrad (xpos);
-    dec = degrad (ypos);
+	/* 0h wrap-around tests added by D.Wells 10/12/1994: */
+	/* Modified to exclude weird reference pixels by D.Mink 2/3/2004 */
+	if ( xrefpix * xinc > 180.0 || xrefpix * xinc < -180.0 ) {
+	    if ( dt > 360.0 ) xpos -= 360.0;
+	    if ( dt < 0.0 ) xpos += 360.0;
+	}
+	else {
+	    if ( dt > 180.0 ) xpos -= 360.0;
+	    if ( dt < -180.0 ) xpos += 360.0;
+	}
+	/* NOTE: changing input argument xpos is OK (call-by-value in C!) */
 
-    /* Compute direction cosine */
-    coss = cos (dec);
-    sins = sin (dec);
-    l = sin(ra-ra0) * coss;
-    sint = sins * sin(dec0) + coss * cos(dec0) * cos(ra-ra0);
+	ra = degrad( xpos );
+	dec = degrad( ypos );
+
+	/* Compute direction cosine */
+	coss = cos( dec );
+	sins = sin( dec );
+	l = sin( ra - ra0 ) * coss;
+	sint = sins * sin( dec0 ) + coss * cos( dec0 ) * cos( ra - ra0 );
     }
-  else {
-    l = 0.0;
-    sint = 0.0;
-    sins = 0.0;
-    coss = 0.0;
-    ra = 0.0;
-    dec = 0.0;
-    ra0 = 0.0;
-    dec0 = 0.0;
-    m = 0.0;
-    }
-
-  /* Process by case  */
-  switch (itype) {
-
-    case WCS_CAR:   /* -CAR Cartesian */
-      l = ra - ra0;
-      m = dec - dec0;
-      break;
-
-    case WCS_SIN:   /* -SIN sin*/ 
-	if (sint<0.0) return 1;
-	m = sins * cos(dec0) - coss * sin(dec0) * cos(ra-ra0);
-	break;
-
-    case WCS_TNX:   /* -TNX tan with polynomial correction */
-    case WCS_TPV:   /* -TPV tan with polynomial correction */
-    case WCS_ZPX:   /* -ZPX zpn with polynomial correction */
-    case WCS_TAN:   /* -TAN tan */
-	if (sint<=0.0) return 1;
- 	m = sins * sin(dec0) + coss * cos(dec0) * cos(ra-ra0);
-	l = l / m;
-	m = (sins * cos(dec0) - coss * sin(dec0) * cos(ra-ra0)) / m;
-	break;
-
-    case WCS_ARC:   /* -ARC Arc*/
-	m = sins * sin(dec0) + coss * cos(dec0) * cos(ra-ra0);
-	if (m<-1.0) m = -1.0;
-	if (m>1.0) m = 1.0;
-	m = acos (m);
-	if (m!=0) 
-	    m = m / sin(m);
-	else
-	    m = 1.0;
-	l = l * m;
-	m = (sins * cos(dec0) - coss * sin(dec0) * cos(ra-ra0)) * m;
-	break;
-
-    case WCS_NCP:   /* -NCP North celestial pole*/
-	if (dec0==0.0) 
-	    return 1;  /* can't stand the equator */
-	else
-	    m = (cos(dec0) - coss * cos(ra-ra0)) / sin(dec0);
-	break;
-
-    case WCS_GLS:   /* -GLS global sinusoid */
-    case WCS_SFL:   /* -SFL Samson-Flamsteed */
-	dt = ra - ra0;
-	if (fabs(dec)>twopi/4.0) return 1;
-	if (fabs(dec0)>twopi/4.0) return 1;
-	m = dec - dec0;
-	l = dt * coss;
-	break;
-
-    case WCS_MER:   /* -MER mercator*/
-	dt = yinc * cosr + xinc * sinr;
-	if (dt==0.0) dt = 1.0;
-	dy = degrad (yref/2.0 + 45.0);
-	dx = dy + dt / 2.0 * cond2r;
-	dy = log (tan (dy));
-	dx = log (tan (dx));
-	geo2 = degrad (dt) / (dx - dy);
-	geo3 = geo2 * dy;
-	geo1 = cos (degrad (yref));
-	if (geo1<=0.0) geo1 = 1.0;
-	dt = ra - ra0;
-	l = geo1 * dt;
-	dt = dec / 2.0 + twopi / 8.0;
-	dt = tan (dt);
-	if (dt<deps) return 2;
-	m = geo2 * log (dt) - geo3;
-	break;
-
-    case WCS_AIT:   /* -AIT Aitoff*/
+    else {
 	l = 0.0;
+	sint = 0.0;
+	sins = 0.0;
+	coss = 0.0;
+	ra = 0.0;
+	dec = 0.0;
+	ra0 = 0.0;
+	dec0 = 0.0;
 	m = 0.0;
-	da = (ra - ra0) / 2.0;
-	if (fabs(da)>twopi/4.0) return 1;
-	dt = yinc*cosr + xinc*sinr;
-	if (dt==0.0) dt = 1.0;
-	dt = degrad (dt);
-	dy = degrad (yref);
-	dx = sin(dy+dt)/sqrt((1.0+cos(dy+dt))/2.0) -
-	     sin(dy)/sqrt((1.0+cos(dy))/2.0);
-	if (dx==0.0) dx = 1.0;
-	geo2 = dt / dx;
-	dt = xinc*cosr - yinc* sinr;
-	if (dt==0.0) dt = 1.0;
-	dt = degrad (dt);
-	dx = 2.0 * cos(dy) * sin(dt/2.0);
-	if (dx==0.0) dx = 1.0;
-	geo1 = dt * sqrt((1.0+cos(dy)*cos(dt/2.0))/2.0) / dx;
-	geo3 = geo2 * sin(dy) / sqrt((1.0+cos(dy))/2.0);
-	dt = sqrt ((1.0 + cos(dec) * cos(da))/2.0);
-	if (fabs(dt)<deps) return 3;
-	l = 2.0 * geo1 * cos(dec) * sin(da) / dt;
-	m = geo2 * sin(dec) / dt - geo3;
-	break;
-
-    case WCS_STG:   /* -STG Sterographic*/
-	da = ra - ra0;
-	if (fabs(dec)>twopi/4.0) return 1;
-	dd = 1.0 + sins * sin(dec0) + coss * cos(dec0) * cos(da);
-	if (fabs(dd)<deps) return 1;
-	dd = 2.0 / dd;
-	l = l * dd;
-	m = dd * (sins * cos(dec0) - coss * sin(dec0) * cos(da));
-	break;
-
-    case WCS_COE:    /* allan: -COE projection added, AW, ESO*/
-	gamby2 = sin (dec0);
-	tthea = tan (dec0);
-	rthea = 1. / tthea;
-	a = -2. * tthea;
-	b = tthea * tthea;
-	c = tthea / 3.;
-	a2 = a * a;
-	a3 = a2 * a;
-	a4 = a2 * a2;
-	co1 = a/2.;
-	co2 = -0.125 * a2 + b/2.;
-	co3 = -0.25 * a*b + 0.0625 * a3 + c/2.0;
-	co4 = -0.125 * b*b - 0.25 * a*c + 0.1875 * b*a2 - (5.0/128.0)*a4;
-	phi = ra0 - ra;
-	an = phi * gamby2;
-	v = dec - dec0;
-	rap = rthea * (1.0 + v * (co1+v * (co2+v * (co3+v * co4))));
-	ansq = an * an;
-	if (wcs->rotmat)
-	    l = rap * an * (1.0 - ansq/6.0) * (wcs->cd[0] / fabs(wcs->cd[0]));
-	else
-	    l = rap * an * (1.0 - ansq/6.0) * (xinc / fabs(xinc));
-	m = rthea - (rap * (1.0 - ansq/2.0));
-	break;
-
-    }  /* end of itype switch */
-
-  /* Convert back to degrees  */
-  if (itype > 0) {
-    dx = raddeg (l);
-    dy = raddeg (m);
     }
 
-  /* For linear or pixel projection */
-  else {
-    dx = xpos - xref;
-    dy = ypos - yref;
+    /* Process by case  */
+    switch ( itype ) {
+
+	case WCS_CAR:          /* -CAR Cartesian */
+	    l = ra - ra0;
+	    m = dec - dec0;
+	    break;
+
+	case WCS_SIN:          /* -SIN sin */
+	    if ( sint < 0.0 ) return 1;
+	    m = sins * cos( dec0 ) - coss * sin( dec0 ) * cos( ra - ra0 );
+	    break;
+
+	case WCS_TNX:          /* -TNX tan with polynomial correction */
+	case WCS_TPV:          /* -TPV tan with polynomial correction */
+	case WCS_ZPX:          /* -ZPX zpn with polynomial correction */
+	case WCS_TAN:          /* -TAN tan */
+	    if ( sint <= 0.0 ) return 1;
+	    m = sins * sin( dec0 ) + coss * cos( dec0 ) * cos( ra - ra0 );
+	    l = l / m;
+	    m = ( sins * cos( dec0 ) -
+	          coss * sin( dec0 ) * cos( ra - ra0 ) ) / m;
+	    break;
+
+	case WCS_ARC:          /* -ARC Arc */
+	    m = sins * sin( dec0 ) + coss * cos( dec0 ) * cos( ra - ra0 );
+	    if ( m < -1.0 ) m = -1.0;
+	    if ( m > 1.0 ) m = 1.0;
+	    m = acos( m );
+	    if ( m != 0 )
+		m = m / sin( m );
+	    else
+		m = 1.0;
+	    l = l * m;
+	    m = ( sins * cos( dec0 ) -
+	          coss * sin( dec0 ) * cos( ra - ra0 ) ) * m;
+	    break;
+
+	case WCS_NCP:          /* -NCP North celestial pole */
+	    if ( dec0 == 0.0 )
+		return 1;       /* can't stand the equator */
+	    else
+		m = ( cos( dec0 ) - coss * cos( ra - ra0 ) ) / sin( dec0 );
+	    break;
+
+	case WCS_GLS:          /* -GLS global sinusoid */
+	case WCS_SFL:          /* -SFL Samson-Flamsteed */
+	    dt = ra - ra0;
+	    if ( fabs( dec ) > twopi / 4.0 ) return 1;
+	    if ( fabs( dec0 ) > twopi / 4.0 ) return 1;
+	    m = dec - dec0;
+	    l = dt * coss;
+	    break;
+
+	case WCS_MER:          /* -MER mercator */
+	    dt = yinc * cosr + xinc * sinr;
+	    if ( dt == 0.0 ) dt = 1.0;
+	    dy = degrad( yref / 2.0 + 45.0 );
+	    dx = dy + dt / 2.0 * cond2r;
+	    dy = log( tan( dy ) );
+	    dx = log( tan( dx ) );
+	    geo2 = degrad( dt ) / ( dx - dy );
+	    geo3 = geo2 * dy;
+	    geo1 = cos( degrad( yref ) );
+	    if ( geo1 <= 0.0 ) geo1 = 1.0;
+	    dt = ra - ra0;
+	    l = geo1 * dt;
+	    dt = dec / 2.0 + twopi / 8.0;
+	    dt = tan( dt );
+	    if ( dt < deps ) return 2;
+	    m = geo2 * log( dt ) - geo3;
+	    break;
+
+	case WCS_AIT:          /* -AIT Aitoff */
+	    l = 0.0;
+	    m = 0.0;
+	    da = ( ra - ra0 ) / 2.0;
+	    if ( fabs( da ) > twopi / 4.0 ) return 1;
+	    dt = yinc * cosr + xinc * sinr;
+	    if ( dt == 0.0 ) dt = 1.0;
+	    dt = degrad( dt );
+	    dy = degrad( yref );
+	    dx = sin( dy + dt ) / sqrt( ( 1.0 + cos( dy + dt ) ) / 2.0 ) -
+	        sin( dy ) / sqrt( ( 1.0 + cos( dy ) ) / 2.0 );
+	    if ( dx == 0.0 ) dx = 1.0;
+	    geo2 = dt / dx;
+	    dt = xinc * cosr - yinc * sinr;
+	    if ( dt == 0.0 ) dt = 1.0;
+	    dt = degrad( dt );
+	    dx = 2.0 * cos( dy ) * sin( dt / 2.0 );
+	    if ( dx == 0.0 ) dx = 1.0;
+	    geo1 =
+	        dt * sqrt( ( 1.0 + cos( dy ) * cos( dt / 2.0 ) ) / 2.0 ) / dx;
+	    geo3 = geo2 * sin( dy ) / sqrt( ( 1.0 + cos( dy ) ) / 2.0 );
+	    dt = sqrt( ( 1.0 + cos( dec ) * cos( da ) ) / 2.0 );
+	    if ( fabs( dt ) < deps ) return 3;
+	    l = 2.0 * geo1 * cos( dec ) * sin( da ) / dt;
+	    m = geo2 * sin( dec ) / dt - geo3;
+	    break;
+
+	case WCS_STG:          /* -STG Sterographic */
+	    da = ra - ra0;
+	    if ( fabs( dec ) > twopi / 4.0 ) return 1;
+	    dd = 1.0 + sins * sin( dec0 ) + coss * cos( dec0 ) * cos( da );
+	    if ( fabs( dd ) < deps ) return 1;
+	    dd = 2.0 / dd;
+	    l = l * dd;
+	    m = dd * ( sins * cos( dec0 ) - coss * sin( dec0 ) * cos( da ) );
+	    break;
+
+	case WCS_COE:          /* allan: -COE projection added, AW, ESO */
+	    gamby2 = sin( dec0 );
+	    tthea = tan( dec0 );
+	    rthea = 1. / tthea;
+	    a = -2. * tthea;
+	    b = tthea * tthea;
+	    c = tthea / 3.;
+	    a2 = a * a;
+	    a3 = a2 * a;
+	    a4 = a2 * a2;
+	    co1 = a / 2.;
+	    co2 = -0.125 * a2 + b / 2.;
+	    co3 = -0.25 * a * b + 0.0625 * a3 + c / 2.0;
+	    co4 =
+	        -0.125 * b * b - 0.25 * a * c + 0.1875 * b * a2 -
+	        ( 5.0 / 128.0 ) * a4;
+	    phi = ra0 - ra;
+	    an = phi * gamby2;
+	    v = dec - dec0;
+	    rap =
+	        rthea * ( 1.0 +
+	                  v * ( co1 + v * ( co2 + v * ( co3 + v * co4 ) ) ) );
+	    ansq = an * an;
+	    if ( wcs->rotmat )
+		l = rap * an * ( 1.0 -
+	                         ansq / 6.0 ) * ( wcs->cd[0] /
+	                                          fabs( wcs->cd[0] ) );
+	    else
+		l = rap * an * ( 1.0 - ansq / 6.0 ) * ( xinc / fabs( xinc ) );
+	    m = rthea - ( rap * ( 1.0 - ansq / 2.0 ) );
+	    break;
+
+    }                           /* end of itype switch */
+
+    /* Convert back to degrees  */
+    if ( itype > 0 ) {
+	dx = raddeg( l );
+	dy = raddeg( m );
     }
 
-  if (wcs->coorflip) {
-    tx = dx;
-    dx = dy;
-    dy = tx;
+    /* For linear or pixel projection */
+    else {
+	dx = xpos - xref;
+	dy = ypos - yref;
     }
 
-  /* Scale and rotate using CD matrix */
-  if (wcs->rotmat) {
-    tx = dx * wcs->dc[0] + dy * wcs->dc[1];
-    dy = dx * wcs->dc[2] + dy * wcs->dc[3];
-    dx = tx;
+    if ( wcs->coorflip ) {
+	tx = dx;
+	dx = dy;
+	dy = tx;
     }
 
-  /* Scale and rotate using CDELTn and CROTA2 */
-  else {
-
-    /* Correct for rotation */
-    if (rot!=0.0) {
-      tx = dx*cosr + dy*sinr;
-      dy = dy*cosr - dx*sinr;
-      dx = tx;
-      }
-
-    /* Scale using CDELT */
-    if (xinc != 0.)
-      dx = dx / xinc;
-    if (yinc != 0.)
-      dy = dy / yinc;
+    /* Scale and rotate using CD matrix */
+    if ( wcs->rotmat ) {
+	tx = dx * wcs->dc[0] + dy * wcs->dc[1];
+	dy = dx * wcs->dc[2] + dy * wcs->dc[3];
+	dx = tx;
     }
 
-  /* Convert to pixels  */
-  *xpix = dx + xrefpix;
-  if (itype == WCS_CAR) {
-    if (*xpix > wcs->nxpix) {
-      x = *xpix - (360.0 / xinc);
-      if (x > 0.0) *xpix = x;
-      }
-    else if (*xpix < 0) {
-      x = *xpix + (360.0 / xinc);
-      if (x <= wcs->nxpix) *xpix = x;
-      }
+    /* Scale and rotate using CDELTn and CROTA2 */
+    else {
+
+	/* Correct for rotation */
+	if ( rot != 0.0 ) {
+	    tx = dx * cosr + dy * sinr;
+	    dy = dy * cosr - dx * sinr;
+	    dx = tx;
+	}
+
+	/* Scale using CDELT */
+	if ( xinc != 0. )
+	    dx = dx / xinc;
+	if ( yinc != 0. )
+	    dy = dy / yinc;
     }
-  *ypix = dy + yrefpix;
 
-  return 0;
-}  /* end worldpix */
+    /* Convert to pixels  */
+    *xpix = dx + xrefpix;
+    if ( itype == WCS_CAR ) {
+	if ( *xpix > wcs->nxpix ) {
+	    x = *xpix - ( 360.0 / xinc );
+	    if ( x > 0.0 ) *xpix = x;
+	}
+	else if ( *xpix < 0 ) {
+	    x = *xpix + ( 360.0 / xinc );
+	    if ( x <= wcs->nxpix ) *xpix = x;
+	}
+    }
+    *ypix = dy + yrefpix;
 
- 
+    return 0;
+}                               /* end worldpix */
+
+
 /* Oct 26 1995	Fix bug which interchanged RA and Dec twice when coorflip
  *
  * Oct 31 1996	Fix CD matrix use in WORLDPIX

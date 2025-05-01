@@ -41,12 +41,13 @@
 
 typedef double Matrix3[3][2];
 
-int ft_inverse (in, out)
-    register  Matrix3  in;
-    register  Matrix3  out;
+int
+ft_inverse( in, out )
+     register Matrix3 in;
+     register Matrix3 out;
 {
-    register  double    det_1;
-              double    pos, neg, temp;
+    register double det_1;
+    double pos, neg, temp;
 
 #define ACCUMULATE    \
     if (temp >= 0.0)  \
@@ -62,32 +63,31 @@ int ft_inverse (in, out)
      * floating-point data representation.
      */
     pos = neg = 0.0;
-    temp =  in[0][0] * in[1][1];
-    ACCUMULATE
-    temp = -in[0][1] * in[1][0];
-    ACCUMULATE
-    det_1 = pos + neg;
+    temp = in[0][0] * in[1][1];
+    ACCUMULATE temp = -in[0][1] * in[1][0];
+    ACCUMULATE det_1 = pos + neg;
 
     /* Is the submatrix A singular? */
-    if ((det_1 == 0.0) || (Abs(det_1 / (pos - neg)) < PRECISION_LIMIT)) {
+    if ( ( det_1 == 0.0 )
+         || ( Abs( det_1 / ( pos - neg ) ) < PRECISION_LIMIT ) ) {
 
-        /* Matrix M has no inverse */
-        /* EPrint("affine_matrix3_inverse: singular matrix\n"); */
-        return 0;
+	/* Matrix M has no inverse */
+	/* EPrint("affine_matrix3_inverse: singular matrix\n"); */
+	return 0;
     }
 
     else {
-        /* Calculate inverse(A) = adj(A) / det(A) */
-        det_1 = 1.0 / det_1;
-        out[0][0] =   in[1][1] * det_1;
-        out[1][0] = - in[1][0] * det_1;
-        out[0][1] = - in[0][1] * det_1;
-        out[1][1] =   in[0][0] * det_1;
+	/* Calculate inverse(A) = adj(A) / det(A) */
+	det_1 = 1.0 / det_1;
+	out[0][0] = in[1][1] * det_1;
+	out[1][0] = -in[1][0] * det_1;
+	out[0][1] = -in[0][1] * det_1;
+	out[1][1] = in[0][0] * det_1;
 
-        /* Calculate -C * inverse(A) */
-        out[2][0] = - ( in[2][0] * out[0][0] + in[2][1] * out[1][0] );
-        out[2][1] = - ( in[2][0] * out[0][1] + in[2][1] * out[1][1] );
+	/* Calculate -C * inverse(A) */
+	out[2][0] = -( in[2][0] * out[0][0] + in[2][1] * out[1][0] );
+	out[2][1] = -( in[2][0] * out[0][1] + in[2][1] * out[1][1] );
 
-        return 1;
+	return 1;
     }
 }

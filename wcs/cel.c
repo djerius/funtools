@@ -238,228 +238,239 @@
 
 /* Map error number to error message for each function. */
 const char *celset_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
-   "Ill-conditioned coordinate transformation parameters"};
+    0,
+    "Invalid coordinate transformation parameters",
+    "Ill-conditioned coordinate transformation parameters"
+};
 
 const char *celfwd_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
-   "Invalid projection parameters",
-   "Invalid value of (lng,lat)"};
+    0,
+    "Invalid coordinate transformation parameters",
+    "Invalid projection parameters",
+    "Invalid value of (lng,lat)"
+};
 
 const char *celrev_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
-   "Invalid projection parameters",
-   "Invalid value of (x,y)"};
- 
+    0,
+    "Invalid coordinate transformation parameters",
+    "Invalid projection parameters",
+    "Invalid value of (x,y)"
+};
+
 
 int
-celset(pcode, cel, prj)
-
-const char pcode[4];
-struct celprm *cel;
-struct prjprm *prj;
+celset( pcode, cel, prj )
+     const char pcode[4];
+     struct celprm *cel;
+     struct prjprm *prj;
 
 {
-   int dophip;
-   const double tol = 1.0e-10;
-   double clat0, cphip, cthe0, slat0, sphip, sthe0;
-   double latp, latp1, latp2;
-   double u, v, x, y, z;
+    int dophip;
+    const double tol = 1.0e-10;
+    double clat0, cphip, cthe0, slat0, sphip, sthe0;
+    double latp, latp1, latp2;
+    double u, v, x, y, z;
 
-   /* Initialize the projection driver routines. */
-   if (prjset(pcode, prj)) {
-      return 1;
-   }
+    /* Initialize the projection driver routines. */
+    if ( prjset( pcode, prj ) ) {
+	return 1;
+    }
 
-   /* Set default for native longitude of the celestial pole? */
-   dophip = (cel->ref[2] == 999.0);
+    /* Set default for native longitude of the celestial pole? */
+    dophip = ( cel->ref[2] == 999.0 );
 
-   /* Compute celestial coordinates of the native pole. */
-   if (prj->theta0 == 90.0) {
-      /* Reference point is at the native pole. */
+    /* Compute celestial coordinates of the native pole. */
+    if ( prj->theta0 == 90.0 ) {
+	/* Reference point is at the native pole. */
 
-      if (dophip) {
-         /* Set default for longitude of the celestial pole. */
-         cel->ref[2] = 180.0;
-      }
+	if ( dophip ) {
+	    /* Set default for longitude of the celestial pole. */
+	    cel->ref[2] = 180.0;
+	}
 
-      latp = cel->ref[1];
-      cel->ref[3] = latp;
+	latp = cel->ref[1];
+	cel->ref[3] = latp;
 
-      cel->euler[0] = cel->ref[0];
-      cel->euler[1] = 90.0 - latp;
-   } else {
-      /* Reference point away from the native pole. */
+	cel->euler[0] = cel->ref[0];
+	cel->euler[1] = 90.0 - latp;
+    }
+    else {
+	/* Reference point away from the native pole. */
 
-      /* Set default for longitude of the celestial pole. */
-      if (dophip) {
-         cel->ref[2] = (cel->ref[1] < prj->theta0) ? 180.0 : 0.0;
-      }
+	/* Set default for longitude of the celestial pole. */
+	if ( dophip ) {
+	    cel->ref[2] = ( cel->ref[1] < prj->theta0 ) ? 180.0 : 0.0;
+	}
 
-      clat0 = cosdeg (cel->ref[1]);
-      slat0 = sindeg (cel->ref[1]);
-      cphip = cosdeg (cel->ref[2]);
-      sphip = sindeg (cel->ref[2]);
-      cthe0 = cosdeg (prj->theta0);
-      sthe0 = sindeg (prj->theta0);
+	clat0 = cosdeg( cel->ref[1] );
+	slat0 = sindeg( cel->ref[1] );
+	cphip = cosdeg( cel->ref[2] );
+	sphip = sindeg( cel->ref[2] );
+	cthe0 = cosdeg( prj->theta0 );
+	sthe0 = sindeg( prj->theta0 );
 
-      x = cthe0*cphip;
-      y = sthe0;
-      z = sqrt(x*x + y*y);
-      if (z == 0.0) {
-         if (slat0 != 0.0) {
-            return 1;
-         }
+	x = cthe0 * cphip;
+	y = sthe0;
+	z = sqrt( x * x + y * y );
+	if ( z == 0.0 ) {
+	    if ( slat0 != 0.0 ) {
+		return 1;
+	    }
 
-         /* latp determined by LATPOLE in this case. */
-         latp = cel->ref[3];
-      } else {
-         if (fabs(slat0/z) > 1.0) {
-            return 1;
-         }
+	    /* latp determined by LATPOLE in this case. */
+	    latp = cel->ref[3];
+	}
+	else {
+	    if ( fabs( slat0 / z ) > 1.0 ) {
+		return 1;
+	    }
 
-         u = atan2deg (y,x);
-         v = acosdeg (slat0/z);
+	    u = atan2deg( y, x );
+	    v = acosdeg( slat0 / z );
 
-         latp1 = u + v;
-         if (latp1 > 180.0) {
-            latp1 -= 360.0;
-         } else if (latp1 < -180.0) {
-            latp1 += 360.0;
-         }
+	    latp1 = u + v;
+	    if ( latp1 > 180.0 ) {
+		latp1 -= 360.0;
+	    }
+	    else if ( latp1 < -180.0 ) {
+		latp1 += 360.0;
+	    }
 
-         latp2 = u - v;
-         if (latp2 > 180.0) {
-            latp2 -= 360.0;
-         } else if (latp2 < -180.0) {
-            latp2 += 360.0;
-         }
+	    latp2 = u - v;
+	    if ( latp2 > 180.0 ) {
+		latp2 -= 360.0;
+	    }
+	    else if ( latp2 < -180.0 ) {
+		latp2 += 360.0;
+	    }
 
-         if (fabs(cel->ref[3]-latp1) < fabs(cel->ref[3]-latp2)) {
-            if (fabs(latp1) < 90.0+tol) {
-               latp = latp1;
-            } else {
-               latp = latp2;
-            }
-         } else {
-            if (fabs(latp2) < 90.0+tol) {
-               latp = latp2;
-            } else {
-               latp = latp1;
-            }
-         }
+	    if ( fabs( cel->ref[3] - latp1 ) < fabs( cel->ref[3] - latp2 ) ) {
+		if ( fabs( latp1 ) < 90.0 + tol ) {
+		    latp = latp1;
+		}
+		else {
+		    latp = latp2;
+		}
+	    }
+	    else {
+		if ( fabs( latp2 ) < 90.0 + tol ) {
+		    latp = latp2;
+		}
+		else {
+		    latp = latp1;
+		}
+	    }
 
-         cel->ref[3] = latp;
-      }
+	    cel->ref[3] = latp;
+	}
 
-      cel->euler[1] = 90.0 - latp;
+	cel->euler[1] = 90.0 - latp;
 
-      z = cosdeg (latp)*clat0;
-      if (fabs(z) < tol) {
-         if (fabs(clat0) < tol) {
-            /* Celestial pole at the reference point. */
-            cel->euler[0] = cel->ref[0];
-            cel->euler[1] = 90.0 - prj->theta0;
-         } else if (latp > 0.0) {
-            /* Celestial pole at the native north pole.*/
-            cel->euler[0] = cel->ref[0] + cel->ref[2] - 180.0;
-            cel->euler[1] = 0.0;
-         } else if (latp < 0.0) {
-            /* Celestial pole at the native south pole. */
-            cel->euler[0] = cel->ref[0] - cel->ref[2];
-            cel->euler[1] = 180.0;
-         }
-      } else {
-         x = (sthe0 - sindeg (latp)*slat0)/z;
-         y =  sphip*cthe0/clat0;
-         if (x == 0.0 && y == 0.0) {
-            return 1;
-         }
-         cel->euler[0] = cel->ref[0] - atan2deg (y,x);
-      }
+	z = cosdeg( latp ) * clat0;
+	if ( fabs( z ) < tol ) {
+	    if ( fabs( clat0 ) < tol ) {
+		/* Celestial pole at the reference point. */
+		cel->euler[0] = cel->ref[0];
+		cel->euler[1] = 90.0 - prj->theta0;
+	    }
+	    else if ( latp > 0.0 ) {
+		/* Celestial pole at the native north pole. */
+		cel->euler[0] = cel->ref[0] + cel->ref[2] - 180.0;
+		cel->euler[1] = 0.0;
+	    }
+	    else if ( latp < 0.0 ) {
+		/* Celestial pole at the native south pole. */
+		cel->euler[0] = cel->ref[0] - cel->ref[2];
+		cel->euler[1] = 180.0;
+	    }
+	}
+	else {
+	    x = ( sthe0 - sindeg( latp ) * slat0 ) / z;
+	    y = sphip * cthe0 / clat0;
+	    if ( x == 0.0 && y == 0.0 ) {
+		return 1;
+	    }
+	    cel->euler[0] = cel->ref[0] - atan2deg( y, x );
+	}
 
-      /* Make euler[0] the same sign as ref[0]. */
-      if (cel->ref[0] >= 0.0) {
-         if (cel->euler[0] < 0.0) cel->euler[0] += 360.0;
-      } else {
-         if (cel->euler[0] > 0.0) cel->euler[0] -= 360.0;
-      }
-   }
+	/* Make euler[0] the same sign as ref[0]. */
+	if ( cel->ref[0] >= 0.0 ) {
+	    if ( cel->euler[0] < 0.0 ) cel->euler[0] += 360.0;
+	}
+	else {
+	    if ( cel->euler[0] > 0.0 ) cel->euler[0] -= 360.0;
+	}
+    }
 
-   cel->euler[2] = cel->ref[2];
-   cel->euler[3] = cosdeg (cel->euler[1]);
-   cel->euler[4] = sindeg (cel->euler[1]);
-   cel->flag = CELSET;
+    cel->euler[2] = cel->ref[2];
+    cel->euler[3] = cosdeg( cel->euler[1] );
+    cel->euler[4] = sindeg( cel->euler[1] );
+    cel->flag = CELSET;
 
-   /* Check for ill-conditioned parameters. */
-   if (fabs(latp) > 90.0+tol) {
-      return 2;
-   }
+    /* Check for ill-conditioned parameters. */
+    if ( fabs( latp ) > 90.0 + tol ) {
+	return 2;
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
 int
-celfwd(pcode, lng, lat, cel, phi, theta, prj, x, y)
-
-const char pcode[4];
-const double lng, lat;
-struct celprm *cel;
-double *phi, *theta;
-struct prjprm *prj;
-double *x, *y;
+celfwd( pcode, lng, lat, cel, phi, theta, prj, x, y )
+     const char pcode[4];
+     const double lng, lat;
+     struct celprm *cel;
+     double *phi, *theta;
+     struct prjprm *prj;
+     double *x, *y;
 
 {
-   int    err;
+    int err;
 
-   if (cel->flag != CELSET) {
-      if (celset(pcode, cel, prj)) return 1;
-   }
+    if ( cel->flag != CELSET ) {
+	if ( celset( pcode, cel, prj ) ) return 1;
+    }
 
-   /* Compute native coordinates. */
-   sphfwd(lng, lat, cel->euler, phi, theta);
+    /* Compute native coordinates. */
+    sphfwd( lng, lat, cel->euler, phi, theta );
 
-   /* Apply forward projection. */
-   if ((err = prj->prjfwd(*phi, *theta, prj, x, y))) {
-      return err == 1 ? 2 : 3;
-   }
+    /* Apply forward projection. */
+    if ( ( err = prj->prjfwd( *phi, *theta, prj, x, y ) ) ) {
+	return err == 1 ? 2 : 3;
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
 int
-celrev(pcode, x, y, prj, phi, theta, cel, lng, lat)
-
-const char pcode[4];
-const double x, y;
-struct prjprm *prj;
-double *phi, *theta;
-struct celprm *cel;
-double *lng, *lat;
+celrev( pcode, x, y, prj, phi, theta, cel, lng, lat )
+     const char pcode[4];
+     const double x, y;
+     struct prjprm *prj;
+     double *phi, *theta;
+     struct celprm *cel;
+     double *lng, *lat;
 
 {
-   int    err;
+    int err;
 
-   if (cel->flag != CELSET) {
-      if(celset(pcode, cel, prj)) return 1;
-   }
+    if ( cel->flag != CELSET ) {
+	if ( celset( pcode, cel, prj ) ) return 1;
+    }
 
-   /* Apply reverse projection. */
-   if ((err = prj->prjrev(x, y, prj, phi, theta))) {
-      return err == 1 ? 2 : 3;
-   }
+    /* Apply reverse projection. */
+    if ( ( err = prj->prjrev( x, y, prj, phi, theta ) ) ) {
+	return err == 1 ? 2 : 3;
+    }
 
-   /* Compute native coordinates. */
-   sphrev(*phi, *theta, cel->euler, lng, lat);
+    /* Compute native coordinates. */
+    sphrev( *phi, *theta, cel->euler, lng, lat );
 
-   return 0;
+    return 0;
 }
 
 /* Dec 20 1999	Doug Mink - Change cosd() and sind() to cosdeg() and sindeg()

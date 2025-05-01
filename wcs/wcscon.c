@@ -68,7 +68,7 @@
 #ifndef VMS
 #include <stdlib.h>
 #endif
-#include <stdio.h>	/* for fprintf() and sprintf() */
+#include <stdio.h>              /* for fprintf() and sprintf() */
 #include <ctype.h>
 #include <string.h>
 #include "wcs.h"
@@ -81,199 +81,198 @@
    proper motions, too, and adding them if an epoch is specified */
 
 void
-wcsconp (sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi)
-
-int	sys1;	/* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-int	sys2;	/* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-double	eq1;	/* Input equinox (default of sys1 if 0.0) */
-double	eq2;	/* Output equinox (default of sys2 if 0.0) */
-double	ep1;	/* Input Besselian epoch in years (for proper motion) */
-double	ep2;	/* Output Besselian epoch in years (for proper motion) */
-double	*dtheta; /* Longitude or right ascension in degrees
-		   Input in sys1, returned in sys2 */
-double	*dphi;	/* Latitude or declination in degrees
-		   Input in sys1, returned in sys2 */
-double	*ptheta; /* Longitude or right ascension proper motion in RA degrees/year
-		   Input in sys1, returned in sys2 */
-double	*pphi;	/* Latitude or declination proper motion in Dec degrees/year
-		   Input in sys1, returned in sys2 */
+wcsconp( sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi )
+     int sys1;                  /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+     int sys2;                  /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+     double eq1;                /* Input equinox (default of sys1 if 0.0) */
+     double eq2;                /* Output equinox (default of sys2 if 0.0) */
+     double ep1;                /* Input Besselian epoch in years (for proper motion) */
+     double ep2;                /* Output Besselian epoch in years (for proper motion) */
+     double *dtheta;            /* Longitude or right ascension in degrees
+                                   Input in sys1, returned in sys2 */
+     double *dphi;              /* Latitude or declination in degrees
+                                   Input in sys1, returned in sys2 */
+     double *ptheta;            /* Longitude or right ascension proper motion in RA degrees/year
+                                   Input in sys1, returned in sys2 */
+     double *pphi;              /* Latitude or declination proper motion in Dec degrees/year
+                                   Input in sys1, returned in sys2 */
 
 {
     /* Set equinoxes if 0.0 */
-    if (eq1 == 0.0) {
-	if (sys1 == WCS_B1950)
+    if ( eq1 == 0.0 ) {
+	if ( sys1 == WCS_B1950 )
 	    eq1 = 1950.0;
 	else
 	    eq1 = 2000.0;
-	}
-    if (eq2 == 0.0) {
-	if (sys2 == WCS_B1950)
+    }
+    if ( eq2 == 0.0 ) {
+	if ( sys2 == WCS_B1950 )
 	    eq2 = 1950.0;
 	else
 	    eq2 = 2000.0;
-	}
+    }
 
     /* Set epochs if 0.0 */
-    if (ep1 == 0.0) {
-	if (sys1 == WCS_B1950)
+    if ( ep1 == 0.0 ) {
+	if ( sys1 == WCS_B1950 )
 	    ep1 = 1950.0;
 	else
 	    ep1 = 2000.0;
-	}
-    if (ep2 == 0.0) {
-	if (sys2 == WCS_B1950)
+    }
+    if ( ep2 == 0.0 ) {
+	if ( sys2 == WCS_B1950 )
 	    ep2 = 1950.0;
 	else
 	    ep2 = 2000.0;
-	}
+    }
 
-    if (sys1 == WCS_ICRS && sys2 == WCS_ICRS)
+    if ( sys1 == WCS_ICRS && sys2 == WCS_ICRS )
 	eq2 = eq1;
 
-    if (sys1 == WCS_J2000 && sys2 == WCS_ICRS && eq1 == 2000.0) {
+    if ( sys1 == WCS_J2000 && sys2 == WCS_ICRS && eq1 == 2000.0 ) {
 	eq2 = eq1;
 	sys1 = sys2;
-	}
+    }
 
     /* Set systems and equinoxes so that ICRS coordinates are not precessed */
-    if (sys1 == WCS_ICRS && sys2 == WCS_J2000 && eq2 == 2000.0) {
+    if ( sys1 == WCS_ICRS && sys2 == WCS_J2000 && eq2 == 2000.0 ) {
 	eq1 = eq2;
 	sys1 = sys2;
-	}
+    }
 
     /* If systems and equinoxes are the same, add proper motion and return */
-    if (sys2 == sys1 && eq1 == eq2) {
-	if (ep1 != ep2) {
-	    if (sys1 == WCS_J2000) {
-		*dtheta = *dtheta + ((ep2 - ep1) * *ptheta);
-		*dphi = *dphi + ((ep2 - ep1) * *pphi);
-		}
-	    else if (sys1 == WCS_B1950) {
-		*dtheta = *dtheta + ((ep2 - ep1) * *ptheta);
-		*dphi = *dphi + ((ep2 - ep1) * *pphi);
-		}
+    if ( sys2 == sys1 && eq1 == eq2 ) {
+	if ( ep1 != ep2 ) {
+	    if ( sys1 == WCS_J2000 ) {
+		*dtheta = *dtheta + ( ( ep2 - ep1 ) * *ptheta );
+		*dphi = *dphi + ( ( ep2 - ep1 ) * *pphi );
 	    }
-	if (eq1 != eq2) {
-	    if (sys1 == WCS_B1950)
-		fk4prec (eq1, eq2, dtheta, dphi);
-	    if (sys1 == WCS_J2000)
-		fk5prec (eq1, 2000.0, dtheta, dphi);
+	    else if ( sys1 == WCS_B1950 ) {
+		*dtheta = *dtheta + ( ( ep2 - ep1 ) * *ptheta );
+		*dphi = *dphi + ( ( ep2 - ep1 ) * *pphi );
 	    }
-	return;
 	}
+	if ( eq1 != eq2 ) {
+	    if ( sys1 == WCS_B1950 )
+		fk4prec( eq1, eq2, dtheta, dphi );
+	    if ( sys1 == WCS_J2000 )
+		fk5prec( eq1, 2000.0, dtheta, dphi );
+	}
+	return;
+    }
 
     /* Precess from input equinox to input system equinox, if necessary */
-    if (sys1 == WCS_B1950 && eq1 != 1950.0)
-	fk4prec (eq1, 1950.0, dtheta, dphi);
-    if (sys1 == WCS_J2000 && eq1 != 2000.0)
-	fk5prec (eq1, 2000.0, dtheta, dphi);
+    if ( sys1 == WCS_B1950 && eq1 != 1950.0 )
+	fk4prec( eq1, 1950.0, dtheta, dphi );
+    if ( sys1 == WCS_J2000 && eq1 != 2000.0 )
+	fk5prec( eq1, 2000.0, dtheta, dphi );
 
     /* Convert to B1950 FK4 */
-    if (sys2 == WCS_B1950) {
-	if (sys1 == WCS_J2000) {
-	    if (*ptheta != 0.0 || *pphi != 0.0) {
-		fk524m (dtheta, dphi, ptheta, pphi);
-		if (ep2 != 1950.0) {
-		    *dtheta = *dtheta + ((ep2 - 1950.0) * *ptheta);
-		    *dphi = *dphi + ((ep2 - 1950.0) * *pphi);
-		    }
+    if ( sys2 == WCS_B1950 ) {
+	if ( sys1 == WCS_J2000 ) {
+	    if ( *ptheta != 0.0 || *pphi != 0.0 ) {
+		fk524m( dtheta, dphi, ptheta, pphi );
+		if ( ep2 != 1950.0 ) {
+		    *dtheta = *dtheta + ( ( ep2 - 1950.0 ) * *ptheta );
+		    *dphi = *dphi + ( ( ep2 - 1950.0 ) * *pphi );
 		}
-	    else if (ep2 != 1950.0)
-		fk524e (dtheta, dphi, ep2);
+	    }
+	    else if ( ep2 != 1950.0 )
+		fk524e( dtheta, dphi, ep2 );
 	    else
-		fk524 (dtheta, dphi);
-	    }
-	else if (sys1 == WCS_GALACTIC) 
-	    gal2fk4 (dtheta, dphi);
-	else if (sys1 == WCS_ECLIPTIC)
-	    ecl2fk4 (dtheta, dphi, ep2);
+		fk524( dtheta, dphi );
 	}
+	else if ( sys1 == WCS_GALACTIC )
+	    gal2fk4( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC )
+	    ecl2fk4( dtheta, dphi, ep2 );
+    }
 
-    else if (sys2 == WCS_J2000) {
-        if (sys1 == WCS_B1950) {
-	    if (*ptheta != 0.0 || *pphi != 0.0) {
-		fk425m (dtheta, dphi, ptheta, pphi);
-		if (ep2 != 2000.0) {
-		    *dtheta = *dtheta + ((ep2 - 2000.0) * *ptheta);
-		    *dphi = *dphi + ((ep2 - 2000.0) * *pphi);
-		    }
+    else if ( sys2 == WCS_J2000 ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( *ptheta != 0.0 || *pphi != 0.0 ) {
+		fk425m( dtheta, dphi, ptheta, pphi );
+		if ( ep2 != 2000.0 ) {
+		    *dtheta = *dtheta + ( ( ep2 - 2000.0 ) * *ptheta );
+		    *dphi = *dphi + ( ( ep2 - 2000.0 ) * *pphi );
 		}
-            else if (ep2 > 0.0)
-                fk425e (dtheta, dphi, ep2);
-            else
-                fk425 (dtheta, dphi);
-            }
-        else if (sys1 == WCS_GALACTIC)
-            gal2fk5 (dtheta, dphi);
-	else if (sys1 == WCS_ECLIPTIC)
-	    ecl2fk5 (dtheta, dphi, ep2);
-	}
-
-    else if (sys2 == WCS_GALACTIC) {
-        if (sys1 == WCS_B1950) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    fk42gal (dtheta, dphi);
 	    }
-        else if (sys1 == WCS_J2000) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    fk52gal (dtheta, dphi);
-	    }
-        else if (sys1 == WCS_ECLIPTIC) {
-	    ecl2fk5 (dtheta, dphi, ep2);
-	    fk52gal (dtheta, dphi);
-	    }
-	}
-
-    else if (sys2 == WCS_ECLIPTIC) {
-        if (sys1 == WCS_B1950) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    if (ep2 > 0.0)
-		fk42ecl (dtheta, dphi, ep2);
+	    else if ( ep2 > 0.0 )
+		fk425e( dtheta, dphi, ep2 );
 	    else
-		fk42ecl (dtheta, dphi, 1950.0);
-	    }
-        else if (sys1 == WCS_J2000) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    fk52ecl (dtheta, dphi, ep2);
-	    }
-        else if (sys1 == WCS_GALACTIC) {
-	    gal2fk5 (dtheta, dphi);
-	    fk52ecl (dtheta, dphi, ep2);
-	    }
+		fk425( dtheta, dphi );
 	}
+	else if ( sys1 == WCS_GALACTIC )
+	    gal2fk5( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC )
+	    ecl2fk5( dtheta, dphi, ep2 );
+    }
+
+    else if ( sys2 == WCS_GALACTIC ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    fk42gal( dtheta, dphi );
+	}
+	else if ( sys1 == WCS_J2000 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    fk52gal( dtheta, dphi );
+	}
+	else if ( sys1 == WCS_ECLIPTIC ) {
+	    ecl2fk5( dtheta, dphi, ep2 );
+	    fk52gal( dtheta, dphi );
+	}
+    }
+
+    else if ( sys2 == WCS_ECLIPTIC ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    if ( ep2 > 0.0 )
+		fk42ecl( dtheta, dphi, ep2 );
+	    else
+		fk42ecl( dtheta, dphi, 1950.0 );
+	}
+	else if ( sys1 == WCS_J2000 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    fk52ecl( dtheta, dphi, ep2 );
+	}
+	else if ( sys1 == WCS_GALACTIC ) {
+	    gal2fk5( dtheta, dphi );
+	    fk52ecl( dtheta, dphi, ep2 );
+	}
+    }
 
     /* Precess to desired equinox, if necessary */
-    if (sys2 == WCS_B1950 && eq2 != 1950.0)
-	fk4prec (1950.0, eq2, dtheta, dphi);
-    if (sys2 == WCS_J2000 && eq2 != 2000.0)
-	fk5prec (2000.0, eq2, dtheta, dphi);
+    if ( sys2 == WCS_B1950 && eq2 != 1950.0 )
+	fk4prec( 1950.0, eq2, dtheta, dphi );
+    if ( sys2 == WCS_J2000 && eq2 != 2000.0 )
+	fk5prec( 2000.0, eq2, dtheta, dphi );
 
     /* Keep latitude/declination between +90 and -90 degrees */
-    if (*dphi > 90.0) {
+    if ( *dphi > 90.0 ) {
 	*dphi = 180.0 - *dphi;
 	*dtheta = *dtheta + 180.0;
-	}
-    else if (*dphi < -90.0) {
+    }
+    else if ( *dphi < -90.0 ) {
 	*dphi = -180.0 - *dphi;
 	*dtheta = *dtheta + 180.0;
-	}
+    }
 
     /* Keep longitude/right ascension between 0 and 360 degrees */
-    if (*dtheta > 360.0)
+    if ( *dtheta > 360.0 )
 	*dtheta = *dtheta - 360.0;
-    else if (*dtheta < 0.0)
+    else if ( *dtheta < 0.0 )
 	*dtheta = *dtheta + 360.0;
     return;
 }
@@ -283,207 +282,206 @@ double	*pphi;	/* Latitude or declination proper motion in Dec degrees/year
    proper motions, too, and adding them if an epoch is specified */
 
 void
-wcsconv (sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi, px, rv)
-
-int	sys1;	/* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-int	sys2;	/* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-double	eq1;	/* Input equinox (default of sys1 if 0.0) */
-double	eq2;	/* Output equinox (default of sys2 if 0.0) */
-double	ep1;	/* Input Besselian epoch in years (for proper motion) */
-double	ep2;	/* Output Besselian epoch in years (for proper motion) */
-double	*dtheta; /* Longitude or right ascension in degrees
-		   Input in sys1, returned in sys2 */
-double	*dphi;	/* Latitude or declination in degrees
-		   Input in sys1, returned in sys2 */
-double	*ptheta; /* Longitude or right ascension proper motion in degrees/year
-		   Input in sys1, returned in sys2 */
-double	*pphi;	/* Latitude or declination proper motion in degrees/year
-		   Input in sys1, returned in sys2 */
-double	*px;	/* Parallax in arcseconds */
-double	*rv;	/* Radial velocity in km/sec */
+wcsconv( sys1, sys2, eq1, eq2, ep1, ep2, dtheta, dphi, ptheta, pphi, px, rv )
+     int sys1;                  /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+     int sys2;                  /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+     double eq1;                /* Input equinox (default of sys1 if 0.0) */
+     double eq2;                /* Output equinox (default of sys2 if 0.0) */
+     double ep1;                /* Input Besselian epoch in years (for proper motion) */
+     double ep2;                /* Output Besselian epoch in years (for proper motion) */
+     double *dtheta;            /* Longitude or right ascension in degrees
+                                   Input in sys1, returned in sys2 */
+     double *dphi;              /* Latitude or declination in degrees
+                                   Input in sys1, returned in sys2 */
+     double *ptheta;            /* Longitude or right ascension proper motion in degrees/year
+                                   Input in sys1, returned in sys2 */
+     double *pphi;              /* Latitude or declination proper motion in degrees/year
+                                   Input in sys1, returned in sys2 */
+     double *px;                /* Parallax in arcseconds */
+     double *rv;                /* Radial velocity in km/sec */
 
 {
     /* Set equinoxes if 0.0 */
-    if (eq1 == 0.0) {
-	if (sys1 == WCS_B1950)
+    if ( eq1 == 0.0 ) {
+	if ( sys1 == WCS_B1950 )
 	    eq1 = 1950.0;
 	else
 	    eq1 = 2000.0;
-	}
-    if (eq2 == 0.0) {
-	if (sys2 == WCS_B1950)
+    }
+    if ( eq2 == 0.0 ) {
+	if ( sys2 == WCS_B1950 )
 	    eq2 = 1950.0;
 	else
 	    eq2 = 2000.0;
-	}
+    }
 
     /* Set epochs if 0.0 */
-    if (ep1 == 0.0) {
-	if (sys1 == WCS_B1950)
+    if ( ep1 == 0.0 ) {
+	if ( sys1 == WCS_B1950 )
 	    ep1 = 1950.0;
 	else
 	    ep1 = 2000.0;
-	}
-    if (ep2 == 0.0) {
-	if (sys2 == WCS_B1950)
+    }
+    if ( ep2 == 0.0 ) {
+	if ( sys2 == WCS_B1950 )
 	    ep2 = 1950.0;
 	else
 	    ep2 = 2000.0;
-	}
+    }
 
     /* Set systems and equinoxes so that ICRS coordinates are not precessed */
-    if (sys1 == WCS_ICRS && sys2 == WCS_ICRS)
+    if ( sys1 == WCS_ICRS && sys2 == WCS_ICRS )
 	eq2 = eq1;
 
-    if (sys1 == WCS_J2000 && sys2 == WCS_ICRS && eq1 == 2000.0) {
+    if ( sys1 == WCS_J2000 && sys2 == WCS_ICRS && eq1 == 2000.0 ) {
 	eq2 = eq1;
 	sys1 = sys2;
-	}
+    }
 
-    if (sys1 == WCS_ICRS && sys2 == WCS_J2000 && eq2 == 2000.0) {
+    if ( sys1 == WCS_ICRS && sys2 == WCS_J2000 && eq2 == 2000.0 ) {
 	eq1 = eq2;
 	sys1 = sys2;
-	}
+    }
 
     /* If systems and equinoxes are the same, add proper motion and return */
-    if (sys2 == sys1 && eq1 == eq2) {
-	if (ep1 != ep2) {
-	    if (sys1 == WCS_J2000) {
-		*dtheta = *dtheta + ((ep2 - ep1) * *ptheta);
-		*dphi = *dphi + ((ep2 - ep1) * *pphi);
-		}
-	    else if (sys1 == WCS_B1950) {
-		*dtheta = *dtheta + ((ep2 - ep1) * *ptheta);
-		*dphi = *dphi + ((ep2 - ep1) * *pphi);
-		}
+    if ( sys2 == sys1 && eq1 == eq2 ) {
+	if ( ep1 != ep2 ) {
+	    if ( sys1 == WCS_J2000 ) {
+		*dtheta = *dtheta + ( ( ep2 - ep1 ) * *ptheta );
+		*dphi = *dphi + ( ( ep2 - ep1 ) * *pphi );
 	    }
-	return;
+	    else if ( sys1 == WCS_B1950 ) {
+		*dtheta = *dtheta + ( ( ep2 - ep1 ) * *ptheta );
+		*dphi = *dphi + ( ( ep2 - ep1 ) * *pphi );
+	    }
 	}
+	return;
+    }
 
     /* Precess from input equinox to input system equinox, if necessary */
-    if (eq1 != eq2) {
-	if (sys1 == WCS_B1950 && eq1 != 1950.0)
-	   fk4prec (eq1, 1950.0, dtheta, dphi);
-	if (sys1 == WCS_J2000 && eq1 != 2000.0)
-	   fk5prec (eq1, 2000.0, dtheta, dphi);
-	}
+    if ( eq1 != eq2 ) {
+	if ( sys1 == WCS_B1950 && eq1 != 1950.0 )
+	    fk4prec( eq1, 1950.0, dtheta, dphi );
+	if ( sys1 == WCS_J2000 && eq1 != 2000.0 )
+	    fk5prec( eq1, 2000.0, dtheta, dphi );
+    }
 
     /* Convert to B1950 FK4 */
-    if (sys2 == WCS_B1950) {
-	if (sys1 == WCS_J2000) {
-	    if (*ptheta != 0.0 || *pphi != 0.0) {
-		if (*px != 0.0 || *rv != 0.0)
-		    fk524pv (dtheta, dphi, ptheta, pphi, px, rv);
+    if ( sys2 == WCS_B1950 ) {
+	if ( sys1 == WCS_J2000 ) {
+	    if ( *ptheta != 0.0 || *pphi != 0.0 ) {
+		if ( *px != 0.0 || *rv != 0.0 )
+		    fk524pv( dtheta, dphi, ptheta, pphi, px, rv );
 		else
-		    fk524m (dtheta, dphi, ptheta, pphi);
-		if (ep1 == 2000.0)
+		    fk524m( dtheta, dphi, ptheta, pphi );
+		if ( ep1 == 2000.0 )
 		    ep1 = 1950.0;
-		if (ep2 != 1950.0) {
-		    *dtheta = *dtheta + ((ep2 - 1950.0) * *ptheta);
-		    *dphi = *dphi + ((ep2 - 1950.0) * *pphi);
-		    }
+		if ( ep2 != 1950.0 ) {
+		    *dtheta = *dtheta + ( ( ep2 - 1950.0 ) * *ptheta );
+		    *dphi = *dphi + ( ( ep2 - 1950.0 ) * *pphi );
 		}
-	    else if (ep2 != 1950.0)
-		fk524e (dtheta, dphi, ep2);
-	    else
-		fk524 (dtheta, dphi);
 	    }
-	else if (sys1 == WCS_GALACTIC) 
-	    gal2fk4 (dtheta, dphi);
-	else if (sys1 == WCS_ECLIPTIC)
-	    ecl2fk4 (dtheta, dphi, ep2);
+	    else if ( ep2 != 1950.0 )
+		fk524e( dtheta, dphi, ep2 );
+	    else
+		fk524( dtheta, dphi );
 	}
+	else if ( sys1 == WCS_GALACTIC )
+	    gal2fk4( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC )
+	    ecl2fk4( dtheta, dphi, ep2 );
+    }
 
-    else if (sys2 == WCS_J2000) {
-        if (sys1 == WCS_B1950) {
-	    if (*ptheta != 0.0 || *pphi != 0.0) {
-		if (*px != 0.0 || *rv != 0.0)
-		    fk425pv (dtheta, dphi, ptheta, pphi, px, rv);
+    else if ( sys2 == WCS_J2000 ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( *ptheta != 0.0 || *pphi != 0.0 ) {
+		if ( *px != 0.0 || *rv != 0.0 )
+		    fk425pv( dtheta, dphi, ptheta, pphi, px, rv );
 		else
-		    fk425m (dtheta, dphi, ptheta, pphi);
-		if (ep2 != 2000.0) {
-		    *dtheta = *dtheta + ((ep2 - 2000.0) * *ptheta);
-		    *dphi = *dphi + ((ep2 - 2000.0) * *pphi);
-		    }
+		    fk425m( dtheta, dphi, ptheta, pphi );
+		if ( ep2 != 2000.0 ) {
+		    *dtheta = *dtheta + ( ( ep2 - 2000.0 ) * *ptheta );
+		    *dphi = *dphi + ( ( ep2 - 2000.0 ) * *pphi );
 		}
-            else if (ep2 > 0.0)
-                fk425e (dtheta, dphi, ep2);
-            else
-                fk425 (dtheta, dphi);
-            }
-        else if (sys1 == WCS_GALACTIC)
-            gal2fk5 (dtheta, dphi);
-	else if (sys1 == WCS_ECLIPTIC)
-	    ecl2fk5 (dtheta, dphi, ep2);
-	}
-
-    else if (sys2 == WCS_GALACTIC) {
-        if (sys1 == WCS_B1950) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    fk42gal (dtheta, dphi);
 	    }
-        else if (sys1 == WCS_J2000) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    fk52gal (dtheta, dphi);
-	    }
-        else if (sys1 == WCS_ECLIPTIC) {
-	    ecl2fk5 (dtheta, dphi, ep2);
-	    fk52gal (dtheta, dphi);
-	    }
-	}
-
-    else if (sys2 == WCS_ECLIPTIC) {
-        if (sys1 == WCS_B1950) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    if (ep2 > 0.0)
-		fk42ecl (dtheta, dphi, ep2);
+	    else if ( ep2 > 0.0 )
+		fk425e( dtheta, dphi, ep2 );
 	    else
-		fk42ecl (dtheta, dphi, 1950.0);
-	    }
-        else if (sys1 == WCS_J2000) {
-	    if (ep2 != 0.0 && (*ptheta != 0.0 || *pphi != 0.0)) {
-		*dtheta = *dtheta + (*ptheta * (ep2 - ep1));
-		*dphi = *dphi + (*pphi * (ep2 - ep1));
-		}
-	    fk52ecl (dtheta, dphi, ep2);
-	    }
-        else if (sys1 == WCS_GALACTIC) {
-	    gal2fk5 (dtheta, dphi);
-	    fk52ecl (dtheta, dphi, ep2);
-	    }
+		fk425( dtheta, dphi );
 	}
+	else if ( sys1 == WCS_GALACTIC )
+	    gal2fk5( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC )
+	    ecl2fk5( dtheta, dphi, ep2 );
+    }
+
+    else if ( sys2 == WCS_GALACTIC ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    fk42gal( dtheta, dphi );
+	}
+	else if ( sys1 == WCS_J2000 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    fk52gal( dtheta, dphi );
+	}
+	else if ( sys1 == WCS_ECLIPTIC ) {
+	    ecl2fk5( dtheta, dphi, ep2 );
+	    fk52gal( dtheta, dphi );
+	}
+    }
+
+    else if ( sys2 == WCS_ECLIPTIC ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    if ( ep2 > 0.0 )
+		fk42ecl( dtheta, dphi, ep2 );
+	    else
+		fk42ecl( dtheta, dphi, 1950.0 );
+	}
+	else if ( sys1 == WCS_J2000 ) {
+	    if ( ep2 != 0.0 && ( *ptheta != 0.0 || *pphi != 0.0 ) ) {
+		*dtheta = *dtheta + ( *ptheta * ( ep2 - ep1 ) );
+		*dphi = *dphi + ( *pphi * ( ep2 - ep1 ) );
+	    }
+	    fk52ecl( dtheta, dphi, ep2 );
+	}
+	else if ( sys1 == WCS_GALACTIC ) {
+	    gal2fk5( dtheta, dphi );
+	    fk52ecl( dtheta, dphi, ep2 );
+	}
+    }
 
     /* Precess to desired equinox, if necessary */
-    if (eq1 != eq2) {
-	if (sys2 == WCS_B1950 && eq2 != 1950.0)
-	    fk4prec (1950.0, eq2, dtheta, dphi);
-	if (sys2 == WCS_J2000 && eq2 != 2000.0)
-	    fk5prec (2000.0, eq2, dtheta, dphi);
-	}
+    if ( eq1 != eq2 ) {
+	if ( sys2 == WCS_B1950 && eq2 != 1950.0 )
+	    fk4prec( 1950.0, eq2, dtheta, dphi );
+	if ( sys2 == WCS_J2000 && eq2 != 2000.0 )
+	    fk5prec( 2000.0, eq2, dtheta, dphi );
+    }
 
     /* Keep latitude/declination between +90 and -90 degrees */
-    if (*dphi > 90.0) {
+    if ( *dphi > 90.0 ) {
 	*dphi = 180.0 - *dphi;
 	*dtheta = *dtheta + 180.0;
-	}
-    else if (*dphi < -90.0) {
+    }
+    else if ( *dphi < -90.0 ) {
 	*dphi = -180.0 - *dphi;
 	*dtheta = *dtheta + 180.0;
-	}
+    }
 
     /* Keep longitude/right ascension between 0 and 360 degrees */
-    if (*dtheta > 360.0)
+    if ( *dtheta > 360.0 )
 	*dtheta = *dtheta - 360.0;
-    else if (*dtheta < 0.0)
+    else if ( *dtheta < 0.0 )
 	*dtheta = *dtheta + 360.0;
     return;
 }
@@ -492,152 +490,151 @@ double	*rv;	/* Radial velocity in km/sec */
 /* Convert from coordinate system sys1 to coordinate system sys2 */
 
 void
-wcscon (sys1, sys2, eq1, eq2, dtheta, dphi, epoch)
-
-int	sys1;	/* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-int	sys2;	/* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
-double	eq1;	/* Input equinox (default of sys1 if 0.0) */
-double	eq2;	/* Output equinox (default of sys2 if 0.0) */
-double	*dtheta; /* Longitude or right ascension in degrees
-		   Input in sys1, returned in sys2 */
-double	*dphi;	/* Latitude or declination in degrees
-		   Input in sys1, returned in sys2 */
-double	epoch;	/* Besselian epoch in years */
+wcscon( sys1, sys2, eq1, eq2, dtheta, dphi, epoch )
+     int sys1;                  /* Input coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+     int sys2;                  /* Output coordinate system (J2000, B1950, ECLIPTIC, GALACTIC */
+     double eq1;                /* Input equinox (default of sys1 if 0.0) */
+     double eq2;                /* Output equinox (default of sys2 if 0.0) */
+     double *dtheta;            /* Longitude or right ascension in degrees
+                                   Input in sys1, returned in sys2 */
+     double *dphi;              /* Latitude or declination in degrees
+                                   Input in sys1, returned in sys2 */
+     double epoch;              /* Besselian epoch in years */
 
 {
     /* Set equinoxes if 0.0 */
-    if (eq1 == 0.0) {
-	if (sys1 == WCS_B1950)
+    if ( eq1 == 0.0 ) {
+	if ( sys1 == WCS_B1950 )
 	    eq1 = 1950.0;
 	else
 	    eq1 = 2000.0;
-	}
-    if (eq2 == 0.0) {
-	if (sys2 == WCS_B1950)
+    }
+    if ( eq2 == 0.0 ) {
+	if ( sys2 == WCS_B1950 )
 	    eq2 = 1950.0;
 	else
 	    eq2 = 2000.0;
-	}
+    }
 
     /* Set systems and equinoxes so that ICRS coordinates are not precessed */
-    if (sys1 == WCS_ICRS && sys2 == WCS_ICRS)
+    if ( sys1 == WCS_ICRS && sys2 == WCS_ICRS )
 	eq2 = eq1;
 
-    if (sys1 == WCS_J2000 && sys2 == WCS_ICRS && eq1 == 2000.0) {
+    if ( sys1 == WCS_J2000 && sys2 == WCS_ICRS && eq1 == 2000.0 ) {
 	eq2 = eq1;
 	sys1 = sys2;
-	}
+    }
 
-    if (sys1 == WCS_ICRS && sys2 == WCS_J2000 && eq2 == 2000.0) {
+    if ( sys1 == WCS_ICRS && sys2 == WCS_J2000 && eq2 == 2000.0 ) {
 	eq1 = eq2;
 	sys1 = sys2;
-	}
+    }
 
     /* If systems and equinoxes are the same, return */
-    if (sys2 == sys1 && eq1 == eq2)
+    if ( sys2 == sys1 && eq1 == eq2 )
 	return;
 
     /* Precess from input equinox, if necessary */
-    if (eq1 != eq2) {
-	if (sys1 == WCS_B1950 && eq1 != 1950.0)
-	   fk4prec (eq1, 1950.0, dtheta, dphi);
-	if (sys1 == WCS_J2000 && eq1 != 2000.0)
-	   fk5prec (eq1, 2000.0, dtheta, dphi);
-	}
+    if ( eq1 != eq2 ) {
+	if ( sys1 == WCS_B1950 && eq1 != 1950.0 )
+	    fk4prec( eq1, 1950.0, dtheta, dphi );
+	if ( sys1 == WCS_J2000 && eq1 != 2000.0 )
+	    fk5prec( eq1, 2000.0, dtheta, dphi );
+    }
 
     /* Convert to B1950 FK4 */
-    if (sys2 == WCS_B1950) {
-	if (sys1 == WCS_J2000) {
-	    if (epoch > 0)
-		fk524e (dtheta, dphi, epoch);
+    if ( sys2 == WCS_B1950 ) {
+	if ( sys1 == WCS_J2000 ) {
+	    if ( epoch > 0 )
+		fk524e( dtheta, dphi, epoch );
 	    else
-		fk524 (dtheta, dphi);
-	    }
-	else if (sys1 == WCS_GALACTIC) 
-	    gal2fk4 (dtheta, dphi);
-	else if (sys1 == WCS_ECLIPTIC) {
-	    if (epoch > 0)
-		ecl2fk4 (dtheta, dphi, epoch);
-	    else
-		ecl2fk4 (dtheta, dphi, 1950.0);
-	    }
+		fk524( dtheta, dphi );
 	}
+	else if ( sys1 == WCS_GALACTIC )
+	    gal2fk4( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC ) {
+	    if ( epoch > 0 )
+		ecl2fk4( dtheta, dphi, epoch );
+	    else
+		ecl2fk4( dtheta, dphi, 1950.0 );
+	}
+    }
 
-    else if (sys2 == WCS_J2000) {
-        if (sys1 == WCS_B1950) {
-            if (epoch > 0)
-                fk425e (dtheta, dphi, epoch);
-            else
-                fk425 (dtheta, dphi);
-            }
-        else if (sys1 == WCS_GALACTIC)
-            gal2fk5 (dtheta, dphi);
-	else if (sys1 == WCS_ECLIPTIC) {
-	    if (epoch > 0)
-		ecl2fk5 (dtheta, dphi, epoch);
+    else if ( sys2 == WCS_J2000 ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( epoch > 0 )
+		fk425e( dtheta, dphi, epoch );
 	    else
-		ecl2fk5 (dtheta, dphi, 2000.0);
-	    }
+		fk425( dtheta, dphi );
 	}
+	else if ( sys1 == WCS_GALACTIC )
+	    gal2fk5( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC ) {
+	    if ( epoch > 0 )
+		ecl2fk5( dtheta, dphi, epoch );
+	    else
+		ecl2fk5( dtheta, dphi, 2000.0 );
+	}
+    }
 
-    else if (sys2 == WCS_GALACTIC) {
-        if (sys1 == WCS_B1950)
-	    fk42gal (dtheta, dphi);
-        else if (sys1 == WCS_J2000)
-	    fk52gal (dtheta, dphi);
-        else if (sys1 == WCS_ECLIPTIC) {
-	    if (epoch > 0)
-		ecl2fk5 (dtheta, dphi, epoch);
+    else if ( sys2 == WCS_GALACTIC ) {
+	if ( sys1 == WCS_B1950 )
+	    fk42gal( dtheta, dphi );
+	else if ( sys1 == WCS_J2000 )
+	    fk52gal( dtheta, dphi );
+	else if ( sys1 == WCS_ECLIPTIC ) {
+	    if ( epoch > 0 )
+		ecl2fk5( dtheta, dphi, epoch );
 	    else
-		ecl2fk5 (dtheta, dphi, 2000.0);
-	    fk52gal (dtheta, dphi);
-	    }
+		ecl2fk5( dtheta, dphi, 2000.0 );
+	    fk52gal( dtheta, dphi );
 	}
+    }
 
-    else if (sys2 == WCS_ECLIPTIC) {
-        if (sys1 == WCS_B1950) {
-	    if (epoch > 0)
-		fk42ecl (dtheta, dphi, epoch);
+    else if ( sys2 == WCS_ECLIPTIC ) {
+	if ( sys1 == WCS_B1950 ) {
+	    if ( epoch > 0 )
+		fk42ecl( dtheta, dphi, epoch );
 	    else
-		fk42ecl (dtheta, dphi, 1950.0);
-	    }
-        else if (sys1 == WCS_J2000) {
-	    if (epoch > 0)
-		fk52ecl (dtheta, dphi, epoch);
-	    else
-		fk52ecl (dtheta, dphi, 2000.0);
-	    }
-        else if (sys1 == WCS_GALACTIC) {
-	    gal2fk5 (dtheta, dphi);
-	    if (epoch > 0)
-		fk52ecl (dtheta, dphi, epoch);
-	    else
-		fk52ecl (dtheta, dphi, 2000.0);
-	    }
+		fk42ecl( dtheta, dphi, 1950.0 );
 	}
+	else if ( sys1 == WCS_J2000 ) {
+	    if ( epoch > 0 )
+		fk52ecl( dtheta, dphi, epoch );
+	    else
+		fk52ecl( dtheta, dphi, 2000.0 );
+	}
+	else if ( sys1 == WCS_GALACTIC ) {
+	    gal2fk5( dtheta, dphi );
+	    if ( epoch > 0 )
+		fk52ecl( dtheta, dphi, epoch );
+	    else
+		fk52ecl( dtheta, dphi, 2000.0 );
+	}
+    }
 
     /* Precess to desired equinox, if necessary */
-    if (eq1 != eq2) {
-	if (sys2 == WCS_B1950 && eq2 != 1950.0)
-	    fk4prec (1950.0, eq2, dtheta, dphi);
-	if (sys2 == WCS_J2000 && eq2 != 2000.0)
-	    fk5prec (2000.0, eq2, dtheta, dphi);
-	}
+    if ( eq1 != eq2 ) {
+	if ( sys2 == WCS_B1950 && eq2 != 1950.0 )
+	    fk4prec( 1950.0, eq2, dtheta, dphi );
+	if ( sys2 == WCS_J2000 && eq2 != 2000.0 )
+	    fk5prec( 2000.0, eq2, dtheta, dphi );
+    }
 
     /* Keep latitude/declination between +90 and -90 degrees */
-    if (*dphi > 90.0) {
+    if ( *dphi > 90.0 ) {
 	*dphi = 180.0 - *dphi;
 	*dtheta = *dtheta + 180.0;
-	}
-    else if (*dphi < -90.0) {
+    }
+    else if ( *dphi < -90.0 ) {
 	*dphi = -180.0 - *dphi;
 	*dtheta = *dtheta + 180.0;
-	}
+    }
 
     /* Keep longitude/right ascension between 0 and 360 degrees */
-    if (*dtheta > 360.0)
+    if ( *dtheta > 360.0 )
 	*dtheta = *dtheta - 360.0;
-    else if (*dtheta < 0.0)
+    else if ( *dtheta < 0.0 )
 	*dtheta = *dtheta + 360.0;
 
     return;
@@ -646,56 +643,55 @@ double	epoch;	/* Besselian epoch in years */
 
 /* Set coordinate system from string */
 int
-wcscsys (wcstring)
-
-char *wcstring;		/* Name of coordinate system */
+wcscsys( wcstring )
+     char *wcstring;            /* Name of coordinate system */
 {
     double equinox;
 
-    if (wcstring[0] == 'J' || wcstring[0] == 'j' ||
-	!strcmp (wcstring,"2000") || !strcmp (wcstring, "2000.0") ||
-	!strcmp (wcstring,"ICRS") || !strcmp (wcstring, "icrs") ||
-	!strncmp (wcstring,"FK5",3) || !strncmp (wcstring, "fk5",3))
+    if ( wcstring[0] == 'J' || wcstring[0] == 'j' ||
+         !strcmp( wcstring, "2000" ) || !strcmp( wcstring, "2000.0" ) ||
+         !strcmp( wcstring, "ICRS" ) || !strcmp( wcstring, "icrs" ) ||
+         !strncmp( wcstring, "FK5", 3 ) || !strncmp( wcstring, "fk5", 3 ) )
 	return WCS_J2000;
 
-    if (wcstring[0] == 'B' || wcstring[0] == 'b' ||
-	!strcmp (wcstring,"1950") || !strcmp (wcstring, "1950.0") ||
-	!strncmp (wcstring,"FK4",3) || !strncmp (wcstring, "fk4",3))
+    if ( wcstring[0] == 'B' || wcstring[0] == 'b' ||
+         !strcmp( wcstring, "1950" ) || !strcmp( wcstring, "1950.0" ) ||
+         !strncmp( wcstring, "FK4", 3 ) || !strncmp( wcstring, "fk4", 3 ) )
 	return WCS_B1950;
 
-    else if (wcstring[0] == 'I' || wcstring[0] == 'i' )
+    else if ( wcstring[0] == 'I' || wcstring[0] == 'i' )
 	return WCS_ICRS;
 
-    else if (wcstring[0] == 'G' || wcstring[0] == 'g' )
+    else if ( wcstring[0] == 'G' || wcstring[0] == 'g' )
 	return WCS_GALACTIC;
 
-    else if (wcstring[0] == 'E' || wcstring[0] == 'e' )
+    else if ( wcstring[0] == 'E' || wcstring[0] == 'e' )
 	return WCS_ECLIPTIC;
 
-    else if (wcstring[0] == 'A' || wcstring[0] == 'a' )
+    else if ( wcstring[0] == 'A' || wcstring[0] == 'a' )
 	return WCS_ALTAZ;
 
-    else if (wcstring[0] == 'N' || wcstring[0] == 'n' )
+    else if ( wcstring[0] == 'N' || wcstring[0] == 'n' )
 	return WCS_NPOLE;
 
-    else if (wcstring[0] == 'L' || wcstring[0] == 'l' )
+    else if ( wcstring[0] == 'L' || wcstring[0] == 'l' )
 	return WCS_LINEAR;
 
-    else if (!strncasecmp (wcstring, "pixel", 5))
+    else if ( !strncasecmp( wcstring, "pixel", 5 ) )
 	return WCS_XY;
 
-    else if (wcstring[0] == 'P' || wcstring[0] == 'p' )
+    else if ( wcstring[0] == 'P' || wcstring[0] == 'p' )
 	return WCS_PLANET;
 
-    else if (isnum (wcstring) == 1 || isnum (wcstring) == 2) {
-	equinox = atof (wcstring);
-	if (equinox > 1980.0)
+    else if ( isnum( wcstring ) == 1 || isnum( wcstring ) == 2 ) {
+	equinox = atof( wcstring );
+	if ( equinox > 1980.0 )
 	    return WCS_J2000;
-	else if (equinox > 1900.0)
+	else if ( equinox > 1900.0 )
 	    return WCS_B1950;
 	else
 	    return -1;
-	}
+    }
     else
 	return -1;
 }
@@ -704,107 +700,105 @@ char *wcstring;		/* Name of coordinate system */
 /* Set equinox from string (return 0.0 if not obvious) */
 
 double
-wcsceq (wcstring)
-
-char *wcstring;		/* Name of coordinate system */
+wcsceq( wcstring )
+     char *wcstring;            /* Name of coordinate system */
 {
-    if (wcstring[0] == 'J' || wcstring[0] == 'j' ||
-	wcstring[0] == 'B' || wcstring[0] == 'b')
-	return (atof (wcstring+1));
-    else if (!strncmp (wcstring, "FK4",3) ||
-	     !strncmp (wcstring, "fk4",3))
-	return (1950.0);
-    else if (!strncmp (wcstring, "FK5",3) ||
-	     !strncmp (wcstring, "fk5",3))
-	return (2000.0);
-    else if (!strncmp (wcstring, "ICRS",4) ||
-	     !strncmp (wcstring, "icrs",4))
-	return (2000.0);
-    else if (wcstring[0] == '1' || wcstring[0] == '2')
-	return (atof (wcstring));
+    if ( wcstring[0] == 'J' || wcstring[0] == 'j' ||
+         wcstring[0] == 'B' || wcstring[0] == 'b' )
+	return ( atof( wcstring + 1 ) );
+    else if ( !strncmp( wcstring, "FK4", 3 ) ||
+              !strncmp( wcstring, "fk4", 3 ) )
+	return ( 1950.0 );
+    else if ( !strncmp( wcstring, "FK5", 3 ) ||
+              !strncmp( wcstring, "fk5", 3 ) )
+	return ( 2000.0 );
+    else if ( !strncmp( wcstring, "ICRS", 4 ) ||
+              !strncmp( wcstring, "icrs", 4 ) )
+	return ( 2000.0 );
+    else if ( wcstring[0] == '1' || wcstring[0] == '2' )
+	return ( atof( wcstring ) );
     else
-	return (0.0);
+	return ( 0.0 );
 }
 
 
 /* Set coordinate system type string from system and equinox */
 
 void
-wcscstr (cstr, syswcs, equinox, epoch)
-
-char	*cstr;		/* Coordinate system string (returned) */
-int	syswcs;		/* Coordinate system code */
-double	equinox;	/* Equinox of coordinate system */
-double	epoch;		/* Epoch of coordinate system */
+wcscstr( cstr, syswcs, equinox, epoch )
+     char *cstr;                /* Coordinate system string (returned) */
+     int syswcs;                /* Coordinate system code */
+     double equinox;            /* Equinox of coordinate system */
+     double epoch;              /* Epoch of coordinate system */
 {
 
     char *estr;
 
-    if (syswcs == WCS_XY) {
-	strcpy (cstr, "XY");
+    if ( syswcs == WCS_XY ) {
+	strcpy( cstr, "XY" );
 	return;
-	}
+    }
 
     /* Try to figure out coordinate system if it is not set */
-    if (epoch == 0.0)
+    if ( epoch == 0.0 )
 	epoch = equinox;
-    if (syswcs < 0) {
-	if (equinox > 0.0) {
-	    if (equinox == 2000.0)
+    if ( syswcs < 0 ) {
+	if ( equinox > 0.0 ) {
+	    if ( equinox == 2000.0 )
 		syswcs = WCS_J2000;
-	    else if (equinox == 1950.0)
+	    else if ( equinox == 1950.0 )
 		syswcs = WCS_B1950;
-	    }
-	else if (epoch > 0.0) {
-	    if (epoch > 1980.0) {
+	}
+	else if ( epoch > 0.0 ) {
+	    if ( epoch > 1980.0 ) {
 		syswcs = WCS_J2000;
 		equinox = 2000.0;
-		}
+	    }
 	    else {
 		syswcs = WCS_B1950;
 		equinox = 1950.0;
-		}
 	    }
+	}
 	else
 	    syswcs = WCS_J2000;
-	}
+    }
 
     /* Set coordinate system string from system flag and epoch */
-    if (syswcs == WCS_B1950) {
-	if (epoch == 1950.0 || epoch == 0.0)
-	    strcpy (cstr, "B1950");
+    if ( syswcs == WCS_B1950 ) {
+	if ( epoch == 1950.0 || epoch == 0.0 )
+	    strcpy( cstr, "B1950" );
 	else
-	    sprintf (cstr, "B%7.2f", equinox);
-	if ((estr = strsrch (cstr,".00")) != NULL) {
-	    estr[0] = (char) 0;
-	    estr[1] = (char) 0;
-	    estr[2] = (char) 0;
-	    }
+	    sprintf( cstr, "B%7.2f", equinox );
+	if ( ( estr = strsrch( cstr, ".00" ) ) != NULL ) {
+	    estr[0] = ( char ) 0;
+	    estr[1] = ( char ) 0;
+	    estr[2] = ( char ) 0;
 	}
-    else if (syswcs == WCS_GALACTIC)
-	strcpy (cstr, "galactic");
-    else if (syswcs == WCS_ECLIPTIC)
-	strcpy (cstr, "ecliptic");
-    else if (syswcs == WCS_J2000) {
-	if (epoch == 2000.0 || epoch == 0.0)
-	    strcpy (cstr, "J2000");
+    }
+    else if ( syswcs == WCS_GALACTIC )
+	strcpy( cstr, "galactic" );
+    else if ( syswcs == WCS_ECLIPTIC )
+	strcpy( cstr, "ecliptic" );
+    else if ( syswcs == WCS_J2000 ) {
+	if ( epoch == 2000.0 || epoch == 0.0 )
+	    strcpy( cstr, "J2000" );
 	else
-	    sprintf (cstr, "J%7.2f", equinox);
-	if ((estr = strsrch (cstr,".00")) != NULL) {
-	    estr[0] = (char) 0;
-	    estr[1] = (char) 0;
-	    estr[2] = (char) 0;
-	    }
+	    sprintf( cstr, "J%7.2f", equinox );
+	if ( ( estr = strsrch( cstr, ".00" ) ) != NULL ) {
+	    estr[0] = ( char ) 0;
+	    estr[1] = ( char ) 0;
+	    estr[2] = ( char ) 0;
 	}
-    else if (syswcs == WCS_ICRS) {
-	strcpy (cstr, "ICRS");
-	}
-    else if (syswcs == WCS_PLANET) {
-	strcpy (cstr, "PLANET");
-	}
-    else if (syswcs == WCS_LINEAR || syswcs == WCS_XY) {
-	strcpy (cstr, "LINEAR");
-	}
+    }
+    else if ( syswcs == WCS_ICRS ) {
+	strcpy( cstr, "ICRS" );
+    }
+    else if ( syswcs == WCS_PLANET ) {
+	strcpy( cstr, "PLANET" );
+    }
+    else if ( syswcs == WCS_LINEAR || syswcs == WCS_XY ) {
+	strcpy( cstr, "LINEAR" );
+    }
     return;
 }
 
@@ -814,124 +808,121 @@ double	epoch;		/* Epoch of coordinate system */
     (private communication), which agrees with the one given in reference
     2 but which has one additional decimal place.  */
 
-static double a[3] = {-1.62557e-6, -0.31919e-6, -0.13843e-6};
-static double ad[3] = {1.245e-3,  -1.580e-3,  -0.659e-3};
-static double d2pi = 6.283185307179586476925287;	/* two PI */
-static double tiny = 1.e-30; /* small number to avoid arithmetic problems */
+static double a[3] = { -1.62557e-6, -0.31919e-6, -0.13843e-6 };
+static double ad[3] = { 1.245e-3, -1.580e-3, -0.659e-3 };
+
+static double d2pi = 6.283185307179586476925287;        /* two PI */
+static double tiny = 1.e-30;    /* small number to avoid arithmetic problems */
 
 /* FK524  convert J2000 FK5 star data to B1950 FK4
    based on Starlink sla_fk524 by P.T.Wallace 27 October 1987 */
 
 static double emi[6][6] = {
-    {	 0.9999256795,		/* emi[0][0] */
-	 0.0111814828,		/* emi[0][1] */
-	 0.0048590039,		/* emi[0][2] */
-	-0.00000242389840,	/* emi[0][3] */
-	-0.00000002710544,	/* emi[0][4] */
-	-0.00000001177742 },	/* emi[0][5] */
- 
-    {	-0.0111814828,		/* emi[1][0] */
-	 0.9999374849,		/* emi[1][1] */
-	-0.0000271771,		/* emi[1][2] */
-	 0.00000002710544,	/* emi[1][3] */
-	-0.00000242392702,	/* emi[1][4] */
-	 0.00000000006585 },	/* emi[1][5] */
- 
-    {	-0.0048590040,		/* emi[2][0] */
-	-0.0000271557,		/* emi[2][1] */
-	 0.9999881946,		/* emi[2][2] */
-	 0.00000001177742,	/* emi[2][3] */
-	 0.00000000006585,	/* emi[2][4] */
-	-0.00000242404995 },	/* emi[2][5] */
- 
-    {	-0.000551,		/* emi[3][0] */
-	 0.238509,		/* emi[3][1] */
-	-0.435614,		/* emi[3][2] */
-	 0.99990432,		/* emi[3][3] */
-	 0.01118145,		/* emi[3][4] */
-	 0.00485852 },		/* emi[3][5] */
- 
-    {	-0.238560,		/* emi[4][0] */
-	-0.002667,		/* emi[4][1] */
-	 0.012254,		/* emi[4][2] */
-	-0.01118145,		/* emi[4][3] */
-	 0.99991613,		/* emi[4][4] */
-	-0.00002717 },		/* emi[4][5] */
- 
-    {	 0.435730,		/* emi[5][0] */
-	-0.008541,		/* emi[5][1] */
-	 0.002117,		/* emi[5][2] */
-	-0.00485852,		/* emi[5][3] */
-	-0.00002716,		/* emi[5][4] */
-	 0.99996684 }		/* emi[5][5] */
-    };
+    {0.9999256795,              /* emi[0][0] */
+     0.0111814828,              /* emi[0][1] */
+     0.0048590039,              /* emi[0][2] */
+     -0.00000242389840,         /* emi[0][3] */
+     -0.00000002710544,         /* emi[0][4] */
+     -0.00000001177742},        /* emi[0][5] */
+
+    {-0.0111814828,             /* emi[1][0] */
+     0.9999374849,              /* emi[1][1] */
+     -0.0000271771,             /* emi[1][2] */
+     0.00000002710544,          /* emi[1][3] */
+     -0.00000242392702,         /* emi[1][4] */
+     0.00000000006585},         /* emi[1][5] */
+
+    {-0.0048590040,             /* emi[2][0] */
+     -0.0000271557,             /* emi[2][1] */
+     0.9999881946,              /* emi[2][2] */
+     0.00000001177742,          /* emi[2][3] */
+     0.00000000006585,          /* emi[2][4] */
+     -0.00000242404995},        /* emi[2][5] */
+
+    {-0.000551,                 /* emi[3][0] */
+     0.238509,                  /* emi[3][1] */
+     -0.435614,                 /* emi[3][2] */
+     0.99990432,                /* emi[3][3] */
+     0.01118145,                /* emi[3][4] */
+     0.00485852},               /* emi[3][5] */
+
+    {-0.238560,                 /* emi[4][0] */
+     -0.002667,                 /* emi[4][1] */
+     0.012254,                  /* emi[4][2] */
+     -0.01118145,               /* emi[4][3] */
+     0.99991613,                /* emi[4][4] */
+     -0.00002717},              /* emi[4][5] */
+
+    {0.435730,                  /* emi[5][0] */
+     -0.008541,                 /* emi[5][1] */
+     0.002117,                  /* emi[5][2] */
+     -0.00485852,               /* emi[5][3] */
+     -0.00002716,               /* emi[5][4] */
+     0.99996684}                /* emi[5][5] */
+};
 
 void
-fk524 (ra,dec)
-
-double	*ra;		/* Right ascension in degrees (J2000 in, B1950 out) */
-double	*dec;		/* Declination in degrees (J2000 in, B1950 out) */
+fk524( ra, dec )
+     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
+     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
 
 {
-    double	rapm;	/* Proper motion in right ascension */
-    double	decpm;	/* Proper motion in declination  */
-			/* In:  deg/jul.yr.  Out: deg/trop.yr.  */
+    double rapm;                /* Proper motion in right ascension */
+    double decpm;               /* Proper motion in declination  */
+    /* In:  deg/jul.yr.  Out: deg/trop.yr.  */
 
-    rapm = (double) 0.0;
-    decpm = (double) 0.0;
-    fk524m (ra, dec, &rapm, &decpm);
+    rapm = ( double ) 0.0;
+    decpm = ( double ) 0.0;
+    fk524m( ra, dec, &rapm, &decpm );
     return;
 }
 
 void
-fk524e (ra, dec, epoch)
-
-double	*ra;		/* Right ascension in degrees (J2000 in, B1950 out) */
-double	*dec;		/* Declination in degrees (J2000 in, B1950 out) */
-double	epoch;		/* Besselian epoch in years */
+fk524e( ra, dec, epoch )
+     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
+     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
+     double epoch;              /* Besselian epoch in years */
 
 {
-    double	rapm;	/* Proper motion in right ascension */
-    double	decpm;	/* Proper motion in declination  */
-			/* In:  deg/jul.yr.  Out: deg/trop.yr.  */
+    double rapm;                /* Proper motion in right ascension */
+    double decpm;               /* Proper motion in declination  */
+    /* In:  deg/jul.yr.  Out: deg/trop.yr.  */
 
-    rapm = (double) 0.0;
-    decpm = (double) 0.0;
-    fk524m (ra, dec, &rapm, &decpm);
-    *ra = *ra + (rapm * (epoch - 1950.0));
-    *dec = *dec + (decpm * (epoch - 1950.0));
+    rapm = ( double ) 0.0;
+    decpm = ( double ) 0.0;
+    fk524m( ra, dec, &rapm, &decpm );
+    *ra = *ra + ( rapm * ( epoch - 1950.0 ) );
+    *dec = *dec + ( decpm * ( epoch - 1950.0 ) );
     return;
 }
 
 void
-fk524m (ra,dec,rapm,decpm)
-
-double	*ra;		/* Right ascension in degrees (J2000 in, B1950 out) */
-double	*dec;		/* Declination in degrees (J2000 in, B1950 out) */
-double	*rapm;		/* Proper motion in right ascension */
-double	*decpm;		/* Proper motion in declination */
-			/* In:  ra/dec deg/jul.yr.  Out: ra/dec deg/trop.yr.  */
+fk524m( ra, dec, rapm, decpm )
+     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
+     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
+     double *rapm;              /* Proper motion in right ascension */
+     double *decpm;             /* Proper motion in declination */
+                        /* In:  ra/dec deg/jul.yr.  Out: ra/dec deg/trop.yr.  */
 
 {
     double parallax = 0.0;
     double rv = 0.0;
 
-    fk524pv (ra, dec, rapm, decpm, &parallax, &rv);
+    fk524pv( ra, dec, rapm, decpm, &parallax, &rv );
     return;
 }
 
 
 void
-fk524pv (ra,dec,rapm,decpm, parallax, rv)
-
-double	*ra;		/* Right ascension in degrees (J2000 in, B1950 out) */
-double	*dec;		/* Declination in degrees (J2000 in, B1950 out) */
-double	*rapm;		/* Proper motion in right ascension */
-double	*decpm;		/* Proper motion in declination
-			 * In:  ra/dec degrees/Julian year (not ra*cos(dec))
-			 * Out: ra/dec degrees/tropical year */
-double *parallax;	/* Parallax (arcsec) */
-double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
+fk524pv( ra, dec, rapm, decpm, parallax, rv )
+     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
+     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
+     double *rapm;              /* Proper motion in right ascension */
+     double *decpm;             /* Proper motion in declination
+                                 * In:  ra/dec degrees/Julian year (not ra*cos(dec))
+                                 * Out: ra/dec degrees/tropical year */
+     double *parallax;          /* Parallax (arcsec) */
+     double *rv;                /* Rradial velocity (km/s, +ve = moving away) */
 
 /*  This routine converts stars from the IAU 1976 FK5 Fricke
     system, to the old Bessel-Newcomb FK4 system, using Yallop's
@@ -984,37 +975,37 @@ double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
    Doug Mink     Smithsonian Astrophysical Observatory 1 November 2000 */
 
 {
-    double r2000,d2000;		/* J2000.0 ra,dec (radians) */
-    double r1950,d1950;		/* B1950.0 ra,dec (rad) */
+    double r2000, d2000;        /* J2000.0 ra,dec (radians) */
+    double r1950, d1950;        /* B1950.0 ra,dec (rad) */
 
     /* Miscellaneous */
-    double ur,ud;
+    double ur, ud;
     double sr, cr, sd, cd, x, y, z, w, wd;
-    double v1[6],v2[6];
-    double xd,yd,zd;
+    double v1[6], v2[6];
+    double xd, yd, zd;
     double rxyz, rxysq, rxy;
-    double dra,ddec;
-    int	i,j;
-    int	diag = 0;
+    double dra, ddec;
+    int i, j;
+    int diag = 0;
 
     /* Constants */
-    double zero = (double) 0.0;
-    double vf = 21.095;	/* Km per sec to AU per tropical century */
-			/* = 86400 * 36524.2198782 / 149597870 */
+    double zero = ( double ) 0.0;
+    double vf = 21.095;         /* Km per sec to AU per tropical century */
+    /* = 86400 * 36524.2198782 / 149597870 */
 
     /* Convert J2000 RA and Dec from degrees to radians */
-    r2000 = degrad (*ra);
-    d2000 = degrad (*dec);
+    r2000 = degrad( *ra );
+    d2000 = degrad( *dec );
 
     /* Convert J2000 RA and Dec proper motion from degrees/year to arcsec/tc */
-    ur = *rapm  * 360000.0;
+    ur = *rapm * 360000.0;
     ud = *decpm * 360000.0;
 
     /* Spherical to Cartesian */
-    sr = sin (r2000);
-    cr = cos (r2000);
-    sd = sin (d2000);
-    cd = cos (d2000);
+    sr = sin( r2000 );
+    cr = cos( r2000 );
+    sd = sin( d2000 );
+    cd = cos( d2000 );
 
     x = cr * cd;
     y = sr * cd;
@@ -1023,93 +1014,97 @@ double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
     v1[0] = x;
     v1[1] = y;
     v1[2] = z;
- 
-    if (ur != zero || ud != zero) {
-	v1[3] = -(ur*y) - (cr*sd*ud);
-	v1[4] =  (ur*x) - (sr*sd*ud);
-	v1[5] =          (cd*ud);
-	}
+
+    if ( ur != zero || ud != zero ) {
+	v1[3] = -( ur * y ) - ( cr * sd * ud );
+	v1[4] = ( ur * x ) - ( sr * sd * ud );
+	v1[5] = ( cd * ud );
+    }
     else {
 	v1[3] = zero;
 	v1[4] = zero;
 	v1[5] = zero;
-	}
- 
+    }
+
     /* Convert position + velocity vector to bn system */
-    for (i = 0; i < 6; i++) {
+    for ( i = 0; i < 6; i++ ) {
 	w = zero;
-	for (j = 0; j < 6; j++) {
+	for ( j = 0; j < 6; j++ ) {
 	    w = w + emi[i][j] * v1[j];
-	    }
-	v2[i] = w;
 	}
- 
+	v2[i] = w;
+    }
+
     /* Vector components */
     x = v2[0];
     y = v2[1];
     z = v2[2];
 
     /* Magnitude of position vector */
-    rxyz = sqrt (x*x + y*y + z*z);
- 
+    rxyz = sqrt( x * x + y * y + z * z );
+
     /* Apply e-terms to position */
-    w = (x * a[0]) + (y * a[1]) + (z * a[2]);
-    x = x + (a[0] * rxyz) - (w * x);
-    y = y + (a[1] * rxyz) - (w * y);
-    z = z + (a[2] * rxyz) - (w * z);
- 
+    w = ( x * a[0] ) + ( y * a[1] ) + ( z * a[2] );
+    x = x + ( a[0] * rxyz ) - ( w * x );
+    y = y + ( a[1] * rxyz ) - ( w * y );
+    z = z + ( a[2] * rxyz ) - ( w * z );
+
     /* Recompute magnitude of position vector */
-    rxyz = sqrt (x*x + y*y + z*z);
+    rxyz = sqrt( x * x + y * y + z * z );
 
     /* Apply e-terms to position and velocity */
     x = v2[0];
     y = v2[1];
     z = v2[2];
-    w = (x * a[0]) + (y * a[1]) + (z * a[2]);
-    wd = (x * ad[0]) + (y * ad[1]) + (z * ad[2]);
-    x = x + (a[0] * rxyz) - (w * x);
-    y = y + (a[1] * rxyz) - (w * y);
-    z = z + (a[2] * rxyz) - (w * z);
-    xd = v2[3] + (ad[0] * rxyz) - (wd * x);
-    yd = v2[4] + (ad[1] * rxyz) - (wd * y);
-    zd = v2[5] + (ad[2] * rxyz) - (wd * z);
+    w = ( x * a[0] ) + ( y * a[1] ) + ( z * a[2] );
+    wd = ( x * ad[0] ) + ( y * ad[1] ) + ( z * ad[2] );
+    x = x + ( a[0] * rxyz ) - ( w * x );
+    y = y + ( a[1] * rxyz ) - ( w * y );
+    z = z + ( a[2] * rxyz ) - ( w * z );
+    xd = v2[3] + ( ad[0] * rxyz ) - ( wd * x );
+    yd = v2[4] + ( ad[1] * rxyz ) - ( wd * y );
+    zd = v2[5] + ( ad[2] * rxyz ) - ( wd * z );
 
     /*  Convert to spherical  */
-    rxysq = (x * x) + (y * y);
-    rxy = sqrt (rxysq);
+    rxysq = ( x * x ) + ( y * y );
+    rxy = sqrt( rxysq );
 
     /* Convert back to spherical coordinates */
-    if (x == zero && y == zero)
+    if ( x == zero && y == zero )
 	r1950 = zero;
     else {
-	r1950 = atan2 (y,x);
-	if (r1950 < zero)
+	r1950 = atan2( y, x );
+	if ( r1950 < zero )
 	    r1950 = r1950 + d2pi;
-	}
-    d1950 = atan2 (z,rxy);
+    }
+    d1950 = atan2( z, rxy );
 
-    if (rxy > tiny) {
-	ur = (x*yd - y*xd) / rxysq;
-	ud = (zd*rxysq - z * (x*xd + y*yd)) / ((rxysq + z*z) * rxy);
-	}
+    if ( rxy > tiny ) {
+	ur = ( x * yd - y * xd ) / rxysq;
+	ud = ( zd * rxysq -
+	       z * ( x * xd + y * yd ) ) / ( ( rxysq + z * z ) * rxy );
+    }
 
-    if (*parallax > tiny) {
-	*rv = ((x * xd) + (y * yd) + (z * zd)) / (*parallax * vf * rxyz);
+    if ( *parallax > tiny ) {
+	*rv =
+	    ( ( x * xd ) + ( y * yd ) +
+	      ( z * zd ) ) / ( *parallax * vf * rxyz );
 	*parallax = *parallax / rxyz;
-	}
+    }
 
     /* Return results */
-    *ra = raddeg (r1950);
-    *dec = raddeg (d1950);
-    *rapm  = ur / 360000.0;
+    *ra = raddeg( r1950 );
+    *dec = raddeg( d1950 );
+    *rapm = ur / 360000.0;
     *decpm = ud / 360000.0;
 
-    if (diag) {
-	dra = 240.0 * raddeg (r1950 - r2000);
-	ddec = 3600.0 * raddeg (d1950 - d2000);
-	fprintf(stderr,"B1950-J2000: dra= %11.5f sec  ddec= %f11.5f arcsec\n",
-		dra, ddec);
-	}
+    if ( diag ) {
+	dra = 240.0 * raddeg( r1950 - r2000 );
+	ddec = 3600.0 * raddeg( d1950 - d2000 );
+	fprintf( stderr,
+	         "B1950-J2000: dra= %11.5f sec  ddec= %f11.5f arcsec\n", dra,
+	         ddec );
+    }
 
     return;
 }
@@ -1117,114 +1112,110 @@ double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
 
 /* Convert B1950.0 FK4 star data to J2000.0 FK5 */
 static double em[6][6] = {
-    {	 0.9999256782,		/* em[0][0] */
-	-0.0111820611,		/* em[0][1] */
-	-0.0048579477,		/* em[0][2] */
-	 0.00000242395018,	/* em[0][3] */
-	-0.00000002710663,	/* em[0][4] */
-	-0.00000001177656 },	/* em[0][5] */
- 
-    {	 0.0111820610,		/* em[1][0] */
-	 0.9999374784,		/* em[1][1] */
-	-0.0000271765,		/* em[1][2] */
-	 0.00000002710663,	/* em[1][3] */
-	 0.00000242397878,	/* em[1][4] */
-	-0.00000000006587 },	/* em[1][5] */
- 
-    {	 0.0048579479,		/* em[2][0] */
-	-0.0000271474,		/* em[2][1] */
-	 0.9999881997,		/* em[2][2] */
-	 0.00000001177656,	/* em[2][3] */
-	-0.00000000006582,	/* em[2][4] */
-	 0.00000242410173 },	/* em[2][5] */
- 
-    {	-0.000551,		/* em[3][0] */
-	-0.238565,		/* em[3][1] */
-	 0.435739,		/* em[3][2] */
-	 0.99994704,		/* em[3][3] */
-	-0.01118251,		/* em[3][4] */
-	-0.00485767 },		/* em[3][5] */
- 
-    {	 0.238514,		/* em[4][0] */
-	-0.002667,		/* em[4][1] */
-	-0.008541,		/* em[4][2] */
-	 0.01118251,		/* em[4][3] */
-	 0.99995883,		/* em[4][4] */
-	-0.00002718 },		/* em[4][5] */
- 
-    {	-0.435623,		/* em[5][0] */
-	 0.012254,		/* em[5][1] */
-	 0.002117,		/* em[5][2] */
-	 0.00485767,		/* em[5][3] */
-	-0.00002714,		/* em[5][4] */
-	 1.00000956 }		/* em[5][5] */
-    };
+    {0.9999256782,              /* em[0][0] */
+     -0.0111820611,             /* em[0][1] */
+     -0.0048579477,             /* em[0][2] */
+     0.00000242395018,          /* em[0][3] */
+     -0.00000002710663,         /* em[0][4] */
+     -0.00000001177656},        /* em[0][5] */
+
+    {0.0111820610,              /* em[1][0] */
+     0.9999374784,              /* em[1][1] */
+     -0.0000271765,             /* em[1][2] */
+     0.00000002710663,          /* em[1][3] */
+     0.00000242397878,          /* em[1][4] */
+     -0.00000000006587},        /* em[1][5] */
+
+    {0.0048579479,              /* em[2][0] */
+     -0.0000271474,             /* em[2][1] */
+     0.9999881997,              /* em[2][2] */
+     0.00000001177656,          /* em[2][3] */
+     -0.00000000006582,         /* em[2][4] */
+     0.00000242410173},         /* em[2][5] */
+
+    {-0.000551,                 /* em[3][0] */
+     -0.238565,                 /* em[3][1] */
+     0.435739,                  /* em[3][2] */
+     0.99994704,                /* em[3][3] */
+     -0.01118251,               /* em[3][4] */
+     -0.00485767},              /* em[3][5] */
+
+    {0.238514,                  /* em[4][0] */
+     -0.002667,                 /* em[4][1] */
+     -0.008541,                 /* em[4][2] */
+     0.01118251,                /* em[4][3] */
+     0.99995883,                /* em[4][4] */
+     -0.00002718},              /* em[4][5] */
+
+    {-0.435623,                 /* em[5][0] */
+     0.012254,                  /* em[5][1] */
+     0.002117,                  /* em[5][2] */
+     0.00485767,                /* em[5][3] */
+     -0.00002714,               /* em[5][4] */
+     1.00000956}                /* em[5][5] */
+};
 
 void
-fk425 (ra, dec)
-
-double	*ra;		/* Right ascension in degrees (B1950 in, J2000 out) */
-double	*dec;		/* Declination in degrees (B1950 in, J2000 out) */
+fk425( ra, dec )
+     double *ra;                /* Right ascension in degrees (B1950 in, J2000 out) */
+     double *dec;               /* Declination in degrees (B1950 in, J2000 out) */
 
 {
-double	rapm;		/* Proper motion in right ascension */
-double	decpm;		/* Proper motion in declination  */
-			/* In: rad/trop.yr.  Out:  rad/jul.yr. */
+    double rapm;                /* Proper motion in right ascension */
+    double decpm;               /* Proper motion in declination  */
+    /* In: rad/trop.yr.  Out:  rad/jul.yr. */
 
-    rapm = (double) 0.0;
-    decpm = (double) 0.0;
-    fk425m (ra, dec, &rapm, &decpm);
+    rapm = ( double ) 0.0;
+    decpm = ( double ) 0.0;
+    fk425m( ra, dec, &rapm, &decpm );
     return;
 }
 
 
 void
-fk425e (ra, dec, epoch)
-
-double	*ra;		/* Right ascension in degrees (B1950 in, J2000 out) */
-double	*dec;		/* Declination in degrees (B1950 in, J2000 out) */
-double	epoch;		/* Besselian epoch in years */
+fk425e( ra, dec, epoch )
+     double *ra;                /* Right ascension in degrees (B1950 in, J2000 out) */
+     double *dec;               /* Declination in degrees (B1950 in, J2000 out) */
+     double epoch;              /* Besselian epoch in years */
 {
-double	rapm;		/* Proper motion in right ascension */
-double	decpm;		/* Proper motion in declination  */
-			/* In: rad/trop.yr.  Out:  rad/jul.yr. */
+    double rapm;                /* Proper motion in right ascension */
+    double decpm;               /* Proper motion in declination  */
+    /* In: rad/trop.yr.  Out:  rad/jul.yr. */
 
-    rapm = (double) 0.0;
-    decpm = (double) 0.0;
-    fk425m (ra, dec, &rapm, &decpm);
-    *ra = *ra + (rapm * (epoch - 2000.0));
-    *dec = *dec + (decpm * (epoch - 2000.0));
+    rapm = ( double ) 0.0;
+    decpm = ( double ) 0.0;
+    fk425m( ra, dec, &rapm, &decpm );
+    *ra = *ra + ( rapm * ( epoch - 2000.0 ) );
+    *dec = *dec + ( decpm * ( epoch - 2000.0 ) );
     return;
 }
 
 void
-fk425m (ra, dec, rapm, decpm)
-
-double	*ra, *dec;	/* Right ascension and declination in degrees
-			   input:  B1950.0,FK4	returned:  J2000.0,FK5 */
-double	*rapm, *decpm;	/* Proper motion in right ascension and declination
-			   input:  B1950.0,FK4	returned:  J2000.0,FK5
-			           ra/dec deg/trop.yr.     ra/dec deg/jul.yr.  */
+fk425m( ra, dec, rapm, decpm )
+     double *ra, *dec;          /* Right ascension and declination in degrees
+                                   input:  B1950.0,FK4  returned:  J2000.0,FK5 */
+     double *rapm, *decpm;      /* Proper motion in right ascension and declination
+                                   input:  B1950.0,FK4  returned:  J2000.0,FK5
+                                   ra/dec deg/trop.yr.     ra/dec deg/jul.yr.  */
 {
     double parallax = 0.0;
     double rv = 0.0;
 
-    fk425pv (ra, dec, rapm, decpm, &parallax, &rv);
+    fk425pv( ra, dec, rapm, decpm, &parallax, &rv );
     return;
 }
 
 
 void
-fk425pv (ra,dec,rapm,decpm, parallax, rv)
-
-double	*ra;		/* Right ascension in degrees (J2000 in, B1950 out) */
-double	*dec;		/* Declination in degrees (J2000 in, B1950 out) */
-double	*rapm;		/* Proper motion in right ascension */
-double	*decpm;		/* Proper motion in declination
-			 * In:  ra/dec degrees/Julian year (not ra*cos(dec))
-			 * Out: ra/dec degrees/tropical year */
-double *parallax;	/* Parallax (arcsec) */
-double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
+fk425pv( ra, dec, rapm, decpm, parallax, rv )
+     double *ra;                /* Right ascension in degrees (J2000 in, B1950 out) */
+     double *dec;               /* Declination in degrees (J2000 in, B1950 out) */
+     double *rapm;              /* Proper motion in right ascension */
+     double *decpm;             /* Proper motion in declination
+                                 * In:  ra/dec degrees/Julian year (not ra*cos(dec))
+                                 * Out: ra/dec degrees/tropical year */
+     double *parallax;          /* Parallax (arcsec) */
+     double *rv;                /* Rradial velocity (km/s, +ve = moving away) */
 
 /*  This routine converts stars from the old Bessel-Newcomb FK4 system
     to the IAU 1976 FK5 Fricke system, using Yallop's implementation
@@ -1274,76 +1265,76 @@ double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
    Doug Mink     Smithsonian Astrophysical Observatory  7 June 1995 */
 
 {
-    double r1950,d1950;		/* B1950.0 ra,dec (rad) */
-    double r2000,d2000;		/* J2000.0 ra,dec (rad) */
+    double r1950, d1950;        /* B1950.0 ra,dec (rad) */
+    double r2000, d2000;        /* J2000.0 ra,dec (rad) */
 
     /* Miscellaneous */
-    double ur,ud,sr,cr,sd,cd,w,wd;
-    double x,y,z,xd,yd,zd, dra,ddec;
+    double ur, ud, sr, cr, sd, cd, w, wd;
+    double x, y, z, xd, yd, zd, dra, ddec;
     double rxyz, rxysq, rxy, rxyzsq, spxy, spxyz;
-    int	i,j;
-    int	diag = 0;
+    int i, j;
+    int diag = 0;
 
-    double r0[3],rd0[3];	/* star position and velocity vectors */
-    double v1[6],v2[6];		/* combined position and velocity vectors */
+    double r0[3], rd0[3];       /* star position and velocity vectors */
+    double v1[6], v2[6];        /* combined position and velocity vectors */
 
     /* Constants */
-    double zero = (double) 0.0;
-    double vf = 21.095;	/* Km per sec to AU per tropical century */
-			/* = 86400 * 36524.2198782 / 149597870 */
+    double zero = ( double ) 0.0;
+    double vf = 21.095;         /* Km per sec to AU per tropical century */
+    /* = 86400 * 36524.2198782 / 149597870 */
 
     /* Convert B1950 RA and Dec from degrees to radians */
-    r1950 = degrad (*ra);
-    d1950 = degrad (*dec);
+    r1950 = degrad( *ra );
+    d1950 = degrad( *dec );
 
     /* Convert B1950 RA and Dec proper motion from degrees/year to arcsec/tc */
-    ur = *rapm  * 360000.0;
+    ur = *rapm * 360000.0;
     ud = *decpm * 360000.0;
 
     /* Convert direction to Cartesian */
-    sr = sin (r1950);
-    cr = cos (r1950);
-    sd = sin (d1950);
-    cd = cos (d1950);
+    sr = sin( r1950 );
+    cr = cos( r1950 );
+    sd = sin( d1950 );
+    cd = cos( d1950 );
     r0[0] = cr * cd;
     r0[1] = sr * cd;
     r0[2] = sd;
 
     /* Convert motion to Cartesian */
     w = vf * *rv * *parallax;
-    if (ur != zero || ud != zero || (*rv != zero && *parallax != zero)) {
-	rd0[0] = (-sr * cd * ur) - (cr * sd * ud) + (w * r0[0]);
-	rd0[1] =  (cr * cd * ur) - (sr * sd * ud) + (w * r0[1]);
-	rd0[2] = 	                (cd * ud) + (w * r0[2]);
-	}
+    if ( ur != zero || ud != zero || ( *rv != zero && *parallax != zero ) ) {
+	rd0[0] = ( -sr * cd * ur ) - ( cr * sd * ud ) + ( w * r0[0] );
+	rd0[1] = ( cr * cd * ur ) - ( sr * sd * ud ) + ( w * r0[1] );
+	rd0[2] = ( cd * ud ) + ( w * r0[2] );
+    }
     else {
 	rd0[0] = zero;
 	rd0[1] = zero;
 	rd0[2] = zero;
-	}
+    }
 
     /* Remove e-terms from position and express as position+velocity 6-vector */
-    w = (r0[0] * a[0]) + (r0[1] * a[1]) + (r0[2] * a[2]);
-    for (i = 0; i < 3; i++)
-	v1[i] = r0[i] - a[i] + (w * r0[i]);
+    w = ( r0[0] * a[0] ) + ( r0[1] * a[1] ) + ( r0[2] * a[2] );
+    for ( i = 0; i < 3; i++ )
+	v1[i] = r0[i] - a[i] + ( w * r0[i] );
 
     /* Remove e-terms from proper motion and express as 6-vector */
-    wd = (r0[0] * ad[0]) + (r0[1] * ad[1]) + (r0[2] * ad[2]);
-    for (i = 0; i < 3; i++)
-	v1[i+3] = rd0[i] - ad[i] + (wd * r0[i]);
+    wd = ( r0[0] * ad[0] ) + ( r0[1] * ad[1] ) + ( r0[2] * ad[2] );
+    for ( i = 0; i < 3; i++ )
+	v1[i + 3] = rd0[i] - ad[i] + ( wd * r0[i] );
 
     /* Alternately: Put proper motion in 6-vector without adding e-terms
-    for (i = 0; i < 3; i++)
-	v1[i+3] = rd0[i]; */
+       for (i = 0; i < 3; i++)
+       v1[i+3] = rd0[i]; */
 
     /* Convert position + velocity vector to FK5 system */
-    for (i = 0; i < 6; i++) {
+    for ( i = 0; i < 6; i++ ) {
 	w = zero;
-	for (j = 0; j < 6; j++) {
+	for ( j = 0; j < 6; j++ ) {
 	    w += em[i][j] * v1[j];
-	    }
-	v2[i] = w;
 	}
+	v2[i] = w;
+    }
 
     /* Vector components */
     x = v2[0];
@@ -1354,50 +1345,51 @@ double *rv;		/* Rradial velocity (km/s, +ve = moving away) */
     zd = v2[5];
 
     /* Magnitude of position vector */
-    rxysq = x*x + y*y;
-    rxy = sqrt (rxysq);
-    rxyzsq = rxysq + z*z;
-    rxyz = sqrt (rxyzsq);
+    rxysq = x * x + y * y;
+    rxy = sqrt( rxysq );
+    rxyzsq = rxysq + z * z;
+    rxyz = sqrt( rxyzsq );
 
-    spxy = (x * xd) + (y * yd);
-    spxyz = spxy + (z * zd);
+    spxy = ( x * xd ) + ( y * yd );
+    spxyz = spxy + ( z * zd );
 
     /* Convert back to spherical coordinates */
-    if (x == zero && y == zero)
+    if ( x == zero && y == zero )
 	r2000 = zero;
     else {
-	r2000 = atan2 (y,x);
-	if (r2000 < zero)
+	r2000 = atan2( y, x );
+	if ( r2000 < zero )
 	    r2000 = r2000 + d2pi;
-	}
-    d2000 = atan2 (z,rxy);
+    }
+    d2000 = atan2( z, rxy );
 
-    if (rxy > tiny) {
-	ur = ((x * yd) - (y * xd)) / rxysq;
-	ud = ((zd * rxysq) - (z * spxy)) / (rxyzsq * rxy);
-	}
+    if ( rxy > tiny ) {
+	ur = ( ( x * yd ) - ( y * xd ) ) / rxysq;
+	ud = ( ( zd * rxysq ) - ( z * spxy ) ) / ( rxyzsq * rxy );
+    }
 
-    if (*parallax > tiny) {
-	*rv = spxyz / (*parallax * rxyz * vf);
+    if ( *parallax > tiny ) {
+	*rv = spxyz / ( *parallax * rxyz * vf );
 	*parallax = *parallax / rxyz;
-	}
+    }
 
     /* Return results */
-    *ra = raddeg (r2000);
-    *dec = raddeg (d2000);
-    *rapm  = ur / 360000.0;
+    *ra = raddeg( r2000 );
+    *dec = raddeg( d2000 );
+    *rapm = ur / 360000.0;
     *decpm = ud / 360000.0;
 
-    if (diag) {
-	dra = 240.0 * raddeg (r2000 - r1950);
-	ddec = 3600.0 * raddeg (d2000 - d1950);
-	fprintf(stderr,"J2000-B1950: dra= %11.5f sec  ddec= %f11.5f arcsec\n",
-		dra, ddec);
-	}
+    if ( diag ) {
+	dra = 240.0 * raddeg( r2000 - r1950 );
+	ddec = 3600.0 * raddeg( d2000 - d1950 );
+	fprintf( stderr,
+	         "J2000-B1950: dra= %11.5f sec  ddec= %f11.5f arcsec\n", dra,
+	         ddec );
+    }
     return;
 }
 
-int	idg=0;
+int idg = 0;
 
 /*  l2,b2 system of galactic coordinates
  *  p = 192.25       ra of galactic north pole (mean b1950.0)
@@ -1413,62 +1405,62 @@ int	idg=0;
  */
 
 static
-double bgal[3][3] =
-	{{-0.066988739415,-0.872755765852,-0.483538914632},
-	{0.492728466075,-0.450346958020, 0.744584633283},
-	{-0.867600811151,-0.188374601723, 0.460199784784}};
+    double bgal[3][3] = { {-0.066988739415, -0.872755765852, -0.483538914632},
+{0.492728466075, -0.450346958020, 0.744584633283},
+{-0.867600811151, -0.188374601723, 0.460199784784}
+};
 
 /*---  Transform B1950.0 FK4 equatorial coordinates to
  *     IAU 1958 galactic coordinates */
 
 void
-fk42gal (dtheta,dphi)
-
-double *dtheta;	/* B1950.0 FK4 right ascension in degrees
-		   Galactic longitude (l2) in degrees (returned) */
-double *dphi;	/* B1950.0 FK4 declination in degrees
-		   Galactic latitude (b2) in degrees (returned) */
+fk42gal( dtheta, dphi )
+     double *dtheta;            /* B1950.0 FK4 right ascension in degrees
+                                   Galactic longitude (l2) in degrees (returned) */
+     double *dphi;              /* B1950.0 FK4 declination in degrees
+                                   Galactic latitude (b2) in degrees (returned) */
 
 /*  Input equatorial coordinates are B1950 FK4.
     Use fk52gal() to convert from j2000.0 coordinates.
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
 {
-    double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
+    double pos[3], pos1[3], r, dl, db, rl, rb, rra, rdec, dra, ddec;
     int i;
     char *eqcoor;
 
     dra = *dtheta;
     ddec = *dphi;
-    rra = degrad (dra);
-    rdec = degrad (ddec);
+    rra = degrad( dra );
+    rdec = degrad( ddec );
 
     /*  remove e-terms */
-    /*	call jpabe (rra,rdec,-1,idg) */
+    /*  call jpabe (rra,rdec,-1,idg) */
 
     /*  Spherical to Cartesian */
     r = 1.;
-    s2v3 (rra,rdec,r,pos);
+    s2v3( rra, rdec, r, pos );
 
     /*  rotate to galactic */
-    for (i = 0; i<3; i++) {
-	pos1[i] = pos[0]*bgal[i][0] + pos[1]*bgal[i][1] + pos[2]*bgal[i][2];
-	}
+    for ( i = 0; i < 3; i++ ) {
+	pos1[i] =
+	    pos[0] * bgal[i][0] + pos[1] * bgal[i][1] + pos[2] * bgal[i][2];
+    }
 
     /*  Cartesian to spherical */
-    v2s3 (pos1,&rl,&rb,&r);
+    v2s3( pos1, &rl, &rb, &r );
 
-    dl = raddeg (rl);
-    db = raddeg (rb);
+    dl = raddeg( rl );
+    db = raddeg( rb );
     *dtheta = dl;
     *dphi = db;
 
     /*  Print result if in diagnostic mode */
-    if (idg) {
-	eqcoor = eqstrn (dra,ddec);
-	fprintf (stderr,"FK42GAL: B1950 RA,Dec= %s\n",eqcoor);
-	fprintf (stderr,"FK42GAL: long = %.5f lat = %.5f\n",dl,db);
-	free (eqcoor);
-	}
+    if ( idg ) {
+	eqcoor = eqstrn( dra, ddec );
+	fprintf( stderr, "FK42GAL: B1950 RA,Dec= %s\n", eqcoor );
+	fprintf( stderr, "FK42GAL: long = %.5f lat = %.5f\n", dl, db );
+	free( eqcoor );
+    }
 
     return;
 }
@@ -1478,53 +1470,53 @@ double *dphi;	/* B1950.0 FK4 declination in degrees
  *    equatorial coordinates */
 
 void
-gal2fk4 (dtheta,dphi)
-
-double *dtheta;	/* Galactic longitude (l2) in degrees
-		   B1950 FK4 RA in degrees (returned) */
-double *dphi;	/* Galactic latitude (b2) in degrees
-		   B1950 FK4 Dec in degrees (returned) */
+gal2fk4( dtheta, dphi )
+     double *dtheta;            /* Galactic longitude (l2) in degrees
+                                   B1950 FK4 RA in degrees (returned) */
+     double *dphi;              /* Galactic latitude (b2) in degrees
+                                   B1950 FK4 Dec in degrees (returned) */
 
 /*  Output equatorial coordinates are B1950.0 FK4.
     Use gal2fk5() to convert to J2000 coordinates.
     Reference:  Blaauw et al, MNRAS,121,123 (1960) */
 
 {
-    double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
+    double pos[3], pos1[3], r, dl, db, rl, rb, rra, rdec, dra, ddec;
     char *eqcoor;
     int i;
 
     /*  spherical to cartesian */
     dl = *dtheta;
     db = *dphi;
-    rl = degrad (dl);
-    rb = degrad (db);
+    rl = degrad( dl );
+    rb = degrad( db );
     r = 1.0;
-    s2v3 (rl,rb,r,pos);
+    s2v3( rl, rb, r, pos );
 
     /*  rotate to equatorial coordinates */
-    for (i = 0; i < 3; i++) {
-	pos1[i] = pos[0]*bgal[0][i] + pos[1]*bgal[1][i] + pos[2]*bgal[2][i];
-	}
+    for ( i = 0; i < 3; i++ ) {
+	pos1[i] =
+	    pos[0] * bgal[0][i] + pos[1] * bgal[1][i] + pos[2] * bgal[2][i];
+    }
 
     /*  cartesian to spherical */
-    v2s3 (pos1,&rra,&rdec,&r);
+    v2s3( pos1, &rra, &rdec, &r );
 
 /*  introduce e-terms */
 /*	jpabe (rra,rdec,-1,idg); */
 
-    dra = raddeg (rra);
-    ddec = raddeg (rdec);
+    dra = raddeg( rra );
+    ddec = raddeg( rdec );
     *dtheta = dra;
     *dphi = ddec;
 
     /*  print result if in diagnostic mode */
-    if (idg) {
-	fprintf (stderr,"GAL2FK4: long = %.5f lat = %.5f\n",dl,db);
-	eqcoor = eqstrn (dra,ddec);
-	fprintf (stderr,"GAL2FK4: B1950 RA,Dec= %s\n",eqcoor);
-	free (eqcoor);
-	}
+    if ( idg ) {
+	fprintf( stderr, "GAL2FK4: long = %.5f lat = %.5f\n", dl, db );
+	eqcoor = eqstrn( dra, ddec );
+	fprintf( stderr, "GAL2FK4: B1950 RA,Dec= %s\n", eqcoor );
+	free( eqcoor );
+    }
 
     return;
 }
@@ -1543,20 +1535,19 @@ double *dphi;	/* Galactic latitude (b2) in degrees
 	+cp.sq              +sp.sq              +cq		*/
 
 static
-double jgal[3][3] =
-	{{-0.054875539726,-0.873437108010,-0.483834985808},
-	{0.494109453312,-0.444829589425, 0.746982251810},
-	{-0.867666135858,-0.198076386122, 0.455983795705}};
+    double jgal[3][3] = { {-0.054875539726, -0.873437108010, -0.483834985808},
+{0.494109453312, -0.444829589425, 0.746982251810},
+{-0.867666135858, -0.198076386122, 0.455983795705}
+};
 
 /* Transform J2000 equatorial coordinates to IAU 1958 galactic coordinates */
 
 void
-fk52gal (dtheta,dphi)
-
-double *dtheta;	/* J2000 right ascension in degrees
-		   Galactic longitude (l2) in degrees (returned) */
-double *dphi;	/* J2000 declination in degrees
-		   Galactic latitude (b2) in degrees (returned) */
+fk52gal( dtheta, dphi )
+     double *dtheta;            /* J2000 right ascension in degrees
+                                   Galactic longitude (l2) in degrees (returned) */
+     double *dphi;              /* J2000 declination in degrees
+                                   Galactic latitude (b2) in degrees (returned) */
 
 /* Rotation matrices by P.T.Wallace, Starlink eqgal and galeq, March 1986 */
 
@@ -1564,38 +1555,39 @@ double *dphi;	/* J2000 declination in degrees
     Use gal2fk4() if converting from B1950 FK4 coordinates.
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
 {
-    double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
+    double pos[3], pos1[3], r, dl, db, rl, rb, rra, rdec, dra, ddec;
     char *eqcoor;
     int i;
 
     /*  Spherical to cartesian */
     dra = *dtheta;
     ddec = *dphi;
-    rra = degrad (dra);
-    rdec = degrad (ddec);
+    rra = degrad( dra );
+    rdec = degrad( ddec );
     r = 1.0;
-    (void)s2v3 (rra,rdec,r,pos);
+    ( void ) s2v3( rra, rdec, r, pos );
 
     /*  Rotate to galactic */
-    for (i = 0; i < 3; i++) {
-	pos1[i] = pos[0]*jgal[i][0] + pos[1]*jgal[i][1] + pos[2]*jgal[i][2];
-	}
+    for ( i = 0; i < 3; i++ ) {
+	pos1[i] =
+	    pos[0] * jgal[i][0] + pos[1] * jgal[i][1] + pos[2] * jgal[i][2];
+    }
 
     /*  Cartesian to spherical */
-    v2s3 (pos1,&rl,&rb,&r);
+    v2s3( pos1, &rl, &rb, &r );
 
-    dl = raddeg (rl);
-    db = raddeg (rb);
+    dl = raddeg( rl );
+    db = raddeg( rb );
     *dtheta = dl;
     *dphi = db;
 
     /*  Print result if in diagnostic mode */
-    if (idg) {
-	eqcoor = eqstrn (dra,ddec);
-	fprintf (stderr,"FK52GAL: J2000 RA,Dec= %s\n",eqcoor);
-	fprintf (stderr,"FK52GAL: long = %.5f lat = %.5f\n",dl,db);
-	free (eqcoor);
-	}
+    if ( idg ) {
+	eqcoor = eqstrn( dra, ddec );
+	fprintf( stderr, "FK52GAL: J2000 RA,Dec= %s\n", eqcoor );
+	fprintf( stderr, "FK52GAL: long = %.5f lat = %.5f\n", dl, db );
+	free( eqcoor );
+    }
 
     return;
 }
@@ -1604,49 +1596,49 @@ double *dphi;	/* J2000 declination in degrees
 /*--- Transform IAU 1958 galactic coordinates to J2000 equatorial coordinates */
 
 void
-gal2fk5 (dtheta,dphi)
-
-double *dtheta;	/* Galactic longitude (l2) in degrees
-		   J2000.0 ra in degrees (returned) */
-double *dphi;	/* Galactic latitude (b2) in degrees
-		   J2000.0 dec in degrees (returned) */
+gal2fk5( dtheta, dphi )
+     double *dtheta;            /* Galactic longitude (l2) in degrees
+                                   J2000.0 ra in degrees (returned) */
+     double *dphi;              /* Galactic latitude (b2) in degrees
+                                   J2000.0 dec in degrees (returned) */
 
 /*  Output equatorial coordinates are J2000.
    Use gal2fk4() to convert to B1950 coordinates.
     Reference: Blaauw et al, MNRAS,121,123 (1960) */
 
 {
-    double pos[3],pos1[3],r,dl,db,rl,rb,rra,rdec,dra,ddec;
+    double pos[3], pos1[3], r, dl, db, rl, rb, rra, rdec, dra, ddec;
     int i;
     char *eqcoor;
 
     /*  Spherical to Cartesian */
     dl = *dtheta;
     db = *dphi;
-    rl = degrad (dl);
-    rb = degrad (db);
+    rl = degrad( dl );
+    rb = degrad( db );
     r = 1.0;
-    s2v3 (rl,rb,r,pos);
+    s2v3( rl, rb, r, pos );
 
     /*  Rotate to equatorial coordinates */
-    for (i = 0; i < 3; i++) {
-	    pos1[i] = pos[0]*jgal[0][i] + pos[1]*jgal[1][i] + pos[2]*jgal[2][i];
-	    }
+    for ( i = 0; i < 3; i++ ) {
+	pos1[i] =
+	    pos[0] * jgal[0][i] + pos[1] * jgal[1][i] + pos[2] * jgal[2][i];
+    }
 
     /*  Cartesian to Spherical */
-    v2s3 (pos1,&rra,&rdec,&r);
-    dra = raddeg (rra);
-    ddec = raddeg (rdec);
+    v2s3( pos1, &rra, &rdec, &r );
+    dra = raddeg( rra );
+    ddec = raddeg( rdec );
     *dtheta = dra;
     *dphi = ddec;
 
     /*  Print result if in diagnostic mode */
-    if (idg) {
-	fprintf (stderr,"GAL2FK5: long = %.5f lat = %.5f\n",dl,db);
-	eqcoor = eqstrn (dra,ddec);
-	fprintf (stderr,"GAL2FK5: J2000 RA,Dec= %s\n",eqcoor);
-	free (eqcoor);
-	}
+    if ( idg ) {
+	fprintf( stderr, "GAL2FK5: long = %.5f lat = %.5f\n", dl, db );
+	eqcoor = eqstrn( dra, ddec );
+	fprintf( stderr, "GAL2FK5: J2000 RA,Dec= %s\n", eqcoor );
+	free( eqcoor );
+    }
 
     return;
 }
@@ -1654,47 +1646,47 @@ double *dphi;	/* Galactic latitude (b2) in degrees
 
 /* Return string with right ascension in hours and declination in degrees */
 
-char *eqstrn (dra, ddec)
-
-double	dra;		/* Right ascension in degrees */
-double	ddec;		/* Declination in degrees */
+char *
+eqstrn( dra, ddec )
+     double dra;                /* Right ascension in degrees */
+     double ddec;               /* Declination in degrees */
 
 {
-char	*eqcoor;	/* ASCII character string of position (returned) */
-char	decp;
-int	rah,irm,decd,decm;
-double	xpos,ypos,xp,yp,ras,decs;
+    char *eqcoor;               /* ASCII character string of position (returned) */
+    char decp;
+    int rah, irm, decd, decm;
+    double xpos, ypos, xp, yp, ras, decs;
 
     /*  Right ascension to hours, minutes, and seconds */
     xpos = dra / 15.0;
-    rah = (int) xpos;
-    xp = (double) 60.0 * (xpos - (double) rah);
-    irm = (int) xp;
-    ras = (double) 60.0 * (xp - (double) irm);
+    rah = ( int ) xpos;
+    xp = ( double ) 60.0 *( xpos - ( double ) rah );
+    irm = ( int ) xp;
+    ras = ( double ) 60.0 *( xp - ( double ) irm );
 
     /* Declination to degrees, minutes, seconds */
-    if (ddec < 0) {
+    if ( ddec < 0 ) {
 	ypos = -ddec;
 	decp = '-';
-	}
+    }
     else {
 	decp = '+';
 	ypos = ddec;
-	}
-    decd = (int) ypos;
-    yp = (double) 60.0 * (ypos - (double) decd);
-    decm = (int) yp;
-    decs = (double) 60.0 * (yp - (double) decm);
+    }
+    decd = ( int ) ypos;
+    yp = ( double ) 60.0 *( ypos - ( double ) decd );
+    decm = ( int ) yp;
+    decs = ( double ) 60.0 *( yp - ( double ) decm );
 
-    eqcoor = malloc (32);
-    (void)sprintf (eqcoor,"%02d:%02d:%06.3f %c%02d:%02d:%05.2f",
-		   rah,irm,ras,decp,decd,decm,decs);
-    if (eqcoor[6] == ' ')
+    eqcoor = malloc( 32 );
+    ( void ) sprintf( eqcoor, "%02d:%02d:%06.3f %c%02d:%02d:%05.2f",
+                      rah, irm, ras, decp, decd, decm, decs );
+    if ( eqcoor[6] == ' ' )
 	eqcoor[6] = '0';
-    if (eqcoor[20] == ' ')
+    if ( eqcoor[20] == ' ' )
 	eqcoor[20] = '0';
 
-    return (eqcoor);
+    return ( eqcoor );
 }
 
 
@@ -1707,20 +1699,19 @@ double	xpos,ypos,xp,yp,ras,decs;
 /* Convert B1950 right ascension and declination to ecliptic coordinates */
 
 void
-fk42ecl (dtheta, dphi, epoch)
-
-double *dtheta;	/* B1950 right ascension in degrees
-		   Galactic longitude (l2) in degrees (returned) */
-double *dphi;	/* B1950 declination in degrees
-		   Galactic latitude (b2) in degrees (returned) */
-double	epoch;	/* Besselian epoch in years */
+fk42ecl( dtheta, dphi, epoch )
+     double *dtheta;            /* B1950 right ascension in degrees
+                                   Galactic longitude (l2) in degrees (returned) */
+     double *dphi;              /* B1950 declination in degrees
+                                   Galactic latitude (b2) in degrees (returned) */
+     double epoch;              /* Besselian epoch in years */
 
 {
     /* Convert from B1950 to J2000 coordinates */
-    fk425e (dtheta, dphi, epoch);
+    fk425e( dtheta, dphi, epoch );
 
     /* Convert from J2000 to ecliptic coordinates */
-    fk52ecl (dtheta, dphi, epoch);
+    fk52ecl( dtheta, dphi, epoch );
 
     return;
 }
@@ -1728,78 +1719,78 @@ double	epoch;	/* Besselian epoch in years */
 /* Convert J2000 right ascension and declination to ecliptic coordinates */
 
 void
-fk52ecl (dtheta, dphi, epoch)
-
-double *dtheta;	/* J2000 right ascension in degrees
-		   Galactic longitude (l2) in degrees (returned) */
-double *dphi;	/* J2000 declination in degrees
-		   Galactic latitude (b2) in degrees (returned) */
-double	epoch;	/* Besselian epoch in years */
+fk52ecl( dtheta, dphi, epoch )
+     double *dtheta;            /* J2000 right ascension in degrees
+                                   Galactic longitude (l2) in degrees (returned) */
+     double *dphi;              /* J2000 declination in degrees
+                                   Galactic latitude (b2) in degrees (returned) */
+     double epoch;              /* Besselian epoch in years */
 
 {
     int i, j;
     double t, eps0, rphi, rtheta;
     double v1[3], v2[3], r;
-    double rmat[9], *rmati;	/* Rotation matrix  */
+    double rmat[9], *rmati;     /* Rotation matrix  */
 
     /* Precess coordinates from J2000 to epoch */
-    if (epoch != 2000.0)
-	fk5prec (2000.0, epoch, dtheta, dphi);
+    if ( epoch != 2000.0 )
+	fk5prec( 2000.0, epoch, dtheta, dphi );
 
     /* Convert from degrees to radians */
-    rtheta = degrad (*dtheta);
-    rphi = degrad (*dphi);
+    rtheta = degrad( *dtheta );
+    rphi = degrad( *dphi );
 
     /* Convert RA,Dec to x,y,z */
     r = 1.0;
-    s2v3 (rtheta, rphi, r, v1);
+    s2v3( rtheta, rphi, r, v1 );
 
-    /* Interval between basic epoch J2000.0 and current epoch (JC) in centuries*/
-    t = (epoch - 2000.0) * 0.01;
- 
+    /* Interval between basic epoch J2000.0 and current epoch (JC) in centuries */
+    t = ( epoch - 2000.0 ) * 0.01;
+
     /* Mean obliquity */
-    eps0 = secrad ((84381.448 + (-46.8150 + (-0.00059 + 0.001813*t) * t) * t));
- 
+    eps0 =
+        secrad( ( 84381.448 +
+                  ( -46.8150 + ( -0.00059 + 0.001813 * t ) * t ) * t ) );
+
     /* Form the equatorial to ecliptic rotation matrix (IAU 1980 theory).
      *  References: Murray, C.A., Vectorial Astrometry, section 4.3.
      *    The matrix is in the sense   v[ecl]  =  rmat * v[equ];  the
      *    equator, equinox and ecliptic are mean of date. */
-    rotmat (1, eps0, 0.0, 0.0, rmat);
+    rotmat( 1, eps0, 0.0, 0.0, rmat );
 
     /* Multiply position vector by equatoria to eccliptic rotation matrix */
     rmati = rmat;
-    for (i = 0; i < 3; i++) {
+    for ( i = 0; i < 3; i++ ) {
 	v2[i] = 0;
-	for (j = 0; j < 3; j++)
-	    v2[i] = v2[i] + (*rmati++ * v1[j]);
-	}
+	for ( j = 0; j < 3; j++ )
+	    v2[i] = v2[i] + ( *rmati++ * v1[j] );
+    }
 
     /* Convert x,y,z to latitude, longitude */
-    v2s3 (v2, &rtheta, &rphi, &r);
+    v2s3( v2, &rtheta, &rphi, &r );
 
     /* Convert from radians to degrees */
-    *dtheta = raddeg (rtheta);
-    *dphi = raddeg (rphi);
+    *dtheta = raddeg( rtheta );
+    *dphi = raddeg( rphi );
 }
 
 
 /* Convert ecliptic coordinates to B1950 right ascension and declination */
 
 void
-ecl2fk4 (dtheta, dphi, epoch)
-
-double *dtheta;	/* Galactic longitude (l2) in degrees
-		   B1950 right ascension in degrees (returned) */
-double *dphi;	/* Galactic latitude (b2) in degrees
-		   B1950 declination in degrees (returned) */
-double	epoch;	/* Besselian epoch in years */
+ecl2fk4( dtheta, dphi, epoch )
+     double *dtheta;            /* Galactic longitude (l2) in degrees
+                                   B1950 right ascension in degrees (returned) */
+     double *dphi;              /* Galactic latitude (b2) in degrees
+                                   B1950 declination in degrees (returned) */
+     double epoch;              /* Besselian epoch in years */
 
 {
     /* Convert from ecliptic to J2000 coordinates */
-    ecl2fk5 (dtheta, dphi, epoch);
+    ecl2fk5( dtheta, dphi, epoch );
 
     /* Convert from J2000 to B1950 coordinates */
-    fk524e (dtheta, dphi, epoch);
+    fk524e( dtheta, dphi, epoch );
 
     return;
 }
@@ -1809,55 +1800,56 @@ double	epoch;	/* Besselian epoch in years */
 /* Convert ecliptic coordinates to J2000 right ascension and declination */
 
 void
-ecl2fk5 (dtheta, dphi, epoch)
-
-double *dtheta;	/* Galactic longitude (l2) in degrees
-		   J2000 right ascension in degrees  (returned) */
-double *dphi;	/* Galactic latitude (b2) in degrees
-		   J2000 declination in degrees (returned) */
-double	epoch;	/* Besselian epoch in years */
+ecl2fk5( dtheta, dphi, epoch )
+     double *dtheta;            /* Galactic longitude (l2) in degrees
+                                   J2000 right ascension in degrees  (returned) */
+     double *dphi;              /* Galactic latitude (b2) in degrees
+                                   J2000 declination in degrees (returned) */
+     double epoch;              /* Besselian epoch in years */
 
 {
     int i, j;
     double rtheta, rphi, v1[3], v2[3];
     double t, eps0, r;
-    double rmat[9];	/* Rotation matrix */
+    double rmat[9];             /* Rotation matrix */
 
-    rtheta = degrad (*dtheta);
-    rphi = degrad (*dphi);
+    rtheta = degrad( *dtheta );
+    rphi = degrad( *dphi );
 
     /* Convert RA,Dec to x,y,z */
     r = 1.0;
-    s2v3 (rtheta, rphi, r, v1);
+    s2v3( rtheta, rphi, r, v1 );
 
-    /* Interval between basic epoch J2000.0 and current epoch (JC) in centuries*/
-    t = (epoch - 2000.0) * 0.01;
- 
+    /* Interval between basic epoch J2000.0 and current epoch (JC) in centuries */
+    t = ( epoch - 2000.0 ) * 0.01;
+
     /* Mean obliquity */
-    eps0 = secrad ((84381.448 + (-46.8150 + (-0.00059 + 0.001813*t) * t) * t));
- 
+    eps0 =
+        secrad( ( 84381.448 +
+                  ( -46.8150 + ( -0.00059 + 0.001813 * t ) * t ) * t ) );
+
     /* Form the equatorial to ecliptic rotation matrix (IAU 1980 theory).
      *  References: Murray, C.A., Vectorial Astrometry, section 4.3.
      *    The matrix is in the sense   v[ecl]  =  rmat * v[equ];  the
      *    equator, equinox and ecliptic are mean of date. */
-    rotmat (1, eps0, 0.0, 0.0, rmat);
- 
+    rotmat( 1, eps0, 0.0, 0.0, rmat );
+
     /* Multiply position vector by ecliptic to equatorial rotation matrix */
-    for (i = 0; i < 3; i++) {
+    for ( i = 0; i < 3; i++ ) {
 	v2[i] = 0;
-	for (j = 0; j < 3; j++)
-	    v2[i] = v2[i] + (rmat[3*j + i] * v1[j]);
-	}
+	for ( j = 0; j < 3; j++ )
+	    v2[i] = v2[i] + ( rmat[3 * j + i] * v1[j] );
+    }
 
     /* Cartesian to spherical */
-    v2s3 (v2, &rtheta, &rphi, &r);
+    v2s3( v2, &rtheta, &rphi, &r );
 
     /* Convert from radians to degrees */
-    *dtheta = raddeg (rtheta);
-    *dphi = raddeg (rphi);
+    *dtheta = raddeg( rtheta );
+    *dphi = raddeg( rphi );
 
-    if (epoch != 2000.0)
-	fk5prec (epoch, 2000.0, dtheta, dphi);
+    if ( epoch != 2000.0 )
+	fk5prec( epoch, 2000.0, dtheta, dphi );
 }
 
 
@@ -1865,14 +1857,13 @@ double	epoch;	/* Besselian epoch in years */
 
 /* Precess coordinates between epochs in FK4 */
 void
-fk4prec (ep0, ep1, ra, dec)
-
-double ep0;	/* Starting Besselian epoch */
-double ep1;	/* Ending Besselian epoch */
-double *ra;	/* RA in degrees mean equator & equinox of epoch ep0
-		      mean equator & equinox of epoch ep1 (returned) */
-double *dec;	/* Dec in degrees mean equator & equinox of epoch ep0
-		       mean equator & equinox of epoch ep1 (returned) */
+fk4prec( ep0, ep1, ra, dec )
+     double ep0;                /* Starting Besselian epoch */
+     double ep1;                /* Ending Besselian epoch */
+     double *ra;                /* RA in degrees mean equator & equinox of epoch ep0
+                                   mean equator & equinox of epoch ep1 (returned) */
+     double *dec;               /* Dec in degrees mean equator & equinox of epoch ep0
+                                   mean equator & equinox of epoch ep1 (returned) */
 /*
 **  Precession - FK4 (Bessel-Newcomb, pre-IAU1976)
 **
@@ -1885,41 +1876,40 @@ double *dec;	/* Dec in degrees mean equator & equinox of epoch ep0
     int i, j;
     double pm[9], *pmi, v1[3], v2[3], rra, rdec, r;
 
-    rra = degrad (*ra);
-    rdec = degrad (*dec);
+    rra = degrad( *ra );
+    rdec = degrad( *dec );
     r = 1.0;
- 
+
     /* Generate appropriate precession matrix */
-    mprecfk4 ( ep0, ep1, pm );
- 
+    mprecfk4( ep0, ep1, pm );
+
     /* Convert RA,Dec to x,y,z */
-    s2v3 (rra, rdec, r, v1);
- 
+    s2v3( rra, rdec, r, v1 );
+
     /* Multiply position vector by precession matrix */
     pmi = pm;
-    for (i = 0; i < 3; i++) {
+    for ( i = 0; i < 3; i++ ) {
 	v2[i] = 0;
-	for (j = 0; j < 3; j++)
-	    v2[i] = v2[i] + (*pmi++ * v1[j]);
-	}
- 
+	for ( j = 0; j < 3; j++ )
+	    v2[i] = v2[i] + ( *pmi++ * v1[j] );
+    }
+
     /* Back to RA,Dec */
-    v2s3 (v2, &rra, &rdec, &r);
+    v2s3( v2, &rra, &rdec, &r );
 
     /* Convert from radians to degrees */
-    *ra = raddeg (rra);
-    *dec = raddeg (rdec);
+    *ra = raddeg( rra );
+    *dec = raddeg( rdec );
 }
 
 void
-fk5prec (ep0, ep1, ra, dec)
-
-double ep0;	/* Starting epoch */
-double ep1;	/* Ending epoch */
-double *ra;	/* RA in degrees mean equator & equinox of epoch ep0
-		      mean equator & equinox of epoch ep1 (returned) */
-double *dec;	/* Dec in degrees mean equator & equinox of epoch ep0
-		       mean equator & equinox of epoch ep1 (returned) */
+fk5prec( ep0, ep1, ra, dec )
+     double ep0;                /* Starting epoch */
+     double ep1;                /* Ending epoch */
+     double *ra;                /* RA in degrees mean equator & equinox of epoch ep0
+                                   mean equator & equinox of epoch ep1 (returned) */
+     double *dec;               /* Dec in degrees mean equator & equinox of epoch ep0
+                                   mean equator & equinox of epoch ep1 (returned) */
 /*
 **  Precession -  FK5 (Fricke, post-IAU1976)
 **
@@ -1932,40 +1922,39 @@ double *dec;	/* Dec in degrees mean equator & equinox of epoch ep0
     int i, j;
     double pm[9], *pmi, v1[3], v2[3], rra, rdec, r;
 
-    rra = degrad (*ra);
-    rdec = degrad (*dec);
+    rra = degrad( *ra );
+    rdec = degrad( *dec );
     r = 1.0;
- 
+
     /* Generate appropriate precession matrix */
-    mprecfk5 (ep0, ep1, pm);
- 
+    mprecfk5( ep0, ep1, pm );
+
     /* Convert RA,Dec to x,y,z */
-    s2v3 (rra, rdec, r, v1);
- 
+    s2v3( rra, rdec, r, v1 );
+
     /* Multiply position vector by precession matrix */
     pmi = pm;
-    for (i = 0; i < 3; i++) {
+    for ( i = 0; i < 3; i++ ) {
 	v2[i] = 0;
-	for (j = 0; j < 3; j++)
+	for ( j = 0; j < 3; j++ )
 	    v2[i] = v2[i] + ( v1[j] * *pmi++ );
-	}
- 
+    }
+
     /* Back to RA,Dec */
-    v2s3 (v2, &rra, &rdec, &r);
+    v2s3( v2, &rra, &rdec, &r );
 
     /* Convert from radians to degrees */
-    *ra = raddeg (rra);
-    *dec = raddeg (rdec);
+    *ra = raddeg( rra );
+    *dec = raddeg( rdec );
     return;
 }
 
 
 void
-mprecfk4 (bep0, bep1, rmatp)
-
-double bep0;		/* Beginning Besselian epoch */
-double bep1;		/* Ending Besselian epoch */
-double rmatp[9];	/* 3x3 Precession matrix (returned) */
+mprecfk4( bep0, bep1, rmatp )
+     double bep0;               /* Beginning Besselian epoch */
+     double bep1;               /* Ending Besselian epoch */
+     double rmatp[9];           /* 3x3 Precession matrix (returned) */
 
 /*
 **  Generate the matrix of precession between two epochs,
@@ -1983,33 +1972,32 @@ double rmatp[9];	/* 3x3 Precession matrix (returned) */
 */
 {
     double bigt, t, tas2r, w, zeta, z, theta;
- 
+
     /* Interval between basic epoch B1850.0 and beginning epoch in TC */
-    bigt  = ( bep0 - 1850.0 ) / 100.0;
- 
+    bigt = ( bep0 - 1850.0 ) / 100.0;
+
     /* Interval over which precession required, in tropical centuries */
     t = ( bep1 - bep0 ) / 100.0;
- 
+
     /* Euler angles */
-    tas2r = secrad (t);
+    tas2r = secrad( t );
     w = 2303.5548 + ( 1.39720 + 0.000059 * bigt ) * bigt;
-    zeta = (w + ( 0.30242 - 0.000269 * bigt + 0.017996 * t ) * t ) * tas2r;
-    z = (w + ( 1.09478 + 0.000387 * bigt + 0.018324 * t ) * t ) * tas2r;
-    theta = ( 2005.1125 + ( - 0.85294 - 0.000365* bigt ) * bigt +
-	    ( - 0.42647 - 0.000365 * bigt - 0.041802 * t ) * t ) * tas2r;
- 
+    zeta = ( w + ( 0.30242 - 0.000269 * bigt + 0.017996 * t ) * t ) * tas2r;
+    z = ( w + ( 1.09478 + 0.000387 * bigt + 0.018324 * t ) * t ) * tas2r;
+    theta = ( 2005.1125 + ( -0.85294 - 0.000365 * bigt ) * bigt +
+              ( -0.42647 - 0.000365 * bigt - 0.041802 * t ) * t ) * tas2r;
+
     /* Rotation matrix */
-    rotmat (323, -zeta, theta, -z, rmatp);
+    rotmat( 323, -zeta, theta, -z, rmatp );
     return;
 }
 
 
 void
-mprecfk5 (ep0, ep1, rmatp)
-
-double ep0;		/* Beginning epoch */
-double ep1;		/* Ending epoch */
-double rmatp[9];	/* 3x3 Precession matrix (returned) */
+mprecfk5( ep0, ep1, rmatp )
+     double ep0;                /* Beginning epoch */
+     double ep1;                /* Ending epoch */
+     double rmatp[9];           /* 3x3 Precession matrix (returned) */
 
 /*
 **  Form the matrix of precession between two epochs (IAU 1976, FK5).
@@ -2026,23 +2014,23 @@ double rmatp[9];	/* 3x3 Precession matrix (returned) */
 */
 {
     double t0, t, tas2r, w, zeta, z, theta;
- 
+
     /* Interval between basic epoch J2000.0 and beginning epoch (JC) */
     t0 = ( ep0 - 2000.0 ) / 100.0;
- 
+
     /* Interval over which precession required (JC) */
-    t =  ( ep1 - ep0 ) / 100.0;
- 
+    t = ( ep1 - ep0 ) / 100.0;
+
     /* Euler angles */
-    tas2r = secrad (t);
+    tas2r = secrad( t );
     w = 2306.2181 + ( ( 1.39656 - ( 0.000139 * t0 ) ) * t0 );
-    zeta = (w + ( ( 0.30188 - 0.000344 * t0 ) + 0.017998 * t ) * t ) * tas2r;
-    z = (w + ( ( 1.09468 + 0.000066 * t0 ) + 0.018203 * t ) * t ) * tas2r;
-    theta = ( ( 2004.3109 + ( - 0.85330 - 0.000217 * t0 ) * t0 )
-	  + ( ( -0.42665 - 0.000217 * t0 ) - 0.041833 * t ) * t ) * tas2r;
- 
+    zeta = ( w + ( ( 0.30188 - 0.000344 * t0 ) + 0.017998 * t ) * t ) * tas2r;
+    z = ( w + ( ( 1.09468 + 0.000066 * t0 ) + 0.018203 * t ) * t ) * tas2r;
+    theta = ( ( 2004.3109 + ( -0.85330 - 0.000217 * t0 ) * t0 )
+              + ( ( -0.42665 - 0.000217 * t0 ) - 0.041833 * t ) * t ) * tas2r;
+
     /* Rotation matrix */
-    rotmat (323, -zeta, theta, -z, rmatp);
+    rotmat( 323, -zeta, theta, -z, rmatp );
     return;
 }
 
@@ -2050,13 +2038,12 @@ double rmatp[9];	/* 3x3 Precession matrix (returned) */
 /* Make 3-D rotation matrix from up to three rotations */
 
 void
-rotmat (axes, rot1, rot2, rot3, matrix)
-
-int axes;	/* Axes about which coordinates are rotated (1=x, 2=y, 3=z) */
-double rot1;	/* First rotation in degrees */
-double rot2;	/* Second rotation in degrees */
-double rot3;	/* Third rotation in degrees */
-double *matrix;	/* 3x3 rotation matrix (returned) */
+rotmat( axes, rot1, rot2, rot3, matrix )
+     int axes;                  /* Axes about which coordinates are rotated (1=x, 2=y, 3=z) */
+     double rot1;               /* First rotation in degrees */
+     double rot2;               /* Second rotation in degrees */
+     double rot3;               /* Third rotation in degrees */
+     double *matrix;            /* 3x3 rotation matrix (returned) */
 
 {
     int i, j, k, naxis, iaxes, iaxis;
@@ -2065,30 +2052,30 @@ double *matrix;	/* 3x3 rotation matrix (returned) */
 
     /* Initial final rotation matrix */
     mati = matrix;
-    for (i = 0; i < 3; i++) {
-	for (j=0; j < 3; j++) {
-	    if (i == j)
+    for ( i = 0; i < 3; i++ ) {
+	for ( j = 0; j < 3; j++ ) {
+	    if ( i == j )
 		*mati++ = 1.0;
 	    else
 		*mati++ = 0.0;
-	    }
 	}
+    }
 
     /* Separate digits of rotation axis string and count rotations */
     naxis = 0;
     iaxes = axes;
     axis[0] = iaxes / 100;
-    if (axis[0] > 0) {
+    if ( axis[0] > 0 ) {
 	naxis++;
-	iaxes = iaxes - (100 * axis[0]);
-	}
+	iaxes = iaxes - ( 100 * axis[0] );
+    }
     axis[naxis] = iaxes / 10;
-    if (axis[naxis] > 0) {
-	iaxes = iaxes - (10 * axis[naxis]);
+    if ( axis[naxis] > 0 ) {
+	iaxes = iaxes - ( 10 * axis[naxis] );
 	naxis++;
-	}
+    }
     axis[naxis] = iaxes;
-    if (axis[naxis] > 0)
+    if ( axis[naxis] > 0 )
 	naxis++;
 
     /* Set up rotation angles */
@@ -2097,63 +2084,63 @@ double *matrix;	/* 3x3 rotation matrix (returned) */
     rot[2] = rot3;
 
     /* For each digit of axis string, set up matrix */
-    for (iaxis = 0; iaxis < naxis; iaxis++) {
+    for ( iaxis = 0; iaxis < naxis; iaxis++ ) {
 
 	/* Initialize current rotation matrix */
 	mati = matn;
-	for (i = 0; i < 3; i++) {
-	    for (j=0; j < 3; j++) {
-		if (i == j)
+	for ( i = 0; i < 3; i++ ) {
+	    for ( j = 0; j < 3; j++ ) {
+		if ( i == j )
 		    *mati++ = 1.0;
 		else
 		    *mati++ = 0.0;
-		}
 	    }
+	}
 
-	srot = sin (rot[iaxis]);
-	crot = cos (rot[iaxis]);
-	
+	srot = sin( rot[iaxis] );
+	crot = cos( rot[iaxis] );
+
 	/* Matrix for rotation in X */
-	if (axis[iaxis] == 1) {
+	if ( axis[iaxis] == 1 ) {
 	    matn[4] = crot;
 	    matn[5] = srot;
 	    matn[7] = -srot;
 	    matn[8] = crot;
-	    }
-	
+	}
+
 	/* Matrix for rotation in Y */
-	else if (axis[iaxis] == 2) {
+	else if ( axis[iaxis] == 2 ) {
 	    matn[0] = crot;
 	    matn[2] = -srot;
 	    matn[6] = srot;
 	    matn[8] = crot;
-	    }
-	
+	}
+
 	/* Matrix for rotation in Z */
 	else {
 	    matn[0] = crot;
 	    matn[1] = srot;
 	    matn[3] = -srot;
 	    matn[4] = crot;
-	    }
+	}
 
 	/* Multiply existing rotation matrix by new rotation matrix */
-	for (i = 0; i < 3; i++) {
-	    for (j = 0; j < 3; j++) {
+	for ( i = 0; i < 3; i++ ) {
+	    for ( j = 0; j < 3; j++ ) {
 		w = 0.0;
-		for (k = 0; k < 3; k++)
-		    w+= matn[3*i + k] * matrix[3*k + j];
-		wm[3*i + j] = w;
-		}
+		for ( k = 0; k < 3; k++ )
+		    w += matn[3 * i + k] * matrix[3 * k + j];
+		wm[3 * i + j] = w;
 	    }
+	}
 
 	/* Update output matrix */
 	mati = matrix;
 	wmi = wm;
-	for (i = 0; i < 9; i++) {
+	for ( i = 0; i < 9; i++ ) {
 	    *mati++ = *wmi++;
-	    }
 	}
+    }
     return;
 }
 
@@ -2164,14 +2151,13 @@ double *matrix;	/* 3x3 rotation matrix (returned) */
    geocentric equatorial rectangular coordinates */
 
 void
-d2v3 (rra,rdec,r,pos)
-
-double rra;	/* Right ascension in degrees */
-double rdec;	/* Declination in degrees */
-double r;	/* Distance to object in same units as pos */
-double pos[3];	/* x,y,z geocentric equatorial position of object (returned) */
+d2v3( rra, rdec, r, pos )
+     double rra;                /* Right ascension in degrees */
+     double rdec;               /* Declination in degrees */
+     double r;                  /* Distance to object in same units as pos */
+     double pos[3];             /* x,y,z geocentric equatorial position of object (returned) */
 {
-    s2v3 (degrad (rra), degrad (rdec), r, pos);
+    s2v3( degrad( rra ), degrad( rdec ), r, pos );
 
     return;
 }
@@ -2181,16 +2167,15 @@ double pos[3];	/* x,y,z geocentric equatorial position of object (returned) */
    geocentric equatorial rectangular coordinates */
 
 void
-s2v3 (rra,rdec,r,pos)
-
-double rra;	/* Right ascension in radians */
-double rdec;	/* Declination in radians */
-double r;	/* Distance to object in same units as pos */
-double pos[3];	/* x,y,z geocentric equatorial position of object (returned) */
+s2v3( rra, rdec, r, pos )
+     double rra;                /* Right ascension in radians */
+     double rdec;               /* Declination in radians */
+     double r;                  /* Distance to object in same units as pos */
+     double pos[3];             /* x,y,z geocentric equatorial position of object (returned) */
 {
-    pos[0] = r * cos (rra) * cos (rdec);
-    pos[1] = r * sin (rra) * cos (rdec);
-    pos[2] = r * sin (rdec);
+    pos[0] = r * cos( rra ) * cos( rdec );
+    pos[1] = r * sin( rra ) * cos( rdec );
+    pos[2] = r * sin( rdec );
 
     return;
 }
@@ -2200,16 +2185,15 @@ double pos[3];	/* x,y,z geocentric equatorial position of object (returned) */
    right ascension and declination in degrees and distance */
 
 void
-v2d3 (pos,rra,rdec,r)
-
-double pos[3];	/* x,y,z geocentric equatorial position of object */
-double *rra;	/* Right ascension in degrees (returned) */
-double *rdec;	/* Declination in degrees (returned) */
-double *r;	/* Distance to object in same units as pos (returned) */
+v2d3( pos, rra, rdec, r )
+     double pos[3];             /* x,y,z geocentric equatorial position of object */
+     double *rra;               /* Right ascension in degrees (returned) */
+     double *rdec;              /* Declination in degrees (returned) */
+     double *r;                 /* Distance to object in same units as pos (returned) */
 {
-    v2s3 (pos, rra, rdec, r);
-    *rra = raddeg (*rra);
-    *rdec = raddeg (*rdec);
+    v2s3( pos, rra, rdec, r );
+    *rra = raddeg( *rra );
+    *rdec = raddeg( *rdec );
     return;
 }
 
@@ -2217,33 +2201,32 @@ double *r;	/* Distance to object in same units as pos (returned) */
    right ascension, declination, and distance */
 
 void
-v2s3 (pos,rra,rdec,r)
-
-double pos[3];	/* x,y,z geocentric equatorial position of object */
-double *rra;	/* Right ascension in radians (returned) */
-double *rdec;	/* Declination in radians (returned) */
-double *r;	/* Distance to object in same units as pos (returned) */
+v2s3( pos, rra, rdec, r )
+     double pos[3];             /* x,y,z geocentric equatorial position of object */
+     double *rra;               /* Right ascension in radians (returned) */
+     double *rdec;              /* Declination in radians (returned) */
+     double *r;                 /* Distance to object in same units as pos (returned) */
 {
-    double x,y,z,rxy,rxy2,z2;
+    double x, y, z, rxy, rxy2, z2;
 
     x = pos[0];
     y = pos[1];
     z = pos[2];
 
-    *rra = atan2 (y, x);
+    *rra = atan2( y, x );
 
     /* Keep RA within 0 to 2pi range */
-    if (*rra < 0.0)
-	*rra = *rra + (2.0 * PI);
-    if (*rra > 2.0 * PI)
-	*rra = *rra - (2.0 * PI);
+    if ( *rra < 0.0 )
+	*rra = *rra + ( 2.0 * PI );
+    if ( *rra > 2.0 * PI )
+	*rra = *rra - ( 2.0 * PI );
 
-    rxy2 = x*x + y*y;
-    rxy = sqrt (rxy2);
-    *rdec = atan2 (z, rxy);
+    rxy2 = x * x + y * y;
+    rxy = sqrt( rxy2 );
+    *rdec = atan2( z, rxy );
 
     z2 = z * z;
-    *r = sqrt (rxy2 + z2);
+    *r = sqrt( rxy2 + z2 );
 
     return;
 }

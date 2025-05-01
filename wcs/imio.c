@@ -74,48 +74,49 @@
 #include <stdio.h>
 #include "fitsfile.h"
 
-static int scale = 1;	/* If 0, skip scaling step */
+static int scale = 1;           /* If 0, skip scaling step */
 void
-setscale (scale0)
-int scale0;
-{scale = scale0; return;}
+setscale( scale0 )
+     int scale0;
+{
+    scale = scale0;
+    return;
+}
 
 /* GETPIX1 -- Get pixel from 2D FITS image of any numeric type */
 
 double
-getpix1 (image, bitpix, w, h, bzero, bscale, x, y)
-
-char	*image;		/* Image array as 1-D vector */
-int	bitpix;		/* FITS bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w;		/* Image width in pixels */
-int	h;		/* Image height in pixels */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	x;		/* One-based horizontal pixel number */
-int	y;		/* One-based vertical pixel number */
+getpix1( image, bitpix, w, h, bzero, bscale, x, y )
+     char *image;               /* Image array as 1-D vector */
+     int bitpix;                /* FITS bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w;                     /* Image width in pixels */
+     int h;                     /* Image height in pixels */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int x;                     /* One-based horizontal pixel number */
+     int y;                     /* One-based vertical pixel number */
 
 {
-    return (getpix (image, bitpix, w, h, bzero, bscale, x-1, y-1));
+    return ( getpix( image, bitpix, w, h, bzero, bscale, x - 1, y - 1 ) );
 }
 
 
 /* GETPIX -- Get pixel from 2D image of any numeric type */
 
 double
-getpix (image, bitpix, w, h, bzero, bscale, x, y)
-
-char	*image;		/* Image array as 1-D vector */
-int	bitpix;		/* FITS bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w;		/* Image width in pixels */
-int	h;		/* Image height in pixels */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	x;		/* Zero-based horizontal pixel number */
-int	y;		/* Zero-based vertical pixel number */
+getpix( image, bitpix, w, h, bzero, bscale, x, y )
+     char *image;               /* Image array as 1-D vector */
+     int bitpix;                /* FITS bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w;                     /* Image width in pixels */
+     int h;                     /* Image height in pixels */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int x;                     /* Zero-based horizontal pixel number */
+     int y;                     /* Zero-based vertical pixel number */
 
 {
     short *im2;
@@ -127,73 +128,72 @@ int	y;		/* Zero-based vertical pixel number */
     double dpix;
 
 /* Return 0 if coordinates are not inside image */
-    if (x < 0 || x >= w)
-	return (0.0);
-    if (y < 0 || y >= h)
-	return (0.0);
+    if ( x < 0 || x >= w )
+	return ( 0.0 );
+    if ( y < 0 || y >= h )
+	return ( 0.0 );
 
 /* Extract pixel from appropriate type of array */
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	  im1 = (unsigned char *)image;
-	  dpix = (double) im1[(y*w) + x];
-	  break;
+	    im1 = ( unsigned char * ) image;
+	    dpix = ( double ) im1[( y * w ) + x];
+	    break;
 
 	case 16:
-	  im2 = (short *)image;
-	  dpix = (double) im2[(y*w) + x];
-	  break;
+	    im2 = ( short * ) image;
+	    dpix = ( double ) im2[( y * w ) + x];
+	    break;
 
 	case 32:
-	  im4 = (int *)image;
-	  dpix = (double) im4[(y*w) + x];
-	  break;
+	    im4 = ( int * ) image;
+	    dpix = ( double ) im4[( y * w ) + x];
+	    break;
 
 	case -16:
-	  imu = (unsigned short *)image;
-	  dpix = (double) imu[(y*w) + x];
-	  break;
+	    imu = ( unsigned short * ) image;
+	    dpix = ( double ) imu[( y * w ) + x];
+	    break;
 
 	case -32:
-	  imr = (float *)image;
-	  dpix = (double) imr[(y*w) + x];
-	  break;
+	    imr = ( float * ) image;
+	    dpix = ( double ) imr[( y * w ) + x];
+	    break;
 
 	case -64:
-	  imd = (double *)image;
-	  dpix = imd[(y*w) + x];
-	  break;
+	    imd = ( double * ) image;
+	    dpix = imd[( y * w ) + x];
+	    break;
 
 	default:
-	  dpix = 0.0;
-	}
-    if (scale)
-	return (bzero + (bscale * dpix));
+	    dpix = 0.0;
+    }
+    if ( scale )
+	return ( bzero + ( bscale * dpix ) );
     else
-	return (dpix);
+	return ( dpix );
 }
 
 
 /* PUTPIX1 -- Copy pixel into 2D FITS image of any numeric type */
 
 void
-putpix1 (image, bitpix, w, h, bzero, bscale, x, y, dpix)
-
-char	*image;
-int	bitpix;		/* Number of bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w;		/* Image width in pixels */
-int	h;		/* Image height in pixels */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	x;		/* One-based horizontal pixel number */
-int	y;		/* One-based vertical pixel number */
-double	dpix;
+putpix1( image, bitpix, w, h, bzero, bscale, x, y, dpix )
+     char *image;
+     int bitpix;                /* Number of bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w;                     /* Image width in pixels */
+     int h;                     /* Image height in pixels */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int x;                     /* One-based horizontal pixel number */
+     int y;                     /* One-based vertical pixel number */
+     double dpix;
 
 {
-    putpix (image, bitpix, w, h, bzero, bscale, x-1, y-1, dpix);
+    putpix( image, bitpix, w, h, bzero, bscale, x - 1, y - 1, dpix );
     return;
 }
 
@@ -201,19 +201,18 @@ double	dpix;
 /* PUTPIX -- Copy pixel into 2D image of any numeric type */
 
 void
-putpix (image, bitpix, w, h, bzero, bscale, x, y, dpix)
-
-char	*image;
-int	bitpix;		/* Number of bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w;		/* Image width in pixels */
-int	h;		/* Image height in pixels */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	x;
-int	y;
-double	dpix;
+putpix( image, bitpix, w, h, bzero, bscale, x, y, dpix )
+     char *image;
+     int bitpix;                /* Number of bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w;                     /* Image width in pixels */
+     int h;                     /* Image height in pixels */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int x;
+     int y;
+     double dpix;
 
 {
     double *imd;
@@ -224,59 +223,59 @@ double	dpix;
     unsigned char *im1;
 
 /* Return if coordinates are not inside image */
-    if (x < 0 || x >= w)
+    if ( x < 0 || x >= w )
 	return;
-    if (y < 0 || y >= h)
+    if ( y < 0 || y >= h )
 	return;
 
-    if (scale)
-	dpix = (dpix - bzero) / bscale;
+    if ( scale )
+	dpix = ( dpix - bzero ) / bscale;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    im1 = (unsigned char *)image;
-	    if (dpix < 0)
-		im1[(y*w) + x] = (unsigned char) (dpix - 0.5);
+	    im1 = ( unsigned char * ) image;
+	    if ( dpix < 0 )
+		im1[( y * w ) + x] = ( unsigned char ) ( dpix - 0.5 );
 	    else
-		im1[(y*w) + x] = (unsigned char) (dpix + 0.5);
+		im1[( y * w ) + x] = ( unsigned char ) ( dpix + 0.5 );
 	    break;
 
 	case 16:
-	    im2 = (short *)image;
-	    if (dpix < 0)
-		im2[(y*w) + x] = (short) (dpix - 0.5);
+	    im2 = ( short * ) image;
+	    if ( dpix < 0 )
+		im2[( y * w ) + x] = ( short ) ( dpix - 0.5 );
 	    else
-		im2[(y*w) + x] = (short) (dpix + 0.5);
+		im2[( y * w ) + x] = ( short ) ( dpix + 0.5 );
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    if (dpix < 0)
-		im4[(y*w) + x] = (int) (dpix - 0.5);
+	    im4 = ( int * ) image;
+	    if ( dpix < 0 )
+		im4[( y * w ) + x] = ( int ) ( dpix - 0.5 );
 	    else
-		im4[(y*w) + x] = (int) (dpix + 0.5);
+		im4[( y * w ) + x] = ( int ) ( dpix + 0.5 );
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    if (dpix < 0)
-		imu[(y*w) + x] = (unsigned short) 0;
+	    imu = ( unsigned short * ) image;
+	    if ( dpix < 0 )
+		imu[( y * w ) + x] = ( unsigned short ) 0;
 	    else
-		imu[(y*w) + x] = (unsigned short) (dpix + 0.5);
+		imu[( y * w ) + x] = ( unsigned short ) ( dpix + 0.5 );
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    imr[(y*w) + x] = (float) dpix;
+	    imr = ( float * ) image;
+	    imr[( y * w ) + x] = ( float ) dpix;
 	    break;
 
 	case -64:
-	    imd = (double *)image;
-	    imd[(y*w) + x] = dpix;
+	    imd = ( double * ) image;
+	    imd[( y * w ) + x] = dpix;
 	    break;
 
-	}
+    }
     return;
 }
 
@@ -284,22 +283,21 @@ double	dpix;
 /* ADDPIX1 -- Add pixel value into 2D FITS image of any numeric type */
 
 void
-addpix1 (image, bitpix, w, h, bzero, bscale, x, y, dpix)
-
-char	*image;
-int	bitpix;		/* Number of bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w;		/* Image width in pixels */
-int	h;		/* Image height in pixels */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	x;		/* One-based horizontal pixel number */
-int	y;		/* One-based vertical pixel number */
-double	dpix;		/* Value to add to pixel */
+addpix1( image, bitpix, w, h, bzero, bscale, x, y, dpix )
+     char *image;
+     int bitpix;                /* Number of bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w;                     /* Image width in pixels */
+     int h;                     /* Image height in pixels */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int x;                     /* One-based horizontal pixel number */
+     int y;                     /* One-based vertical pixel number */
+     double dpix;               /* Value to add to pixel */
 
 {
-    addpix (image, bitpix, w, h, bzero, bscale, x-1, y-1, dpix);
+    addpix( image, bitpix, w, h, bzero, bscale, x - 1, y - 1, dpix );
     return;
 }
 
@@ -307,19 +305,18 @@ double	dpix;		/* Value to add to pixel */
 /* ADDPIX -- Add constant to pixel values in 2D image of any numeric type */
 
 void
-addpix (image, bitpix, w, h, bzero, bscale, x, y, dpix)
-
-char	*image;
-int	bitpix;		/* Number of bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w;		/* Image width in pixels */
-int	h;		/* Image height in pixels */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	x;		/* Zero-based horizontal pixel number */
-int	y;		/* Zero-based vertical pixel number */
-double	dpix;		/* Value to add to pixel */
+addpix( image, bitpix, w, h, bzero, bscale, x, y, dpix )
+     char *image;
+     int bitpix;                /* Number of bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w;                     /* Image width in pixels */
+     int h;                     /* Image height in pixels */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int x;                     /* Zero-based horizontal pixel number */
+     int y;                     /* Zero-based vertical pixel number */
+     double dpix;               /* Value to add to pixel */
 
 {
     double *imd;
@@ -331,58 +328,58 @@ double	dpix;		/* Value to add to pixel */
     int ipix;
 
 /* Return if coordinates are not inside image */
-    if (x < 0 || x >= w)
+    if ( x < 0 || x >= w )
 	return;
-    if (y < 0 || y >= h)
+    if ( y < 0 || y >= h )
 	return;
 
-    if (scale)
-	dpix = (dpix - bzero) / bscale;
-    ipix = (y * w) + x;
+    if ( scale )
+	dpix = ( dpix - bzero ) / bscale;
+    ipix = ( y * w ) + x;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    im1 = (unsigned char *)image;
-	    if (dpix < 0)
-		image[ipix] = im1[ipix] + (unsigned char) (dpix - 0.5);
+	    im1 = ( unsigned char * ) image;
+	    if ( dpix < 0 )
+		image[ipix] = im1[ipix] + ( unsigned char ) ( dpix - 0.5 );
 	    else
-		image[ipix] = im1[ipix] + (unsigned char) (dpix + 0.5);
+		image[ipix] = im1[ipix] + ( unsigned char ) ( dpix + 0.5 );
 	    break;
 
 	case 16:
-	    im2 = (short *)image;
-	    if (dpix < 0)
-		im2[ipix] = im2[ipix] + (short) (dpix - 0.5);
+	    im2 = ( short * ) image;
+	    if ( dpix < 0 )
+		im2[ipix] = im2[ipix] + ( short ) ( dpix - 0.5 );
 	    else
-		im2[ipix] = im2[ipix] + (short) (dpix + 0.5);
+		im2[ipix] = im2[ipix] + ( short ) ( dpix + 0.5 );
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    if (dpix < 0)
-		im4[ipix] = im4[ipix] + (int) (dpix - 0.5);
+	    im4 = ( int * ) image;
+	    if ( dpix < 0 )
+		im4[ipix] = im4[ipix] + ( int ) ( dpix - 0.5 );
 	    else
-		im4[ipix] = im4[ipix] + (int) (dpix + 0.5);
+		im4[ipix] = im4[ipix] + ( int ) ( dpix + 0.5 );
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    if (dpix > 0)
-		imu[ipix] = imu[ipix] + (unsigned short) (dpix + 0.5);
+	    imu = ( unsigned short * ) image;
+	    if ( dpix > 0 )
+		imu[ipix] = imu[ipix] + ( unsigned short ) ( dpix + 0.5 );
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    imr[ipix] = imr[ipix] + (float) dpix;
+	    imr = ( float * ) image;
+	    imr[ipix] = imr[ipix] + ( float ) dpix;
 	    break;
 
 	case -64:
-	    imd = (double *)image;
+	    imd = ( double * ) image;
 	    imd[ipix] = imd[ipix] + dpix;
 	    break;
 
-	}
+    }
     return;
 }
 
@@ -390,21 +387,20 @@ double	dpix;		/* Value to add to pixel */
 /* MOVEPIX -- Copy pixel between images */
 
 void
-movepix (image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2)
+movepix( image1, bitpix1, w1, x1, y1, image2, bitpix2, w2, x2, y2 )
+     char *image1;              /* Pointer to first pixel in input image */
+     int bitpix1;               /* Bits per input pixel (FITS codes) */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w1;                    /* Number of horizontal pixels in input image */
+     int x1, y1;                /* Row and column for input pixel */
 
-char	*image1;	/* Pointer to first pixel in input image */
-int	bitpix1;	/* Bits per input pixel (FITS codes) */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w1;		/* Number of horizontal pixels in input image */
-int	x1, y1;		/* Row and column for input pixel */
-
-char	*image2;	/* Pointer to first pixel in output image */
-int	bitpix2;	/* Bits per output pixel (FITS codes) */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-int	w2;		/* Number of horizontal pixels in output image */
-int	x2, y2;		/* Row and column for output pixel */
+     char *image2;              /* Pointer to first pixel in output image */
+     int bitpix2;               /* Bits per output pixel (FITS codes) */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     int w2;                    /* Number of horizontal pixels in output image */
+     int x2, y2;                /* Row and column for output pixel */
 
 {
     double dpix, *imd1, *imd2;
@@ -414,219 +410,233 @@ int	x2, y2;		/* Row and column for output pixel */
     unsigned short *imu1, *imu2;
     unsigned char *imc1, *imc2;
 
-    if (x1 < 0 || x2 < 0 || x1 >= w1 || x2 >= w2)
+    if ( x1 < 0 || x2 < 0 || x1 >= w1 || x2 >= w2 )
 	return;
-    if (y1 < 0 || y2 < 0)
+    if ( y1 < 0 || y2 < 0 )
 	return;
 
-    switch (bitpix1) {
+    switch ( bitpix1 ) {
 
 	case 8:
-	    imc1 = (unsigned char *)image1;
-	    switch (bitpix2) {
+	    imc1 = ( unsigned char * ) image1;
+	    switch ( bitpix2 ) {
 		case 8:
-		    imc2 = (unsigned char *)image2;
-		    imc2[(y2*w2) + x2] = imc1[(y1*w1) + x1];
+		    imc2 = ( unsigned char * ) image2;
+		    imc2[( y2 * w2 ) + x2] = imc1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
-		    ims2 = (short *)image2;
-		    ims2[(y2*w2) + x2] = (short) imc1[(y1*w1) + x1];
+		    ims2 = ( short * ) image2;
+		    ims2[( y2 * w2 ) + x2] = ( short ) imc1[( y1 * w1 ) + x1];
 		    break;
 		case 32:
-		    imi2 = (int *)image2;
-		    imi2[(y2*w2) + x2] = (int) imc1[(y1*w1) + x1];
+		    imi2 = ( int * ) image2;
+		    imi2[( y2 * w2 ) + x2] = ( int ) imc1[( y1 * w1 ) + x1];
 		    break;
 		case -16:
-		    imu2 = (unsigned short *)image2;
-		    imu2[(y2*w2) + x2] = (unsigned short) imc1[(y1*w1) + x1];
+		    imu2 = ( unsigned short * ) image2;
+		    imu2[( y2 * w2 ) + x2] =
+		        ( unsigned short ) imc1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
-		    imr2 = (float *)image2;
-		    imr2[(y2*w2) + x2] = (float) imc1[(y1*w1) + x1];
+		    imr2 = ( float * ) image2;
+		    imr2[( y2 * w2 ) + x2] = ( float ) imc1[( y1 * w1 ) + x1];
 		    break;
 		case -64:
-		    imd2 = (double *)image2;
-		    imd2[(y2*w2) + x2] = (double) imc1[(y1*w1) + x1];
+		    imd2 = ( double * ) image2;
+		    imd2[( y2 * w2 ) + x2] =
+		        ( double ) imc1[( y1 * w1 ) + x1];
 		    break;
-		}
+	    }
 	    break;
 
 	case 16:
-	    ims1 = (short *)image1;
-	    switch (bitpix2) {
+	    ims1 = ( short * ) image1;
+	    switch ( bitpix2 ) {
 		case 8:
-		    imc2 = (unsigned char *)image1;
-		    imc2[(y2*w2) + x2] = (unsigned char) ims1[(y1*w1) + x1];
+		    imc2 = ( unsigned char * ) image1;
+		    imc2[( y2 * w2 ) + x2] =
+		        ( unsigned char ) ims1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
-		    ims2 = (short *)image2;
-		    ims2[(y2*w2) + x2] = ims1[(y1*w1) + x1];
+		    ims2 = ( short * ) image2;
+		    ims2[( y2 * w2 ) + x2] = ims1[( y1 * w1 ) + x1];
 		    break;
 		case 32:
-		    imi2 = (int *)image2;
-		    imi2[(y2*w2) + x2] = (int) ims1[(y1*w1) + x1];
+		    imi2 = ( int * ) image2;
+		    imi2[( y2 * w2 ) + x2] = ( int ) ims1[( y1 * w1 ) + x1];
 		    break;
 		case -16:
-		    imu2 = (unsigned short *)image2;
-		    imu2[(y2*w2) + x2] = (unsigned short) ims1[(y1*w1) + x1];
+		    imu2 = ( unsigned short * ) image2;
+		    imu2[( y2 * w2 ) + x2] =
+		        ( unsigned short ) ims1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
-		    imr2 = (float *)image2;
-		    imr2[(y2*w2) + x2] = (float) ims1[(y1*w1) + x1];
+		    imr2 = ( float * ) image2;
+		    imr2[( y2 * w2 ) + x2] = ( float ) ims1[( y1 * w1 ) + x1];
 		    break;
 		case -64:
-		    imd2 = (double *)image2;
-		    imd2[(y2*w2) + x2] = (double) ims1[(y1*w1) + x1];
+		    imd2 = ( double * ) image2;
+		    imd2[( y2 * w2 ) + x2] =
+		        ( double ) ims1[( y1 * w1 ) + x1];
 		    break;
-		}
+	    }
 	    break;
 
 	case 32:
-	    imi1 = (int *)image1;
-	    switch (bitpix2) {
+	    imi1 = ( int * ) image1;
+	    switch ( bitpix2 ) {
 		case 8:
-		    imc2 = (unsigned char *)image2;
-		    imc2[(y2*w2) + x2] = (unsigned char) imi1[(y1*w1) + x1];
+		    imc2 = ( unsigned char * ) image2;
+		    imc2[( y2 * w2 ) + x2] =
+		        ( unsigned char ) imi1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
-		    ims2 = (short *)image2;
-		    ims2[(y2*w2) + x2] = (short) imi1[(y1*w1) + x1];
+		    ims2 = ( short * ) image2;
+		    ims2[( y2 * w2 ) + x2] = ( short ) imi1[( y1 * w1 ) + x1];
 		    break;
 		case 32:
-		    imi2 = (int *)image2;
-		    imi2[(y2*w2) + x2] = imi1[(y1*w1) + x1];
+		    imi2 = ( int * ) image2;
+		    imi2[( y2 * w2 ) + x2] = imi1[( y1 * w1 ) + x1];
 		    break;
 		case -16:
-		    imu2 = (unsigned short *)image2;
-		    imu2[(y2*w2) + x2] = (unsigned short) imi1[(y1*w1) + x1];
+		    imu2 = ( unsigned short * ) image2;
+		    imu2[( y2 * w2 ) + x2] =
+		        ( unsigned short ) imi1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
-		    imr2 = (float *)image2;
-		    imr2[(y2*w2) + x2] = (float) imi1[(y1*w1) + x1];
+		    imr2 = ( float * ) image2;
+		    imr2[( y2 * w2 ) + x2] = ( float ) imi1[( y1 * w1 ) + x1];
 		    break;
 		case -64:
-		    imd2 = (double *)image2;
-		    imd2[(y2*w2) + x2] = (double) imi1[(y1*w1) + x1];
+		    imd2 = ( double * ) image2;
+		    imd2[( y2 * w2 ) + x2] =
+		        ( double ) imi1[( y1 * w1 ) + x1];
 		    break;
-		}
+	    }
 	    break;
 
 	case -16:
-	    imu1 = (unsigned short *)image1;
-	    switch (bitpix2) {
+	    imu1 = ( unsigned short * ) image1;
+	    switch ( bitpix2 ) {
 		case 8:
-		    imc2 = (unsigned char *)image2;
-		    imc2[(y2*w2) + x2] = (unsigned char) imu1[(y1*w1) + x1];
+		    imc2 = ( unsigned char * ) image2;
+		    imc2[( y2 * w2 ) + x2] =
+		        ( unsigned char ) imu1[( y1 * w1 ) + x1];
 		    break;
 		case 16:
-		    ims2 = (short *)image2;
-		    ims2[(y2*w2) + x2] = (short) imu1[(y1*w1) + x1];
+		    ims2 = ( short * ) image2;
+		    ims2[( y2 * w2 ) + x2] = ( short ) imu1[( y1 * w1 ) + x1];
 		    break;
 		case 32:
-		    imi2 = (int *)image2;
-		    imi2[(y2*w2) + x2] = (int) imu1[(y1*w1) + x1];
+		    imi2 = ( int * ) image2;
+		    imi2[( y2 * w2 ) + x2] = ( int ) imu1[( y1 * w1 ) + x1];
 		    break;
 		case -16:
-		    imu2 = (unsigned short *)image2;
-		    imu2[(y2*w2) + x2] = imu1[(y1*w1) + x1];
+		    imu2 = ( unsigned short * ) image2;
+		    imu2[( y2 * w2 ) + x2] = imu1[( y1 * w1 ) + x1];
 		    break;
 		case -32:
-		    imr2 = (float *)image2;
-		    imr2[(y2*w2) + x2] = (float) imu1[(y1*w1) + x1];
+		    imr2 = ( float * ) image2;
+		    imr2[( y2 * w2 ) + x2] = ( float ) imu1[( y1 * w1 ) + x1];
 		    break;
 		case -64:
-		    imd2 = (double *)image2;
-		    imd2[(y2*w2) + x2] = (double) imu1[(y1*w1) + x1];
+		    imd2 = ( double * ) image2;
+		    imd2[( y2 * w2 ) + x2] =
+		        ( double ) imu1[( y1 * w1 ) + x1];
 		    break;
-		}
+	    }
 	    break;
 
 	case -32:
-	    imr1 = (float *)image1;
-	    rpix = imr1[(y1*w1) + x1];
-	    switch (bitpix2) {
+	    imr1 = ( float * ) image1;
+	    rpix = imr1[( y1 * w1 ) + x1];
+	    switch ( bitpix2 ) {
 		case 8:
-		    imc2 = (unsigned char *)image2;
-		    if (rpix < 0.0)
-			imc2[(y2*w2) + x2] = (unsigned char) 0;
+		    imc2 = ( unsigned char * ) image2;
+		    if ( rpix < 0.0 )
+			imc2[( y2 * w2 ) + x2] = ( unsigned char ) 0;
 		    else
-			imc2[(y2*w2) + x2] = (unsigned char) (rpix + 0.5);
+			imc2[( y2 * w2 ) + x2] =
+		            ( unsigned char ) ( rpix + 0.5 );
 		    break;
 		case 16:
-		    ims2 = (short *)image2;
-		    if (rpix < 0.0)
-			ims2[(y2*w2) + x2] = (short) (rpix - 0.5);
+		    ims2 = ( short * ) image2;
+		    if ( rpix < 0.0 )
+			ims2[( y2 * w2 ) + x2] = ( short ) ( rpix - 0.5 );
 		    else
-			ims2[(y2*w2) + x2] = (short) (rpix + 0.5);
+			ims2[( y2 * w2 ) + x2] = ( short ) ( rpix + 0.5 );
 		    break;
 		case 32:
-		    imi2 = (int *)image2;
-		    if (rpix < 0.0)
-			imi2[(y2*w2) + x2] = (int) (rpix - 0.5);
+		    imi2 = ( int * ) image2;
+		    if ( rpix < 0.0 )
+			imi2[( y2 * w2 ) + x2] = ( int ) ( rpix - 0.5 );
 		    else
-			imi2[(y2*w2) + x2] = (int) (rpix + 0.5);
+			imi2[( y2 * w2 ) + x2] = ( int ) ( rpix + 0.5 );
 		    break;
 		case -16:
-		    imu2 = (unsigned short *)image2;
-		    if (rpix < 0.0)
-			imu2[(y2*w2) + x2] = (unsigned short) 0;
+		    imu2 = ( unsigned short * ) image2;
+		    if ( rpix < 0.0 )
+			imu2[( y2 * w2 ) + x2] = ( unsigned short ) 0;
 		    else
-			imu2[(y2*w2) + x2] = (unsigned short) (rpix + 0.5);
+			imu2[( y2 * w2 ) + x2] =
+		            ( unsigned short ) ( rpix + 0.5 );
 		    break;
 		case -32:
-		    imr2 = (float *)image2;
-		    imr2[(y2*w2) + x2] = rpix;
+		    imr2 = ( float * ) image2;
+		    imr2[( y2 * w2 ) + x2] = rpix;
 		    break;
 		case -64:
-		    imd2 = (double *)image2;
-		    imd2[(y2*w2) + x2] = (double) rpix;
+		    imd2 = ( double * ) image2;
+		    imd2[( y2 * w2 ) + x2] = ( double ) rpix;
 		    break;
-		}
+	    }
 	    break;
 
 	case -64:
-	    imd1 = (double *)image1;
-	    dpix = imd1[(y1*w1) + x1];
-	    switch (bitpix2) {
+	    imd1 = ( double * ) image1;
+	    dpix = imd1[( y1 * w1 ) + x1];
+	    switch ( bitpix2 ) {
 		case 8:
-		    imc2 = (unsigned char *)image2;
-		    if (dpix < 0.0)
-			imc2[(y2*w2) + x2] = (unsigned char) 0;
+		    imc2 = ( unsigned char * ) image2;
+		    if ( dpix < 0.0 )
+			imc2[( y2 * w2 ) + x2] = ( unsigned char ) 0;
 		    else
-			imc2[(y2*w2) + x2] = (unsigned char) (dpix + 0.5);
+			imc2[( y2 * w2 ) + x2] =
+		            ( unsigned char ) ( dpix + 0.5 );
 		    break;
 		case 16:
-		    ims2 = (short *)image2;
-		    if (dpix < 0.0)
-			ims2[(y2*w2) + x2] = (short) (dpix - 0.5);
+		    ims2 = ( short * ) image2;
+		    if ( dpix < 0.0 )
+			ims2[( y2 * w2 ) + x2] = ( short ) ( dpix - 0.5 );
 		    else
-			ims2[(y2*w2) + x2] = (short) (dpix + 0.5);
+			ims2[( y2 * w2 ) + x2] = ( short ) ( dpix + 0.5 );
 		    break;
 		case 32:
-		    imi2 = (int *)image2;
-		    if (dpix < 0.0)
-			imi2[(y2*w2) + x2] = (int) (dpix - 0.5);
+		    imi2 = ( int * ) image2;
+		    if ( dpix < 0.0 )
+			imi2[( y2 * w2 ) + x2] = ( int ) ( dpix - 0.5 );
 		    else
-			imi2[(y2*w2) + x2] = (int) (dpix + 0.5);
+			imi2[( y2 * w2 ) + x2] = ( int ) ( dpix + 0.5 );
 		    break;
 		case -16:
-		    imu2 = (unsigned short *)image2;
-		    if (dpix < 0.0)
-			imu2[(y2*w2) + x2] = (unsigned short) 0;
+		    imu2 = ( unsigned short * ) image2;
+		    if ( dpix < 0.0 )
+			imu2[( y2 * w2 ) + x2] = ( unsigned short ) 0;
 		    else
-			imu2[(y2*w2) + x2] = (unsigned short) (dpix + 0.5);
+			imu2[( y2 * w2 ) + x2] =
+		            ( unsigned short ) ( dpix + 0.5 );
 		    break;
 		case -32:
-		    imr2 = (float *)image2;
-		    imr2[(y2*w2) + x2] = (float) dpix;
+		    imr2 = ( float * ) image2;
+		    imr2[( y2 * w2 ) + x2] = ( float ) dpix;
 		    break;
 		case -64:
-		    imd2 = (double *)image2;
-		    imd2[(y2*w2) + x2] = dpix;
+		    imd2 = ( double * ) image2;
+		    imd2[( y2 * w2 ) + x2] = dpix;
 		    break;
-		}
+	    }
 	    break;
-	}
+    }
     return;
 }
 
@@ -634,16 +644,15 @@ int	x2, y2;		/* Row and column for output pixel */
 /* MAXVEC -- Get maximum value in vector from 2D image of any numeric type */
 
 double
-maxvec (image, bitpix, bzero, bscale, pix1, npix)
-
-char	*image;		/* Image array from which to read vector */
-int	bitpix;		/* Number of bits per pixel in image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* Offset of first pixel to check */
-int	npix;		/* Number of pixels to check */
+maxvec( image, bitpix, bzero, bscale, pix1, npix )
+     char *image;               /* Image array from which to read vector */
+     int bitpix;                /* Number of bits per pixel in image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* Offset of first pixel to check */
+     int npix;                  /* Number of pixels to check */
 
 {
     short *im2, imax2, ip2;
@@ -658,96 +667,95 @@ int	npix;		/* Number of pixels to check */
 
     pix2 = pix1 + npix;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    imc = (unsigned char *)(image);
-	    imaxc = *(imc + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipc = *(imc + ipix);
-		if (ipc > imaxc)
+	    imc = ( unsigned char * ) ( image );
+	    imaxc = *( imc + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipc = *( imc + ipix );
+		if ( ipc > imaxc )
 		    imaxc = ipc;
-		}
-	    dmax = (double) imaxc;
+	    }
+	    dmax = ( double ) imaxc;
 	    break;
 
 	case 16:
-	    im2 = (short *)image;
-	    imax2 = *(im2 + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ip2 = *(im2 + ipix);
-		if (ip2 > imax2)
+	    im2 = ( short * ) image;
+	    imax2 = *( im2 + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ip2 = *( im2 + ipix );
+		if ( ip2 > imax2 )
 		    imax2 = ip2;
-		}
-	    dmax = (double) imax2;
+	    }
+	    dmax = ( double ) imax2;
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    imax4 = *(im4 + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ip4 = *(im4 + ipix);
-		if (ip4 > imax4)
+	    im4 = ( int * ) image;
+	    imax4 = *( im4 + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ip4 = *( im4 + ipix );
+		if ( ip4 > imax4 )
 		    imax4 = ip4;
-		}
-	    dmax = (double) imax4;
+	    }
+	    dmax = ( double ) imax4;
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    imaxu = *(imu + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipu = *(imu + ipix);
-		if (ipu > imaxu)
+	    imu = ( unsigned short * ) image;
+	    imaxu = *( imu + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipu = *( imu + ipix );
+		if ( ipu > imaxu )
 		    imaxu = ipu;
-		}
-	    dmax = (double) imaxu;
+	    }
+	    dmax = ( double ) imaxu;
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    imaxr = *(imr + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipr = *(imr + ipix);
-		if (ipr > imaxr)
+	    imr = ( float * ) image;
+	    imaxr = *( imr + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipr = *( imr + ipix );
+		if ( ipr > imaxr )
 		    imax2 = ipr;
-		}
-	    dmax = (double) imaxr;
+	    }
+	    dmax = ( double ) imaxr;
 	    break;
 
 	case -64:
-	    imd = (double *)image;
-	    dmax = *(imd + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipd = *(imd + ipix);
-		if (ipd > dmax)
+	    imd = ( double * ) image;
+	    dmax = *( imd + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipd = *( imd + ipix );
+		if ( ipd > dmax )
 		    dmax = ipd;
-		}
+	    }
 	    break;
 
-	}
+    }
 
     /* Scale data if either BZERO or BSCALE keyword has been set */
-    if (scale && (bzero != 0.0 || bscale != 1.0))
-	dmax = (dmax * bscale) + bzero;
+    if ( scale && ( bzero != 0.0 || bscale != 1.0 ) )
+	dmax = ( dmax * bscale ) + bzero;
 
-    return (dmax);
+    return ( dmax );
 }
 
 
 /* MINVEC -- Get minimum value in vector from 2D image of any numeric type */
 
 double
-minvec (image, bitpix, bzero, bscale, pix1, npix)
-
-char	*image;		/* Image array from which to read vector */
-int	bitpix;		/* Number of bits per pixel in image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* Offset of first pixel to check */
-int	npix;		/* Number of pixels to check */
+minvec( image, bitpix, bzero, bscale, pix1, npix )
+     char *image;               /* Image array from which to read vector */
+     int bitpix;                /* Number of bits per pixel in image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* Offset of first pixel to check */
+     int npix;                  /* Number of pixels to check */
 
 {
     short *im2, imin2, ip2;
@@ -761,97 +769,96 @@ int	npix;		/* Number of pixels to check */
 
     pix2 = pix1 + npix;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    imc = (unsigned char *)image;
-	    cmin = *(imc + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		cp = *(imc + ipix);
-		if (cp < cmin)
+	    imc = ( unsigned char * ) image;
+	    cmin = *( imc + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		cp = *( imc + ipix );
+		if ( cp < cmin )
 		    cmin = cp;
-		}
-	    dmin = (double) cmin;
+	    }
+	    dmin = ( double ) cmin;
 	    break;
 
 	case 16:
-	    im2 = (short *)image + pix1;
+	    im2 = ( short * ) image + pix1;
 	    imin2 = *im2;
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ip2 = *(im2 + ipix);
-		if (ip2 < imin2)
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ip2 = *( im2 + ipix );
+		if ( ip2 < imin2 )
 		    imin2 = ip2;
-		}
-	    dmin = (double) imin2;
+	    }
+	    dmin = ( double ) imin2;
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    imin4 = *(im4 + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ip4 = *(im4 + ipix);
-		if (ip4 < imin4)
+	    im4 = ( int * ) image;
+	    imin4 = *( im4 + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ip4 = *( im4 + ipix );
+		if ( ip4 < imin4 )
 		    imin4 = ip4;
-		}
-	    dmin = (double) imin4;
+	    }
+	    dmin = ( double ) imin4;
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    iminu = *(imu + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipu = *(imu + ipix);
-		if (ipu < iminu)
+	    imu = ( unsigned short * ) image;
+	    iminu = *( imu + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipu = *( imu + ipix );
+		if ( ipu < iminu )
 		    iminu = ipu;
-		}
-	    dmin = (double) iminu;
+	    }
+	    dmin = ( double ) iminu;
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    iminr = *(imr + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipr = *(imr + ipix);
-		if (ipr < iminr)
+	    imr = ( float * ) image;
+	    iminr = *( imr + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipr = *( imr + ipix );
+		if ( ipr < iminr )
 		    iminr = ipr;
-		}
-	    dmin = (double) iminr;
+	    }
+	    dmin = ( double ) iminr;
 	    break;
 
 	case -64:
-	    imd = (double *)image;
-	    dmin = *(imd + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		ipd = *(imd + ipix);
-		if (ipd < dmin)
+	    imd = ( double * ) image;
+	    dmin = *( imd + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		ipd = *( imd + ipix );
+		if ( ipd < dmin )
 		    dmin = ipd;
-		}
+	    }
 	    break;
 
-	}
+    }
 
     /* Scale data if either BZERO or BSCALE keyword has been set */
-    if (scale && (bzero != 0.0 || bscale != 1.0))
-	dmin = (dmin * bscale) + bzero;
+    if ( scale && ( bzero != 0.0 || bscale != 1.0 ) )
+	dmin = ( dmin * bscale ) + bzero;
 
-    return (dmin);
+    return ( dmin );
 }
 
 
 /* ADDVEC -- Add constant to pixel values in 2D image of any numeric type */
 
 void
-addvec (image, bitpix, bzero, bscale, pix1, npix, dpix)
-
-char	*image;		/* Image array from which to extract vector */
-int	bitpix;		/* Number of bits per pixel in image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* Offset of first pixel to extract */
-int	npix;		/* Number of pixels to extract */
-double	dpix;		/* Value to add to pixels */
+addvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
+     char *image;               /* Image array from which to extract vector */
+     int bitpix;                /* Number of bits per pixel in image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* Offset of first pixel to extract */
+     int npix;                  /* Number of pixels to extract */
+     double dpix;               /* Value to add to pixels */
 
 {
     unsigned char *imc, ccon;
@@ -864,72 +871,72 @@ double	dpix;		/* Value to add to pixels */
 
     pix2 = pix1 + npix;
 
-    if (scale)
-	dpix = (dpix - bzero) / bscale;
+    if ( scale )
+	dpix = ( dpix - bzero ) / bscale;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    imc = (unsigned char *) (image + pix1);
-	    if (dpix < 0)
-		ccon = (unsigned char) (dpix - 0.5);
+	    imc = ( unsigned char * ) ( image + pix1 );
+	    if ( dpix < 0 )
+		ccon = ( unsigned char ) ( dpix - 0.5 );
 	    else
-		ccon = (unsigned char) (dpix + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		ccon = ( unsigned char ) ( dpix + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*imc++ += ccon;
 	    break;
 
 	case 16:
-	    im2 = (short *) (image + pix1);
-	    if (dpix < 0)
-		jcon = (short) (dpix - 0.5);
+	    im2 = ( short * ) ( image + pix1 );
+	    if ( dpix < 0 )
+		jcon = ( short ) ( dpix - 0.5 );
 	    else
-		jcon = (short) (dpix + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		jcon = ( short ) ( dpix + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*im2++ += jcon;
 	    break;
 
 	case 32:
-	    im4 = (int *) (image + pix1);
-	    if (dpix < 0)
-		icon = (int) (dpix - 0.5);
+	    im4 = ( int * ) ( image + pix1 );
+	    if ( dpix < 0 )
+		icon = ( int ) ( dpix - 0.5 );
 	    else
-		icon = (int) (dpix + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		icon = ( int ) ( dpix + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*im4++ += icon;
 	    break;
 
 	case -16:
-	    imu = (unsigned short *) (image + pix1);
-	    if (dpix > 0) {
-		ucon = (unsigned short) (dpix + 0.5);
-		imu = (unsigned short *) (image + pix1);
-		for (ipix = pix1; ipix < pix2; ipix++)
+	    imu = ( unsigned short * ) ( image + pix1 );
+	    if ( dpix > 0 ) {
+		ucon = ( unsigned short ) ( dpix + 0.5 );
+		imu = ( unsigned short * ) ( image + pix1 );
+		for ( ipix = pix1; ipix < pix2; ipix++ )
 		    *imu++ += ucon;
-		}
+	    }
 	    else {
-		icon = (int) (dpix - 0.5);
-		imu = (unsigned short *) (image + pix1);
-		for (ipix = pix1; ipix < pix2; ipix++) {
-		    unsigned short tmp = (icon + (int) *imu);
+		icon = ( int ) ( dpix - 0.5 );
+		imu = ( unsigned short * ) ( image + pix1 );
+		for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		    unsigned short tmp = ( icon + ( int ) *imu );
 		    *imu++ += tmp;
-		    }
 		}
+	    }
 	    break;
 
 	case -32:
-	    rcon = (float) dpix;
-	    imr = (float *) (image + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+	    rcon = ( float ) dpix;
+	    imr = ( float * ) ( image + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*imr++ += rcon;
 	    break;
 
 	case -64:
-	    imd = (double *) (image + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+	    imd = ( double * ) ( image + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*imd++ += dpix;
 	    break;
-	}
+    }
     return;
 }
 
@@ -937,17 +944,16 @@ double	dpix;		/* Value to add to pixels */
 /* MULTVEC -- Multiply pixel values in place in 2D image of any numeric type */
 
 void
-multvec (image, bitpix, bzero, bscale, pix1, npix, dpix)
-
-char	*image;		/* Image array from which to extract vector */
-int	bitpix;		/* Number of bits per pixel in image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* Offset of first pixel to extract */
-int	npix;		/* Number of pixels to extract */
-double	dpix;		/* Value by which to multiply pixels */
+multvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
+     char *image;               /* Image array from which to extract vector */
+     int bitpix;                /* Number of bits per pixel in image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* Offset of first pixel to extract */
+     int npix;                  /* Number of pixels to extract */
+     double dpix;               /* Value by which to multiply pixels */
 
 {
     char *imc, ccon;
@@ -960,105 +966,105 @@ double	dpix;		/* Value by which to multiply pixels */
 
     pix2 = pix1 + npix;
 
-    if (scale)
-	dpix = (dpix - bzero) / bscale;
-    ipix = (int) dpix;
-    dcon = (double) ipix;
-    if (dcon == dpix)
+    if ( scale )
+	dpix = ( dpix - bzero ) / bscale;
+    ipix = ( int ) dpix;
+    dcon = ( double ) ipix;
+    if ( dcon == dpix )
 	isint = 1;
     else
 	isint = 0;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
 	    imc = image + pix1;
-	    if (isint) {
-		if (dpix < 0)
-		    ccon = (char) (dpix - 0.5);
+	    if ( isint ) {
+		if ( dpix < 0 )
+		    ccon = ( char ) ( dpix - 0.5 );
 		else
-		    ccon = (char) (dpix + 0.5);
-		for (ipix = pix1; ipix < pix2; ipix++)
+		    ccon = ( char ) ( dpix + 0.5 );
+		for ( ipix = pix1; ipix < pix2; ipix++ )
 		    *imc++ *= ccon;
-		}
+	    }
 	    else {
-		for (ipix = pix1; ipix < pix2; ipix++) {
-		    dval = ((double) *imc) * dpix;
-		    if (dval < 256.0)
-			*imc++ = (char) dval;
+		for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		    dval = ( ( double ) *imc ) * dpix;
+		    if ( dval < 256.0 )
+			*imc++ = ( char ) dval;
 		    else
-			*imc++ = (char) 255;
-		    }
+			*imc++ = ( char ) 255;
 		}
+	    }
 	    break;
 
 	case 16:
-	    im2 = (short *) (image + pix1);
-	    if (isint) {
-		im2 = (short *)image;
-		if (dpix < 0)
-		    jcon = (short) (dpix - 0.5);
+	    im2 = ( short * ) ( image + pix1 );
+	    if ( isint ) {
+		im2 = ( short * ) image;
+		if ( dpix < 0 )
+		    jcon = ( short ) ( dpix - 0.5 );
 		else
-		    jcon = (short) (dpix + 0.5);
-		for (ipix = pix1; ipix < pix2; ipix++)
+		    jcon = ( short ) ( dpix + 0.5 );
+		for ( ipix = pix1; ipix < pix2; ipix++ )
 		    *im2++ *= jcon;
-		}
+	    }
 	    else {
-		for (ipix = pix1; ipix < pix2; ipix++) {
-		    dval = ((double) *im2) * dpix;
-		    if (dval < 32768.0)
-			*im2++ = (short) dval;
+		for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		    dval = ( ( double ) *im2 ) * dpix;
+		    if ( dval < 32768.0 )
+			*im2++ = ( short ) dval;
 		    else
-			*im2++ = (short) 32767;
-		    }
+			*im2++ = ( short ) 32767;
 		}
+	    }
 	    break;
 
 	case 32:
-	    im4 = (int *) (image + pix1);
-	    if (isint) {
-		if (dpix < 0)
-		    icon = (int) (dpix - 0.5);
+	    im4 = ( int * ) ( image + pix1 );
+	    if ( isint ) {
+		if ( dpix < 0 )
+		    icon = ( int ) ( dpix - 0.5 );
 		else
-		    icon = (int) (dpix + 0.5);
-		for (ipix = pix1; ipix < pix2; ipix++)
+		    icon = ( int ) ( dpix + 0.5 );
+		for ( ipix = pix1; ipix < pix2; ipix++ )
 		    *im4++ *= icon;
-		}
+	    }
 	    else {
-		for (ipix = pix1; ipix < pix2; ipix++) {
-		    dval = ((double) *im4) * dpix;
-		    if (dval < 32768.0)
-			*im4++ = (int) dval;
+		for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		    dval = ( ( double ) *im4 ) * dpix;
+		    if ( dval < 32768.0 )
+			*im4++ = ( int ) dval;
 		    else
-			*im4++ = (int) 32767;
-		    }
+			*im4++ = ( int ) 32767;
 		}
+	    }
 	    break;
 
 	case -16:
-	    imu = (unsigned short *) (image + pix1);
-	    if (dpix > 0) {
-		ucon = (unsigned short) (dpix + 0.5);
-		imu = (unsigned short *) (image + pix1);
-		for (ipix = pix1; ipix < pix2; ipix++)
+	    imu = ( unsigned short * ) ( image + pix1 );
+	    if ( dpix > 0 ) {
+		ucon = ( unsigned short ) ( dpix + 0.5 );
+		imu = ( unsigned short * ) ( image + pix1 );
+		for ( ipix = pix1; ipix < pix2; ipix++ )
 		    *imu++ *= ucon;
-		}
+	    }
 	    break;
 
 	case -32:
-	    rcon = (float) dpix;
-	    imr = (float *) (image + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+	    rcon = ( float ) dpix;
+	    imr = ( float * ) ( image + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*imr++ *= rcon;
 	    break;
 
 	case -64:
-	    imd = (double *) (image + pix1);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+	    imd = ( double * ) ( image + pix1 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		*imd++ *= dpix;
 	    break;
 
-	}
+    }
     return;
 }
 
@@ -1066,17 +1072,16 @@ double	dpix;		/* Value by which to multiply pixels */
 /* GETVEC -- Get vector from 2D image of any numeric type */
 
 void
-getvec (image, bitpix, bzero, bscale, pix1, npix, dvec0)
-
-char	*image;		/* Image array from which to extract vector */
-int	bitpix;		/* Number of bits per pixel in image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* Offset of first pixel to extract */
-int	npix;		/* Number of pixels to extract */
-double	*dvec0;		/* Vector of pixels (returned) */
+getvec( image, bitpix, bzero, bscale, pix1, npix, dvec0 )
+     char *image;               /* Image array from which to extract vector */
+     int bitpix;                /* Number of bits per pixel in image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* Offset of first pixel to extract */
+     int npix;                  /* Number of pixels to extract */
+     double *dvec0;             /* Vector of pixels (returned) */
 
 {
     short *im2;
@@ -1090,53 +1095,53 @@ double	*dvec0;		/* Vector of pixels (returned) */
     pix2 = pix1 + npix;
     dvec = dvec0;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*dvec++ = (double) *(image + ipix);
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*dvec++ = ( double ) *( image + ipix );
 	    break;
 
 	case 16:
-	    im2 = (short *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*dvec++ = (double) *(im2 + ipix);
+	    im2 = ( short * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*dvec++ = ( double ) *( im2 + ipix );
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*dvec++ = (double) *(im4 + ipix);
+	    im4 = ( int * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*dvec++ = ( double ) *( im4 + ipix );
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*dvec++ = (double) *(imu + ipix);
+	    imu = ( unsigned short * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*dvec++ = ( double ) *( imu + ipix );
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*dvec++ = (double) *(imr + ipix);
+	    imr = ( float * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*dvec++ = ( double ) *( imr + ipix );
 	    break;
 
 	case -64:
-	    imd = (double *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*dvec++ = (double) *(imd + ipix);
+	    imd = ( double * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*dvec++ = ( double ) *( imd + ipix );
 	    break;
 
-	}
+    }
 
     /* Scale data if either BZERO or BSCALE keyword has been set */
-    if (scale && (bzero != 0.0 || bscale != 1.0)) {
+    if ( scale && ( bzero != 0.0 || bscale != 1.0 ) ) {
 	dvec = dvec0;
-	for (ipix = pix1; ipix < pix2; ipix++) {
-	    *dvec = (*dvec * bscale) + bzero;
+	for ( ipix = pix1; ipix < pix2; ipix++ ) {
+	    *dvec = ( *dvec * bscale ) + bzero;
 	    dvec++;
-	    }
 	}
+    }
 
     return;
 }
@@ -1145,17 +1150,16 @@ double	*dvec0;		/* Vector of pixels (returned) */
 /* PUTVEC -- Copy pixel vector into 2D image of any numeric type */
 
 void
-putvec (image, bitpix, bzero, bscale, pix1, npix, dvec)
-
-char	*image;		/* Image into which to copy vector */
-int	bitpix;		/* Number of bits per pixel im image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* Offset of first pixel of vector in image */
-int	npix;		/* Number of pixels to copy */
-double	*dvec;		/* Vector of pixels to copy */
+putvec( image, bitpix, bzero, bscale, pix1, npix, dvec )
+     char *image;               /* Image into which to copy vector */
+     int bitpix;                /* Number of bits per pixel im image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* Offset of first pixel of vector in image */
+     int npix;                  /* Number of pixels to copy */
+     double *dvec;              /* Vector of pixels to copy */
 
 {
     short *im2;
@@ -1169,63 +1173,63 @@ double	*dvec;		/* Vector of pixels to copy */
     pix2 = pix1 + npix;
 
     /* Scale data if either BZERO or BSCALE keyword has been set */
-    if (scale && (bzero != 0.0 || bscale != 1.0)) {
-	for (ipix = pix1; ipix < pix2; ipix++) {
-	    *dp = (*dp - bzero) / bscale;
+    if ( scale && ( bzero != 0.0 || bscale != 1.0 ) ) {
+	for ( ipix = pix1; ipix < pix2; ipix++ ) {
+	    *dp = ( *dp - bzero ) / bscale;
 	    dp++;
-	    }
-	dp = dvec;
 	}
+	dp = dvec;
+    }
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*(image+ipix) = (char) *dp++;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*( image + ipix ) = ( char ) *dp++;
 	    break;
 
 	case 16:
-	    im2 = (short *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		if (*dp < 0.0)
-		    *(im2+ipix) = (short) (*dp++ - 0.5);
+	    im2 = ( short * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		if ( *dp < 0.0 )
+		    *( im2 + ipix ) = ( short ) ( *dp++ - 0.5 );
 		else
-		    *(im2+ipix) = (short) (*dp++ + 0.5);
-		}
+		    *( im2 + ipix ) = ( short ) ( *dp++ + 0.5 );
+	    }
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		if (*dp < 0.0)
-		    *(im4+ipix) = (int) (*dp++ - 0.5);
+	    im4 = ( int * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		if ( *dp < 0.0 )
+		    *( im4 + ipix ) = ( int ) ( *dp++ - 0.5 );
 		else
-		    *(im4+ipix) = (int) (*dp++ + 0.5);
-		}
+		    *( im4 + ipix ) = ( int ) ( *dp++ + 0.5 );
+	    }
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++) {
-		if (*dp < 0.0)
-		    *(imu+ipix) = (unsigned short) 0;
+	    imu = ( unsigned short * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ ) {
+		if ( *dp < 0.0 )
+		    *( imu + ipix ) = ( unsigned short ) 0;
 		else
-		    *(imu+ipix) = (unsigned short) (*dp++ + 0.5);
-		}
+		    *( imu + ipix ) = ( unsigned short ) ( *dp++ + 0.5 );
+	    }
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*(imr+ipix) = (float) *dp++;
+	    imr = ( float * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*( imr + ipix ) = ( float ) *dp++;
 	    break;
 
 	case -64:
-	    imd = (double *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
-		*(imd+ipix) = (double) *dp++;
+	    imd = ( double * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
+		*( imd + ipix ) = ( double ) *dp++;
 	    break;
-	}
+    }
     return;
 }
 
@@ -1233,19 +1237,18 @@ double	*dvec;		/* Vector of pixels to copy */
 /* FILLVEC1 -- Copy single value into a vector of any numeric type */
 
 void
-fillvec1 (image, bitpix, bzero, bscale, pix1, npix, dpix)
-
-char	*image;		/* Vector to fill */
-int	bitpix;		/* Number of bits per pixel im image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* First pixel to fill */
-int	npix;		/* Number of pixels to fill */
-double	dpix;		/* Value with which to fill pixels */
+fillvec1( image, bitpix, bzero, bscale, pix1, npix, dpix )
+     char *image;               /* Vector to fill */
+     int bitpix;                /* Number of bits per pixel im image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* First pixel to fill */
+     int npix;                  /* Number of pixels to fill */
+     double dpix;               /* Value with which to fill pixels */
 {
-    fillvec (image, bitpix, bzero, bscale, pix1-1, npix, dpix);
+    fillvec( image, bitpix, bzero, bscale, pix1 - 1, npix, dpix );
     return;
 }
 
@@ -1253,17 +1256,16 @@ double	dpix;		/* Value with which to fill pixels */
 /* FILLVEC -- Copy single value into a vector of any numeric type */
 
 void
-fillvec (image, bitpix, bzero, bscale, pix1, npix, dpix)
-
-char	*image;		/* Vector to fill */
-int	bitpix;		/* Number of bits per pixel im image */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-double  bzero;		/* Zero point for pixel scaling */
-double  bscale;		/* Scale factor for pixel scaling */
-int	pix1;		/* First pixel to fill */
-int	npix;		/* Number of pixels to fill */
-double	dpix;		/* Value with which to fill pixels */
+fillvec( image, bitpix, bzero, bscale, pix1, npix, dpix )
+     char *image;               /* Vector to fill */
+     int bitpix;                /* Number of bits per pixel im image */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     double bzero;              /* Zero point for pixel scaling */
+     double bscale;             /* Scale factor for pixel scaling */
+     int pix1;                  /* First pixel to fill */
+     int npix;                  /* Number of pixels to fill */
+     double dpix;               /* Value with which to fill pixels */
 {
     char ipc;
     short *im2, ip2;
@@ -1278,63 +1280,63 @@ double	dpix;		/* Value with which to fill pixels */
 
     /* Scale data if either BZERO or BSCALE keyword has been set */
     dp = dpix;
-    if (scale && (bzero != 0.0 || bscale != 1.0))
-	dp = (dp - bzero) / bscale;
+    if ( scale && ( bzero != 0.0 || bscale != 1.0 ) )
+	dp = ( dp - bzero ) / bscale;
 
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
-	    if (dp < 0.0)
-		ipc = (char) (dp - 0.5);
+	    if ( dp < 0.0 )
+		ipc = ( char ) ( dp - 0.5 );
 	    else
-		ipc = (char) (dp + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		ipc = ( char ) ( dp + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		image[ipix] = ipc;
 	    break;
 
 	case 16:
-	    im2 = (short *)image;
-	    if (dp < 0.0)
-		ip2 = (short) (dp - 0.5);
+	    im2 = ( short * ) image;
+	    if ( dp < 0.0 )
+		ip2 = ( short ) ( dp - 0.5 );
 	    else
-		ip2 = (short) (dp + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		ip2 = ( short ) ( dp + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		im2[ipix] = ip2;
 	    break;
 
 	case 32:
-	    im4 = (int *)image;
-	    if (dp < 0.0)
-		ip4 = (int) (dp - 0.5);
+	    im4 = ( int * ) image;
+	    if ( dp < 0.0 )
+		ip4 = ( int ) ( dp - 0.5 );
 	    else
-		ip4 = (int) (dp + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		ip4 = ( int ) ( dp + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		im4[ipix] = ip4;
 	    break;
 
 	case -16:
-	    imu = (unsigned short *)image;
-	    if (dp < 0.0)
-		ipu = (unsigned short) (dp - 0.5);
+	    imu = ( unsigned short * ) image;
+	    if ( dp < 0.0 )
+		ipu = ( unsigned short ) ( dp - 0.5 );
 	    else
-		ipu = (unsigned short) (dp + 0.5);
-	    for (ipix = pix1; ipix < pix2; ipix++)
+		ipu = ( unsigned short ) ( dp + 0.5 );
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		imu[ipix] = ipu;
 	    break;
 
 	case -32:
-	    imr = (float *)image;
-	    ipr = (float) dp;
-	    for (ipix = pix1; ipix < pix2; ipix++)
+	    imr = ( float * ) image;
+	    ipr = ( float ) dp;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		imr[ipix] = ipr;
 	    break;
 
 	case -64:
-	    imd = (double *)image;
-	    for (ipix = pix1; ipix < pix2; ipix++)
+	    imd = ( double * ) image;
+	    for ( ipix = pix1; ipix < pix2; ipix++ )
 		imd[ipix] = dp;
 	    break;
-	}
+    }
     return;
 }
 
@@ -1342,46 +1344,45 @@ double	dpix;		/* Value with which to fill pixels */
 /* IMSWAP -- Reverse bytes of any type of vector in place */
 
 void
-imswap (bitpix, string, nbytes)
-
-int	bitpix;		/* Number of bits per pixel */
-			/*  16 = short, -16 = unsigned short, 32 = int */
-			/* -32 = float, -64 = double */
-char	*string;	/* Address of starting point of bytes to swap */
-int	nbytes;		/* Number of bytes to swap */
+imswap( bitpix, string, nbytes )
+     int bitpix;                /* Number of bits per pixel */
+                        /*  16 = short, -16 = unsigned short, 32 = int */
+                        /* -32 = float, -64 = double */
+     char *string;              /* Address of starting point of bytes to swap */
+     int nbytes;                /* Number of bytes to swap */
 
 {
-    switch (bitpix) {
+    switch ( bitpix ) {
 
 	case 8:
 	    break;
 
 	case 16:
-	    if (nbytes < 2) return;
-	    imswap2 (string,nbytes);
+	    if ( nbytes < 2 ) return;
+	    imswap2( string, nbytes );
 	    break;
 
 	case 32:
-	    if (nbytes < 4) return;
-	    imswap4 (string,nbytes);
+	    if ( nbytes < 4 ) return;
+	    imswap4( string, nbytes );
 	    break;
 
 	case -16:
-	    if (nbytes < 2) return;
-	    imswap2 (string,nbytes);
+	    if ( nbytes < 2 ) return;
+	    imswap2( string, nbytes );
 	    break;
 
 	case -32:
-	    if (nbytes < 4) return;
-	    imswap4 (string,nbytes);
+	    if ( nbytes < 4 ) return;
+	    imswap4( string, nbytes );
 	    break;
 
 	case -64:
-	    if (nbytes < 8) return;
-	    imswap8 (string,nbytes);
+	    if ( nbytes < 8 ) return;
+	    imswap8( string, nbytes );
 	    break;
 
-	}
+    }
     return;
 }
 
@@ -1389,23 +1390,21 @@ int	nbytes;		/* Number of bytes to swap */
 /* IMSWAP2 -- Swap bytes in string in place */
 
 void
-imswap2 (string,nbytes)
-
-
-char *string;	/* Address of starting point of bytes to swap */
-int nbytes;	/* Number of bytes to swap */
+imswap2( string, nbytes )
+     char *string;              /* Address of starting point of bytes to swap */
+     int nbytes;                /* Number of bytes to swap */
 
 {
     char *sbyte, temp, *slast;
 
     slast = string + nbytes;
     sbyte = string;
-    while (sbyte < slast) {
+    while ( sbyte < slast ) {
 	temp = sbyte[0];
 	sbyte[0] = sbyte[1];
 	sbyte[1] = temp;
-	sbyte= sbyte + 2;
-	}
+	sbyte = sbyte + 2;
+    }
     return;
 }
 
@@ -1413,10 +1412,9 @@ int nbytes;	/* Number of bytes to swap */
 /* IMSWAP4 -- Reverse bytes of Integer*4 or Real*4 vector in place */
 
 void
-imswap4 (string,nbytes)
-
-char *string;	/* Address of Integer*4 or Real*4 vector */
-int nbytes;	/* Number of bytes to reverse */
+imswap4( string, nbytes )
+     char *string;              /* Address of Integer*4 or Real*4 vector */
+     int nbytes;                /* Number of bytes to reverse */
 
 {
     char *sbyte, *slast;
@@ -1424,7 +1422,7 @@ int nbytes;	/* Number of bytes to reverse */
 
     slast = string + nbytes;
     sbyte = string;
-    while (sbyte < slast) {
+    while ( sbyte < slast ) {
 	temp3 = sbyte[0];
 	temp2 = sbyte[1];
 	temp1 = sbyte[2];
@@ -1434,7 +1432,7 @@ int nbytes;	/* Number of bytes to reverse */
 	sbyte[2] = temp2;
 	sbyte[3] = temp3;
 	sbyte = sbyte + 4;
-	}
+    }
 
     return;
 }
@@ -1443,10 +1441,9 @@ int nbytes;	/* Number of bytes to reverse */
 /* IMSWAP8 -- Reverse bytes of Real*8 vector in place */
 
 void
-imswap8 (string,nbytes)
-
-char *string;	/* Address of Real*8 vector */
-int nbytes;	/* Number of bytes to reverse */
+imswap8( string, nbytes )
+     char *string;              /* Address of Real*8 vector */
+     int nbytes;                /* Number of bytes to reverse */
 
 {
     char *sbyte, *slast;
@@ -1454,7 +1451,7 @@ int nbytes;	/* Number of bytes to reverse */
 
     slast = string + nbytes;
     sbyte = string;
-    while (sbyte < slast) {
+    while ( sbyte < slast ) {
 	temp[7] = sbyte[0];
 	temp[6] = sbyte[1];
 	temp[5] = sbyte[2];
@@ -1472,7 +1469,7 @@ int nbytes;	/* Number of bytes to reverse */
 	sbyte[6] = temp[6];
 	sbyte[7] = temp[7];
 	sbyte = sbyte + 8;
-	}
+    }
     return;
 }
 
@@ -1480,18 +1477,16 @@ int nbytes;	/* Number of bytes to reverse */
 		1 if little-endian(PC,Alpha) */
 
 int
-imswapped ()
-
-{
+imswapped(  ) {
     char *ctest;
     int itest;
 
     itest = 1;
-    ctest = (char *)&itest;
-    if (*ctest)
-	return (1);
+    ctest = ( char * ) &itest;
+    if ( *ctest )
+	return ( 1 );
     else
-	return (0);
+	return ( 0 );
 }
 
 /* Apr 17 1996	New file

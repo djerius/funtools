@@ -393,933 +393,991 @@
 
 /* Map error number to error message for each function. */
 const char *wcsset_errmsg[] = {
-   0,
-   "Inconsistent or unrecognized coordinate axis types"};
+    0,
+    "Inconsistent or unrecognized coordinate axis types"
+};
 
 const char *wcsfwd_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
-   "Invalid projection parameters",
-   "Invalid world coordinate",
-   "Invalid linear transformation parameters"};
+    0,
+    "Invalid coordinate transformation parameters",
+    "Invalid projection parameters",
+    "Invalid world coordinate",
+    "Invalid linear transformation parameters"
+};
 
 const char *wcsrev_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
-   "Invalid projection parameters",
-   "Invalid pixel coordinate",
-   "Invalid linear transformation parameters"};
+    0,
+    "Invalid coordinate transformation parameters",
+    "Invalid projection parameters",
+    "Invalid pixel coordinate",
+    "Invalid linear transformation parameters"
+};
 
 const char *wcsmix_errmsg[] = {
-   0,
-   "Invalid coordinate transformation parameters",
-   "Invalid projection parameters",
-   "Coordinate transformation error",
-   "Invalid linear transformation parameters",
-   "No solution found in the specified interval"};
+    0,
+    "Invalid coordinate transformation parameters",
+    "Invalid projection parameters",
+    "Coordinate transformation error",
+    "Invalid linear transformation parameters",
+    "No solution found in the specified interval"
+};
 
 #define signb(X) ((X) < 0.0 ? 1 : 0)
 
 int
-wcsset (naxis, ctype, wcs)
-
-const int naxis;
-const char ctype[][16];
-struct wcsprm *wcs;
+wcsset( naxis, ctype, wcs )
+     const int naxis;
+     const char ctype[][16];
+     struct wcsprm *wcs;
 
 {
-   int  nalias = 2;
-   char aliases [2][4] = {"NCP", "GLS"};
+    int nalias = 2;
+    char aliases[2][4] = { "NCP", "GLS" };
 
-   int j, k;
-   int *ndx = NULL;
-   char requir[16];
+    int j, k;
+    int *ndx = NULL;
+    char requir[16];
 
-   strcpy(wcs->pcode, "");
-   strcpy(requir, "");
-   wcs->lng = -1;
-   wcs->lat = -1;
-   wcs->cubeface = -1;
+    strcpy( wcs->pcode, "" );
+    strcpy( requir, "" );
+    wcs->lng = -1;
+    wcs->lat = -1;
+    wcs->cubeface = -1;
 
-   for (j = 0; j < naxis; j++) {
-      if (ctype[j][4] != '-') {
-         if (strcmp(ctype[j], "CUBEFACE") == 0) {
-            if (wcs->cubeface == -1) {
-               wcs->cubeface = j;
-            } else {
-               /* Multiple CUBEFACE axes! */
-               return 1;
-            }
-         }
-         continue;
-      }
+    for ( j = 0; j < naxis; j++ ) {
+	if ( ctype[j][4] != '-' ) {
+	    if ( strcmp( ctype[j], "CUBEFACE" ) == 0 ) {
+		if ( wcs->cubeface == -1 ) {
+		    wcs->cubeface = j;
+		}
+		else {
+		    /* Multiple CUBEFACE axes! */
+		    return 1;
+		}
+	    }
+	    continue;
+	}
 
-      /* Got an axis qualifier, is it a recognized WCS projection? */
-      for (k = 0; k < npcode; k++) {
-         if (strncmp(&ctype[j][5], pcodes[k], 3) == 0) break;
-      }
+	/* Got an axis qualifier, is it a recognized WCS projection? */
+	for ( k = 0; k < npcode; k++ ) {
+	    if ( strncmp( &ctype[j][5], pcodes[k], 3 ) == 0 ) break;
+	}
 
-      if (k == npcode) {
-         /* Maybe it's a projection alias. */
-         for (k = 0; k < nalias; k++) {
-            if (strncmp(&ctype[j][5], aliases[k], 3) == 0) break;
-         }
+	if ( k == npcode ) {
+	    /* Maybe it's a projection alias. */
+	    for ( k = 0; k < nalias; k++ ) {
+		if ( strncmp( &ctype[j][5], aliases[k], 3 ) == 0 ) break;
+	    }
 
-         /* Not recognized. */
-         if (k == nalias) {
-            continue;
-         }
-      }
+	    /* Not recognized. */
+	    if ( k == nalias ) {
+		continue;
+	    }
+	}
 
-      /* Parse the celestial axis type. */
-      if (strcmp(wcs->pcode, "") == 0) {
-         sprintf(wcs->pcode, "%.3s", &ctype[j][5]);
+	/* Parse the celestial axis type. */
+	if ( strcmp( wcs->pcode, "" ) == 0 ) {
+	    sprintf( wcs->pcode, "%.3s", &ctype[j][5] );
 
-         if (strncmp(ctype[j], "RA--", 4) == 0) {
-            wcs->lng = j;
-            strcpy(wcs->lngtyp, "RA");
-            strcpy(wcs->lattyp, "DEC");
-            ndx = &wcs->lat;
-            sprintf(requir, "DEC--%s", wcs->pcode);
-         } else if (strncmp(ctype[j], "DEC-", 4) == 0) {
-            wcs->lat = j;
-            strcpy(wcs->lngtyp, "RA");
-            strcpy(wcs->lattyp, "DEC");
-            ndx = &wcs->lng;
-            sprintf(requir, "RA---%s", wcs->pcode);
-         } else if (strncmp(&ctype[j][1], "LON", 3) == 0) {
-            wcs->lng = j;
-            sprintf(wcs->lngtyp, "%cLON", ctype[j][0]);
-            sprintf(wcs->lattyp, "%cLAT", ctype[j][0]);
-            ndx = &wcs->lat;
-            sprintf(requir, "%s-%s", wcs->lattyp, wcs->pcode);
-         } else if (strncmp(&ctype[j][1], "LAT", 3) == 0) {
-            wcs->lat = j;
-            sprintf(wcs->lngtyp, "%cLON", ctype[j][0]);
-            sprintf(wcs->lattyp, "%cLAT", ctype[j][0]);
-            ndx = &wcs->lng;
-            sprintf(requir, "%s-%s", wcs->lngtyp, wcs->pcode);
-         } else if (strncmp(&ctype[j][2], "LN", 2) == 0) {
-            wcs->lng = j;
-            sprintf(wcs->lngtyp, "%c%cLN", ctype[j][0], ctype[j][1]);
-            sprintf(wcs->lattyp, "%c%cLT", ctype[j][0], ctype[j][1]);
-            ndx = &wcs->lat;
-            sprintf(requir, "%s-%s", wcs->lattyp, wcs->pcode);
-         } else if (strncmp(&ctype[j][2], "LT", 2) == 0) {
-            wcs->lat = j;
-            sprintf(wcs->lngtyp, "%c%cLN", ctype[j][0], ctype[j][1]);
-            sprintf(wcs->lattyp, "%c%cLT", ctype[j][0], ctype[j][1]);
-            ndx = &wcs->lng;
-            sprintf(requir, "%s-%s", wcs->lngtyp, wcs->pcode);
-         } else {
-            /* Unrecognized celestial type. */
-            return 1;
-         }
-      } else {
-         if (strncmp(ctype[j], requir, 8) != 0) {
-            /* Inconsistent projection types. */
-            return 1;
-         }
+	    if ( strncmp( ctype[j], "RA--", 4 ) == 0 ) {
+		wcs->lng = j;
+		strcpy( wcs->lngtyp, "RA" );
+		strcpy( wcs->lattyp, "DEC" );
+		ndx = &wcs->lat;
+		sprintf( requir, "DEC--%s", wcs->pcode );
+	    }
+	    else if ( strncmp( ctype[j], "DEC-", 4 ) == 0 ) {
+		wcs->lat = j;
+		strcpy( wcs->lngtyp, "RA" );
+		strcpy( wcs->lattyp, "DEC" );
+		ndx = &wcs->lng;
+		sprintf( requir, "RA---%s", wcs->pcode );
+	    }
+	    else if ( strncmp( &ctype[j][1], "LON", 3 ) == 0 ) {
+		wcs->lng = j;
+		sprintf( wcs->lngtyp, "%cLON", ctype[j][0] );
+		sprintf( wcs->lattyp, "%cLAT", ctype[j][0] );
+		ndx = &wcs->lat;
+		sprintf( requir, "%s-%s", wcs->lattyp, wcs->pcode );
+	    }
+	    else if ( strncmp( &ctype[j][1], "LAT", 3 ) == 0 ) {
+		wcs->lat = j;
+		sprintf( wcs->lngtyp, "%cLON", ctype[j][0] );
+		sprintf( wcs->lattyp, "%cLAT", ctype[j][0] );
+		ndx = &wcs->lng;
+		sprintf( requir, "%s-%s", wcs->lngtyp, wcs->pcode );
+	    }
+	    else if ( strncmp( &ctype[j][2], "LN", 2 ) == 0 ) {
+		wcs->lng = j;
+		sprintf( wcs->lngtyp, "%c%cLN", ctype[j][0], ctype[j][1] );
+		sprintf( wcs->lattyp, "%c%cLT", ctype[j][0], ctype[j][1] );
+		ndx = &wcs->lat;
+		sprintf( requir, "%s-%s", wcs->lattyp, wcs->pcode );
+	    }
+	    else if ( strncmp( &ctype[j][2], "LT", 2 ) == 0 ) {
+		wcs->lat = j;
+		sprintf( wcs->lngtyp, "%c%cLN", ctype[j][0], ctype[j][1] );
+		sprintf( wcs->lattyp, "%c%cLT", ctype[j][0], ctype[j][1] );
+		ndx = &wcs->lng;
+		sprintf( requir, "%s-%s", wcs->lngtyp, wcs->pcode );
+	    }
+	    else {
+		/* Unrecognized celestial type. */
+		return 1;
+	    }
+	}
+	else {
+	    if ( strncmp( ctype[j], requir, 8 ) != 0 ) {
+		/* Inconsistent projection types. */
+		return 1;
+	    }
 
-	if (ndx == NULL)
-	    return 1;
-         *ndx = j;
-         strcpy(requir, "");
-      }
-   }
+	    if ( ndx == NULL )
+		return 1;
+	    *ndx = j;
+	    strcpy( requir, "" );
+	}
+    }
 
-   if (strcmp(requir, "")) {
-      /* Unmatched celestial axis. */
-      return 1;
-   }
+    if ( strcmp( requir, "" ) ) {
+	/* Unmatched celestial axis. */
+	return 1;
+    }
 
-   /* Do simple alias translations. */
-   if (strncmp(wcs->pcode, "GLS", 3) == 0) {
-      strcpy(wcs->pcode, "SFL");
-   }
+    /* Do simple alias translations. */
+    if ( strncmp( wcs->pcode, "GLS", 3 ) == 0 ) {
+	strcpy( wcs->pcode, "SFL" );
+    }
 
-   if (strcmp(wcs->pcode, "")) {
-      wcs->flag = WCSSET;
-   } else {
-      /* Signal for no celestial axis pair. */
-      wcs->flag = 999;
-   }
+    if ( strcmp( wcs->pcode, "" ) ) {
+	wcs->flag = WCSSET;
+    }
+    else {
+	/* Signal for no celestial axis pair. */
+	wcs->flag = 999;
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
 int
-wcsfwd(ctype, wcs, world, crval, cel, phi, theta, prj, imgcrd, lin, pixcrd)
-
-const char ctype[][16];
-struct wcsprm* wcs;
-const double world[];
-const double crval[];
-struct celprm *cel;
-double *phi, *theta;
-struct prjprm *prj;
-double imgcrd[];
-struct linprm *lin;
-double pixcrd[];
+wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj, imgcrd, lin, pixcrd )
+     const char ctype[][16];
+     struct wcsprm *wcs;
+     const double world[];
+     const double crval[];
+     struct celprm *cel;
+     double *phi, *theta;
+     struct prjprm *prj;
+     double imgcrd[];
+     struct linprm *lin;
+     double pixcrd[];
 
 {
-   int    err, j;
-   double offset;
+    int err, j;
+    double offset;
 
-   /* Initialize if required. */
-   if (wcs->flag != WCSSET) {
-      if (wcsset(lin->naxis, ctype, wcs)) return 1;
-   }
+    /* Initialize if required. */
+    if ( wcs->flag != WCSSET ) {
+	if ( wcsset( lin->naxis, ctype, wcs ) ) return 1;
+    }
 
-   /* Convert to relative physical coordinates. */
-   for (j = 0; j < lin->naxis; j++) {
-      if (j == wcs->lng) continue;
-      if (j == wcs->lat) continue;
-      imgcrd[j] = world[j] - crval[j];
-   }
+    /* Convert to relative physical coordinates. */
+    for ( j = 0; j < lin->naxis; j++ ) {
+	if ( j == wcs->lng ) continue;
+	if ( j == wcs->lat ) continue;
+	imgcrd[j] = world[j] - crval[j];
+    }
 
-   if (wcs->flag != 999) {
-      /* Compute projected coordinates. */
-      if (strcmp(wcs->pcode, "NCP") == 0) {
-         /* Convert NCP to SIN. */
-         if (cel->ref[1] == 0.0) {
-            return 2;
-         }
+    if ( wcs->flag != 999 ) {
+	/* Compute projected coordinates. */
+	if ( strcmp( wcs->pcode, "NCP" ) == 0 ) {
+	    /* Convert NCP to SIN. */
+	    if ( cel->ref[1] == 0.0 ) {
+		return 2;
+	    }
 
-         strcpy(wcs->pcode, "SIN");
-         prj->p[1] = 0.0;
-         prj->p[2] = cosdeg (cel->ref[1])/sindeg (cel->ref[1]);
-         prj->flag = (prj->flag < 0) ? -1 : 0;
-      }
+	    strcpy( wcs->pcode, "SIN" );
+	    prj->p[1] = 0.0;
+	    prj->p[2] = cosdeg( cel->ref[1] ) / sindeg( cel->ref[1] );
+	    prj->flag = ( prj->flag < 0 ) ? -1 : 0;
+	}
 
-      if ((err = celfwd(wcs->pcode, world[wcs->lng], world[wcs->lat], cel,
-                   phi, theta, prj, &imgcrd[wcs->lng], &imgcrd[wcs->lat]))) {
-         return err;
-      }
+	if ( ( err =
+	       celfwd( wcs->pcode, world[wcs->lng], world[wcs->lat], cel, phi,
+	               theta, prj, &imgcrd[wcs->lng],
+	               &imgcrd[wcs->lat] ) ) ) {
+	    return err;
+	}
 
-      /* Do we have a CUBEFACE axis? */
-      if (wcs->cubeface != -1) {
-         /* Separation between faces. */
-         if (prj->r0 == 0.0) {
-            offset = 90.0;
-         } else {
-            offset = prj->r0*PI/2.0;
-         }
+	/* Do we have a CUBEFACE axis? */
+	if ( wcs->cubeface != -1 ) {
+	    /* Separation between faces. */
+	    if ( prj->r0 == 0.0 ) {
+		offset = 90.0;
+	    }
+	    else {
+		offset = prj->r0 * PI / 2.0;
+	    }
 
-         /* Stack faces in a cube. */
-         if (imgcrd[wcs->lat] < -0.5*offset) {
-            imgcrd[wcs->lat] += offset;
-            imgcrd[wcs->cubeface] = 5.0;
-         } else if (imgcrd[wcs->lat] > 0.5*offset) {
-            imgcrd[wcs->lat] -= offset;
-            imgcrd[wcs->cubeface] = 0.0;
-         } else if (imgcrd[wcs->lng] > 2.5*offset) {
-            imgcrd[wcs->lng] -= 3.0*offset;
-            imgcrd[wcs->cubeface] = 4.0;
-         } else if (imgcrd[wcs->lng] > 1.5*offset) {
-            imgcrd[wcs->lng] -= 2.0*offset;
-            imgcrd[wcs->cubeface] = 3.0;
-         } else if (imgcrd[wcs->lng] > 0.5*offset) {
-            imgcrd[wcs->lng] -= offset;
-            imgcrd[wcs->cubeface] = 2.0;
-         } else {
-            imgcrd[wcs->cubeface] = 1.0;
-         }
-      }
-   }
+	    /* Stack faces in a cube. */
+	    if ( imgcrd[wcs->lat] < -0.5 * offset ) {
+		imgcrd[wcs->lat] += offset;
+		imgcrd[wcs->cubeface] = 5.0;
+	    }
+	    else if ( imgcrd[wcs->lat] > 0.5 * offset ) {
+		imgcrd[wcs->lat] -= offset;
+		imgcrd[wcs->cubeface] = 0.0;
+	    }
+	    else if ( imgcrd[wcs->lng] > 2.5 * offset ) {
+		imgcrd[wcs->lng] -= 3.0 * offset;
+		imgcrd[wcs->cubeface] = 4.0;
+	    }
+	    else if ( imgcrd[wcs->lng] > 1.5 * offset ) {
+		imgcrd[wcs->lng] -= 2.0 * offset;
+		imgcrd[wcs->cubeface] = 3.0;
+	    }
+	    else if ( imgcrd[wcs->lng] > 0.5 * offset ) {
+		imgcrd[wcs->lng] -= offset;
+		imgcrd[wcs->cubeface] = 2.0;
+	    }
+	    else {
+		imgcrd[wcs->cubeface] = 1.0;
+	    }
+	}
+    }
 
-   /* Apply forward linear transformation. */
-   if (linfwd(imgcrd, lin, pixcrd)) {
-      return 4;
-   }
+    /* Apply forward linear transformation. */
+    if ( linfwd( imgcrd, lin, pixcrd ) ) {
+	return 4;
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
 int
-wcsrev(ctype, wcs, pixcrd, lin, imgcrd, prj, phi, theta, crval, cel, world)
-
-const char ctype[][16];
-struct wcsprm *wcs;
-const double pixcrd[];
-struct linprm *lin;
-double imgcrd[];
-struct prjprm *prj;
-double *phi, *theta;
-const double crval[];
-struct celprm *cel;
-double world[];
+wcsrev( ctype, wcs, pixcrd, lin, imgcrd, prj, phi, theta, crval, cel, world )
+     const char ctype[][16];
+     struct wcsprm *wcs;
+     const double pixcrd[];
+     struct linprm *lin;
+     double imgcrd[];
+     struct prjprm *prj;
+     double *phi, *theta;
+     const double crval[];
+     struct celprm *cel;
+     double world[];
 
 {
-   int    err, face, j;
-   double offset;
+    int err, face, j;
+    double offset;
 
-   /* Initialize if required. */
-   if (wcs->flag != WCSSET) {
-      if (wcsset(lin->naxis, ctype, wcs)) return 1;
-   }
+    /* Initialize if required. */
+    if ( wcs->flag != WCSSET ) {
+	if ( wcsset( lin->naxis, ctype, wcs ) ) return 1;
+    }
 
-   /* Apply reverse linear transformation. */
-   if (linrev(pixcrd, lin, imgcrd)) {
-      return 4;
-   }
+    /* Apply reverse linear transformation. */
+    if ( linrev( pixcrd, lin, imgcrd ) ) {
+	return 4;
+    }
 
-   /* Convert to world coordinates. */
-   for (j = 0; j < lin->naxis; j++) {
-      if (j == wcs->lng) continue;
-      if (j == wcs->lat) continue;
-      world[j] = imgcrd[j] + crval[j];
-   }
+    /* Convert to world coordinates. */
+    for ( j = 0; j < lin->naxis; j++ ) {
+	if ( j == wcs->lng ) continue;
+	if ( j == wcs->lat ) continue;
+	world[j] = imgcrd[j] + crval[j];
+    }
 
 
-   if (wcs->flag != 999) {
-      /* Do we have a CUBEFACE axis? */
-      if (wcs->cubeface != -1) {
-         face = (int)(imgcrd[wcs->cubeface] + 0.5);
-         if (fabs(imgcrd[wcs->cubeface]-face) > 1e-10) {
-            return 3;
-         }
+    if ( wcs->flag != 999 ) {
+	/* Do we have a CUBEFACE axis? */
+	if ( wcs->cubeface != -1 ) {
+	    face = ( int ) ( imgcrd[wcs->cubeface] + 0.5 );
+	    if ( fabs( imgcrd[wcs->cubeface] - face ) > 1e-10 ) {
+		return 3;
+	    }
 
-         /* Separation between faces. */
-         if (prj->r0 == 0.0) {
-            offset = 90.0;
-         } else {
-            offset = prj->r0*PI/2.0;
-         }
+	    /* Separation between faces. */
+	    if ( prj->r0 == 0.0 ) {
+		offset = 90.0;
+	    }
+	    else {
+		offset = prj->r0 * PI / 2.0;
+	    }
 
-         /* Lay out faces in a plane. */
-         switch (face) {
-         case 0:
-            imgcrd[wcs->lat] += offset;
-            break;
-         case 1:
-            break;
-         case 2:
-            imgcrd[wcs->lng] += offset;
-            break;
-         case 3:
-            imgcrd[wcs->lng] += offset*2;
-            break;
-         case 4:
-            imgcrd[wcs->lng] += offset*3;
-            break;
-         case 5:
-            imgcrd[wcs->lat] -= offset;
-            break;
-         default:
-            return 3;
-         }
-      }
+	    /* Lay out faces in a plane. */
+	    switch ( face ) {
+		case 0:
+		    imgcrd[wcs->lat] += offset;
+		    break;
+		case 1:
+		    break;
+		case 2:
+		    imgcrd[wcs->lng] += offset;
+		    break;
+		case 3:
+		    imgcrd[wcs->lng] += offset * 2;
+		    break;
+		case 4:
+		    imgcrd[wcs->lng] += offset * 3;
+		    break;
+		case 5:
+		    imgcrd[wcs->lat] -= offset;
+		    break;
+		default:
+		    return 3;
+	    }
+	}
 
-      /* Compute celestial coordinates. */
-      if (strcmp(wcs->pcode, "NCP") == 0) {
-         /* Convert NCP to SIN. */
-         if (cel->ref[1] == 0.0) {
-            return 2;
-         }
+	/* Compute celestial coordinates. */
+	if ( strcmp( wcs->pcode, "NCP" ) == 0 ) {
+	    /* Convert NCP to SIN. */
+	    if ( cel->ref[1] == 0.0 ) {
+		return 2;
+	    }
 
-         strcpy(wcs->pcode, "SIN");
-         prj->p[1] = 0.0;
-         prj->p[2] = cosdeg (cel->ref[1])/sindeg (cel->ref[1]);
-         prj->flag = (prj->flag < 0) ? -1 : 0;
-      }
+	    strcpy( wcs->pcode, "SIN" );
+	    prj->p[1] = 0.0;
+	    prj->p[2] = cosdeg( cel->ref[1] ) / sindeg( cel->ref[1] );
+	    prj->flag = ( prj->flag < 0 ) ? -1 : 0;
+	}
 
-      if ((err = celrev(wcs->pcode, imgcrd[wcs->lng], imgcrd[wcs->lat], prj,
-                   phi, theta, cel, &world[wcs->lng], &world[wcs->lat]))) {
-         return err;
-      }
-   }
+	if ( ( err =
+	       celrev( wcs->pcode, imgcrd[wcs->lng], imgcrd[wcs->lat], prj,
+	               phi, theta, cel, &world[wcs->lng],
+	               &world[wcs->lat] ) ) ) {
+	    return err;
+	}
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
 int
-wcsmix(ctype, wcs, mixpix, mixcel, vspan, vstep, viter, world, crval, cel,
-           phi, theta, prj, imgcrd, lin, pixcrd)
-
-const char ctype[][16];
-struct wcsprm *wcs;
-const int mixpix, mixcel;
-const double vspan[2], vstep;
-int viter;
-double world[];
-const double crval[];
-struct celprm *cel;
-double *phi, *theta;
-struct prjprm *prj;
-double imgcrd[];
-struct linprm *lin;
-double pixcrd[];
+wcsmix( ctype, wcs, mixpix, mixcel, vspan, vstep, viter, world, crval, cel,
+        phi, theta, prj, imgcrd, lin, pixcrd )
+     const char ctype[][16];
+     struct wcsprm *wcs;
+     const int mixpix, mixcel;
+     const double vspan[2], vstep;
+     int viter;
+     double world[];
+     const double crval[];
+     struct celprm *cel;
+     double *phi, *theta;
+     struct prjprm *prj;
+     double imgcrd[];
+     struct linprm *lin;
+     double pixcrd[];
 
 {
-   const int niter = 60;
-   int    crossed, err, istep, iter, j, k, nstep, retry;
-   const double tol  = 1.0e-10;
-   const double tol2 = 100.0*tol;
-   double lambda, span[2], step;
-   double pixmix;
-   double dlng, lng, lng0, lng0m, lng1, lng1m;
-   double dlat, lat, lat0, lat0m, lat1, lat1m;
-   double d, d0, d0m, d1, d1m;
-   double dx = 0.0;
-   double dabs, dmin, lmin;
-   double dphi, phi0, phi1;
-   struct celprm cel0;
-
-   /* Initialize if required. */
-   if (wcs->flag != WCSSET) {
-      if (wcsset(lin->naxis, ctype, wcs)) return 1;
-   }
-
-   /* Check vspan. */
-   if (vspan[0] <= vspan[1]) {
-      span[0] = vspan[0];
-      span[1] = vspan[1];
-   } else {
-      /* Swap them. */
-      span[0] = vspan[1];
-      span[1] = vspan[0];
-   }
-
-   /* Check vstep. */
-   step = fabs(vstep);
-   if (step == 0.0) {
-      step = (span[1] - span[0])/10.0;
-      if (step > 1.0 || step == 0.0) step = 1.0;
-   }
-
-   /* Check viter. */
-   nstep = viter;
-   if (nstep < 5) {
-      nstep = 5;
-   } else if (nstep > 10) {
-      nstep = 10;
-   }
-
-   /* Given pixel element. */
-   pixmix = pixcrd[mixpix];
-
-   /* Iterate on the step size. */
-   for (istep = 0; istep <= nstep; istep++) {
-      if (istep) step /= 2.0;
-
-      /* Iterate on the sky coordinate between the specified range. */
-      if (mixcel == 1) {
-         /* Celestial longitude is given. */
-
-         /* Check whether the solution interval is a crossing interval. */
-         lat0 = span[0];
-         world[wcs->lat] = lat0;
-         if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta, prj,
-                          imgcrd, lin, pixcrd))) {
-            return err;
-         }
-         d0 = pixcrd[mixpix] - pixmix;
-
-         dabs = fabs(d0);
-         if (dabs < tol) return 0;
-
-         lat1 = span[1];
-         world[wcs->lat] = lat1;
-         if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta, prj,
-                          imgcrd, lin, pixcrd))) {
-            return err;
-         }
-         d1 = pixcrd[mixpix] - pixmix;
-
-         dabs = fabs(d1);
-         if (dabs < tol) return 0;
-
-         lmin = lat1;
-         dmin = dabs;
-
-         /* Check for a crossing point. */
-         if (signb(d0) != signb(d1)) {
-            crossed = 1;
-            dx = d1;
-         } else {
-            crossed = 0;
-            lat0 = span[1];
-         }
-
-         for (retry = 0; retry < 4; retry++) {
-            /* Refine the solution interval. */
-            while (lat0 > span[0]) {
-               lat0 -= step;
-               if (lat0 < span[0]) lat0 = span[0];
-               world[wcs->lat] = lat0;
-               if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                prj, imgcrd, lin, pixcrd))) {
-                  return err;
-               }
-               d0 = pixcrd[mixpix] - pixmix;
-
-               /* Check for a solution. */
-               dabs = fabs(d0);
-               if (dabs < tol) return 0;
-
-               /* Record the point of closest approach. */
-               if (dabs < dmin) {
-                  lmin = lat0;
-                  dmin = dabs;
-               }
-
-               /* Check for a crossing point. */
-               if (signb(d0) != signb(d1)) {
-                  crossed = 2;
-                  dx = d0;
-                  break;
-               }
-
-               /* Advance to the next subinterval. */
-               lat1 = lat0;
-               d1 = d0;
-            }
-
-            if (crossed) {
-               /* A crossing point was found. */
-               for (iter = 0; iter < niter; iter++) {
-                  /* Use regula falsi division of the interval. */
-                  lambda = d0/(d0-d1);
-                  if (lambda < 0.1) {
-                     lambda = 0.1;
-                  } else if (lambda > 0.9) {
-                     lambda = 0.9;
-                  }
-
-                  dlat = lat1 - lat0;
-                  lat = lat0 + lambda*dlat;
-                  world[wcs->lat] = lat;
-                  if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                   prj, imgcrd, lin, pixcrd))) {
-                     return err;
-                  }
-
-                  /* Check for a solution. */
-                  d = pixcrd[mixpix] - pixmix;
-                  dabs = fabs(d);
-                  if (dabs < tol) return 0;
-
-                  if (dlat < tol) {
-                     /* An artifact of numerical imprecision. */
-                     if (dabs < tol2) return 0;
-
-                     /* Must be a discontinuity. */
-                     break;
-                  }
-
-                  /* Record the point of closest approach. */
-                  if (dabs < dmin) {
-                     lmin = lat;
-                     dmin = dabs;
-                  }
-
-                  if (signb(d0) == signb(d)) {
-                     lat0 = lat;
-                     d0 = d;
-                  } else {
-                     lat1 = lat;
-                     d1 = d;
-                  }
-               }
-
-               /* No convergence, must have been a discontinuity. */
-               if (crossed == 1) lat0 = span[1];
-               lat1 = lat0;
-               d1 = dx;
-               crossed = 0;
-
-            } else {
-               /* No crossing point; look for a tangent point. */
-               if (lmin == span[0]) break;
-               if (lmin == span[1]) break;
-
-               lat = lmin;
-               lat0 = lat - step;
-               if (lat0 < span[0]) lat0 = span[0];
-               lat1 = lat + step;
-               if (lat1 > span[1]) lat1 = span[1];
-
-               world[wcs->lat] = lat0;
-               if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                prj, imgcrd, lin, pixcrd))) {
-                  return err;
-               }
-               d0 = fabs(pixcrd[mixpix] - pixmix);
-
-               d  = dmin;
-
-               world[wcs->lat] = lat1;
-               if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                prj, imgcrd, lin, pixcrd))) {
-                  return err;
-               }
-               d1 = fabs(pixcrd[mixpix] - pixmix);
-
-               for (iter = 0; iter < niter; iter++) {
-                  lat0m = (lat0 + lat)/2.0;
-                  world[wcs->lat] = lat0m;
-                  if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                   prj, imgcrd, lin, pixcrd))) {
-                     return err;
-                  }
-                  d0m = fabs(pixcrd[mixpix] - pixmix);
-
-                  if (d0m < tol) return 0;
-
-                  lat1m = (lat1 + lat)/2.0;
-                  world[wcs->lat] = lat1m;
-                  if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                   prj, imgcrd, lin, pixcrd))) {
-                     return err;
-                  }
-                  d1m = fabs(pixcrd[mixpix] - pixmix);
-
-                  if (d1m < tol) return 0;
-
-                  if (d0m < d && d0m <= d1m) {
-                     lat1 = lat;
-                     d1   = d;
-                     lat  = lat0m;
-                     d    = d0m;
-                  } else if (d1m < d) {
-                     lat0 = lat;
-                     d0   = d;
-                     lat  = lat1m;
-                     d    = d1m;
-                  } else {
-                     lat0 = lat0m;
-                     d0   = d0m;
-                     lat1 = lat1m;
-                     d1   = d1m;
-                  }
-               }
-            }
-         }
-
-      } else {
-         /* Celestial latitude is given. */
-
-         /* Check whether the solution interval is a crossing interval. */
-         lng0 = span[0];
-         world[wcs->lng] = lng0;
-         if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta, prj,
-                          imgcrd, lin, pixcrd))) {
-            return err;
-         }
-         d0 = pixcrd[mixpix] - pixmix;
-
-         dabs = fabs(d0);
-         if (dabs < tol) return 0;
-
-         lng1 = span[1];
-         world[wcs->lng] = lng1;
-         if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta, prj,
-                          imgcrd, lin, pixcrd))) {
-            return err;
-         }
-         d1 = pixcrd[mixpix] - pixmix;
-
-         dabs = fabs(d1);
-         if (dabs < tol) return 0;
-         lmin = lng1;
-         dmin = dabs;
-
-         /* Check for a crossing point. */
-         if (signb(d0) != signb(d1)) {
-            crossed = 1;
-            dx = d1;
-         } else {
-            crossed = 0;
-            lng0 = span[1];
-         }
-
-         for (retry = 0; retry < 4; retry++) {
-            /* Refine the solution interval. */
-            while (lng0 > span[0]) {
-               lng0 -= step;
-               if (lng0 < span[0]) lng0 = span[0];
-               world[wcs->lng] = lng0;
-               if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                          prj, imgcrd, lin, pixcrd))) {
-                  return err;
-               }
-               d0 = pixcrd[mixpix] - pixmix;
-
-               /* Check for a solution. */
-               dabs = fabs(d0);
-               if (dabs < tol) return 0;
-
-               /* Record the point of closest approach. */
-               if (dabs < dmin) {
-                  lmin = lng0;
-                  dmin = dabs;
-               }
-
-               /* Check for a crossing point. */
-               if (signb(d0) != signb(d1)) {
-                  crossed = 2;
-                  dx = d0;
-                  break;
-               }
-
-               /* Advance to the next subinterval. */
-               lng1 = lng0;
-               d1 = d0;
-            }
-
-            if (crossed) {
-               /* A crossing point was found. */
-               for (iter = 0; iter < niter; iter++) {
-                  /* Use regula falsi division of the interval. */
-                  lambda = d0/(d0-d1);
-                  if (lambda < 0.1) {
-                     lambda = 0.1;
-                  } else if (lambda > 0.9) {
-                     lambda = 0.9;
-                  }
-
-                  dlng = lng1 - lng0;
-                  lng = lng0 + lambda*dlng;
-                  world[wcs->lng] = lng;
-                  if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                   prj, imgcrd, lin, pixcrd))) {
-                     return err;
-                  }
-
-                  /* Check for a solution. */
-                  d = pixcrd[mixpix] - pixmix;
-                  dabs = fabs(d);
-                  if (dabs < tol) return 0;
-
-                  if (dlng < tol) {
-                     /* An artifact of numerical imprecision. */
-                     if (dabs < tol2) return 0;
-
-                     /* Must be a discontinuity. */
-                     break;
-                  }
-
-                  /* Record the point of closest approach. */
-                  if (dabs < dmin) {
-                     lmin = lng;
-                     dmin = dabs;
-                  }
-
-                  if (signb(d0) == signb(d)) {
-                     lng0 = lng;
-                     d0 = d;
-                  } else {
-                     lng1 = lng;
-                     d1 = d;
-                  }
-               }
-
-               /* No convergence, must have been a discontinuity. */
-               if (crossed == 1) lng0 = span[1];
-               lng1 = lng0;
-               d1 = dx;
-               crossed = 0;
-
-            } else {
-               /* No crossing point; look for a tangent point. */
-               if (lmin == span[0]) break;
-               if (lmin == span[1]) break;
-
-               lng = lmin;
-               lng0 = lng - step;
-               if (lng0 < span[0]) lng0 = span[0];
-               lng1 = lng + step;
-               if (lng1 > span[1]) lng1 = span[1];
-
-               world[wcs->lng] = lng0;
-               if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                prj, imgcrd, lin, pixcrd))) {
-                  return err;
-               }
-               d0 = fabs(pixcrd[mixpix] - pixmix);
-
-               d  = dmin;
-
-               world[wcs->lng] = lng1;
-               if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                prj, imgcrd, lin, pixcrd))) {
-                  return err;
-               }
-               d1 = fabs(pixcrd[mixpix] - pixmix);
-
-               for (iter = 0; iter < niter; iter++) {
-                  lng0m = (lng0 + lng)/2.0;
-                  world[wcs->lng] = lng0m;
-                  if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                   prj, imgcrd, lin, pixcrd))) {
-                     return err;
-                  }
-                  d0m = fabs(pixcrd[mixpix] - pixmix);
-
-                  if (d0m < tol) return 0;
-
-                  lng1m = (lng1 + lng)/2.0;
-                  world[wcs->lng] = lng1m;
-                  if ((err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
-                                   prj, imgcrd, lin, pixcrd))) {
-                     return err;
-                  }
-                  d1m = fabs(pixcrd[mixpix] - pixmix);
-
-                  if (d1m < tol) return 0;
-
-                  if (d0m < d && d0m <= d1m) {
-                     lng1 = lng;
-                     d1   = d;
-                     lng  = lng0m;
-                     d    = d0m;
-                  } else if (d1m < d) {
-                     lng0 = lng;
-                     d0   = d;
-                     lng  = lng1m;
-                     d    = d1m;
-                  } else {
-                     lng0 = lng0m;
-                     d0   = d0m;
-                     lng1 = lng1m;
-                     d1   = d1m;
-                  }
-               }
-            }
-         }
-      }
-   }
-
-
-   /* Set cel0 to the unity transformation. */
-   cel0.flag = CELSET;
-   cel0.ref[0] = cel->ref[0];
-   cel0.ref[1] = cel->ref[1];
-   cel0.ref[2] = cel->ref[2];
-   cel0.ref[3] = cel->ref[3];
-   cel0.euler[0] = -90.0;
-   cel0.euler[1] =   0.0;
-   cel0.euler[2] =  90.0;
-   cel0.euler[3] =   1.0;
-   cel0.euler[4] =   0.0;
-
-   /* No convergence, check for aberrant behaviour at a native pole. */
-   *theta = -90.0;
-   for (j = 1; j <= 2; j++) {
-      /* Could the celestial coordinate element map to a native pole? */
-      *theta = -*theta;
-      err = sphrev(0.0, *theta, cel->euler, &lng, &lat);
-
-      if (mixcel == 1) {
-         if (fabs(fmod(world[wcs->lng]-lng,360.0)) > tol) continue;
-         if (lat < span[0]) continue;
-         if (lat > span[1]) continue;
-         world[wcs->lat] = lat;
-      } else {
-         if (fabs(world[wcs->lat]-lat) > tol) continue;
-         if (lng < span[0]) lng += 360.0;
-         if (lng > span[1]) lng -= 360.0;
-         if (lng < span[0]) continue;
-         if (lng > span[1]) continue;
-         world[wcs->lng] = lng;
-      }
-
-      /* Is there a solution for the given pixel coordinate element? */
-      lng = world[wcs->lng];
-      lat = world[wcs->lat];
-
-      /* Feed native coordinates to wcsfwd() with cel0 set to unity. */
-      world[wcs->lng] = -180.0;
-      world[wcs->lat] = *theta;
-      if ((err = wcsfwd(ctype, wcs, world, crval, &cel0, phi, theta, prj,
-                       imgcrd, lin, pixcrd))) {
-         return err;
-      }
-      d0 = pixcrd[mixpix] - pixmix;
-
-      /* Check for a solution. */
-      if (fabs(d0) < tol) {
-         /* Recall saved world coordinates. */
-         world[wcs->lng] = lng;
-         world[wcs->lat] = lat;
-         return 0;
-      }
-
-      /* Search for a crossing interval. */
-      phi0 = -180.0;
-      for (k = -179; k <= 180; k++) {
-         phi1 = (double) k;
-         world[wcs->lng] = phi1;
-         if ((err = wcsfwd(ctype, wcs, world, crval, &cel0, phi, theta, prj,
-                          imgcrd, lin, pixcrd))) {
-            return err;
-         }
-         d1 = pixcrd[mixpix] - pixmix;
-
-         /* Check for a solution. */
-         dabs = fabs(d1);
-         if (dabs < tol) {
-            /* Recall saved world coordinates. */
-            world[wcs->lng] = lng;
-            world[wcs->lat] = lat;
-            return 0;
-         }
-
-         /* Is it a crossing interval? */
-         if (signb(d0) != signb(d1)) break;
-
-         phi0 = phi1;
-         d0 = d1;
-      }
-
-      for (iter = 1; iter <= niter; iter++) {
-         /* Use regula falsi division of the interval. */
-         lambda = d0/(d0-d1);
-         if (lambda < 0.1) {
-            lambda = 0.1;
-         } else if (lambda > 0.9) {
-            lambda = 0.9;
-         }
-
-         dphi = phi1 - phi0;
-         world[wcs->lng] = phi0 + lambda*dphi;
-         if ((err = wcsfwd(ctype, wcs, world, crval, &cel0, phi, theta, prj,
-                          imgcrd, lin, pixcrd))) {
-            return err;
-         }
-
-         /* Check for a solution. */
-         d = pixcrd[mixpix] - pixmix;
-         dabs = fabs(d);
-         if (dabs < tol || (dphi < tol && dabs < tol2)) {
-            /* Recall saved world coordinates. */
-            world[wcs->lng] = lng;
-            world[wcs->lat] = lat;
-            return 0;
-         }
-
-         if (signb(d0) == signb(d)) {
-            phi0 = world[wcs->lng];
-            d0 = d;
-         } else {
-            phi1 = world[wcs->lng];
-            d1 = d;
-         }
-      }
-   }
-
-
-   /* No solution. */
-   return 5;
+    const int niter = 60;
+    int crossed, err, istep, iter, j, k, nstep, retry;
+    const double tol = 1.0e-10;
+    const double tol2 = 100.0 * tol;
+    double lambda, span[2], step;
+    double pixmix;
+    double dlng, lng, lng0, lng0m, lng1, lng1m;
+    double dlat, lat, lat0, lat0m, lat1, lat1m;
+    double d, d0, d0m, d1, d1m;
+    double dx = 0.0;
+    double dabs, dmin, lmin;
+    double dphi, phi0, phi1;
+    struct celprm cel0;
+
+    /* Initialize if required. */
+    if ( wcs->flag != WCSSET ) {
+	if ( wcsset( lin->naxis, ctype, wcs ) ) return 1;
+    }
+
+    /* Check vspan. */
+    if ( vspan[0] <= vspan[1] ) {
+	span[0] = vspan[0];
+	span[1] = vspan[1];
+    }
+    else {
+	/* Swap them. */
+	span[0] = vspan[1];
+	span[1] = vspan[0];
+    }
+
+    /* Check vstep. */
+    step = fabs( vstep );
+    if ( step == 0.0 ) {
+	step = ( span[1] - span[0] ) / 10.0;
+	if ( step > 1.0 || step == 0.0 ) step = 1.0;
+    }
+
+    /* Check viter. */
+    nstep = viter;
+    if ( nstep < 5 ) {
+	nstep = 5;
+    }
+    else if ( nstep > 10 ) {
+	nstep = 10;
+    }
+
+    /* Given pixel element. */
+    pixmix = pixcrd[mixpix];
+
+    /* Iterate on the step size. */
+    for ( istep = 0; istep <= nstep; istep++ ) {
+	if ( istep ) step /= 2.0;
+
+	/* Iterate on the sky coordinate between the specified range. */
+	if ( mixcel == 1 ) {
+	    /* Celestial longitude is given. */
+
+	    /* Check whether the solution interval is a crossing interval. */
+	    lat0 = span[0];
+	    world[wcs->lat] = lat0;
+	    if ( ( err =
+	           wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj,
+	                   imgcrd, lin, pixcrd ) ) ) {
+		return err;
+	    }
+	    d0 = pixcrd[mixpix] - pixmix;
+
+	    dabs = fabs( d0 );
+	    if ( dabs < tol ) return 0;
+
+	    lat1 = span[1];
+	    world[wcs->lat] = lat1;
+	    if ( ( err =
+	           wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj,
+	                   imgcrd, lin, pixcrd ) ) ) {
+		return err;
+	    }
+	    d1 = pixcrd[mixpix] - pixmix;
+
+	    dabs = fabs( d1 );
+	    if ( dabs < tol ) return 0;
+
+	    lmin = lat1;
+	    dmin = dabs;
+
+	    /* Check for a crossing point. */
+	    if ( signb( d0 ) != signb( d1 ) ) {
+		crossed = 1;
+		dx = d1;
+	    }
+	    else {
+		crossed = 0;
+		lat0 = span[1];
+	    }
+
+	    for ( retry = 0; retry < 4; retry++ ) {
+		/* Refine the solution interval. */
+		while ( lat0 > span[0] ) {
+		    lat0 -= step;
+		    if ( lat0 < span[0] ) lat0 = span[0];
+		    world[wcs->lat] = lat0;
+		    if ( ( err =
+		           wcsfwd( ctype, wcs, world, crval, cel, phi, theta,
+		                   prj, imgcrd, lin, pixcrd ) ) ) {
+			return err;
+		    }
+		    d0 = pixcrd[mixpix] - pixmix;
+
+		    /* Check for a solution. */
+		    dabs = fabs( d0 );
+		    if ( dabs < tol ) return 0;
+
+		    /* Record the point of closest approach. */
+		    if ( dabs < dmin ) {
+			lmin = lat0;
+			dmin = dabs;
+		    }
+
+		    /* Check for a crossing point. */
+		    if ( signb( d0 ) != signb( d1 ) ) {
+			crossed = 2;
+			dx = d0;
+			break;
+		    }
+
+		    /* Advance to the next subinterval. */
+		    lat1 = lat0;
+		    d1 = d0;
+		}
+
+		if ( crossed ) {
+		    /* A crossing point was found. */
+		    for ( iter = 0; iter < niter; iter++ ) {
+			/* Use regula falsi division of the interval. */
+			lambda = d0 / ( d0 - d1 );
+			if ( lambda < 0.1 ) {
+			    lambda = 0.1;
+			}
+			else if ( lambda > 0.9 ) {
+			    lambda = 0.9;
+			}
+
+			dlat = lat1 - lat0;
+			lat = lat0 + lambda * dlat;
+			world[wcs->lat] = lat;
+			if ( ( err =
+			       wcsfwd( ctype, wcs, world, crval, cel, phi,
+			               theta, prj, imgcrd, lin, pixcrd ) ) ) {
+			    return err;
+			}
+
+			/* Check for a solution. */
+			d = pixcrd[mixpix] - pixmix;
+			dabs = fabs( d );
+			if ( dabs < tol ) return 0;
+
+			if ( dlat < tol ) {
+			    /* An artifact of numerical imprecision. */
+			    if ( dabs < tol2 ) return 0;
+
+			    /* Must be a discontinuity. */
+			    break;
+			}
+
+			/* Record the point of closest approach. */
+			if ( dabs < dmin ) {
+			    lmin = lat;
+			    dmin = dabs;
+			}
+
+			if ( signb( d0 ) == signb( d ) ) {
+			    lat0 = lat;
+			    d0 = d;
+			}
+			else {
+			    lat1 = lat;
+			    d1 = d;
+			}
+		    }
+
+		    /* No convergence, must have been a discontinuity. */
+		    if ( crossed == 1 ) lat0 = span[1];
+		    lat1 = lat0;
+		    d1 = dx;
+		    crossed = 0;
+
+		}
+		else {
+		    /* No crossing point; look for a tangent point. */
+		    if ( lmin == span[0] ) break;
+		    if ( lmin == span[1] ) break;
+
+		    lat = lmin;
+		    lat0 = lat - step;
+		    if ( lat0 < span[0] ) lat0 = span[0];
+		    lat1 = lat + step;
+		    if ( lat1 > span[1] ) lat1 = span[1];
+
+		    world[wcs->lat] = lat0;
+		    if ( ( err =
+		           wcsfwd( ctype, wcs, world, crval, cel, phi, theta,
+		                   prj, imgcrd, lin, pixcrd ) ) ) {
+			return err;
+		    }
+		    d0 = fabs( pixcrd[mixpix] - pixmix );
+
+		    d = dmin;
+
+		    world[wcs->lat] = lat1;
+		    if ( ( err =
+		           wcsfwd( ctype, wcs, world, crval, cel, phi, theta,
+		                   prj, imgcrd, lin, pixcrd ) ) ) {
+			return err;
+		    }
+		    d1 = fabs( pixcrd[mixpix] - pixmix );
+
+		    for ( iter = 0; iter < niter; iter++ ) {
+			lat0m = ( lat0 + lat ) / 2.0;
+			world[wcs->lat] = lat0m;
+			if ( ( err =
+			       wcsfwd( ctype, wcs, world, crval, cel, phi,
+			               theta, prj, imgcrd, lin, pixcrd ) ) ) {
+			    return err;
+			}
+			d0m = fabs( pixcrd[mixpix] - pixmix );
+
+			if ( d0m < tol ) return 0;
+
+			lat1m = ( lat1 + lat ) / 2.0;
+			world[wcs->lat] = lat1m;
+			if ( ( err =
+			       wcsfwd( ctype, wcs, world, crval, cel, phi,
+			               theta, prj, imgcrd, lin, pixcrd ) ) ) {
+			    return err;
+			}
+			d1m = fabs( pixcrd[mixpix] - pixmix );
+
+			if ( d1m < tol ) return 0;
+
+			if ( d0m < d && d0m <= d1m ) {
+			    lat1 = lat;
+			    d1 = d;
+			    lat = lat0m;
+			    d = d0m;
+			}
+			else if ( d1m < d ) {
+			    lat0 = lat;
+			    d0 = d;
+			    lat = lat1m;
+			    d = d1m;
+			}
+			else {
+			    lat0 = lat0m;
+			    d0 = d0m;
+			    lat1 = lat1m;
+			    d1 = d1m;
+			}
+		    }
+		}
+	    }
+
+	}
+	else {
+	    /* Celestial latitude is given. */
+
+	    /* Check whether the solution interval is a crossing interval. */
+	    lng0 = span[0];
+	    world[wcs->lng] = lng0;
+	    if ( ( err =
+	           wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj,
+	                   imgcrd, lin, pixcrd ) ) ) {
+		return err;
+	    }
+	    d0 = pixcrd[mixpix] - pixmix;
+
+	    dabs = fabs( d0 );
+	    if ( dabs < tol ) return 0;
+
+	    lng1 = span[1];
+	    world[wcs->lng] = lng1;
+	    if ( ( err =
+	           wcsfwd( ctype, wcs, world, crval, cel, phi, theta, prj,
+	                   imgcrd, lin, pixcrd ) ) ) {
+		return err;
+	    }
+	    d1 = pixcrd[mixpix] - pixmix;
+
+	    dabs = fabs( d1 );
+	    if ( dabs < tol ) return 0;
+	    lmin = lng1;
+	    dmin = dabs;
+
+	    /* Check for a crossing point. */
+	    if ( signb( d0 ) != signb( d1 ) ) {
+		crossed = 1;
+		dx = d1;
+	    }
+	    else {
+		crossed = 0;
+		lng0 = span[1];
+	    }
+
+	    for ( retry = 0; retry < 4; retry++ ) {
+		/* Refine the solution interval. */
+		while ( lng0 > span[0] ) {
+		    lng0 -= step;
+		    if ( lng0 < span[0] ) lng0 = span[0];
+		    world[wcs->lng] = lng0;
+		    if ( ( err =
+		           wcsfwd( ctype, wcs, world, crval, cel, phi, theta,
+		                   prj, imgcrd, lin, pixcrd ) ) ) {
+			return err;
+		    }
+		    d0 = pixcrd[mixpix] - pixmix;
+
+		    /* Check for a solution. */
+		    dabs = fabs( d0 );
+		    if ( dabs < tol ) return 0;
+
+		    /* Record the point of closest approach. */
+		    if ( dabs < dmin ) {
+			lmin = lng0;
+			dmin = dabs;
+		    }
+
+		    /* Check for a crossing point. */
+		    if ( signb( d0 ) != signb( d1 ) ) {
+			crossed = 2;
+			dx = d0;
+			break;
+		    }
+
+		    /* Advance to the next subinterval. */
+		    lng1 = lng0;
+		    d1 = d0;
+		}
+
+		if ( crossed ) {
+		    /* A crossing point was found. */
+		    for ( iter = 0; iter < niter; iter++ ) {
+			/* Use regula falsi division of the interval. */
+			lambda = d0 / ( d0 - d1 );
+			if ( lambda < 0.1 ) {
+			    lambda = 0.1;
+			}
+			else if ( lambda > 0.9 ) {
+			    lambda = 0.9;
+			}
+
+			dlng = lng1 - lng0;
+			lng = lng0 + lambda * dlng;
+			world[wcs->lng] = lng;
+			if ( ( err =
+			       wcsfwd( ctype, wcs, world, crval, cel, phi,
+			               theta, prj, imgcrd, lin, pixcrd ) ) ) {
+			    return err;
+			}
+
+			/* Check for a solution. */
+			d = pixcrd[mixpix] - pixmix;
+			dabs = fabs( d );
+			if ( dabs < tol ) return 0;
+
+			if ( dlng < tol ) {
+			    /* An artifact of numerical imprecision. */
+			    if ( dabs < tol2 ) return 0;
+
+			    /* Must be a discontinuity. */
+			    break;
+			}
+
+			/* Record the point of closest approach. */
+			if ( dabs < dmin ) {
+			    lmin = lng;
+			    dmin = dabs;
+			}
+
+			if ( signb( d0 ) == signb( d ) ) {
+			    lng0 = lng;
+			    d0 = d;
+			}
+			else {
+			    lng1 = lng;
+			    d1 = d;
+			}
+		    }
+
+		    /* No convergence, must have been a discontinuity. */
+		    if ( crossed == 1 ) lng0 = span[1];
+		    lng1 = lng0;
+		    d1 = dx;
+		    crossed = 0;
+
+		}
+		else {
+		    /* No crossing point; look for a tangent point. */
+		    if ( lmin == span[0] ) break;
+		    if ( lmin == span[1] ) break;
+
+		    lng = lmin;
+		    lng0 = lng - step;
+		    if ( lng0 < span[0] ) lng0 = span[0];
+		    lng1 = lng + step;
+		    if ( lng1 > span[1] ) lng1 = span[1];
+
+		    world[wcs->lng] = lng0;
+		    if ( ( err =
+		           wcsfwd( ctype, wcs, world, crval, cel, phi, theta,
+		                   prj, imgcrd, lin, pixcrd ) ) ) {
+			return err;
+		    }
+		    d0 = fabs( pixcrd[mixpix] - pixmix );
+
+		    d = dmin;
+
+		    world[wcs->lng] = lng1;
+		    if ( ( err =
+		           wcsfwd( ctype, wcs, world, crval, cel, phi, theta,
+		                   prj, imgcrd, lin, pixcrd ) ) ) {
+			return err;
+		    }
+		    d1 = fabs( pixcrd[mixpix] - pixmix );
+
+		    for ( iter = 0; iter < niter; iter++ ) {
+			lng0m = ( lng0 + lng ) / 2.0;
+			world[wcs->lng] = lng0m;
+			if ( ( err =
+			       wcsfwd( ctype, wcs, world, crval, cel, phi,
+			               theta, prj, imgcrd, lin, pixcrd ) ) ) {
+			    return err;
+			}
+			d0m = fabs( pixcrd[mixpix] - pixmix );
+
+			if ( d0m < tol ) return 0;
+
+			lng1m = ( lng1 + lng ) / 2.0;
+			world[wcs->lng] = lng1m;
+			if ( ( err =
+			       wcsfwd( ctype, wcs, world, crval, cel, phi,
+			               theta, prj, imgcrd, lin, pixcrd ) ) ) {
+			    return err;
+			}
+			d1m = fabs( pixcrd[mixpix] - pixmix );
+
+			if ( d1m < tol ) return 0;
+
+			if ( d0m < d && d0m <= d1m ) {
+			    lng1 = lng;
+			    d1 = d;
+			    lng = lng0m;
+			    d = d0m;
+			}
+			else if ( d1m < d ) {
+			    lng0 = lng;
+			    d0 = d;
+			    lng = lng1m;
+			    d = d1m;
+			}
+			else {
+			    lng0 = lng0m;
+			    d0 = d0m;
+			    lng1 = lng1m;
+			    d1 = d1m;
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+
+    /* Set cel0 to the unity transformation. */
+    cel0.flag = CELSET;
+    cel0.ref[0] = cel->ref[0];
+    cel0.ref[1] = cel->ref[1];
+    cel0.ref[2] = cel->ref[2];
+    cel0.ref[3] = cel->ref[3];
+    cel0.euler[0] = -90.0;
+    cel0.euler[1] = 0.0;
+    cel0.euler[2] = 90.0;
+    cel0.euler[3] = 1.0;
+    cel0.euler[4] = 0.0;
+
+    /* No convergence, check for aberrant behaviour at a native pole. */
+    *theta = -90.0;
+    for ( j = 1; j <= 2; j++ ) {
+	/* Could the celestial coordinate element map to a native pole? */
+	*theta = -*theta;
+	err = sphrev( 0.0, *theta, cel->euler, &lng, &lat );
+
+	if ( mixcel == 1 ) {
+	    if ( fabs( fmod( world[wcs->lng] - lng, 360.0 ) ) >
+	         tol ) continue;
+	    if ( lat < span[0] ) continue;
+	    if ( lat > span[1] ) continue;
+	    world[wcs->lat] = lat;
+	}
+	else {
+	    if ( fabs( world[wcs->lat] - lat ) > tol ) continue;
+	    if ( lng < span[0] ) lng += 360.0;
+	    if ( lng > span[1] ) lng -= 360.0;
+	    if ( lng < span[0] ) continue;
+	    if ( lng > span[1] ) continue;
+	    world[wcs->lng] = lng;
+	}
+
+	/* Is there a solution for the given pixel coordinate element? */
+	lng = world[wcs->lng];
+	lat = world[wcs->lat];
+
+	/* Feed native coordinates to wcsfwd() with cel0 set to unity. */
+	world[wcs->lng] = -180.0;
+	world[wcs->lat] = *theta;
+	if ( ( err = wcsfwd( ctype, wcs, world, crval, &cel0, phi, theta, prj,
+	                     imgcrd, lin, pixcrd ) ) ) {
+	    return err;
+	}
+	d0 = pixcrd[mixpix] - pixmix;
+
+	/* Check for a solution. */
+	if ( fabs( d0 ) < tol ) {
+	    /* Recall saved world coordinates. */
+	    world[wcs->lng] = lng;
+	    world[wcs->lat] = lat;
+	    return 0;
+	}
+
+	/* Search for a crossing interval. */
+	phi0 = -180.0;
+	for ( k = -179; k <= 180; k++ ) {
+	    phi1 = ( double ) k;
+	    world[wcs->lng] = phi1;
+	    if ( ( err =
+	           wcsfwd( ctype, wcs, world, crval, &cel0, phi, theta, prj,
+	                   imgcrd, lin, pixcrd ) ) ) {
+		return err;
+	    }
+	    d1 = pixcrd[mixpix] - pixmix;
+
+	    /* Check for a solution. */
+	    dabs = fabs( d1 );
+	    if ( dabs < tol ) {
+		/* Recall saved world coordinates. */
+		world[wcs->lng] = lng;
+		world[wcs->lat] = lat;
+		return 0;
+	    }
+
+	    /* Is it a crossing interval? */
+	    if ( signb( d0 ) != signb( d1 ) ) break;
+
+	    phi0 = phi1;
+	    d0 = d1;
+	}
+
+	for ( iter = 1; iter <= niter; iter++ ) {
+	    /* Use regula falsi division of the interval. */
+	    lambda = d0 / ( d0 - d1 );
+	    if ( lambda < 0.1 ) {
+		lambda = 0.1;
+	    }
+	    else if ( lambda > 0.9 ) {
+		lambda = 0.9;
+	    }
+
+	    dphi = phi1 - phi0;
+	    world[wcs->lng] = phi0 + lambda * dphi;
+	    if ( ( err =
+	           wcsfwd( ctype, wcs, world, crval, &cel0, phi, theta, prj,
+	                   imgcrd, lin, pixcrd ) ) ) {
+		return err;
+	    }
+
+	    /* Check for a solution. */
+	    d = pixcrd[mixpix] - pixmix;
+	    dabs = fabs( d );
+	    if ( dabs < tol || ( dphi < tol && dabs < tol2 ) ) {
+		/* Recall saved world coordinates. */
+		world[wcs->lng] = lng;
+		world[wcs->lat] = lat;
+		return 0;
+	    }
+
+	    if ( signb( d0 ) == signb( d ) ) {
+		phi0 = world[wcs->lng];
+		d0 = d;
+	    }
+	    else {
+		phi1 = world[wcs->lng];
+		d1 = d;
+	    }
+	}
+    }
+
+
+    /* No solution. */
+    return 5;
 
 }
+
 /* Dec 20 1999  Doug Mink - Change signbit() to signb() and always define it
  * Dec 20 1999	Doug Mink - Include wcslib.h, which includes wcs.h, wcstrig.h
  *

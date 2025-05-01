@@ -37,47 +37,46 @@ static double d;
 #define Box(X,Y,x,y,w,h) ((X>(x-(double)(w/2)))&&(X<=(x+(double)(w/2)))&&(Y>(y-(double)(h/2)))&&(Y<=(y+(double)(h/2))))
 #define box(x,y,w,h)  Box(_X_,_Y_,x,y,w,h)
 
-LoadColumn(eptr, bytes, iter, convert, obuf)
+LoadColumn( eptr, bytes, iter, convert, obuf )
      char *eptr;
      int bytes, iter, convert;
      char *obuf;
 {
-  char *optr=obuf;
-  int i, j;
-  for(i=0; i<iter; i++){  
-    optr = obuf + (i*bytes);
-    if( convert ){
-      for(j=0; j<bytes; j++)
-        optr[j] = *(eptr+bytes-1-j);
+    char *optr = obuf;
+    int i, j;
+    for ( i = 0; i < iter; i++ ) {
+	optr = obuf + ( i * bytes );
+	if ( convert ) {
+	    for ( j = 0; j < bytes; j++ )
+		optr[j] = *( eptr + bytes - 1 - j );
+	}
+	else {
+	    for ( j = 0; j < bytes; j++ )
+		optr[j] = *( eptr + j );
+	}
     }
-    else{
-      for(j=0; j<bytes; j++)
-        optr[j] = *(eptr+j);
-    }
-  }
 }
 
-main(argc, argv)
+main( argc, argv )
      int argc;
      char **argv;
 {
-  char *ebuf=(char *)0, *eptr, *etop, *rptr;
-  int get, got;
-  while( read(0, &get, 4) >0 ){
-    ebuf = (char *)malloc(get);
-    for(etop=ebuf; get>0; etop += got, get -= got){
-      if( (got=read(0, etop, get)) <=0 )
-	break;
+    char *ebuf = ( char * ) 0, *eptr, *etop, *rptr;
+    int get, got;
+    while ( read( 0, &get, 4 ) > 0 ) {
+	ebuf = ( char * ) malloc( get );
+	for ( etop = ebuf; get > 0; etop += got, get -= got ) {
+	    if ( ( got = read( 0, etop, get ) ) <= 0 )
+		break;
+	}
+	for ( rptr = ebuf, eptr = ebuf; eptr < etop; rptr++, eptr += ESIZE ) {
+	    GET;
+	    *rptr = FILTER;
+	}
+	got = ( ( etop - ebuf ) / ESIZE );
+	write( 1, &got, 4 );
+	write( 1, ebuf, got );
+	free( ebuf );
     }
-    for(rptr=ebuf, eptr=ebuf; eptr<etop; rptr++, eptr += ESIZE){
-      GET;
-      *rptr = FILTER;
-    }
-    got = ((etop - ebuf)/ESIZE);
-    write(1, &got, 4);
-    write(1, ebuf, got);
-    free(ebuf);
-  }
-  unlink(argv[0]);
+    unlink( argv[0] );
 }
-

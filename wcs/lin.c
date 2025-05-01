@@ -169,273 +169,277 @@
 
 /* Map error number to error message for each function. */
 const char *linset_errmsg[] = {
-   0,
-   "Memory allocation error",
-   "PC matrix is singular"};
+    0,
+    "Memory allocation error",
+    "PC matrix is singular"
+};
 
 const char *linfwd_errmsg[] = {
-   0,
-   "Memory allocation error",
-   "PC matrix is singular"};
+    0,
+    "Memory allocation error",
+    "PC matrix is singular"
+};
 
 const char *linrev_errmsg[] = {
-   0,
-   "Memory allocation error",
-   "PC matrix is singular"};
+    0,
+    "Memory allocation error",
+    "PC matrix is singular"
+};
 
-int linset(lin)
-
-struct linprm *lin;
+int
+linset( lin )
+     struct linprm *lin;
 
 {
-   int i, ij, j, mem, n;
+    int i, ij, j, mem, n;
 
-   n = lin->naxis;
+    n = lin->naxis;
 
-   /* Allocate memory for internal arrays. */
-   mem = n * n * sizeof(double);
-   lin->piximg = (double*)malloc(mem);
-   if (lin->piximg == (double*)0) return 1;
+    /* Allocate memory for internal arrays. */
+    mem = n * n * sizeof( double );
+    lin->piximg = ( double * ) malloc( mem );
+    if ( lin->piximg == ( double * ) 0 ) return 1;
 
-   lin->imgpix = (double*)malloc(mem);
-   if (lin->imgpix == (double*)0) {
-      free(lin->piximg);
-      return 1;
-   }
+    lin->imgpix = ( double * ) malloc( mem );
+    if ( lin->imgpix == ( double * ) 0 ) {
+	free( lin->piximg );
+	return 1;
+    }
 
-   /* Compute the pixel-to-image transformation matrix. */
-   for (i = 0, ij = 0; i < n; i++) {
-      for (j = 0; j < n; j++, ij++) {
-         lin->piximg[ij] = lin->cdelt[i] * lin->pc[ij];
-      }
-   }
+    /* Compute the pixel-to-image transformation matrix. */
+    for ( i = 0, ij = 0; i < n; i++ ) {
+	for ( j = 0; j < n; j++, ij++ ) {
+	    lin->piximg[ij] = lin->cdelt[i] * lin->pc[ij];
+	}
+    }
 
-   /* Compute the image-to-pixel transformation matrix. */
-   if (matinv(n, lin->piximg, lin->imgpix)) return 2;
+    /* Compute the image-to-pixel transformation matrix. */
+    if ( matinv( n, lin->piximg, lin->imgpix ) ) return 2;
 
-   lin->flag = LINSET;
+    lin->flag = LINSET;
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int linfwd(imgcrd, lin, pixcrd)
-
-const double imgcrd[];
-struct linprm *lin;
-double pixcrd[];
+int
+linfwd( imgcrd, lin, pixcrd )
+     const double imgcrd[];
+     struct linprm *lin;
+     double pixcrd[];
 
 {
-   int i, ij, j, n;
+    int i, ij, j, n;
 
-   n = lin->naxis;
+    n = lin->naxis;
 
-   if (lin->flag != LINSET) {
-      if (linset(lin)) return 1;
-   }
+    if ( lin->flag != LINSET ) {
+	if ( linset( lin ) ) return 1;
+    }
 
-   for (i = 0, ij = 0; i < n; i++) {
-      pixcrd[i] = 0.0;
-      for (j = 0; j < n; j++, ij++) {
-         pixcrd[i] += lin->imgpix[ij] * imgcrd[j];
-      }
-   }
+    for ( i = 0, ij = 0; i < n; i++ ) {
+	pixcrd[i] = 0.0;
+	for ( j = 0; j < n; j++, ij++ ) {
+	    pixcrd[i] += lin->imgpix[ij] * imgcrd[j];
+	}
+    }
 
-   for (j = 0; j < n; j++) {
-      pixcrd[j] += lin->crpix[j];
-   }
+    for ( j = 0; j < n; j++ ) {
+	pixcrd[j] += lin->crpix[j];
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int linrev(pixcrd, lin, imgcrd)
-
-const double pixcrd[];
-struct linprm *lin;
-double imgcrd[];
+int
+linrev( pixcrd, lin, imgcrd )
+     const double pixcrd[];
+     struct linprm *lin;
+     double imgcrd[];
 
 {
-   int i, ij, j, n;
-   double temp;
+    int i, ij, j, n;
+    double temp;
 
-   n = lin->naxis;
+    n = lin->naxis;
 
-   if (lin->flag != LINSET) {
-      if (linset(lin)) return 1;
-   }
+    if ( lin->flag != LINSET ) {
+	if ( linset( lin ) ) return 1;
+    }
 
-   for (i = 0; i < n; i++) {
-      imgcrd[i] = 0.0;
-   }
+    for ( i = 0; i < n; i++ ) {
+	imgcrd[i] = 0.0;
+    }
 
-   for (j = 0; j < n; j++) {
-      temp = pixcrd[j] - lin->crpix[j];
-      for (i = 0, ij = j; i < n; i++, ij+=n) {
-         imgcrd[i] += lin->piximg[ij] * temp;
-      }
-   }
+    for ( j = 0; j < n; j++ ) {
+	temp = pixcrd[j] - lin->crpix[j];
+	for ( i = 0, ij = j; i < n; i++, ij += n ) {
+	    imgcrd[i] += lin->piximg[ij] * temp;
+	}
+    }
 
-   return 0;
+    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int matinv(n, mat, inv)
-
-const int n;
-const double mat[];
-double inv[];
+int
+matinv( n, mat, inv )
+     const int n;
+     const double mat[];
+     double inv[];
 
 {
-   register int i, ij, ik, j, k, kj, pj;
-   int    itemp, mem, *mxl, *lxm, pivot;
-   double colmax, *lu, *rowmax, dtemp;
+    register int i, ij, ik, j, k, kj, pj;
+    int itemp, mem, *mxl, *lxm, pivot;
+    double colmax, *lu, *rowmax, dtemp;
 
 
-   /* Allocate memory for internal arrays. */
-   mem = n * sizeof(int);
-   if ((mxl = (int*)malloc(mem)) == (int*)0) return 1;
-   if ((lxm = (int*)malloc(mem)) == (int*)0) {
-      free(mxl);
-      return 1;
-   }
+    /* Allocate memory for internal arrays. */
+    mem = n * sizeof( int );
+    if ( ( mxl = ( int * ) malloc( mem ) ) == ( int * ) 0 ) return 1;
+    if ( ( lxm = ( int * ) malloc( mem ) ) == ( int * ) 0 ) {
+	free( mxl );
+	return 1;
+    }
 
-   mem = n * sizeof(double);
-   if ((rowmax = (double*)malloc(mem)) == (double*)0) {
-      free(mxl);
-      free(lxm);
-      return 1;
-   }
+    mem = n * sizeof( double );
+    if ( ( rowmax = ( double * ) malloc( mem ) ) == ( double * ) 0 ) {
+	free( mxl );
+	free( lxm );
+	return 1;
+    }
 
-   mem *= n;
-   if ((lu = (double*)malloc(mem)) == (double*)0) {
-      free(mxl);
-      free(lxm);
-      free(rowmax);
-      return 1;
-   }
-
-
-   /* Initialize arrays. */
-   for (i = 0, ij = 0; i < n; i++) {
-      /* Vector which records row interchanges. */
-      mxl[i] = i;
-
-      rowmax[i] = 0.0;
-
-      for (j = 0; j < n; j++, ij++) {
-         dtemp = fabs(mat[ij]);
-         if (dtemp > rowmax[i]) rowmax[i] = dtemp;
-
-         lu[ij] = mat[ij];
-      }
-
-      /* A row of zeroes indicates a singular matrix. */
-      if (rowmax[i] == 0.0) {
-         free(mxl);
-         free(lxm);
-         free(rowmax);
-         free(lu);
-         return 2;
-      }
-   }
+    mem *= n;
+    if ( ( lu = ( double * ) malloc( mem ) ) == ( double * ) 0 ) {
+	free( mxl );
+	free( lxm );
+	free( rowmax );
+	return 1;
+    }
 
 
-   /* Form the LU triangular factorization using scaled partial pivoting. */
-   for (k = 0; k < n; k++) {
-      /* Decide whether to pivot. */
-      colmax = fabs(lu[k*n+k]) / rowmax[k];
-      pivot = k;
+    /* Initialize arrays. */
+    for ( i = 0, ij = 0; i < n; i++ ) {
+	/* Vector which records row interchanges. */
+	mxl[i] = i;
 
-      for (i = k+1; i < n; i++) {
-         ik = i*n + k;
-         dtemp = fabs(lu[ik]) / rowmax[i];
-         if (dtemp > colmax) {
-            colmax = dtemp;
-            pivot = i;
-         }
-      }
+	rowmax[i] = 0.0;
 
-      if (pivot > k) {
-         /* We must pivot, interchange the rows of the design matrix. */
-         for (j = 0, pj = pivot*n, kj = k*n; j < n; j++, pj++, kj++) {
-            dtemp = lu[pj];
-            lu[pj] = lu[kj];
-            lu[kj] = dtemp;
-         }
+	for ( j = 0; j < n; j++, ij++ ) {
+	    dtemp = fabs( mat[ij] );
+	    if ( dtemp > rowmax[i] ) rowmax[i] = dtemp;
 
-         /* Amend the vector of row maxima. */
-         dtemp = rowmax[pivot];
-         rowmax[pivot] = rowmax[k];
-         rowmax[k] = dtemp;
+	    lu[ij] = mat[ij];
+	}
 
-         /* Record the interchange for later use. */
-         itemp = mxl[pivot];
-         mxl[pivot] = mxl[k];
-         mxl[k] = itemp;
-      }
-
-      /* Gaussian elimination. */
-      for (i = k+1; i < n; i++) {
-         ik = i*n + k;
-
-         /* Nothing to do if lu[ik] is zero. */
-         if (lu[ik] != 0.0) {
-            /* Save the scaling factor. */
-            lu[ik] /= lu[k*n+k];
-
-            /* Subtract rows. */
-            for (j = k+1; j < n; j++) {
-               lu[i*n+j] -= lu[ik]*lu[k*n+j];
-            }
-         }
-      }
-   }
+	/* A row of zeroes indicates a singular matrix. */
+	if ( rowmax[i] == 0.0 ) {
+	    free( mxl );
+	    free( lxm );
+	    free( rowmax );
+	    free( lu );
+	    return 2;
+	}
+    }
 
 
-   /* mxl[i] records which row of mat corresponds to row i of lu.  */
-   /* lxm[i] records which row of lu  corresponds to row i of mat. */
-   for (i = 0; i < n; i++) {
-      lxm[mxl[i]] = i;
-   }
+    /* Form the LU triangular factorization using scaled partial pivoting. */
+    for ( k = 0; k < n; k++ ) {
+	/* Decide whether to pivot. */
+	colmax = fabs( lu[k * n + k] ) / rowmax[k];
+	pivot = k;
+
+	for ( i = k + 1; i < n; i++ ) {
+	    ik = i * n + k;
+	    dtemp = fabs( lu[ik] ) / rowmax[i];
+	    if ( dtemp > colmax ) {
+		colmax = dtemp;
+		pivot = i;
+	    }
+	}
+
+	if ( pivot > k ) {
+	    /* We must pivot, interchange the rows of the design matrix. */
+	    for ( j = 0, pj = pivot * n, kj = k * n; j < n; j++, pj++, kj++ ) {
+		dtemp = lu[pj];
+		lu[pj] = lu[kj];
+		lu[kj] = dtemp;
+	    }
+
+	    /* Amend the vector of row maxima. */
+	    dtemp = rowmax[pivot];
+	    rowmax[pivot] = rowmax[k];
+	    rowmax[k] = dtemp;
+
+	    /* Record the interchange for later use. */
+	    itemp = mxl[pivot];
+	    mxl[pivot] = mxl[k];
+	    mxl[k] = itemp;
+	}
+
+	/* Gaussian elimination. */
+	for ( i = k + 1; i < n; i++ ) {
+	    ik = i * n + k;
+
+	    /* Nothing to do if lu[ik] is zero. */
+	    if ( lu[ik] != 0.0 ) {
+		/* Save the scaling factor. */
+		lu[ik] /= lu[k * n + k];
+
+		/* Subtract rows. */
+		for ( j = k + 1; j < n; j++ ) {
+		    lu[i * n + j] -= lu[ik] * lu[k * n + j];
+		}
+	    }
+	}
+    }
 
 
-   /* Determine the inverse matrix. */
-   for (i = 0, ij = 0; i < n; i++) {
-      for (j = 0; j < n; j++, ij++) {
-         inv[ij] = 0.0;
-      }
-   }
+    /* mxl[i] records which row of mat corresponds to row i of lu.  */
+    /* lxm[i] records which row of lu  corresponds to row i of mat. */
+    for ( i = 0; i < n; i++ ) {
+	lxm[mxl[i]] = i;
+    }
 
-   for (k = 0; k < n; k++) {
-      inv[lxm[k]*n+k] = 1.0;
 
-      /* Forward substitution. */
-      for (i = lxm[k]+1; i < n; i++) {
-         for (j = lxm[k]; j < i; j++) {
-            inv[i*n+k] -= lu[i*n+j]*inv[j*n+k];
-         }
-      }
+    /* Determine the inverse matrix. */
+    for ( i = 0, ij = 0; i < n; i++ ) {
+	for ( j = 0; j < n; j++, ij++ ) {
+	    inv[ij] = 0.0;
+	}
+    }
 
-      /* Backward substitution. */
-      for (i = n-1; i >= 0; i--) {
-         for (j = i+1; j < n; j++) {
-            inv[i*n+k] -= lu[i*n+j]*inv[j*n+k];
-         }
-         inv[i*n+k] /= lu[i*n+i];
-      }
-   }
+    for ( k = 0; k < n; k++ ) {
+	inv[lxm[k] * n + k] = 1.0;
 
-   free(mxl);
-   free(lxm);
-   free(rowmax);
-   free(lu);
+	/* Forward substitution. */
+	for ( i = lxm[k] + 1; i < n; i++ ) {
+	    for ( j = lxm[k]; j < i; j++ ) {
+		inv[i * n + k] -= lu[i * n + j] * inv[j * n + k];
+	    }
+	}
 
-   return 0;
+	/* Backward substitution. */
+	for ( i = n - 1; i >= 0; i-- ) {
+	    for ( j = i + 1; j < n; j++ ) {
+		inv[i * n + k] -= lu[i * n + j] * inv[j * n + k];
+	    }
+	    inv[i * n + k] /= lu[i * n + i];
+	}
+    }
+
+    free( mxl );
+    free( lxm );
+    free( rowmax );
+    free( lu );
+
+    return 0;
 }
+
 /* Dec 20 1999	Doug Mink - Include wcslib.h, which includes lin.h
  *
  * Feb 15 2001	Doug Mink - Add comments for WCSLIB 2.6; no code changes

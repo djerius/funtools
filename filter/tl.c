@@ -9,9 +9,9 @@
 
 #ifndef UNUSED
 #ifdef __GNUC__
-#  define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
+#define UNUSED(x) UNUSED_ ## x __attribute__((__unused__))
 #else
-#  define UNUSED(x) UNUSED_ ## x
+#define UNUSED(x) UNUSED_ ## x
 #endif
 #endif
 
@@ -20,171 +20,176 @@
  * when converting floating point physical coords to image coords.
  * setting this environment variable makes funtools work like cfitsio
  */
-static double fitscenval=0.5;
-static int ceninited=0;
+static double fitscenval = 0.5;
+static int ceninited = 0;
 #ifdef ANSI_FUNC
-static double getfitsfloatcenter(void)
+static double
+getfitsfloatcenter( void )
 #else
-static double getfitsfloatcenter()
+static double
+getfitsfloatcenter(  )
 #endif
 {
-  char *s=NULL;
-  if( !ceninited ){
-    if( (s=getenv("FILTER_CFITSIO")) && istrue(s) ){
-      fitscenval = 1.0;
+    char *s = NULL;
+    if ( !ceninited ) {
+	if ( ( s = getenv( "FILTER_CFITSIO" ) ) && istrue( s ) ) {
+	    fitscenval = 1.0;
+	}
+	ceninited = 1;
     }
-    ceninited = 1;
-  }
-  return fitscenval;
+    return fitscenval;
 }
 
 #ifdef ANSI_FUNC
 double
-tlp2i (double dp, double tlmin, double binsiz, int type)
+tlp2i( double dp, double tlmin, double binsiz, int type )
 #else
-double tlp2i (dp, tlmin, binsiz, type)
+double
+tlp2i( dp, tlmin, binsiz, type )
      double dp;
      double tlmin;
      double binsiz;
      int type;
 #endif
 {
-  double dval = getfitsfloatcenter();
-  if( (binsiz == 1.0) || (binsiz <= 0.0) ){
-    switch(type){
-    case 'B':
-    case 'I':
-    case 'U':
-    case 'J':
-    case 'K':
-    case 'V':
-    default:
-      return ((dp - tlmin) + 1.0);
-    case 'E':
-    case 'D':
-      return ((dp - tlmin) + dval);
+    double dval = getfitsfloatcenter(  );
+    if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
+	switch ( type ) {
+	    case 'B':
+	    case 'I':
+	    case 'U':
+	    case 'J':
+	    case 'K':
+	    case 'V':
+	    default:
+		return ( ( dp - tlmin ) + 1.0 );
+	    case 'E':
+	    case 'D':
+		return ( ( dp - tlmin ) + dval );
+	}
     }
-  }
-  else{
-    switch(type){
-    case 'B':
-    case 'I':
-    case 'U':
-    case 'J':
-    case 'K':
-    case 'V':
-    default:
-      return ((dp - tlmin)/binsiz + 1.0);
-    case 'E':
-    case 'D':
-      return ((dp - tlmin)/binsiz + dval);
+    else {
+	switch ( type ) {
+	    case 'B':
+	    case 'I':
+	    case 'U':
+	    case 'J':
+	    case 'K':
+	    case 'V':
+	    default:
+		return ( ( dp - tlmin ) / binsiz + 1.0 );
+	    case 'E':
+	    case 'D':
+		return ( ( dp - tlmin ) / binsiz + dval );
+	}
     }
-  }
 }
 
 #ifdef ANSI_FUNC
 int
-itlp2i (double dp, double tlmin, double binsiz, int UNUSED(type))
+itlp2i( double dp, double tlmin, double binsiz, int UNUSED( type ) )
 #else
-int itlp2i (dp, tlmin, binsiz, type)
+int
+itlp2i( dp, tlmin, binsiz, type )
      double dp;
      double tlmin;
      double binsiz;
      int type;
 #endif
 {
-  if( (binsiz == 1.0) || (binsiz <= 0.0) ){
-    return (int)((dp - tlmin) + 1.0);
-  }
-  else{
-    return (int)((dp - tlmin)/binsiz + 1.0);
-  }
+    if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
+	return ( int ) ( ( dp - tlmin ) + 1.0 );
+    }
+    else {
+	return ( int ) ( ( dp - tlmin ) / binsiz + 1.0 );
+    }
 }
 
 #ifdef ANSI_FUNC
 double
-tli2p (double di, double tlmin, double binsiz, int type)
+tli2p( double di, double tlmin, double binsiz, int type )
 #else
-double tli2p (di, tlmin, binsiz, type)
+double
+tli2p( di, tlmin, binsiz, type )
      double di;
      double tlmin;
      double binsiz;
      int type;
 #endif
 {
-  double dval = getfitsfloatcenter();
-  if( (binsiz == 1.0) || (binsiz <= 0.0) ){
-    switch(type){
-    case 'B':
-    case 'I':
-    case 'U':
-    case 'J':
-    case 'K':
-    case 'V':
-    default:
-      return ((di - 1.0) + tlmin);
-    case 'E':
-    case 'D':
-      return ((di - dval) + tlmin);
+    double dval = getfitsfloatcenter(  );
+    if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
+	switch ( type ) {
+	    case 'B':
+	    case 'I':
+	    case 'U':
+	    case 'J':
+	    case 'K':
+	    case 'V':
+	    default:
+		return ( ( di - 1.0 ) + tlmin );
+	    case 'E':
+	    case 'D':
+		return ( ( di - dval ) + tlmin );
+	}
     }
-  }
-  else{
-    switch(type){
-    case 'B':
-    case 'I':
-    case 'U':
-    case 'J':
-    case 'K':
-    case 'V':
-    default:
-      return ((di - 1.0)*binsiz + tlmin);
-    case 'E':
-    case 'D':
-      return ((di - dval)*binsiz + tlmin);
+    else {
+	switch ( type ) {
+	    case 'B':
+	    case 'I':
+	    case 'U':
+	    case 'J':
+	    case 'K':
+	    case 'V':
+	    default:
+		return ( ( di - 1.0 ) * binsiz + tlmin );
+	    case 'E':
+	    case 'D':
+		return ( ( di - dval ) * binsiz + tlmin );
+	}
     }
-  }
 }
 
 #ifdef ANSI_FUNC
 double
-tldim (double tlmin, double tlmax, double binsiz, int type)
+tldim( double tlmin, double tlmax, double binsiz, int type )
 #else
-double tldim (tlmin, tlmax, binsiz, type)
+double
+tldim( tlmin, tlmax, binsiz, type )
      double tlmin;
      double tlmax;
      double binsiz;
      int type;
 #endif
 {
-  if( (binsiz == 1.0) || (binsiz <= 0.0) ){
-    switch(type){
-    case 'B':
-    case 'I':
-    case 'U':
-    case 'J':
-    case 'K':
-    case 'V':
-    default:
-      return ((tlmax-tlmin) + 1.0);
-    case 'E':
-    case 'D':
-      return (tlmax-tlmin);
+    if ( ( binsiz == 1.0 ) || ( binsiz <= 0.0 ) ) {
+	switch ( type ) {
+	    case 'B':
+	    case 'I':
+	    case 'U':
+	    case 'J':
+	    case 'K':
+	    case 'V':
+	    default:
+		return ( ( tlmax - tlmin ) + 1.0 );
+	    case 'E':
+	    case 'D':
+		return ( tlmax - tlmin );
+	}
     }
-  }
-  else{
-    switch(type){
-    case 'B':
-    case 'I':
-    case 'U':
-    case 'J':
-    case 'K':
-    case 'V':
-    default:
-      return ((tlmax-tlmin)/binsiz + 1.0);
-    case 'E':
-    case 'D':
-      return ((tlmax-tlmin)/binsiz);
+    else {
+	switch ( type ) {
+	    case 'B':
+	    case 'I':
+	    case 'U':
+	    case 'J':
+	    case 'K':
+	    case 'V':
+	    default:
+		return ( ( tlmax - tlmin ) / binsiz + 1.0 );
+	    case 'E':
+	    case 'D':
+		return ( ( tlmax - tlmin ) / binsiz );
+	}
     }
-  }
 }
-

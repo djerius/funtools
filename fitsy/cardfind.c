@@ -37,25 +37,26 @@
 
 #include "fitsy.h"
 
-int ft_compare(const void *void_a, const void *void_b) {
-	int	ax, bx;
-                
-        const FITSCard fc_a = (const FITSCard) void_a;
-        const FITSCard fc_b = (const FITSCard) void_b;
+int
+ft_compare( const void *void_a, const void *void_b ) {
+    int ax, bx;
 
-        const char* a = (const char *) &(fc_a->c);
-        const char* b = (const char *) &(fc_b->c);
+    const FITSCard fc_a = ( const FITSCard ) void_a;
+    const FITSCard fc_b = ( const FITSCard ) void_b;
 
-	if ( !strncmp(a, b, 5) 
-	  && (a[5] != ' ') && (b[5] != ' ')
-	  && (ax = atoi(&a[5])) 
-	  && (bx = atoi(&b[5])) ) {
-		if ( ax <  bx ) return -1;
-		if ( ax == bx ) return  0;
-		if ( ax >  bx ) return  1;
-	}
+    const char *a = ( const char * ) &( fc_a->c );
+    const char *b = ( const char * ) &( fc_b->c );
 
-	return strncmp(a, b, 8);
+    if ( !strncmp( a, b, 5 )
+         && ( a[5] != ' ' ) && ( b[5] != ' ' )
+         && ( ax = atoi( &a[5] ) )
+         && ( bx = atoi( &b[5] ) ) ) {
+	if ( ax < bx ) return -1;
+	if ( ax == bx ) return 0;
+	if ( ax > bx ) return 1;
+    }
+
+    return strncmp( a, b, 8 );
 }
 
 /* Find a FITS card in the header.
@@ -63,140 +64,151 @@ int ft_compare(const void *void_a, const void *void_b) {
    #cardfind will use the index if is has been created otherwise
    it searches sequentially through the header to find the card.
  */
-FITSCard ft_cardfind(fits, key, add)
-	FITSHead	fits;		/* The FITS header to look in.	*/
-	FITSCard	key;		/* The card keyword to lookup.	*/
-	int		add;		/* If add is true the card will
-					   be added to the header if it is
-					   not found.
-					 */
+FITSCard
+ft_cardfind( fits, key, add )
+     FITSHead fits;             /* The FITS header to look in.  */
+     FITSCard key;              /* The card keyword to lookup.  */
+     int add;                   /* If add is true the card will
+                                   be added to the header if it is
+                                   not found.
+                                 */
 {
-		FITSCard	 card;
-		int		 match;
+    FITSCard card;
+    int match;
 
-	if ( fits == NULL ) return NULL;
-	if ( key  == NULL ) return NULL;
+    if ( fits == NULL ) return NULL;
+    if ( key == NULL ) return NULL;
 
-	if ( fits->index ) card = ft_cardfindidx(fits, key, &match);
-	else 		   card = ft_cardfindseq(fits, key, &match);
+    if ( fits->index ) card = ft_cardfindidx( fits, key, &match );
+    else card = ft_cardfindseq( fits, key, &match );
 
-	if ( !match && add )
-		return ft_cardins(fits, key, card);
-	else    return match ? card : NULL;
+    if ( !match && add )
+	return ft_cardins( fits, key, card );
+    else return match ? card : NULL;
 }
 
 /* Find a FITS card in the header using an index.
 
    If the header is not indexed an index is created for it.
  */
-FITSCard ft_cardfindidx(fits, key, match)
-	FITSHead	 fits;
-	FITSCard	 key;
-	int		*match;		/* Returns true if the card found is
-					   an exact match for the keyword requested.
-					 */
+FITSCard
+ft_cardfindidx( fits, key, match )
+     FITSHead fits;
+     FITSCard key;
+     int *match;                /* Returns true if the card found is
+                                   an exact match for the keyword requested.
+                                 */
 {
-                FITSCard    	*base;
-                int     	 length;
+    FITSCard *base;
+    int length;
 
-                int     lo, hi, cut;
-                int     i; 
- 
-	if ( fits == NULL ) return NULL;
-	if ( key  == NULL ) return NULL;
+    int lo, hi, cut;
+    int i;
 
-	base   = fits->index;
-	length = ft_ncards(fits);
+    if ( fits == NULL ) return NULL;
+    if ( key == NULL ) return NULL;
 
-	lo  = -1;
-	hi  = length;
-	cut = length / 2;
+    base = fits->index;
+    length = ft_ncards( fits );
 
-	if ( !fits->index ) ft_headindex(fits);
+    lo = -1;
+    hi = length;
+    cut = length / 2;
 
-	*match = 0;
-        while ( hi - lo > 1 ) {
-                if ( !(i = ft_compare((char **)&key, (char **)&base[cut])) ) {
-		    *match = 1;
-                    return base[cut];
-		}
- 
-                if ( i < 0 ) {
-                        hi = cut;
-                        cut = (lo + hi) / 2;
-                } else { 
-                        lo = cut;
-                        cut = (lo + hi) / 2;
-                } 
-        }
+    if ( !fits->index ) ft_headindex( fits );
 
-	if ( !strncmp(key->c, base[cut]->c, 5) )
-             return base[cut];
+    *match = 0;
+    while ( hi - lo > 1 ) {
+	if ( !( i = ft_compare( ( char ** ) &key, ( char ** ) &base[cut] ) ) ) {
+	    *match = 1;
+	    return base[cut];
+	}
 
-	return NULL;
+	if ( i < 0 ) {
+	    hi = cut;
+	    cut = ( lo + hi ) / 2;
+	}
+	else {
+	    lo = cut;
+	    cut = ( lo + hi ) / 2;
+	}
+    }
+
+    if ( !strncmp( key->c, base[cut]->c, 5 ) )
+	return base[cut];
+
+    return NULL;
 }
- 
+
 /* Find a card in the FITS header using sequential search.
 
    If the requested card is a FITS indexed keyword and an exact match
    is not found, the last card of that type is returned and
    match is set to 0.
  */
-FITSCard ft_cardfindseq(fits, key, match)
-	FITSHead	 fits;
-	FITSCard	 key;
-	int		*match;
+FITSCard
+ft_cardfindseq( fits, key, match )
+     FITSHead fits;
+     FITSCard key;
+     int *match;
 {
-	    FITSCard  card;
-	    FITSCard  xnear = NULL;
+    FITSCard card;
+    FITSCard xnear = NULL;
 
     if ( fits == NULL ) return NULL;
-    if ( key  == NULL ) return NULL;
+    if ( key == NULL ) return NULL;
 
     *match = 0;
     for ( card = fits->cards; card != &fits->cards[fits->ncard]; card++ ) {
-	    if ( !strncmp(key->c, card->c, 8) ) {
-		*match = 1;
-		return card;
-	    }
-	    if (  !strncmp(key->c, card->c, 5) 
-	      && (isdigit((unsigned int) (*card).c[5]) || (*card).c[5] == ' ' )
-	      && (isdigit((unsigned int) (*card).c[6]) || (*card).c[6] == ' ' )
-	      && (isdigit((unsigned int) (*card).c[7]) || (*card).c[7] == ' ' ) ) {
-		xnear = card;
-    	    }
+	if ( !strncmp( key->c, card->c, 8 ) ) {
+	    *match = 1;
+	    return card;
+	}
+	if ( !strncmp( key->c, card->c, 5 )
+	     && ( isdigit( ( unsigned int ) ( *card ).c[5] )
+	          || ( *card ).c[5] == ' ' )
+	     && ( isdigit( ( unsigned int ) ( *card ).c[6] )
+	          || ( *card ).c[6] == ' ' )
+	     && ( isdigit( ( unsigned int ) ( *card ).c[7] )
+	          || ( *card ).c[7] == ' ' ) ) {
+	    xnear = card;
+	}
     }
 
     return xnear;
 }
 
-FITSCard ft_cardfindblok(cards, key, match, nhist)
-	FITSCard	 cards;
-	FITSCard	 key;
-	int		*match;
-	int		*nhist;
+FITSCard
+ft_cardfindblok( cards, key, match, nhist )
+     FITSCard cards;
+     FITSCard key;
+     int *match;
+     int *nhist;
 {
-	    FITSCard  card;
-	    FITSCard  xnear = NULL;
+    FITSCard card;
+    FITSCard xnear = NULL;
 
-    if ( cards== NULL ) return NULL;
-    if ( key  == NULL ) return NULL;
+    if ( cards == NULL ) return NULL;
+    if ( key == NULL ) return NULL;
 
     *nhist = 0;
     *match = 0;
     for ( card = cards; card != &cards[FT_CARDS]; card++ ) {
-	    if ( !strncmp(key->c, card->c, 8) ) {
-		*match = 1;
-		return card;
-	    }
-	    if (  !strncmp(key->c, card->c, 5) 
-	      && (isdigit((unsigned int) (*card).c[5]) || (*card).c[5] == ' ' )
-	      && (isdigit((unsigned int) (*card).c[6]) || (*card).c[6] == ' ' )
-	      && (isdigit((unsigned int) (*card).c[7]) || (*card).c[7] == ' ' ) ) {
-		xnear = card;
-    	    }
+	if ( !strncmp( key->c, card->c, 8 ) ) {
+	    *match = 1;
+	    return card;
+	}
+	if ( !strncmp( key->c, card->c, 5 )
+	     && ( isdigit( ( unsigned int ) ( *card ).c[5] )
+	          || ( *card ).c[5] == ' ' )
+	     && ( isdigit( ( unsigned int ) ( *card ).c[6] )
+	          || ( *card ).c[6] == ' ' )
+	     && ( isdigit( ( unsigned int ) ( *card ).c[7] )
+	          || ( *card ).c[7] == ' ' ) ) {
+	    xnear = card;
+	}
 
-	    if ( !strncmp(key->c, "HISTORY", 7) ) (*nhist)++;
+	if ( !strncmp( key->c, "HISTORY", 7 ) ) ( *nhist )++;
     }
 
     return xnear;

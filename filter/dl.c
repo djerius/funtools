@@ -9,45 +9,48 @@ int have_dl = 1;
 
 #ifdef ANSI_FUNC
 void *
-DLOpen(char *name)
+DLOpen( char *name )
 #else
-void *DLOpen(name)
+void *
+DLOpen( name )
      char *name;
 #endif
 {
-  void *d;
-  if( !(d=dlopen(name, RTLD_LAZY)) )
-    gerror(stderr, "%s\n", dlerror());
-  return d;
+    void *d;
+    if ( !( d = dlopen( name, RTLD_LAZY ) ) )
+	gerror( stderr, "%s\n", dlerror(  ) );
+    return d;
 }
 
 #ifdef ANSI_FUNC
 void *
-DLSym(void *dl, char *name)
+DLSym( void *dl, char *name )
 #else
-void *DLSym(dl, name)
+void *
+DLSym( dl, name )
      void *dl;
      char *name;
 #endif
 {
-  void *d;
-  if( !(d=dlsym(dl, name)) )
-    gerror(stderr, "%s\n", dlerror());
-  return d;
+    void *d;
+    if ( !( d = dlsym( dl, name ) ) )
+	gerror( stderr, "%s\n", dlerror(  ) );
+    return d;
 }
 
 #ifdef ANSI_FUNC
 int
-DLClose(void *dl)
+DLClose( void *dl )
 #else
-int DLClose(dl)
+int
+DLClose( dl )
      void *dl;
 #endif
 {
-  if( dl )
-    return dlclose(dl);
-  else
-    return -1;
+    if ( dl )
+	return dlclose( dl );
+    else
+	return -1;
 }
 
 #else

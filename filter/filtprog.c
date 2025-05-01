@@ -17,22 +17,23 @@
  */
 #ifdef ANSI_FUNC
 int
-FilterProgStart (Filter filter)
+FilterProgStart( Filter filter )
 #else
-int FilterProgStart(filter)
+int
+FilterProgStart( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_start )
-    return((filter->filt_start)(filter));
-  else{
-    return(0);
-  }
+    /* call the technique-specific routine */
+    if ( filter->filt_start )
+	return ( ( filter->filt_start ) ( filter ) );
+    else {
+	return ( 0 );
+    }
 }
 
 /*
@@ -42,33 +43,35 @@ int FilterProgStart(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgOpen (Filter filter)
+FilterProgOpen( Filter filter )
 #else
-int FilterProgOpen(filter)
+int
+FilterProgOpen( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* check the mode for known techniques and load drivers */
-  switch( filter->method ){
-  case METHOD_C:
-    FilterProgLoad_C(filter);
-    break;
-  default:
-    gerror(stderr, "unknown filter technique: %d\n", filter->method);
-    return(0);
-  }
+    /* check the mode for known techniques and load drivers */
+    switch ( filter->method ) {
+	case METHOD_C:
+	    FilterProgLoad_C( filter );
+	    break;
+	default:
+	    gerror( stderr, "unknown filter technique: %d\n",
+	            filter->method );
+	    return ( 0 );
+    }
 
-  /* call the technique-specific routine */
-  if( filter->filt_open ){
-    return((filter->filt_open)(filter));
-  }
-  else{
-    return(1);
-  }
+    /* call the technique-specific routine */
+    if ( filter->filt_open ) {
+	return ( ( filter->filt_open ) ( filter ) );
+    }
+    else {
+	return ( 1 );
+    }
 }
 
 /*
@@ -78,21 +81,22 @@ int FilterProgOpen(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgPrepend (Filter filter)
+FilterProgPrepend( Filter filter )
 #else
-int FilterProgPrepend(filter)
+int
+FilterProgPrepend( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_prepend )
-    return((filter->filt_prepend)(filter));
-  else
-    return(1);
+    /* call the technique-specific routine */
+    if ( filter->filt_prepend )
+	return ( ( filter->filt_prepend ) ( filter ) );
+    else
+	return ( 1 );
 }
 
 /*
@@ -102,21 +106,22 @@ int FilterProgPrepend(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgWrite (Filter filter)
+FilterProgWrite( Filter filter )
 #else
-int FilterProgWrite(filter)
+int
+FilterProgWrite( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_write )
-    return((filter->filt_write)(filter));
-  else
-    return(1);
+    /* call the technique-specific routine */
+    if ( filter->filt_write )
+	return ( ( filter->filt_write ) ( filter ) );
+    else
+	return ( 1 );
 }
 
 /*
@@ -126,21 +131,22 @@ int FilterProgWrite(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgAppend (Filter filter)
+FilterProgAppend( Filter filter )
 #else
-int FilterProgAppend(filter)
+int
+FilterProgAppend( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_append )
-    return((filter->filt_append)(filter));
-  else
-    return(1);
+    /* call the technique-specific routine */
+    if ( filter->filt_append )
+	return ( ( filter->filt_append ) ( filter ) );
+    else
+	return ( 1 );
 }
 
 /*
@@ -150,25 +156,26 @@ int FilterProgAppend(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgClose (Filter filter)
+FilterProgClose( Filter filter )
 #else
-int FilterProgClose(filter)
+int
+FilterProgClose( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* debugging only */
-  if( filter->debug >= 2 )
-    return(1);
+    /* debugging only */
+    if ( filter->debug >= 2 )
+	return ( 1 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_close )
-    return((filter->filt_close)(filter));
-  else
-    return(1);
+    /* call the technique-specific routine */
+    if ( filter->filt_close )
+	return ( ( filter->filt_close ) ( filter ) );
+    else
+	return ( 1 );
 }
 
 /*
@@ -178,25 +185,26 @@ int FilterProgClose(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgCompile (Filter filter)
+FilterProgCompile( Filter filter )
 #else
-int FilterProgCompile(filter)
+int
+FilterProgCompile( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* debugging only */
-  if( filter->debug >= 2 )
-    return(1);
+    /* debugging only */
+    if ( filter->debug >= 2 )
+	return ( 1 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_compile )
-    return((filter->filt_compile)(filter));
-  else
-    return(1);
+    /* call the technique-specific routine */
+    if ( filter->filt_compile )
+	return ( ( filter->filt_compile ) ( filter ) );
+    else
+	return ( 1 );
 }
 
 /*
@@ -206,22 +214,23 @@ int FilterProgCompile(filter)
  */
 #ifdef ANSI_FUNC
 int
-FilterProgEnd (Filter filter)
+FilterProgEnd( Filter filter )
 #else
-int FilterProgEnd(filter)
+int
+FilterProgEnd( filter )
      Filter filter;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(0);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( 0 );
 
-  /* call the technique-specific routine */
-  if( filter->filt_end )
-    return((filter->filt_end)(filter));
-  else{
-    return(0);
-  }
+    /* call the technique-specific routine */
+    if ( filter->filt_end )
+	return ( ( filter->filt_end ) ( filter ) );
+    else {
+	return ( 0 );
+    }
 }
 
 /*
@@ -231,22 +240,23 @@ int FilterProgEnd(filter)
  */
 #ifdef ANSI_FUNC
 char *
-FilterLexName (Filter filter, char *name)
+FilterLexName( Filter filter, char *name )
 #else
-char *FilterLexName(filter, name)
+char *
+FilterLexName( filter, name )
      Filter filter;
      char *name;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(name);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( name );
 
-  /* call the technique-specific routine */
-  if( filter->filt_name )
-    return((filter->filt_name)(filter, name));
-  else
-    return(name);
+    /* call the technique-specific routine */
+    if ( filter->filt_name )
+	return ( ( filter->filt_name ) ( filter, name ) );
+    else
+	return ( name );
 }
 
 /*
@@ -256,22 +266,23 @@ char *FilterLexName(filter, name)
  */
 #ifdef ANSI_FUNC
 char *
-FilterLexRoutine1 (Filter filter, char *name)
+FilterLexRoutine1( Filter filter, char *name )
 #else
-char *FilterLexRoutine1(filter, name)
+char *
+FilterLexRoutine1( filter, name )
      Filter filter;
      char *name;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(NULL);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( NULL );
 
-  /* call the technique-specific routine */
-  if( filter->filt_routine1 )
-    return((filter->filt_routine1)(filter, name));
-  else
-    return(name);
+    /* call the technique-specific routine */
+    if ( filter->filt_routine1 )
+	return ( ( filter->filt_routine1 ) ( filter, name ) );
+    else
+	return ( name );
 }
 
 /*
@@ -281,22 +292,23 @@ char *FilterLexRoutine1(filter, name)
  */
 #ifdef ANSI_FUNC
 char *
-FilterLexRoutine2 (Filter filter, char *name)
+FilterLexRoutine2( Filter filter, char *name )
 #else
-char *FilterLexRoutine2(filter, name)
+char *
+FilterLexRoutine2( filter, name )
      Filter filter;
      char *name;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(NULL);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( NULL );
 
-  /* call the technique-specific routine */
-  if( filter->filt_routine2 )
-    return((filter->filt_routine2)(filter, name));
-  else
-    return(name);
+    /* call the technique-specific routine */
+    if ( filter->filt_routine2 )
+	return ( ( filter->filt_routine2 ) ( filter, name ) );
+    else
+	return ( name );
 }
 
 /*
@@ -306,22 +318,23 @@ char *FilterLexRoutine2(filter, name)
  */
 #ifdef ANSI_FUNC
 char *
-FilterLexRegion1 (Filter filter, char *name)
+FilterLexRegion1( Filter filter, char *name )
 #else
-char *FilterLexRegion1(filter, name)
+char *
+FilterLexRegion1( filter, name )
      Filter filter;
      char *name;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(NULL);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( NULL );
 
-  /* call the technique-specific region */
-  if( filter->filt_region1 )
-    return((filter->filt_region1)(filter, name));
-  else
-    return(name);
+    /* call the technique-specific region */
+    if ( filter->filt_region1 )
+	return ( ( filter->filt_region1 ) ( filter, name ) );
+    else
+	return ( name );
 }
 
 /*
@@ -331,21 +344,21 @@ char *FilterLexRegion1(filter, name)
  */
 #ifdef ANSI_FUNC
 char *
-FilterLexRegion2 (Filter filter, char *name)
+FilterLexRegion2( Filter filter, char *name )
 #else
-char *FilterLexRegion2(filter, name)
+char *
+FilterLexRegion2( filter, name )
      Filter filter;
      char *name;
 #endif
 {
-  /* make sure we have something to play with */
-  if( filter == NULL)
-    return(NULL);
+    /* make sure we have something to play with */
+    if ( filter == NULL )
+	return ( NULL );
 
-  /* call the technique-specific region */
-  if( filter->filt_region2 )
-    return((filter->filt_region2)(filter, name));
-  else
-    return(name);
+    /* call the technique-specific region */
+    if ( filter->filt_region2 )
+	return ( ( filter->filt_region2 ) ( filter, name ) );
+    else
+	return ( name );
 }
-
