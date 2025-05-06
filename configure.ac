@@ -314,4 +314,23 @@ AC_CONFIG_FILES([
 # generate pkg-config meta-data file
 AC_CONFIG_FILES(funtools.pc)
 
+# generate test scripts
+AC_CONFIG_FILES([funtest/tevread],[chmod +x funtest/tevread])
+AC_CONFIG_FILES([funtest/funtexts],[chmod +x funtest/funtexts])
+AC_CONFIG_FILES([funtest/tfunimage],[chmod +x funtest/tfunimage])
+AC_CONFIG_FILES([funtest/tfunview],[chmod +x funtest/tfunview])
+AC_CONFIG_FILES([funtest/timev],[chmod +x funtest/timev])
+AC_CONFIG_FILES([funtest/tfunhead],[chmod +x funtest/tfunhead])
+AC_CONFIG_FILES([funtest/funtests],[chmod +x funtest/funtests])
+AC_CONFIG_FILES([funtest/tfuncnts],[chmod +x funtest/tfuncnts])
+AC_CONFIG_FILES([funtest/tfuncalc],[chmod +x funtest/tfuncalc])
+AC_CONFIG_FILES([funtest/tfundisp],[chmod +x funtest/tfundisp])
+AC_CONFIG_FILES([
+        funtest/funtools1.vu
+        funtest/funtools2.vu
+        funtest/tfile.in
+        funtest/tview.in
+])
+
+
 AC_OUTPUT

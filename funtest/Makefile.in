@@ -150,12 +150,27 @@ Makefile:	Makefile.in
 RM = 		rm -f
 
 clean:
-		$(RM) *.a *.so *.o *.exe core errs *pure* .nfs* \
-			foo* *~ *.log \#* TAGS *.E a.out errors \
-			$(PROGS) $(TESTPROGS) \
-			gmon.out *.pg *.bak tview.fit tview.fits \
-			config.info config.log \
-			*fun*.out doc/*~ 
+		$(RM) *.a *.so *.o *.exe core errs *pure* .nfs*		\
+			foo* *~ *.log \#* TAGS *.E a.out errors		\
+			$(PROGS) $(TESTPROGS)				\
+			gmon.out *.pg *.bak tview.fit tview.fits	\
+			config.info config.log				\
+			*fun*.out doc/*~ 				\
+			funtests					\
+			funtexts					\
+			funtools1.vu					\
+			funtools2.vu					\
+			tevread						\
+			tfile.in					\
+			tfuncalc					\
+			tfuncnts					\
+			tfundisp					\
+			tfunhead					\
+			tfunimage					\
+			tfunview					\
+			timev						\
+			tview.in
+
 		$(RM) -r autom4te.cache
 
 distclean:	clean

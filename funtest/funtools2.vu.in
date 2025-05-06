@@ -1,0 +1,11 @@
+VIEW FILE                  FORMAT  COLUMNS          FILTER
+---- --------------------  ------  ------------     ----------------
+x3   @abs_top_srcdir@/funtest/data/snr.ev   'I=%4d' 'x y pi pha'     'cir 512 512 .1'
+x2   @abs_top_srcdir@/funtest/data/snr.ev   ''      'x y pi pha'     'cir 512 512 .1'
+x1   @abs_top_srcdir@/funtest/data/snr.ev   ''      ''               'cir 512 512 .1'
+x0   @abs_top_srcdir@/funtest/data/snr.ev   ''      ''               ''
+xf   ''                    'I=%4d' ''               ''
+xc   ''                    ''      'x y pi pha'     ''
+xr   ''                    ''      ''               'cir 512 512 .1'
+''   *.fit                 ''      'x y pi pha'     'cir 512 512 .1'
+
