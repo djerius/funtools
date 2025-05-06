@@ -116,11 +116,11 @@ CC_SWITCHES =	-I. ${CFLAGS} ${CPPFLAGS} @USE_DL@ ${INCLUDES} ${AC_FLAGS}
 
 DEPEND_SWITCHES = -I. ${CFLAGS} ${INCLUDES} ${AC_FLAGS}
 
-SRCS =		file.c find.c gio.c xlaunch.c \
+SRCS =		chunked.c file.c find.c gio.c xlaunch.c \
 		macro.c mainlib.c mkrtemp.c nan.c parse.c \
 		strtod.c swap.c word.c winprocess.c xalloc.c zprocess.c 
 
-OBJS =		file.o find.o gio.o xlaunch.o \
+OBJS =		chunked.o file.o find.o gio.o xlaunch.o \
 		macro.o mainlib.o mkrtemp.o nan.o parse.o \
 		strtod.o swap.o word.o  winprocess.o xalloc.o zprocess.o \
 		$(EXTRA_OBJS)
@@ -246,7 +246,7 @@ install-binaries: $(LIB) $(PROGS)
 		fi; \
 	    done;
 	@for i in NaN.h conf.h file.h find.h gio.h xlaunch.h longlong.h \
-	macro.h mainlib.h tclmainlib.h mkrtemp.h parse.h prsetup.h \
+	chunked.h macro.h mainlib.h tclmainlib.h mkrtemp.h parse.h prsetup.h \
 	xalloc.h strtod.h swap.h word.h xport.h winprocess.h xfileio.h \
 	zprocess.h; \
 	    do \
