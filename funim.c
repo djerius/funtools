@@ -452,7 +452,7 @@ _FunTableBin(
 		    break;
 		    /* 64-bit int */
 		case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 		    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		    if ( !dovcol ) {
@@ -533,7 +533,7 @@ _FunTableBin(
 		    ( ( int * ) obuf )[i] /= block2;
 		    break;
 		case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 		    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		    ( ( longlong * ) obuf )[i] /= block2;
@@ -781,7 +781,7 @@ _FunImageExtract(
 				val += ( double ) ival;
 			    break;
 			case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 			    gerror( stderr,
 			            "64-bit data support not built (long long not available)\n" );
 #endif
@@ -836,7 +836,7 @@ _FunImageExtract(
 			( ( int * ) obuf )[yoff + ox] = ( int ) vall;
 			break;
 		    case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 			gerror( stderr,
 			        "64-bit data support not built (long long not available)\n" );
 #endif
@@ -867,7 +867,7 @@ _FunImageExtract(
 			( ( int * ) obuf )[yoff + ox] = ( int ) val;
 			break;
 		    case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 			gerror( stderr,
 			        "64-bit data support not built (long long not available)\n" );
 #endif
@@ -903,7 +903,7 @@ _FunImageExtract(
 		    ( ( int * ) obuf )[yoff + ox] = fun->blank;
 		    break;
 		case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 		    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 		    ( ( longlong * ) obuf )[yoff + ox] = fun->blank;
@@ -1069,7 +1069,7 @@ _FunImageMask(
 			    optr += pixsize;
 			    break;
 			case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 			    gerror( stderr,
 			            "64-bit data support not built (long long not available)\n" );
 #endif

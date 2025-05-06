@@ -196,7 +196,7 @@ _FunBlank(
 	    memcpy( buf, &ival, sizeof( int ) );
 	    break;
 	case 'K':
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 	    gerror( stderr, "long long support was not built into this program\n" );
 	    exit( 1 );
 #endif

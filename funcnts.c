@@ -100,7 +100,7 @@ DConvert(
 	    dval = ( double ) *( int * ) buf;
 	    break;
 	case 'K':
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 	    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 	    break;

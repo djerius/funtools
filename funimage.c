@@ -60,7 +60,7 @@ doimproj(
 	    ( ( int * ) pbuf )[idx] += ( ( int * ) buf )[( j * dim ) + i];
 	    break;
 	case TY_LONG:
-#if HAVE_LONG_LONG == 0
+#if HAVE_LONG_LONG_INT == 0
 	    gerror( stderr, "64-bit data support not built (long long not available)\n" );
 #endif
 	    ( ( longlong * ) pbuf )[idx] += ( ( longlong * ) buf )[( j * dim ) + i];

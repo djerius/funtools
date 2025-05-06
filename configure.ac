@@ -15,8 +15,6 @@ if test x"${EXEEXT}" = "xno"; then
   EXEEXT=""
 fi
 
-AX_C_LONG_LONG
-
 AC_PROG_RANLIB
 
 # Autoupdate added the next two lines to ensure that your configure
@@ -40,6 +38,8 @@ case $host_os in
         AC_CHECK_HEADERS(sys/shm.h)
         ;;
 esac
+
+AC_TYPE_LONG_LONG_INT
 
 AC_CHECK_TYPES([socklen_t], [], [], [#include <sys/socket.h>])
 
