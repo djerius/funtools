@@ -40,7 +40,12 @@ LIBS	= -L.. -lfuntools $(EXTRA_LIBS) -lm
 
 # To change the compiler switches, for example to change from -O
 # to -g, change the following line:
-CFLAGS = 		@CFLAGS@
+CFLAGS = 	@CFLAGS@			\
+		-I@abs_top_srcdir@		\
+		-I@abs_top_srcdir@/filter	\
+		-I@abs_top_srcdir@/fitsy	\
+		-I@abs_top_srcdir@/util		\
+		-I@abs_top_srcdir@/wcs
 
 # To add ld switches, change the following line:
 LDFLAGS =		@LDFLAGS@

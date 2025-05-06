@@ -10,7 +10,15 @@
 PACKAGE = @PACKAGE_NAME@
 VERSION = @PACKAGE_VERSION@
 
-DISTNAME = util-${VERSION}
+# FIXME: the default library for this package
+# this is a holdover from former times.
+DEFLIB = util
+
+# the actual library we are building it is passed to this makefile on
+# the command line from the parent funtools make
+LIB =
+
+DISTNAME = $(DEFLIB)-${VERSION}
 DISTDIR = ../export/${DISTNAME}
 FTPDIR	= ../ftp
 
@@ -73,7 +81,7 @@ LIBS	= -lm
 
 # To change the compiler switches, for example to change from -O
 # to -g, change the following line:
-CFLAGS = 		@CFLAGS@
+CFLAGS = 		@CFLAGS@ -I@abs_top_srcdir@
 
 # To add ld switches, change the following line:
 LDFLAGS =		@LDFLAGS@
@@ -83,7 +91,7 @@ LDFLAGS =		@LDFLAGS@
 SHELL =			/bin/sh
 
 # extra modules added by configure.in to fix OS bugs
-EXTRA_OBJS = 		@EXTRA_OBJS@
+EXTRA_OBJS = 		@EXTRA_OBJS@ @ZLIB_OBJS@
 
 # There are just too many different versions of "install" around;
 # better to use the install-sh script that comes with the distribution,
@@ -128,11 +136,6 @@ OBJS =		chunked.o file.o find.o gio.o xlaunch.o \
 
 # these are all the modules going into the "normal" filt library
 LIBOBJS =	${OBJS}
-
-# the default library for this package
-DEFLIB =	@DEFLIB@
-# the actual library we are building (if this is a subpackage)
-LIB =		@LIB@
 
 TESTPROGS =	tparse tlaunch tlaunch2
 
@@ -257,7 +260,7 @@ install-binaries: $(LIB) $(PROGS)
 	    done;
 
 Makefile:	Makefile.in
-		$(SHELL) config.status
+		cd @abs_top_srcdir@; $(SHELL) config.status
 
 RM = 		rm -f
 

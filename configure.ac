@@ -1,9 +1,7 @@
-#	This file is an input file used by the GNU "autoconf" program to
-#	generate the file "configure", which is run during XPA installation
-#	to configure the system for the local environment.
+
 AC_INIT([funtools],[1.4.7.1],[saord@cfa.harvard.edu],[funtools])
 
-AC_CONFIG_HEADERS([conf.h ./gnu/conf.h ./funtest/conf.h])
+AC_CONFIG_HEADERS([conf.h])
 AC_CONFIG_SRCDIR([./funtools.h])
 AC_CANONICAL_HOST
 
@@ -30,9 +28,11 @@ AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(getopt.h)
 AC_CHECK_HEADERS(values.h)
 AC_CHECK_HEADERS(dlfcn.h)
+AC_CHECK_HEADERS(setjmp.h)
 AC_CHECK_HEADERS(sys/un.h)
 AC_CHECK_HEADERS(sys/ipc.h)
 AC_CHECK_HEADERS(sys/mman.h)
+AC_CHECK_HEADERS(crt_externs.h)
 case $host_os in
     *cygwin*|*Cygwin* )
         ;;
@@ -45,7 +45,7 @@ AC_CHECK_TYPES([socklen_t], [], [], [#include <sys/socket.h>])
 
 AC_C_CONST
 
-AC_CHECK_FUNCS(strchr memcpy snprintf)
+AC_CHECK_FUNCS(strchr memcpy snprintf ftello fseeko setenv)
 
 AC_CHECK_FUNC(connect)
 if test $ac_cv_func_connect = no; then
@@ -55,7 +55,9 @@ AC_CHECK_FUNC(gethostbyname)
 if test $ac_cv_func_gethostbyname = no; then
   AC_CHECK_LIB(nsl, gethostbyname, EXTRA_LIBS="$EXTRA_LIBS -lnsl")
 fi                                                                          
-# AC_CHECK_LIB(db, snprintf, EXTRA_LIBS="$EXTRA_LIBS -ldb")
+
+AC_C_BIGENDIAN([BIGENDIAN=1], [BIGENDIAN=0], [BIGENDIAN=1])
+AC_SUBST(BIGENDIAN)
 
 #
 # checks specific to this project
@@ -83,12 +85,30 @@ AC_SUBST(DEFLIB)
 
 AC_MSG_CHECKING(for external zlib)
 AC_ARG_WITH(zlib, [ --with-zlib=LIB  library name],
-	zlib=yes EXTRA_LIBS="$EXTRA_LIBS $withval", zlib=no)
+                  [ zlib=yes
+                    EXTRA_LIBS="$EXTRA_LIBS $withval"
+                    ZLIB_OBJS=
+                  ],
+                  [
+                   zlib=no
+                   ZLIB_OBJS='$(ZOBJS)'
+                  ]
+           )
+AC_SUBST(ZLIB_OBJS)
 AC_MSG_RESULT($zlib)
 
 AC_MSG_CHECKING(for external wcslib)
-AC_ARG_WITH(wcslib, [ --with-wcslib=LIB  library name],
-	wcslib=yes EXTRA_LIBS="$EXTRA_LIBS $withval", wcslib=no)
+AC_ARG_WITH(wcslib,
+                [ --with-wcslib=LIB  library name],
+                [wcslib=yes
+                 EXTRA_LIBS=EXTRA_LIBS="$EXTRA_LIBS $withval"
+                 WCS_SUBLIB=
+                 ],
+                 [
+                 WCS_SUBLIB=wcs
+                 ]
+              )
+AC_SUBST([WCS_SUBLIB])
 AC_MSG_RESULT($wcslib)
 
 AC_MSG_CHECKING(for shared library build)
@@ -177,6 +197,16 @@ else
   using_fpu_double="no"
   USE_FPU_DOUBLE="0"
 fi
+
+AC_MSG_CHECKING(for request to use posix_spawn)
+AC_ARG_ENABLE(posix_spawn, [  --enable-posix_spawn    use posix_spawn() if available],
+    [fun_ok=$enableval], [fun_ok=no])
+AC_MSG_RESULT($fun_ok)
+if test "$fun_ok" = "yes"; then
+  AC_CHECK_FUNCS(posix_spawn _NSGetEnviron)
+  AC_CHECK_HEADERS(crt_externs.h)
+fi
+
 AC_MSG_RESULT([$using_fpu_double])
 else
   USE_FPU_DOUBLE="0"
@@ -222,7 +252,7 @@ POST="|\& cat"
 case $host_os in
     *cygwin*|*Cygwin* )
         CFLAGS="$CFLAGS -enable-auto-import"
-        AC_DEFINE([HAVE_CYGWIN])
+        AC_DEFINE([HAVE_CYGWIN],[1],[Cygwin is available])
         AC_MSG_RESULT(flagging Cygwin)
 	PRE="sh -c {"
 	POST="}"
@@ -230,7 +260,7 @@ case $host_os in
     *mingw32*|*Mingw32*)
         CFLAGS="$CFLAGS -mconsole -D_WSTRING_DEFINED=1"
 	EXTRA_LIBS="$EXTRA_LIBS -lwsock32"
-        AC_DEFINE([HAVE_MINGW32])
+        AC_DEFINE([HAVE_MINGW32],[1],[Mingw32 is available])
         AC_MSG_RESULT(flagging MinGW)
         ;;
     *osf*|*Osf*)
@@ -238,10 +268,7 @@ case $host_os in
         ;;
     *darwin*|*Darwin*)
 	LDFLAGS="$LDFLAGS $CFLAGS"
-        G=`$CC -v 2>&1 | grep version | awk '{print $3}' | awk -F. '{print $1$2}'`
-        if test x"$G" != x -a "$G" -lt 42; then
-	  CFLAGS="$CFLAGS -no-cpp-precomp"
-        fi
+	CFLAGS="$CFLAGS -fno-common"
         if test x"$fpic" = x"yes" ; then
 	  CFLAGS="$CFLAGS -fPIC"
           AC_MSG_RESULT([adding -fno-common, -fPIC to CFLAGS])
@@ -272,19 +299,19 @@ AC_SUBST(GUNZIP)
 AC_SUBST(GNUPLOT)
 AC_SUBST(PIPEGLUE)
 
-AC_CONFIG_FILES(Makefile ./gnu/Makefile ./funtest/Makefile ./faq/Makefile)
+AC_CONFIG_FILES([
+        Makefile
+        util/Makefile
+        util/NaN.h
+        filter/Makefile
+        fitsy/Makefile
+        wcs/Makefile
+        gnu/Makefile
+        funtest/Makefile
+        faq/Makefile
+        ])
 
 # generate pkg-config meta-data file
 AC_CONFIG_FILES(funtools.pc)
-
-# for individual package that create libraries, we must run configure again,
-# faking the subdirs into using the funtools library as their library
-# this will run faster with --config-cache
-ac_configure_args="--with-altlib=`pwd`/$LIB $ac_configure_args"
-# AC_CONFIG_SUBDIRS(util fitsy filter wcs)
-AC_CONFIG_SUBDIRS(util)
-AC_CONFIG_SUBDIRS(fitsy)
-AC_CONFIG_SUBDIRS(filter)
-AC_CONFIG_SUBDIRS(wcs)
 
 AC_OUTPUT

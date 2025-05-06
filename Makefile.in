@@ -152,11 +152,8 @@ OBJS =		funcol.o funcopy.o funtab.o funim.o funinfo.o \
 # these are all the modules going into the "normal" funtools library
 LIBOBJS =	${OBJS}
 
-# the default library for this package
-DEFLIB =	@DEFLIB@
-
 # the actual library we are building (if this is a subpackage)
-LIB =		@LIB@
+LIB =		@abs_top_builddir@/@DEFLIB@
 
 # this is used in the link line
 # LLIB =	$(LIB)
@@ -188,9 +185,14 @@ DEVEL =
 
 # Subdirectories to run make in for the primary targets.
 
-SUBLIBS =	util fitsy wcs filter
+SUBLIBS =	util fitsy @WCS_SUBLIB@ filter
 
 SUBDIRS =	$(SUBLIBS) gnu funtest faq
+
+SUBMAKEFLAGS =  LIB='$(LIB)'
+
+SUBMAKE =	$(MAKE) $(SUBMAKEFLAGS)
+
 
 all:		lib progs progs2 scripts ds9helpers
 
@@ -209,10 +211,10 @@ libutil:	FORCE
 		  cd util; $(MAKE) libutil; mv libutil.a ..)
 
 sublib:		FORCE
-		@for dir in $(SUBLIBS); do \
-		   echo " "; \
-		   echo Making library in $$dir ...; \
-		   (cd $$dir; $(MAKE)) ; \
+		@for dir in $(SUBLIBS); do		\
+		   echo " ";				\
+		   echo Making library in $$dir ...;	\
+		   ( cd $$dir; $(SUBMAKE); ) || exit;	\
 		done
 
 lib:		$(LIB) $(DOMAINLIB) $(DOSHARED)
@@ -386,7 +388,7 @@ install::
 		@for dir in $(SUBDIRS); do \
 		   echo " "; \
 		   echo Installing in $$dir ...; \
-		   (cd $$dir; $(MAKE) INSTALL_ROOT=$(INSTALL_ROOT) INCLUDE_INSTALL_DIR=$(INCLUDE_INSTALL_DIR) $@) ; \
+		   (cd $$dir; $(SUBMAKE) INSTALL_ROOT=$(INSTALL_ROOT) INCLUDE_INSTALL_DIR=$(INCLUDE_INSTALL_DIR) $@) || exit; \
 		done
 
 install::	install-share
@@ -523,7 +525,7 @@ binclean:	FORCE
 subclean:	FORCE
 		for dir in $(SUBDIRS); do \
 		  echo making clean in subdir $$dir ; \
-		  (cd $$dir; if [ -f Makefile ]; then $(MAKE) clean; fi); \
+		  (cd $$dir; if [ -f Makefile ]; then $(SUBMAKE) clean; fi); \
 		done
 
 clean:		topclean binclean subclean
@@ -537,7 +539,7 @@ distclean:	clean
 Distclean:	distclean
 		for dir in $(SUBDIRS); do \
 		  echo making clean in $$dir ; \
-		  (cd $$dir; if [ -f Makefile ]; then $(MAKE) distclean; fi); \
+		  (cd $$dir; if [ -f Makefile ]; then $(SUBMAKE) distclean; fi); \
 		done
 
 
@@ -616,17 +618,9 @@ Configure:	FORCE
 		   if [ -f $$dir/configure.ac ]; then \
 		     echo " "; \
 		     echo Autoconf in $$dir ...; \
-		     (cd $$dir; autoconf) ; \
+		     (cd $$dir; autoconf;) || exit; \
 		   fi; \
 		done
-
-Confiles:	FORCE
-		@(for dir in $(SUBDIRS); do \
-		   echo " "; \
-		   echo Copying configure files to $$dir ...; \
-		   cp -p aclocal.m4 tcl.m4 \
-			conf.h.in config.sub config.guess install-sh $$dir; \
-		done)
 
 dist:		configure
 		($(RM) -r $(DISTDIR); \

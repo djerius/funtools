@@ -30,7 +30,7 @@ exec_prefix =		@exec_prefix@
 INSTALL_ROOT =
 
 # extra includes for compiling
-INCLUDES = -I. -I$(prefix)/include
+INCLUDES = -I. -I@abs_top_builddir@ -I$(prefix)/include
 
 # extra libs
 EXTRA_LIBS	= @EXTRA_LIBS@
@@ -108,7 +108,7 @@ sorttest:	sorttest.o
 		$(CC) $(LDFLAGS) sorttest.o -o sorttest -L.. -lfuntools
 
 Makefile:	Makefile.in
-		$(SHELL) config.status
+		cd @abs_top_srcdir@; $(SHELL) config.status
 
 RM = 		rm -f
 

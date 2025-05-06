@@ -47,7 +47,7 @@ INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(prefix)/include
 
 # To change the compiler switches, for example to change from -O
 # to -g, change the following line:
-CFLAGS = 		@CFLAGS@
+CFLAGS = 		@CFLAGS@ -I@abs_top_builddir@
 
 # To add ld switches, change the following line:
 LDFLAGS =		@LDFLAGS@
@@ -101,20 +101,18 @@ OBJS =  wcsinit.o wcs.o wcscon.o fitsfile.o imhfile.o fileutil.o \
 # these are all the modules going into the "normal" wcs library
 LIBOBJS =	${OBJS}
 
-# whether to build library at all
-WHICHLIB =	@WHICHLIB@
-EXTLIB =	@EXTLIB@
-
 # the default library for this package
-DEFLIB =	@DEFLIB@
-# the actual library we are building (if this is a subpackage)
-LIB =		@LIB@
+DEFLIB =	libwcs.a
+
+# the actual library we are building it is passed to this makefile on
+# the command line from the parent funtools make
+LIB =
 
 PROGS =
 
 TESTPROGS =
 
-all:		$(WHICHLIB) $(PROGS)
+all:		lib $(PROGS)
 
 testall:	$(TESTPROGS)
 
@@ -158,7 +156,7 @@ install-binaries: $(LIB) $(PROGS)
 	@$(INSTALL_DATA) wcslib.h $(INCLUDE_INSTALL_DIR)/wcslib.h
 
 Makefile:	Makefile.in
-		$(SHELL) config.status
+		cd @abs_top_srcdir@; $(SHELL) config.status
 
 RM =		rm -f
 

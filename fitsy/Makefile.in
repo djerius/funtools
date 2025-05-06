@@ -1,6 +1,3 @@
-# Makefile for library files used by GNU text utilities.
-# Copyright (C) 1991, 1992, 1993 Free Software Foundation, Inc.
-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
@@ -63,7 +60,7 @@ DEFS = @DEFS@
 #CFLAGS = -g
 # CFLAGS = @CFLAGS@
 #CFLAGS = -ansi -pedantic -Wimplicit -Wreturn-type -Wunused -Wformat -Wuninitialized -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Wconversion -Waggregate-return -Werror
-CFLAGS = @CFLAGS@
+CFLAGS = @CFLAGS@ -I@abs_top_srcdir@
 LDFLAGS = @LDFLAGS@
 YACC = @YACC@
 
@@ -107,9 +104,11 @@ XFILE =	-DUSE_XFILEIO=1  -I../util
 INCL =	$(XFILE) -I$(srcdir)
 
 # the default library for this package
-DEFLIB =	@DEFLIB@
-# the actual library we are building (if this is a subpackage)
-LIB =	@LIB@
+DEFLIB =	libfitsy.a
+
+# the actual library we are building it is passed to this makefile on
+# the command line from the parent funtools make
+LIB =
 
 all:	$(LIB)
 
@@ -217,6 +216,9 @@ TAGS: $(SOURCES)
 	etags $(SOURCES)
 
 check:
+
+Makefile:	Makefile.in
+		cd @abs_top_srcdir@; $(SHELL) config.status
 
 RM =	rm -f
 

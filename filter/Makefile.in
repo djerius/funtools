@@ -69,7 +69,7 @@ LIBS =			$(WCS_LIBS) $(FITSY_LIBS) $(EXTRA_LIBS) -lm
 
 # To change the compiler switches, for example to change from -O
 # to -g, change the following line:
-CFLAGS = 		@CFLAGS@
+CFLAGS = 		@CFLAGS@ -I@abs_top_builddir@
 
 # To add ld switches, change the following line:
 LDFLAGS =		@LDFLAGS@
@@ -131,9 +131,11 @@ OBJS =		evregions.o filter.o filtprog.o filtprog_c.o \
 LIBOBJS =	${OBJS}
 
 # the default library for this package
-DEFLIB =	@DEFLIB@
-# the actual library we are building (if this is a subpackage)
-LIB =		@LIB@
+DEFLIB =	libfilter.a
+
+# the actual library we are building it is passed to this makefile on
+# the command line from the parent funtools make
+LIB =
 
 TESTPROGS =	tfilt
 
@@ -189,7 +191,7 @@ install-binaries: $(LIB) $(PROGS)
 	    done;
 
 Makefile:	Makefile.in
-		$(SHELL) config.status
+		cd @abs_top_srcdir@; $(SHELL) config.status
 
 RM = 		rm -f
 

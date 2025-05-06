@@ -95,7 +95,7 @@ tim:		tim.o
 		$(CC) $(LDFLAGS) tim.o -o tim $(LIBS)
 
 Makefile:	Makefile.in
-		$(SHELL) config.status
+		cd @abs_top_srcdir@; $(SHELL) config.status
 
 RM = 		rm -f
 
