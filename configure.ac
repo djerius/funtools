@@ -307,6 +307,8 @@ AC_CONFIG_FILES([
         util/Makefile
         util/NaN.h
         filter/Makefile
+        filter/imregions.c
+        filter/evregions.c
         fitsy/Makefile
         wcs/Makefile
         gnu/Makefile
@@ -328,6 +330,7 @@ AC_CONFIG_FILES([funtest/funtests],[chmod +x funtest/funtests])
 AC_CONFIG_FILES([funtest/tfuncnts],[chmod +x funtest/tfuncnts])
 AC_CONFIG_FILES([funtest/tfuncalc],[chmod +x funtest/tfuncalc])
 AC_CONFIG_FILES([funtest/tfundisp],[chmod +x funtest/tfundisp])
+
 AC_CONFIG_FILES([
         funtest/funtools1.vu
         funtest/funtools2.vu

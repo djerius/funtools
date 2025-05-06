@@ -74,9 +74,6 @@ CFLAGS = 		@CFLAGS@ -I@abs_top_builddir@
 # To add ld switches, change the following line:
 LDFLAGS =		@LDFLAGS@
 
-# whether to set the FPU in double round mode
-FPU_DOUBLE =		@USE_FPU_DOUBLE@
-
 # Some versions of make, like SGI's, use the following variable to
 # determine which shell to use for executing commands:
 SHELL =			/bin/sh
@@ -201,8 +198,9 @@ clean:
 			$(PROGS) $(TESTPROGS) \
 			gmon.out *.pg *.bak \
 			config.info config.log \
-			doc/*~
-		$(RM) -r autom4te.cache
+			doc/*~  \
+			evregions.c imregions.c \
+
 
 distclean:	clean
 		$(RM) Makefile config.status config.cache config.log
@@ -242,14 +240,6 @@ events_c.h:	evfilter.c $(CHUNKED)
 image_c.h:	imfilter.c $(CHUNKED)
 		$(RM) image_c.h
 		perl $(CHUNKED) IMAGE_C < imfilter.c > image_c.h
-
-evregions.c:	evregions_c.tmpl Makefile
-		$(RM) evregions.c
-		sed 's/_FPUDBL_/$(FPU_DOUBLE)/' < evregions_c.tmpl > evregions.c
-
-imregions.c:	imregions_c.tmpl Makefile
-		$(RM) imregions.c
-		sed 's/_FPUDBL_/$(FPU_DOUBLE)/' < imregions_c.tmpl > imregions.c
 
 evregions_c.h:	evregions.c $(CHUNKED)
 		$(RM) evregions_c.h

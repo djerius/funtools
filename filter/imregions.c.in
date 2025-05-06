@@ -18,7 +18,7 @@
 #define USE_ASTRO_ANGLE 0
 
 /* we might want to avoid (x86) extended precision problems */
-#define USE_FPU_DOUBLE _FPUDBL_
+#define USE_FPU_DOUBLE @USE_FPU_DOUBLE@
 #if USE_FPU_DOUBLE
 #include <fpu_control.h>
 static fpu_control_t _cw;
