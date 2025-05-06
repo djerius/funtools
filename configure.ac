@@ -40,6 +40,9 @@ case $host_os in
 esac
 
 AC_TYPE_LONG_LONG_INT
+AC_CHECK_SIZEOF([off_t])
+AC_CHECK_SIZEOF([long long int])
+AC_CHECK_SIZEOF([long int])
 
 AC_CHECK_TYPES([socklen_t], [], [], [#include <sys/socket.h>])
 

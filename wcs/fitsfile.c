@@ -300,8 +300,35 @@ fitsrhead(
 	nrec = nrec + 1;
 	*( headnext + nbr + 1 ) = 0;
 	ibhead = ibhead + 2880;
+
+
+        /* if sizeof(off_t) = sizeof(long) = sizeof(long long),
+           apple/clang wants '%lld'.
+        */
+
+#ifdef __APPLE__
+
+#if SIZEOF_OFF_T == SIZEOF_LONG_LONG_INT
+#define SPRINTF_FORMAT_OFF_T "%lld"
+#elif SIZEOF_OFF_T == SIZEOF_LONG_INT
+#define SPRINTF_FORMAT_OFF_T "%ld"
+#else            
+#define SPRINTF_FORMAT_OFF_T "%d"
+#endif
+
+#else
+        
+#if SIZEOF_OFF_T == SIZEOF_LONG_INT
+#define SPRINTF_FORMAT_OFF_T "%ld"
+#elif SIZEOF_OFF_T == SIZEOF_LONG_LONG_INT
+#define SPRINTF_FORMAT_OFF_T "%lld"
+#else            
+#define SPRINTF_FORMAT_OFF_T "%d"
+#endif
+
+#endif        
 	if ( verbose )
-	    fprintf( stderr, "FITSRHEAD: %ld bytes in header\n", ibhead );
+	    fprintf( stderr, "FITSRHEAD: " SPRINTF_FORMAT_OFF_T " bytes in header\n", ibhead );
 
 	/* Check to see if this is the final record in this header */
 	headend = ksearch( fitsbuf, "END" );
