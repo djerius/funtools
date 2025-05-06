@@ -22,17 +22,7 @@
 #define PROTOTYPE(X)	( )
 #endif
 
-#if HAVE_STRING_H
 #include <string.h>
-#else
-char *strchr();
-char *strrchr();
-
-char *strcpy();
-char *strncpy();
-int   strlen();
-void *memset();
-#endif
 
 #ifndef HAVE_STRCHR
 #define strchr index
@@ -50,10 +40,7 @@ void *memset();
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #else
-void  *malloc();
-void  *calloc();
-void  *realloc();
-void  free();
+#include <stdlib.h>
 #endif 
 
 #define Min(x, y)	(((x) < (y)) ? (x) : (y))

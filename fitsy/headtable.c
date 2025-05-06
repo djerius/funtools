@@ -1,7 +1,7 @@
 /* Fitsy FITS routines to load and store #FITSTable structures.
  */
 
-#ifndef __FreeBSD__
+#if !defined(__FreeBSD__) && !defined(__APPLE__)
 /* string.h: strdup */
 #define _XOPEN_SOURCE 500
 #endif

@@ -1,7 +1,7 @@
 /* Fitsy FITS routines to read and write FITS headers.
  */
 
-#ifndef __FreeBSD__
+#if !defined(__FreeBSD__) && !defined(__APPLE__)
 /* string.h: strdup */
 #define _XOPEN_SOURCE 500
 #endif

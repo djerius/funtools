@@ -2,9 +2,16 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#ifndef __FreeBSD__
+#ifdef __APPLE__
+
+/* stdio.h: snprintf */
+#define _C99_SOURCE
+
+#elif !defined(__FreeBSD__)
+
 /* stdlib.h: srand48 */
 /* sys/stat.h: lstat */
+
 #define _XOPEN_SOURCE 500
 #endif
 
