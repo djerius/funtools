@@ -17,6 +17,7 @@
 #include <macro.h>
 #include <swap.h>
 #include <xalloc.h>
+#include "chunked.h"
 
 #ifndef UNUSED
 #ifdef __GNUC__
@@ -35,99 +36,117 @@ extern int optind;
 
 #define EVSIZE 26
 
-#define FITS_HEADER "\
-SIMPLE  =                    T / FITS STANDARD                                  \
-BITPIX  =                    8 / Binary data                                    \
-NAXIS   =                    0 / No image array present                         \
-EXTEND  =                    T / There may be standard extensions               \
-END                                                                             \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-                                                                                \
-XTENSION= 'BINTABLE'            /  FITS 3D BINARY TABLE                         \
-BITPIX  =                    8 / Binary data                                    \
-NAXIS   =                    2 / Table is a matrix                              \
-NAXIS1  =                 $EVSIZE / Width of table in bytes                        \
-NAXIS2  =           $TEV / Number of entries in table                     \
-PCOUNT  =                    0 / Random parameter count                         \
-GCOUNT  =                    1 / Group count                                    \
-TFIELDS =                    7 / Number of fields in row                        \
-EXTNAME = 'EVENTS            ' / Table name                                     \
-EXTVER  =                    1 / Version number of table                        \
-TFORM1  = '1I                ' / Data type for field                            \
-TTYPE1  = 'X                 ' / Label for field                                \
-TSCAL1  = 10.0                 / Label for field                                \
-TZERO1  = 1.0                  / Label for field                                \
-TUNIT1  = '        '            /  Physical units for field                     \
-TFORM2  = '1I                ' / Data type for field                            \
-TTYPE2  = 'Y                 ' / Label for field                                \
-TSCAL2  = 20.0                 / Label for field                                \
-TZERO2  = 2.0                  / Label for field                                \
-TUNIT2  = '        '            /  Physical units for field                     \
-TFORM3  = '1I                ' / Data type for field                            \
-TTYPE3  = 'PHA               ' / Label for field                                \
-TUNIT3  = '        '            /  Physical units for field                     \
-TFORM4  = '1J                ' / Data type for field                            \
-TTYPE4  = 'PI                ' / Label for field                                \
-TUNIT4  = '        '            /  Physical units for field                     \
-TFORM5  = '1D                ' / Data type for field                            \
-TTYPE5  = 'TIME              ' / Label for field                                \
-TUNIT5  = '        '            /  Physical units for field                     \
-TFORM6  = '1E                ' / Data type for field                            \
-TTYPE6  = 'DX                ' / Label for field                                \
-TUNIT6  = '        '            /  Physical units for field                     \
-TFORM7  = '1E                ' / Data type for field                            \
-TTYPE7  = 'DY                ' / Label for field                                \
-TUNIT7  = '        '            /  Physical units for field                     \
-RADECSYS= 'FK5     '            /  WCS for this file (e.g. Fk4)                 \
-EQUINOX =           2.000000E3  /  equinox (epoch) for WCS                      \
-TCTYP1  = 'RA---TAN'          / axis type (e.g. RA---TAN)                       \
-TCTYP2  = 'DEC--TAN'          / axis type (e.g. RA---TAN)                       \
-TCRVL1  = 9.000000000000000E1   / sky coord (deg.)                              \
-TCRVL2  = 6.000000000000000E1   / sky coord (deg.)                              \
-TCDLT1  = -1.00000000000000E-1   / degrees per pixel                            \
-TCDLT2  = 1.000000000000002E-1   / degrees per pixel                            \
-TCRPX1  = 5.000000000000000E0   / pixel of tangent plane direc.                 \
-TCRPX2  = 5.000000000000000E0   / pixel of tangent plane direc.                 \
-TCROT2  = 0.000000000000000E0   / rotation angle (degrees)                      \
-TLMIN1  =           $IXLO / Min. axis value                                \
-TLMAX1  =           $IXHI / Max. axis value                                \
-TLMIN2  =           $IYLO / Min. axis value                                \
-TLMAX2  =           $IYHI / Max. axis value                                \
-TLMIN6  =           $XLO / Min. axis value                                \
-TLMAX6  =           $XHI / Max. axis value                                \
-TLMIN7  =           $YLO / Min. axis value                                \
-TLMAX7  =           $XHI / Max. axis value                                \
-END                                                                                                                                                                                                                                                                                                                                                                                                             \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                "
+ChunkedString FITS_HEADER = {
+    153 - 46 + 1,
+    "SIMPLE  =                    T / FITS STANDARD                                  ",
+    "BITPIX  =                    8 / Binary data                                    ",
+    "NAXIS   =                    0 / No image array present                         ",
+    "EXTEND  =                    T / There may be standard extensions               ",
+    "END                                                                             ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "XTENSION= 'BINTABLE'            /  FITS 3D BINARY TABLE                         ",
+    "BITPIX  =                    8 / Binary data                                    ",
+    "NAXIS   =                    2 / Table is a matrix                              ",
+    "NAXIS1  =                 $EVSIZE / Width of table in bytes                        ",
+    "NAXIS2  =           $TEV / Number of entries in table                     ",
+    "PCOUNT  =                    0 / Random parameter count                         ",
+    "GCOUNT  =                    1 / Group count                                    ",
+    "TFIELDS =                    7 / Number of fields in row                        ",
+    "EXTNAME = 'EVENTS            ' / Table name                                     ",
+    "EXTVER  =                    1 / Version number of table                        ",
+    "TFORM1  = '1I                ' / Data type for field                            ",
+    "TTYPE1  = 'X                 ' / Label for field                                ",
+    "TSCAL1  = 10.0                 / Label for field                                ",
+    "TZERO1  = 1.0                  / Label for field                                ",
+    "TUNIT1  = '        '            /  Physical units for field                     ",
+    "TFORM2  = '1I                ' / Data type for field                            ",
+    "TTYPE2  = 'Y                 ' / Label for field                                ",
+    "TSCAL2  = 20.0                 / Label for field                                ",
+    "TZERO2  = 2.0                  / Label for field                                ",
+    "TUNIT2  = '        '            /  Physical units for field                     ",
+    "TFORM3  = '1I                ' / Data type for field                            ",
+    "TTYPE3  = 'PHA               ' / Label for field                                ",
+    "TUNIT3  = '        '            /  Physical units for field                     ",
+    "TFORM4  = '1J                ' / Data type for field                            ",
+    "TTYPE4  = 'PI                ' / Label for field                                ",
+    "TUNIT4  = '        '            /  Physical units for field                     ",
+    "TFORM5  = '1D                ' / Data type for field                            ",
+    "TTYPE5  = 'TIME              ' / Label for field                                ",
+    "TUNIT5  = '        '            /  Physical units for field                     ",
+    "TFORM6  = '1E                ' / Data type for field                            ",
+    "TTYPE6  = 'DX                ' / Label for field                                ",
+    "TUNIT6  = '        '            /  Physical units for field                     ",
+    "TFORM7  = '1E                ' / Data type for field                            ",
+    "TTYPE7  = 'DY                ' / Label for field                                ",
+    "TUNIT7  = '        '            /  Physical units for field                     ",
+    "RADECSYS= 'FK5     '            /  WCS for this file (e.g. Fk4)                 ",
+    "EQUINOX =           2.000000E3  /  equinox (epoch) for WCS                      ",
+    "TCTYP1  = 'RA---TAN'          / axis type (e.g. RA---TAN)                       ",
+    "TCTYP2  = 'DEC--TAN'          / axis type (e.g. RA---TAN)                       ",
+    "TCRVL1  = 9.000000000000000E1   / sky coord (deg.)                              ",
+    "TCRVL2  = 6.000000000000000E1   / sky coord (deg.)                              ",
+    "TCDLT1  = -1.00000000000000E-1   / degrees per pixel                            ",
+    "TCDLT2  = 1.000000000000002E-1   / degrees per pixel                            ",
+    "TCRPX1  = 5.000000000000000E0   / pixel of tangent plane direc.                 ",
+    "TCRPX2  = 5.000000000000000E0   / pixel of tangent plane direc.                 ",
+    "TCROT2  = 0.000000000000000E0   / rotation angle (degrees)                      ",
+    "TLMIN1  =           $IXLO / Min. axis value                                ",
+    "TLMAX1  =           $IXHI / Max. axis value                                ",
+    "TLMIN2  =           $IYLO / Min. axis value                                ",
+    "TLMAX2  =           $IYHI / Max. axis value                                ",
+    "TLMIN6  =           $XLO / Min. axis value                                ",
+    "TLMAX6  =           $XHI / Max. axis value                                ",
+    "TLMIN7  =           $YLO / Min. axis value                                ",
+    "TLMAX7  =           $XHI / Max. axis value                                ",
+    "END                                                                             ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                ",
+    "                                                                                "
+    };
 
 /* these are used in the macro expansion and must be global */
 static double xlo, xhi, ylo, yhi;
@@ -245,7 +264,7 @@ main (int argc, char **argv)
   }
 
   /* get initial header string */
-  s = xstrdup(FITS_HEADER);
+  s = dechunk(FITS_HEADER);
   /* see if we have to convert to IEEE  format */
   convert = !is_bigendian();
 

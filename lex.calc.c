@@ -2852,6 +2852,7 @@ static char *_CalcMake()
 #endif
 {
   char *s;
+  char *code;
 
   /* make sure we have something */
   if( !expr || !*expr )
@@ -2862,8 +2863,12 @@ static char *_CalcMake()
   /* add final ';' is necessary (but not if there is any compund statement) */
   if( !strchr(expr,';') && !strchr(expr,'{') )
     _CalcCat(";", &expr, &nexpr);  
+
+  /* create program body from chunks */
+  code = dechunk( TABCALC_C );
   /* expand program body to add specifics of the expression */
-  s = ExpandMacro(TABCALC_C, NULL, NULL, 0, _CalcCB, NULL);
+  s = ExpandMacro(code, NULL, NULL, 0, _CalcCB, NULL);
+  xfree(code);
   return s;
 }
 

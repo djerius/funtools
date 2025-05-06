@@ -576,10 +576,13 @@ funcalc.o:	funcalc.c calc.h funtools.h funtoolsP.h
 		-DFUN_LIB="\"-L$(LIB_INSTALL_DIR) -lfuntools ${EXTRA_LIBS} -lm\""
 lex.calc.o:	 lex.calc.c tabcalc_c.h
 
+
+CHUNKED	= @abs_top_srcdir@/util/chunked.pl
+
 headers:	tabcalc_c.h
-tabcalc_c.h:	tabcalc.c
+tabcalc_c.h:	tabcalc.c $(CHUNKED)
 		$(RM) tabcalc_c.h
-		./inc.sed TABCALC_C < tabcalc.c > tabcalc_c.h
+		perl $(CHUNKED) TABCALC_C < tabcalc.c > tabcalc_c.h
 
 # remake the parser
 LEX =		flex

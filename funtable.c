@@ -74,7 +74,6 @@ main(
     int ip = 0;
     int doindiv = 0, dozero = 0, dosort = 0, domulti = 0;
     int dtype, doffset, dmode, dn;
-    int plen, elen, flen;
     int epad, ppad;
     int rlen;
     double dval;
@@ -156,6 +155,12 @@ main(
             if ( !strncasecmp( iname, "stdin", 5 )
                  || !strncmp( iname, "-", 1 )
 	         || !strncasecmp( iname, "pipe:", 5 ) ) {
+                int plen = 0;
+                int elen = 0;
+                int flen = 0;
+                char *_prim = dechunk( _prim_chunks );
+                char *_extn = dechunk( _extn_chunks );
+
 		extn = FileExtension( iname );
 		plen = strlen( _prim );
 		if ( ( ppad = FT_BLOCK - ( plen % FT_BLOCK ) ) == FT_BLOCK ) ppad = 0;
@@ -169,6 +174,8 @@ main(
 		snprintf( tbuf, SZ_LINE - 1,
 		          "buf:%#lx:%d%s", ( long ) fits, flen, extn ? extn : "" );
 		tfun = FunOpen( tbuf, "r", NULL );
+                xfree(_prim);
+                xfree(_extn);
 	    }
 	    /* otherwise we can open the input file once again */
 	    else

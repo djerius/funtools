@@ -308,7 +308,6 @@ FilterProgPrepend_C(
     Filter filter
  ) {
     char *s = NULL;
-    char *contents = NULL;
     FILE *fd;
 
     /* make sure we have something to work with */
@@ -362,10 +361,7 @@ FilterProgPrepend_C(
 
 
     /* prepend the filter header */
-    contents = REGIONS_H;
-    if ( ( contents != NULL ) && ( *contents != '\0' ) ) {
-	fprintf( fd, "%s\n", contents );
-    }
+    print_chunks( REGIONS_H, fd );
 
     /* these are implemented as aliases */
     fprintf( fd, "#define evvcircle evvannulus\n" );
@@ -414,7 +410,6 @@ FilterProgWrite_C(
     char *v;
     char *ibuf;
     char *filtstr;
-    char *contents = NULL;
     char tbuf[SZ_LINE];
     FILE *fd;
     FilterSymbols sp;
@@ -455,44 +450,32 @@ FilterProgWrite_C(
 	       region symbols, to avoid unintentional redefinitions */
 	    if ( filter->debug < 2 ) {
 		/* we need the xalloc routines */
-		contents = XALLOC_C;
-		if ( ( contents != NULL ) && ( *contents != '\0' ) ) {
-		    fprintf( fd, "%s\n", contents );
-		}
+                print_chunks( XALLOC_C, fd );
 		/* region routines if not linking against previously compiled code */
 		switch ( filter->type ) {
 		    case TYPE_EVENTS:
 			/* normally, we filter events analytically using evregions.o */
 			if ( !filter->evsect )
-			    contents = EVREGIONS_C;
+			    print_chunks( EVREGIONS_C, fd );
 			/* if evsect=xxx is specified, we filter by image pixels */
 			else
-			    contents = IMREGIONS_C;
+			    print_chunks( IMREGIONS_C, fd );
 			break;
 		    case TYPE_IMAGE:
 			/* image are filtered by image pixels */
-			contents = IMREGIONS_C;
+			print_chunks( IMREGIONS_C, fd );
 			break;
 		    default:
+                        gerror( stderr, "could not write filter subroutines\n" );
+                        return ( 0 );
 			break;
-		}
-		if ( ( contents != NULL ) && ( *contents != '\0' ) ) {
-		    /* use fprintf so that we handle \n correctly in TEMPLATE */
-		    fprintf( fd, "%s\n", contents );
-		}
-		else {
-		    gerror( stderr, "could not write filter subroutines\n" );
-		    return ( 0 );
 		}
 	    }
 	    break;
     }
 
     /* always need the swap routines (they're part of the filter) */
-    contents = SWAP_C;
-    if ( ( contents != NULL ) && ( *contents != '\0' ) ) {
-	fprintf( fd, "%s\n", contents );
-    }
+    print_chunks( SWAP_C, fd );
 
     /* output counts of shapes */
     fprintf( fd, "#define NSHAPE %d\n", FilterShapeCount(  ) );
@@ -722,8 +705,6 @@ static int
 FilterProgAppend_C(
     Filter filter
  ) {
-    char *contents = NULL;
-
     /* make sure we have something to work with */
     if ( !filter )
 	return ( 0 );
@@ -735,21 +716,18 @@ FilterProgAppend_C(
     /* get body of filter program */
     switch ( filter->type ) {
 	case TYPE_EVENTS:
-	    contents = EVENTS_C;
+	    print_chunks( EVENTS_C, filter->fp );
 	    break;
 	case TYPE_IMAGE:
-	    contents = IMAGE_C;
+	    print_chunks ( IMAGE_C, filter->fp );
 	    break;
+
+        default:
+	    gerror( stderr, "could not write body of filter program\n" );
+            return ( 0 );
     }
-    if ( ( contents != NULL ) && ( *contents != '\0' ) ) {
-	/* use fprintf so that we handle \n correctly in TEMPLATE */
-	fprintf( filter->fp, "%s\n", contents );
-	return ( 1 );
-    }
-    else {
-	gerror( stderr, "could not write body of filter program\n" );
-	return ( 0 );
-    }
+
+    return ( 1 );
 }
 
 /*

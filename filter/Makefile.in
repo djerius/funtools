@@ -217,26 +217,29 @@ filtprog_c.o:	filtprog_c.c regions_h.h xalloc_c.h swap_c.h \
 		-DFILTER_CC="$(FILTER_CC)" -DFILTER_CFLAGS="$(FILTER_CFLAGS)" \
 		filtprog_c.c
 
+
 # header and source include files for program generation
-regions_h.h:	regions.h inc.sed
+CHUNKED	= @abs_top_srcdir@/util/chunked.pl
+
+regions_h.h:	regions.h $(CHUNKED)
 		$(RM) regions_h.h
-		./inc.sed REGIONS_H < regions.h > regions_h.h
+		perl $(CHUNKED) REGIONS_H < regions.h > regions_h.h
 
-xalloc_c.h:	../util/xalloc.c inc.sed
+xalloc_c.h:	../util/xalloc.c $(CHUNKED)
 		$(RM) xalloc_c.h
-		./inc.sed XALLOC_C < ../util/xalloc.c > xalloc_c.h
+		perl $(CHUNKED) XALLOC_C < ../util/xalloc.c > xalloc_c.h
 
-swap_c.h:	swap.c inc.sed
+swap_c.h:	swap.c $(CHUNKED)
 		$(RM) swap_c.h
-		./inc.sed SWAP_C < swap.c > swap_c.h
+		perl $(CHUNKED) SWAP_C < swap.c > swap_c.h
 
-events_c.h:	evfilter.c inc.sed
+events_c.h:	evfilter.c $(CHUNKED)
 		$(RM) events_c.h
-		./inc.sed EVENTS_C < evfilter.c > events_c.h
+		perl $(CHUNKED) EVENTS_C < evfilter.c > events_c.h
 
-image_c.h:	imfilter.c inc.sed
+image_c.h:	imfilter.c $(CHUNKED)
 		$(RM) image_c.h
-		./inc.sed IMAGE_C < imfilter.c > image_c.h
+		perl $(CHUNKED) IMAGE_C < imfilter.c > image_c.h
 
 evregions.c:	evregions_c.tmpl Makefile
 		$(RM) evregions.c
@@ -246,13 +249,13 @@ imregions.c:	imregions_c.tmpl Makefile
 		$(RM) imregions.c
 		sed 's/_FPUDBL_/$(FPU_DOUBLE)/' < imregions_c.tmpl > imregions.c
 
-evregions_c.h:	evregions.c inc.sed
+evregions_c.h:	evregions.c $(CHUNKED)
 		$(RM) evregions_c.h
-		./inc.sed EVREGIONS_C < evregions.c > evregions_c.h
+		perl $(CHUNKED) EVREGIONS_C < evregions.c > evregions_c.h
 
-imregions_c.h:	imregions.c inc.sed
+imregions_c.h:	imregions.c $(CHUNKED)
 		$(RM) imregions_c.h
-		./inc.sed IMREGIONS_C < imregions.c > imregions_c.h
+		perl $(CHUNKED) IMREGIONS_C < imregions.c > imregions_c.h
 
 headers:	regions_h.h xalloc_c.h swap_c.h \
 		events_c.h image_c.h evregions_c.h imregions_c.h
