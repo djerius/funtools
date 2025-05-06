@@ -1,8 +1,8 @@
 /* nd.c
  */
 
-#include <xos.h>
-#include <fitsy.h>
+#include "xos.h"
+#include "fitsy.h"
 
 void *
 ft_alloc2d(

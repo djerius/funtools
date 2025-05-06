@@ -1,7 +1,7 @@
 /* Routines to handle FITS image data.
  */
 
-#include <xos.h>
+#include "xos.h"
 #include "fitsy.h"
 
 /* Read data from a file pointer and convert it to the requested type.

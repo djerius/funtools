@@ -1,6 +1,6 @@
 /* gcc -g -o qcon qcon.c -I/soft/saord/include -L/soft/saord/lib -lfuntools -lsocket -lnsl -ldl -lm */
 
-#include <funtools.h>
+#include "funtools.h"
 #include <stdlib.h>
 
 extern char *optarg;

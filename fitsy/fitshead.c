@@ -1,7 +1,12 @@
 /* Fitsy FITS routines to read and write FITS headers.
  */
 
-#include <xos.h>
+#ifndef __FreeBSD__
+/* string.h: strdup */
+#define _XOPEN_SOURCE 500
+#endif
+
+#include "xos.h"
 #include "fitsy.h"
 
 #define MAX_COPY 1024

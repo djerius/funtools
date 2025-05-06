@@ -2,8 +2,8 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#include <ctype.h>
 #include "funtoolsP.h"
+#include <ctype.h>
 
 /*
  *

@@ -9,7 +9,12 @@
  */
 
 
-#include <xos.h>
+#ifndef __FreeBSD__
+/* string.h: strdup */
+#define _XOPEN_SOURCE 500
+#endif
+
+#include "xos.h"
 #include "fitsy.h"
 
 /* Copy information from a #FITSHead into the #FITSBasic, #FITSImage 

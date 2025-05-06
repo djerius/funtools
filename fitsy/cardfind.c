@@ -35,6 +35,9 @@
 +
  */
 
+#ifndef __FreeBSD__
+#define POSIX 200201L
+#endif
 #include "fitsy.h"
 
 int
@@ -78,6 +81,8 @@ ft_cardfind(
 
     if ( fits == NULL ) return NULL;
     if ( key == NULL ) return NULL;
+
+
 
     if ( fits->index ) card = ft_cardfindidx( fits, key, &match );
     else card = ft_cardfindseq( fits, key, &match );

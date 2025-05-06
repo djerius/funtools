@@ -22,7 +22,12 @@
 +
  */
 
-#include <fitsy.h>
+#ifndef __FreeBSD__
+/* string.h: strdup */
+#define _XOPEN_SOURCE 500
+#endif
+
+#include "fitsy.h"
 
 /* Find and return the value of a FITS card as a static string.
  */

@@ -724,7 +724,12 @@ MainLibLoad(
     }
 
     /* look up init funtion */
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic warning "-Wpedantic"
+    /* need to convert dlsym return to a function pointer, but this is not
+       allowed by std C */
     if ( !( irtn = ( MainLibInitCall ) dlsym( tdl, tbuf ) ) ) {
+    #pragma GCC diagnostic pop
 	if ( ermsg ) *ermsg = ( char * ) dlerror(  );
 	return -2;
     }
@@ -736,7 +741,12 @@ MainLibLoad(
     tml->dl = tdl;
 
     /* look up and return MainLibProcess funtion, if it exists */
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic warning "-Wpedantic"
+    /* need to convert dlsym return to a function pointer, but this is not
+       allowed by std C */
     tml->mainlibprocess = ( MainLibProcessCall ) dlsym( tml->dl, "MainLibProcess" );
+    #pragma GCC diagnostic pop
 
     /* store MainLib record */
     *ml = tml;

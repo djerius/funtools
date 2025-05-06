@@ -2,7 +2,12 @@
  *	Copyright (c) 1999-2007 Smithsonian Astrophysical Observatory
  */
 
-#include <xlaunch.h>
+#ifndef __FreeBSD__
+/* stdlib.h: setenv */
+#define _POSIX_C_SOURCE 200112L
+#endif
+
+#include "xlaunch.h"
 
 /*
  *----------------------------------------------------------------------------

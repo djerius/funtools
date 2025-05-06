@@ -27,9 +27,9 @@
 #endif
 #include <sys/types.h>
 #include <prsetup.h>
-#include <filter.h>
+#include "filter.h"
 #include <idx.h>
-#include <word.h>
+#include "word.h"
 
 extern char *optarg;
 extern int optind;

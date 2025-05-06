@@ -5,7 +5,7 @@
  * and the GTI extension of file2.
  *
  */
-#include <funtools.h>
+#include "funtools.h"
 #define MAXROW 8192
 
 typedef struct gtistruct{

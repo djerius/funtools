@@ -1,4 +1,4 @@
-#include <funtools.h>
+#include "funtools.h"
 
 /* if defined, user allocated row buffer, otherwise let funtools do it */
 /* #define USER_ALLOC 1 */

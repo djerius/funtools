@@ -3,7 +3,7 @@
  */
 
 #include "funtoolsP.h"
-#include <wcs.h>
+#include "wcs.h"
 
 /*
  *

@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <word.h>
+#include "word.h"
 
 /* SAOMOD_CTYPE -- work around Slackware/RedHat incompatibility */
 #ifdef linux

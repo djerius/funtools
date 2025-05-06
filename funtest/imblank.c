@@ -1,4 +1,4 @@
-#include <funtools.h>
+#include "funtools.h"
 #include <stdlib.h>
 
 int 

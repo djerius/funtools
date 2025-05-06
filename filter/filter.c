@@ -8,7 +8,7 @@
  *
  */
 
-#include <filter.h>
+#include "filter.h"
 
 #if HAVE_CYGWIN||HAVE_MINGW32
 #include <windows.h>

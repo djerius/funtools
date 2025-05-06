@@ -22,6 +22,12 @@
 	im = #ft_cardgetl(card);
  */
 
+
+#ifndef __FreeBSD__
+/* string.h: strdup */
+#define _XOPEN_SOURCE 500
+#endif
+
 #include "fitsy.h"
 
 /* Parse a FITS card in to its type, value index and comment parts

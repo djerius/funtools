@@ -8,11 +8,15 @@
  *
  */
 
+/* unistd.h: gethostname */
+#define _POSIX_C_SOURCE 200112L
+
 #include "gio.h"
 #include "find.h"
 #include "word.h"
 #include <zlib.h>
 
+/* unistd: gethostname */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif

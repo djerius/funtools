@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <funtools.h>
+#include "funtools.h"
  
 #define MAXX   100
 #define MAXY   100

@@ -2,18 +2,21 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
+/* stdlib.h: putenv */
+#define _XOPEN_SOURCE 1
+
 #if HAVE_CONFIG_H
-#include <conf.h>
+#include "conf.h"
 #endif
-#include <funtools.h>
-#include <file.h>
-#include <find.h>
-#include <word.h>
+#include "funtools.h"
+#include "file.h"
+#include "find.h"
+#include "word.h"
 #ifdef USE_LAUNCH
-#include <xlaunch.h>
+#include "xlaunch.h"
 #endif
-#include <mkrtemp.h>
-#include <calc.h>
+#include "mkrtemp.h"
+#include "calc.h"
 
 extern char *optarg;
 extern int optind;

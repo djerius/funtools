@@ -5578,7 +5578,7 @@ char *filttext_ptr;
 #include <ctype.h>
 #include <string.h>
 #include <math.h>
-#include <filter.h>
+#include "filter.h"
 
 #define MAX_INCLUDE_DEPTH 100
 #define SEGINC 1024

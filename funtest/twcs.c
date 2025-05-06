@@ -4,7 +4,7 @@
  *
  */
 
-#include <funtools.h>
+#include "funtools.h"
 
 int main(int argc, char **argv)
 {

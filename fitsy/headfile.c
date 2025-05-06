@@ -1,7 +1,7 @@
 /* Fitsy FITS read and write header routines.
  */
 
-#include <xos.h>
+#include "xos.h"
 #include "fitsy.h"
 
 FITSHead

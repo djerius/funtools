@@ -2,6 +2,12 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
+#ifndef __FreeBSD__
+/* stdlib.h: srand48 */
+/* sys/stat.h: lstat */
+#define _XOPEN_SOURCE 500
+#endif
+
 #include "mkrtemp.h"
 
 /*

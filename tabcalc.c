@@ -12,9 +12,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <funtools.h>
-#include <word.h>
-#include <NaN.h>
+#include "funtools.h"
+#include "word.h"
+#include "NaN.h"
 
 extern char *optarg;
 extern int optind;

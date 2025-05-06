@@ -14,9 +14,6 @@
 #include "conf.h"
 #endif
 
-/* stdlib.h: putenv */
-#define _XOPEN_SOURCE 500
-
 #include "xport.h"
 
 #include <stdio.h>

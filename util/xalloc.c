@@ -13,7 +13,7 @@
 #ifdef FILTER_PTYPE
 #define ANSI_FUNC 1
 #else
-#include <xalloc.h>
+#include "xalloc.h"
 #endif
 
 #define XALLOC_ERROR "ERROR: can't allocate memory (xalloc)\n"

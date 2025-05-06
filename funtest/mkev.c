@@ -1,5 +1,11 @@
+#ifndef __FreeBSD__
+/* unisted.h: getopt  */
+#define _XOPEN_SOURCE 1
+#endif
+
+
 #if HAVE_CONFIG_H
-#include <conf.h>
+#include "conf.h"
 #endif
 
 #include <stdio.h>
@@ -14,9 +20,9 @@
 #endif
 #include <math.h>
 #include <prsetup.h>
-#include <macro.h>
-#include <swap.h>
-#include <xalloc.h>
+#include "macro.h"
+#include "swap.h"
+#include "xalloc.h"
 #include "chunked.h"
 
 #ifndef UNUSED

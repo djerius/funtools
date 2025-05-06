@@ -8,7 +8,10 @@
  *
  */
 
-#include <gio.h>
+/* stdlib.h: putenv */
+#define _XOPEN_SOURCE 1
+
+#include "gio.h"
 
 #define BUFSIZE 4096
 

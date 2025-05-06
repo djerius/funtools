@@ -1,7 +1,7 @@
 /* headwcs.c
  */
 
-#include <xos.h>
+#include "xos.h"
 #include "fitsy.h"
 
 int

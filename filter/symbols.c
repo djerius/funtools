@@ -8,7 +8,7 @@
  *
  */
 
-#include <filter.h>
+#include "filter.h"
 
 #define SYMINC  100             /* increment for allocating symbols */
 

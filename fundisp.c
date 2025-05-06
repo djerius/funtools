@@ -2,8 +2,11 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#include <funtools.h>
-#include <word.h>
+/* stdlib.h: putenv */
+#define _XOPEN_SOURCE 1
+
+#include "funtools.h"
+#include "word.h"
 
 extern char *optarg;
 extern int optind;

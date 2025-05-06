@@ -18,7 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <funtools.h>
+#include "funtools.h"
  
 #define MAXREC   30
 

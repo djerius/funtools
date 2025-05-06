@@ -22,7 +22,7 @@
 /* Get isblank from GNU libc.  */
 #define _GNU_SOURCE
 
-#include <xos.h>
+#include "xos.h"
 #include <xfile.h>
 #include <sys/types.h>
 #include "system.h"

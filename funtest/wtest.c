@@ -1,6 +1,12 @@
-#include <funtools.h>
+#ifndef __FreeBSD__
+/* stdlib.h: putenv */
+#define _XOPEN_SOURCE 1
+#endif
+
 #include <stdlib.h>
-#include <file.h>
+
+#include "funtools.h"
+#include "file.h"
 
 extern char *optarg;
 extern int optind;

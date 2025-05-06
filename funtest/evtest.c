@@ -5,7 +5,7 @@
  */
 
 #include <math.h>
-#include <funtools.h>
+#include "funtools.h"
 
 #define MAXROW 8192
 

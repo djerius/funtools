@@ -2333,7 +2333,7 @@ char *idxtext_ptr;
 
 #line 12 "idx.l"
 #include <math.h>
-#include <filter.h>
+#include "filter.h"
 #include "idx.h"
 #include "idx.tab.h"
 

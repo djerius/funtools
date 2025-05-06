@@ -1,7 +1,12 @@
 /* Fitsy FITS routines to read and write FITS images.
  */
 
-#include <xos.h>
+#ifndef __FreeBSD__
+/* string.h: strdup */
+#define _XOPEN_SOURCE 500
+#endif
+
+#include "xos.h"
 #include <fcntl.h>
 #include "fitsy.h"
 

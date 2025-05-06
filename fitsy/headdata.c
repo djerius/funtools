@@ -1,7 +1,7 @@
 /* Fitsy FITS routines to work with the data portion of a FITS file.
  */
 
-#include <xos.h>
+#include "xos.h"
 #include "fitsy.h"
 
 /* Skip over the data part of a FITS header data unit.

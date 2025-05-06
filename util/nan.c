@@ -2,7 +2,7 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#include <swap.h>
+#include "swap.h"
 #include <prsetup.h>
 
 /*

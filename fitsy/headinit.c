@@ -17,6 +17,11 @@
 +
  */
 
+#ifndef __FreeBSD__
+/* string.h: strdup */
+#define _XOPEN_SOURCE 500
+#endif
+
 #include "xos.h"
 #include "fitsy.h"
 

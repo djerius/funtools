@@ -6,10 +6,10 @@
 
 */
 
-#include <funtools.h>
+#include "funtools.h"
 #include <stdlib.h>
 #include <string.h>
-#include <file.h>
+#include "file.h"
 
 extern char *optarg;
 extern int optind;

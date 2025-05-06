@@ -9,10 +9,10 @@
 #include "funtoolsP.h"
 
 #include <math.h>
-#include <filter.h>
-#include <swap.h>
-#include <word.h>
-#include <xalloc.h>
+#include "filter.h"
+#include "swap.h"
+#include "word.h"
+#include "xalloc.h"
 
 #define MAXROW 8192
 static int maxrow = MAXROW;

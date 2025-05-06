@@ -18,9 +18,9 @@
  * circle 7 7 .1
  */
 
-#include <funtools.h>
-#include <filter.h>
-#include <swap.h>
+#include "funtools.h"
+#include "filter.h"
+#include "swap.h"
 
 #define MAXROW 10000
 

@@ -11,15 +11,15 @@
 /* stdio.h: fdopen */
 #define _POSIX_C_SOURCE 200112L
 
-#include <filter.h>
-#include <swap.h>
-#include <regions_h.h>
-#include <events_c.h>
-#include <image_c.h>
-#include <evregions_c.h>
-#include <imregions_c.h>
-#include <xalloc_c.h>
-#include <swap_c.h>
+#include "filter.h"
+#include "swap.h"
+#include "regions_h.h"
+#include "events_c.h"
+#include "image_c.h"
+#include "evregions_c.h"
+#include "imregions_c.h"
+#include "xalloc_c.h"
+#include "swap_c.h"
 
 /*
  *

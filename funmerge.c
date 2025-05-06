@@ -2,12 +2,15 @@
  *	Copyright (c) 1999-2003 Smithsonian Astrophysical Observatory
  */
 
-#include <funtools.h>
-#include <fitsy.h>
-#include <wcs.h>
-#include <gio.h>
-#include <tl.h>
-#include <word.h>
+/* stdlib.h: putenv */
+#define _XOPEN_SOURCE 1
+
+#include "funtools.h"
+#include "fitsy.h"
+#include "wcs.h"
+#include "gio.h"
+#include "tl.h"
+#include "word.h"
 
 /* mode flags for processing */
 #define FLAG_FILE 1             /* save file name for each event */

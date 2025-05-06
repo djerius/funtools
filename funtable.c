@@ -3,9 +3,9 @@
  */
 
 #include "funtoolsP.h"
-#include <find.h>
-#include <zprocess.h>
-#include <chandra.h>
+#include "find.h"
+#include "zprocess.h"
+#include "chandra.h"
 
 #define MAXROW 8192
 static int maxrow = MAXROW;

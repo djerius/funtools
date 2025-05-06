@@ -10,7 +10,7 @@
 
 %{
 #include <math.h>
-#include <filter.h>
+#include "filter.h"
 #include "idx.h"
 #include "idx.tab.h"
 

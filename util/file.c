@@ -8,7 +8,7 @@
  *
  */
 
-#include <file.h>
+#include "file.h"
 
 #define BUFSIZE 8192
 #define DIR_SEPARATOR '/'

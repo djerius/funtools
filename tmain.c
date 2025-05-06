@@ -29,7 +29,7 @@
 #include <dlfcn.h>
 #include <sys/mman.h>
 #include <mainlib.h>
-#include <file.h>
+#include "file.h"
 
 #define HAVE_TCL 0
 

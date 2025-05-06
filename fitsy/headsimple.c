@@ -1,8 +1,8 @@
 /* headsimple.c
  */
 
-#include <xos.h>
-#include <fitsy.h>
+#include "xos.h"
+#include "fitsy.h"
 
 FITSHead
 ft_headsimple(

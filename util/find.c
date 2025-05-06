@@ -8,7 +8,7 @@
  * (and related routines)
  *
  */
-#include <find.h>
+#include "find.h"
 
 /*
  *

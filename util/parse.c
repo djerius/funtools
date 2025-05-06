@@ -2,7 +2,7 @@
  *	Copyright (c) 2004 Smithsonian Astrophysical Observatory
  */
 
-#include <parse.h>
+#include "parse.h"
 
 /*
  *----------------------------------------------------------------------------

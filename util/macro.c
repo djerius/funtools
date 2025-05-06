@@ -8,7 +8,7 @@
  *
  */
 
-#include <macro.h>
+#include "macro.h"
 
 /* SAOMOD_CTYPE -- work around Slackware/RedHat incompatibility */
 #ifdef linux

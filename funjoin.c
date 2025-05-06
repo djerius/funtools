@@ -8,7 +8,7 @@
 
 #include "funtoolsP.h"
 #include <math.h>
-#include <word.h>
+#include "word.h"
 
 /* #define JOIN_DEBUG 1 */
 #if JOIN_DEBUG

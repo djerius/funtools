@@ -36,7 +36,7 @@
  *
  ***/
 
-#include <xos.h>
+#include "xos.h"
 
 
 typedef double Matrix3[3][2];

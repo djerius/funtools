@@ -4,8 +4,8 @@
  *            column to the binary tables
  *
  */
-#include <funtools.h>
-#include <word.h>
+#include "funtools.h"
+#include "word.h"
 
 #define MAXROW 8192
 

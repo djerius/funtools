@@ -3,8 +3,8 @@
  * evmerge.c -- example program for merging user values into a table file
  *
  */
-#include <funtools.h>
-#include <word.h>
+#include "funtools.h"
+#include "word.h"
 
 #define MAXROW 8192
 

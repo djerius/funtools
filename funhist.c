@@ -4,8 +4,8 @@
 
 #include "funtoolsP.h"
 #include <math.h>
-#include <filter.h>
-#include <word.h>
+#include "filter.h"
+#include "word.h"
 
 static char *dash = "----------------------------------------";
 

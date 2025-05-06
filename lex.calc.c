@@ -1023,9 +1023,9 @@ char *calctext_ptr;
 #line 12 "calc.l"
 #include <ctype.h>
 #include "funtoolsP.h"
-#include <macro.h>
-#include <calc.h>
-#include <tabcalc_c.h>
+#include "macro.h"
+#include "calc.h"
+#include "tabcalc_c.h"
 
 /* define the types of event records we have to handle */
 #define REC_CUR		1

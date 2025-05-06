@@ -15,10 +15,6 @@
 #include "conf.h"
 #endif
 
-/* stdlib.h: srand48 */
-/* sys/stat.h: lstat */
-#define _XOPEN_SOURCE 500
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>

@@ -22,9 +22,10 @@
 
 #include "prsetup.h"
 
-#define _BIG_ENDIAN @BIGENDIAN@
+/* _BIG_ENDIAN is reserved on FreeBSD */
+#define _IS_BIG_ENDIAN @BIGENDIAN@
 
-#if _BIG_ENDIAN
+#if _IS_BIG_ENDIAN
 
 #define FNANOFF 0
 #define DNANOFF 0

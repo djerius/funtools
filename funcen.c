@@ -19,11 +19,11 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <filter.h>
-#include <swap.h>
-#include <word.h>
-#include <wcs.h>
-#include <xalloc.h>
+#include "filter.h"
+#include "swap.h"
+#include "word.h"
+#include "wcs.h"
+#include "xalloc.h"
 
 #define MAXROW 8192
 #define MAXREGIONS 8192
