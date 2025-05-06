@@ -43,7 +43,7 @@ LIB_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/lib
 BIN_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/bin
 
 # Directory in which to install the funtools.h include file:
-INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(prefix)/include/funtools
+INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/include/funtools
 
 # Top-level directory for manual entries:
 MAN_INSTALL_DIR =	$(INSTALL_ROOT)$(prefix)/share/man

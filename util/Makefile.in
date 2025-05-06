@@ -52,7 +52,7 @@ LIB_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/lib
 BIN_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/bin
 
 # Directory in which to install the include files:
-INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(prefix)/include
+INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/include
 
 # extra includes for compiling
 INCLUDES =

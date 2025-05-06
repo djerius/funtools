@@ -43,7 +43,7 @@ LIB_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/lib
 BIN_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/bin
 
 # Directory in which to install the include file wcs.h:
-INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(prefix)/include
+INCLUDE_INSTALL_DIR =	$(INSTALL_ROOT)$(exec_prefix)/include
 
 # To change the compiler switches, for example to change from -O
 # to -g, change the following line:
