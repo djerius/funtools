@@ -227,8 +227,8 @@ funmainlib.c:	$(MAINLIBOBJS) mkfunmainlib
 		echo $(PROGS) | ./mkfunmainlib > funmainlib.c;
 
 shlib:		sublib $(LIBOBJS)
-		@(rm -rf $(PACKAGE)tmp; mkdir -p $(PACKAGE)tmp; \
-		(cd $(PACKAGE)tmp && ar x ../$(LIB)); \
+		(rm -rf $(PACKAGE)tmp; mkdir -p $(PACKAGE)tmp; \
+		(cd $(PACKAGE)tmp && ar x $(LIB)); \
 		CC='$(CC)' CXX=$(CXX) \
 		./mklib -o $(PACKAGE) $(PACKAGE)tmp/*.o; \
 		rm -rf $(PACKAGE)tmp;)
@@ -251,7 +251,7 @@ tclfun:		$(LIB) tclmainlib.o tclfun.o
 
 shtclfun:	tclfun
 		@(rm -rf $(PACKAGE)tmp; mkdir -p $(PACKAGE)tmp; \
-		(cd $(PACKAGE)tmp && ar x ../$(LIB) && ar x ../libtclfun.a); \
+		(cd $(PACKAGE)tmp && ar x $(LIB) && ar x ../libtclfun.a); \
 		CC='$(CC)' CXX='$(CXX)' \
 		./mklib -o tclfun $(PACKAGE)tmp/*.o; \
 		rm -rf $(PACKAGE)tmp; \
