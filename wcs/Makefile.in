@@ -132,28 +132,26 @@ lib:		$(LIBOBJS)
 # possible (e.g. if installing as root).
 
 install-binaries: $(LIB) $(PROGS)
-	@for i in $(LIB_INSTALL_DIR) $(INCLUDE_INSTALL_DIR) $(BIN_INSTALL_DIR) ; \
-	    do \
-	    if [ ! -d $$i ] ; then \
-		echo "Making directory $$i"; \
-		mkdir $$i; \
-		chmod 755 $$i; \
-		else true; \
-		fi; \
+	@for i in $(LIB_INSTALL_DIR) $(INCLUDE_INSTALL_DIR) $(BIN_INSTALL_DIR) ;	\
+	    do										\
+	    if [ ! -d $$i ] ; then							\
+		echo "Making directory $$i";						\
+		mkdir $$i;								\
+		chmod 755 $$i;								\
+		else true;								\
+		fi;									\
 	    done;
-	@if [ "$(LIB)" = "$(DEFLIB)" ] ; then \
-	    XLIB=`basename $(LIB)`; \
-	    echo "Installing $$XLIB"; \
-	    $(INSTALL_DATA) $$XLIB $(LIB_INSTALL_DIR)/$$XLIB; \
-	    (cd $(LIB_INSTALL_DIR); $(RANLIB) $$XLIB); \
-	    chmod 555 $(LIB_INSTALL_DIR)/$$XLIB; \
+	@if [ "$(LIB)" = "$(DEFLIB)" ] ; then			\
+	    XLIB=`basename $(LIB)`;				\
+	    echo "Installing $$XLIB";				\
+	    $(INSTALL_DATA) $$XLIB $(LIB_INSTALL_DIR)/$$XLIB;	\
+	    (cd $(LIB_INSTALL_DIR); $(RANLIB) $$XLIB);		\
+	    chmod 555 $(LIB_INSTALL_DIR)/$$XLIB;		\
         fi;
-	@echo "Installing fitshead.h"
-	@$(INSTALL_DATA) fitshead.h $(INCLUDE_INSTALL_DIR)/fitshead.h
-	@echo "Installing wcs.h"
-	@$(INSTALL_DATA) wcs.h $(INCLUDE_INSTALL_DIR)/wcs.h
-	@echo "Installing wcslib.h"
-	@$(INSTALL_DATA) wcslib.h $(INCLUDE_INSTALL_DIR)/wcslib.h
+	@for file in fitsfile.h fitshead.h wcs.h wcslib.h ; do		\
+		echo "Installing $$file" ;				\
+		$(INSTALL_DATA) $$file $(INCLUDE_INSTALL_DIR)/$$file ;	\
+	done
 
 Makefile:	Makefile.in
 		cd @abs_top_srcdir@; $(SHELL) config.status
