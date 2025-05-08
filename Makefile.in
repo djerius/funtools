@@ -436,8 +436,6 @@ install-binaries: lib $(PROGS) $(SCRIPTS) $(DS9HELPERS)
         fi;
 	@echo "Installing funtools.h"
 	@$(INSTALL_DATA) funtools.h $(INCLUDE_INSTALL_DIR)/funtools.h
-	@echo "Installing funtoolsP.h"
-	@$(INSTALL_DATA) funtoolsP.h $(INCLUDE_INSTALL_DIR)/funtoolsP.h
 	@for i in $(PROGS) ; \
 	    do \
 	        echo "Installing $$i$(EXE)" ; \

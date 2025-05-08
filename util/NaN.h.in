@@ -20,8 +20,6 @@
 #ifndef	__nan_h
 #define	__nan_h
 
-#include "prsetup.h"
-
 /* _BIG_ENDIAN is reserved on FreeBSD */
 #define _IS_BIG_ENDIAN @BIGENDIAN@
 

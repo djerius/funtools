@@ -11,10 +11,10 @@
 #define	__idx_h
 
 #if HAVE_CONFIG_H
-#include "conf.h"
+#include <conf.h>
 #endif
 
-#include "prsetup.h"
+#include <prsetup.h>
 #include <stdio.h>
 #include <ctype.h>
 #ifdef HAVE_UNISTD_H
@@ -26,10 +26,10 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
-#include "fitsy.h"
-#include "gio.h"
-#include "xalloc.h"
-#include "strtod.h"
+#include <fitsy.h>
+#include <gio.h>
+#include <xalloc.h>
+#include <strtod.h>
 
 /* binary search edge */
 #define IDX_EDGE_LEFT  1

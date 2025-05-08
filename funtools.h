@@ -24,14 +24,14 @@
 #define FUN_MAJOR_VERSION 1
 #define FUN_MINOR_VERSION 4
 #define FUN_PATCH_LEVEL 7
-#define FUN_VERSION "1.4.7"
+#define FUN_VERSION "1.4.7.1"
 
 #ifndef FUNTOOLS_PRIVATE
-#include "prsetup.h"
+#include <prsetup.h>
 #define USE_XFILEIO 1
-#include "fitsy.h"
+#include <fitsy.h>
 #undef USE_XFILEIO
-#include "wcs.h"
+#include <wcs.h>
 typedef void *Fun;
 #endif
 

@@ -28,10 +28,10 @@
 #ifndef _wcs_h_
 #define _wcs_h_
 
-#include "conf.h"
-#include "wcslib.h"
-#include "fitshead.h"
-#include "fitsfile.h"
+#include <conf.h>
+#include <wcslib.h>
+#include <fitshead.h>
+#include <fitsfile.h>
 
 #define MAXNKWD	500
 

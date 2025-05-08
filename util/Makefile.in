@@ -249,7 +249,7 @@ install-binaries: $(LIB) $(PROGS)
 		fi; \
 	    done;
 	@for i in NaN.h conf.h file.h find.h gio.h xlaunch.h longlong.h \
-	chunked.h macro.h mainlib.h tclmainlib.h mkrtemp.h parse.h prsetup.h \
+	macro.h mainlib.h tclmainlib.h mkrtemp.h parse.h prsetup.h \
 	xalloc.h strtod.h swap.h word.h xport.h winprocess.h xfileio.h \
 	zprocess.h; \
 	    do \
