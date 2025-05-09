@@ -621,6 +621,7 @@ Configure:	FORCE
 		done
 
 dist:		configure
+		$(MAKE) clean
 		($(RM) -r $(DISTDIR); \
 		mkdir -p $(DISTDIR); \
 		cp -p README INSTALL COPYING $(DISTDIR)/.; \
@@ -662,6 +663,9 @@ dist:		configure
 		cp -p ./doc/sman/* $(DISTDIR)/doc/sman/.; \
 		mkdir -p $(DISTDIR)/man; \
 		cp -p -R ./man/* $(DISTDIR)/man/.)
+		for dir in util filter fitsy wcs gnu util; do \
+		     rm -f $(DISTDIR)/$$dir/Makefile ; \
+		done
 
 release:	dist
 		(cd $(DISTDIR); cd ..; \
