@@ -172,13 +172,6 @@ install-binaries: $(LIB) $(PROGS)
 	    (cd $(LIB_INSTALL_DIR); $(RANLIB) $$XLIB); \
 	    chmod 555 $(LIB_INSTALL_DIR)/$$XLIB; \
         fi;
-#	@for i in imregions.o evregions.o ; \
-#	    do \
-#		if [ -f $$i ] ; then \
-#		  echo "Installing $$i" ; \
-#		  $(INSTALL_DATA) $$i $(LIB_INSTALL_DIR)/$$i ; \
-#		fi; \
-#	    done;
 	@for i in filter.h column.h dl.h tl.h idx.h; \
 	    do \
 		if [ -f $$i ] ; then \
@@ -187,8 +180,15 @@ install-binaries: $(LIB) $(PROGS)
 		fi; \
 	    done;
 
-Makefile:	Makefile.in
-		cd @abs_top_srcdir@; $(SHELL) config.status
+Makefile: Makefile.in
+	cd @abs_top_builddir@; ./config.status filter/$@
+
+evregions.c : evregions.c.in
+	cd @abs_top_builddir@; ./config.status filter/$@
+
+imregions.c : imregions.c.in
+	cd @abs_top_builddir@; ./config.status filter/$@
+
 
 RM = 		rm -f
 
@@ -197,13 +197,12 @@ clean:
 			foo* *~ *.log \#* TAGS *.E a.out errors \
 			$(PROGS) $(TESTPROGS) \
 			gmon.out *.pg *.bak \
-			config.info config.log \
 			doc/*~  \
-			evregions.c imregions.c \
+			evregions.c imregions.c
 
 
 distclean:	clean
-		$(RM) Makefile config.status config.cache config.log
+		$(RM) Makefile
 
 depend:
 		makedepend -- $(DEPEND_SWITCHES) -- $(SRCS)

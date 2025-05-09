@@ -145,7 +145,7 @@ bigfits:	bigfits.o
 		$(CC) $(LDFLAGS) bigfits.o -o bigfits $(LIBS)
 
 Makefile:	Makefile.in
-		$(SHELL) ../config.status
+		cd @abs_top_builddir@; ./config.status funtest/$@
 
 RM = 		rm -f
 
@@ -174,7 +174,7 @@ clean:
 		$(RM) -r autom4te.cache
 
 distclean:	clean
-		$(RM) Makefile config.status config.cache config.log
+		$(RM) Makefile
 
 install:
 		@echo "Nothing to install in funtest"

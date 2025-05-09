@@ -154,7 +154,7 @@ install-binaries: $(LIB) $(PROGS)
 	done
 
 Makefile:	Makefile.in
-		cd @abs_top_srcdir@; $(SHELL) config.status
+		cd @abs_top_srcdir@; ./config.status wcs/$@
 
 RM =		rm -f
 
@@ -163,12 +163,11 @@ clean:
 			foo* *~ *.log \#* TAGS *.E a.out errors \
 			$(PROGS) $(TESTPROGS) \
 			gmon.out *.pg *.bak \
-			config.info config.log \
 			doc/*~
 		$(RM) -r autom4te.cache
 
 distclean:	clean
-		$(RM) Makefile config.status config.cache config.log
+		$(RM) Makefile
 
 depend:
 		makedepend -- $(DEPEND_SWITCHES) -- $(SRCS)

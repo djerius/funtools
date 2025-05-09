@@ -218,7 +218,7 @@ TAGS: $(SOURCES)
 check:
 
 Makefile:	Makefile.in
-		cd @abs_top_srcdir@; $(SHELL) config.status
+		cd @abs_top_srcdir@; ./config.status
 
 RM =	rm -f
 
@@ -228,14 +228,12 @@ clean:
 	$(ZDIR)/*.o \
 	$(PROGS) $(TESTPROGS) \
 	gmon.out *.pg *.bak \
-	config.info config.log \
 	doc/*~
-	$(RM) -r autom4te.cache
 
 mostlyclean: clean
 
 distclean: clean
-	$(RM) Makefile config.cache config.status config.log
+	$(RM) Makefile
 
 realclean: distclean
 	$(RM) TAGS
